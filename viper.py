@@ -172,14 +172,12 @@ if __name__ == '__main__':
             except Exception as err:
                 print("[*] 启动msfrpcd服务")
                 res = subprocess.Popen(
-                    f"nohup puma -b tcp://127.0.0.1:{msgrpc_port} -e production --pidfile /root/puma.pid "
+                    f"nohup puma -b tcp://127.0.0.1:{msgrpc_port} -e production --pidfile /root/viper/puma.pid "
                     f"--redirect-stdout {LOGDIR}/puma.log --redirect-stderr {LOGDIR}/puma.log /root/metasploit-framework/msf-json-rpc.ru &",
                     shell=True,
                     stdout=devNull,
                     stderr=devNull
                 )
-
-
 
             # daphne
             try:
