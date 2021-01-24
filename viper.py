@@ -120,8 +120,8 @@ if __name__ == '__main__':
         exit(0)
 
     if newpassword is not None:
-        if len(newpassword) < 5:
-            print("[x] 新密码必须大于等于5位")
+        if len(newpassword) < 8:
+            print("[x] 新密码必须大于等于8位")
             exit(0)
         else:
             # 启动django项目
