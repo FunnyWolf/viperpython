@@ -14,6 +14,7 @@ viper_port = 60002
 daphne_port = 60003
 redis_port = 60004
 msgrpc_port = 60005
+LOGDIR = "/root/viper/Docker/log"
 devNull = open(os.devnull, 'w')
 
 
@@ -86,7 +87,7 @@ def check_services():
 
 def init_copy_file():
     result = subprocess.run(
-        ["chmod", "777", "-R", "/var/lib/redis", ],
+        ["chmod", "777", "-R", "/root/viper/Docker/db", ],
         stdout=devNull,
         stderr=devNull
     )
@@ -118,8 +119,6 @@ if __name__ == '__main__':
         parser.print_help()
         exit(0)
 
-    init_copy_file()
-
     if newpassword is not None:
         if len(newpassword) < 5:
             print("[x] 新密码必须大于等于5位")
@@ -144,8 +143,10 @@ if __name__ == '__main__':
 
     if action is not None:
         if action.lower() == "start":
+            # 初始化系统初始文件
+            init_copy_file()
+
             # 启动服务
-            devNull = open(os.devnull, 'w')
             # redis
             try:
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -161,21 +162,6 @@ if __name__ == '__main__':
                     stderr=devNull
                 )
 
-            # nginx
-            try:
-                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.settimeout(1)
-                client.connect((LOCALHOST, nginx_port))
-                print("[+] nginx运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动nginx服务")
-                result = subprocess.run(
-                    ["service", "nginx", "start"],
-                    stdout=devNull,
-                    stderr=devNull
-                )
-
             # msfrpcd
             try:
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -187,26 +173,13 @@ if __name__ == '__main__':
                 print("[*] 启动msfrpcd服务")
                 res = subprocess.Popen(
                     f"nohup puma -b tcp://127.0.0.1:{msgrpc_port} -e production --pidfile /root/puma.pid "
-                    f"--redirect-stdout /root/puma.log --redirect-stderr /root/puma.log /root/metasploit-framework/msf-json-rpc.ru &",
+                    f"--redirect-stdout {LOGDIR}/puma.log --redirect-stderr {LOGDIR}/puma.log /root/metasploit-framework/msf-json-rpc.ru &",
                     shell=True,
                     stdout=devNull,
                     stderr=devNull
                 )
 
-            # viper
-            try:
-                serverAddr = '/root/viper/uwsgi.sock'
-                client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                client.connect(serverAddr)
-                print("[+] VIPER主服务运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动VIPER主服务")
-                result = subprocess.run(
-                    ["uwsgi", "--ini", "/root/viper/uwsgi.ini", ],
-                    stdout=devNull,
-                    stderr=devNull
-                )
+
 
             # daphne
             try:
@@ -229,8 +202,38 @@ if __name__ == '__main__':
                     stderr=devNull
                 )
                 res = subprocess.Popen(
-                    f"nohup daphne -u /root/viper/daphne.sock --access-log /root/viper/daphne.log Viper.asgi:application &",
+                    f"nohup daphne -u /root/viper/daphne.sock --access-log {LOGDIR}/daphne.log Viper.asgi:application &",
                     shell=True,
+                    stdout=devNull,
+                    stderr=devNull
+                )
+
+            # viper
+            try:
+                serverAddr = '/root/viper/uwsgi.sock'
+                client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                client.connect(serverAddr)
+                print("[+] VIPER主服务运行中")
+                client.close()
+            except Exception as err:
+                print("[*] 启动VIPER主服务")
+                result = subprocess.run(
+                    ["uwsgi", "--ini", "/root/viper/uwsgi.ini", ],
+                    stdout=devNull,
+                    stderr=devNull
+                )
+
+            # nginx
+            try:
+                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client.settimeout(1)
+                client.connect((LOCALHOST, nginx_port))
+                print("[+] nginx运行中")
+                client.close()
+            except Exception as err:
+                print("[*] 启动nginx服务")
+                result = subprocess.run(
+                    ["service", "nginx", "start"],
                     stdout=devNull,
                     stderr=devNull
                 )
@@ -240,10 +243,12 @@ if __name__ == '__main__':
                 if check_services():
                     print("[+] 启动完成")
                     break
+
             # 不要删除这个死循环,该循环是确保docker-compose后台运行基础
             while True:
                 time.sleep(60)
                 check_services()
+
         elif action.lower() == "stop":
 
             # 停止服务
