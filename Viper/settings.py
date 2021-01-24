@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 import os
 
+from django.conf import settings
 from django.core.management import utils
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -120,9 +121,9 @@ LOGGING = {
             'formatter': 'standard',
         },
         'file': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': 'viper.log',
+            'filename': os.path.join(settings.BASE_DIR, 'Docker', 'log', 'viperpython.log'),
         },
 
     },
