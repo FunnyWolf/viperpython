@@ -176,6 +176,6 @@ venv.bak/
 .mypy_cache/
 CONFIG.py
 db.sqlite3
-
+Docker/log/*
 Docker/db/*
 STATICFILES/TMP/*
