@@ -5,13 +5,14 @@ chmod 755 viper.py
 find . -type f -exec dos2unix {} \;
 
 # clean viper
-rm -rf /root/viper/*.log
-rm -rf /root/.msf4/logs/*
 rm -rf /root/viper/*.lock
-rm -rf /root/viper/uwsgi.pids
 rm -rf /root/viper/*.pid
 rm -rf /root/viper/*.sock
-rm -rf /root/viper/Docker/db/db.sqlite3
+chmod 777 -R /root/viper/Docker/db/
+rm -rf /root/viper/Docker/db/*
+rm -rf /root/viper/Docker/log/*
+rm -rf /root/viper/Docker/module/*
+rm -rf /root/.msf4/logs/*
 
 # clean install cache
 rm -rf /root/.cache/*
@@ -21,10 +22,6 @@ rm -rf /usr/local/lib/ruby/gems/2.6.0/doc/*
 rm -rf /usr/local/lib/ruby/gems/2.6.0/cache/*
 rm -rf /usr/local/share/ri/2.6.0/system
 rm -rf /usr/lib/python3
-
-# clean redis
-rm -rf /root/viper/dump.rdb
-rm -rf /var/lib/redis/dump.rdb
 
 # clean metasploit-framework
 rm -rf /root/metasploit-framework/external/*
