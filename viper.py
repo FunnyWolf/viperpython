@@ -86,11 +86,6 @@ def check_services():
 
 
 def init_copy_file():
-    result = subprocess.run(
-        ["chmod", "777", "-R", "/root/viper/Docker/db", ],
-        stdout=devNull,
-        stderr=devNull
-    )
     if not os.path.exists("/root/viper/Docker/db/db.sqlite3"):
         src_file = "/root/viper/Docker/db_empty.sqlite3"
         target_path = "/root/viper/Docker/db/db.sqlite3"
