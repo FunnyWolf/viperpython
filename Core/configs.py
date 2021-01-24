@@ -82,7 +82,7 @@ PostModuleActuator_MSG = {
 }
 
 PostModuleConfig_MSG = {
-    201: "更新模块配置成功",
+    201: "重新加载所有模块成功",
     202: "",
     203: "",
     204: "",

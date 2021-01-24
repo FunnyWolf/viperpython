@@ -56,6 +56,8 @@ class PostModuleConfig(object):
     def update():
         PostModuleConfig._load_all_modules_config()
         all_modules_config = Xcache.list_moduleconfigs()
+        for one in all_modules_config:
+            one['OPTIONS'] = []
         context = list_data_return(201, PostModuleConfig_MSG.get(201), all_modules_config)
         return context
 
@@ -65,6 +67,8 @@ class PostModuleConfig(object):
             return TAG2CH.get_moduletype_order(one_module_config.get('MODULETYPE'))
 
         all_modules_config = []
+        # viper 内置模块
+        viper_module_count = 0
         modulenames = os.listdir(os.path.join(settings.BASE_DIR, 'MODULES'))
         for modulename in modulenames:
             modulename = modulename.split(".")[0]
@@ -107,10 +111,62 @@ class PostModuleConfig(object):
 
                 }
                 all_modules_config.append(one_module_config)
+                viper_module_count += 1
             except Exception as E:
                 logger.error(E)
                 continue
-        logger.warning("模块加载完成,共加载模块{}个".format(len(all_modules_config)))
+        logger.warning("内置模块加载完成,加载{}个模块".format(viper_module_count))
+        Notices.send_success(f"内置模块加载完成,加载{viper_module_count}个模块")
+        # 自定义模块
+        diy_module_count = 0
+        modulenames = os.listdir(os.path.join(settings.BASE_DIR, 'Docker', "module"))
+        for modulename in modulenames:
+            modulename = modulename.split(".")[0]
+            if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
+                continue
+
+            classIntent = importlib.import_module('Docker.module.{}'.format(modulename))
+            importlib.reload(classIntent)
+            try:
+                if isinstance(classIntent.PostModule.ATTCK, str):
+                    attck = [classIntent.PostModule.ATTCK]
+                elif isinstance(classIntent.PostModule.ATTCK, list):
+                    attck = [classIntent.PostModule.ATTCK]
+                else:
+                    attck = []
+
+                one_module_config = {
+
+                    "BROKER": classIntent.PostModule.MODULE_BROKER,  # 处理器
+
+                    "NAME": classIntent.PostModule.NAME,
+                    "DESC": classIntent.PostModule.DESC,
+                    "WARN": classIntent.PostModule.WARN,
+                    "AUTHOR": classIntent.PostModule.AUTHOR,
+                    "REFERENCES": classIntent.PostModule.REFERENCES,
+
+                    "MODULETYPE": classIntent.PostModule.MODULETYPE,
+
+                    "OPTIONS": classIntent.PostModule.OPTIONS,
+                    "loadpath": 'Docker.module.{}'.format(modulename),
+
+                    # post类配置
+                    "REQUIRE_SESSION": classIntent.PostModule.REQUIRE_SESSION,
+                    "PLATFORM": classIntent.PostModule.PLATFORM,
+                    "PERMISSIONS": classIntent.PostModule.PERMISSIONS,
+                    "ATTCK": attck,
+
+                    # bot类配置
+                    "SEARCH": classIntent.PostModule.SEARCH,
+
+                }
+                all_modules_config.append(one_module_config)
+                diy_module_count += 1
+            except Exception as E:
+                logger.error(E)
+                continue
+        logger.warning("自定义模块加载完成,加载{}个模块".format(diy_module_count))
+        Notices.send_success(f"自定义模块加载完成,加载{diy_module_count}个模块")
         all_modules_config.sort(key=_sort_by_moduletype)
         if Xcache.update_moduleconfigs(all_modules_config):
             return len(all_modules_config)

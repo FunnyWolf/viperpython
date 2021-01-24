@@ -3350,8 +3350,8 @@ class MainMonitor(object):
         self.MainScheduler.start()
 
         logger.warning("后台服务启动成功")
-        Notices.send_success(f"后台服务启动成功，加载模块 {modulecount} 个")
-        Notices.send_success(f"15秒后加载历史监听.")
+        Notices.send_success(f"后台服务启动成功，15秒后开始加载历史监听.")
+
 
     @staticmethod
     def run_bot_wait_list():
