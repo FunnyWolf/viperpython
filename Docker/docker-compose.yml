@@ -8,6 +8,7 @@ services:
     volumes:
       - /root/viper/loot:/root/.msf4/loot
       - /root/viper/db:/root/viper/Docker/db
+      - /root/viper/module:/root/viper/Docker/module
       - /root/viper/log:/root/viper/Docker/log
     environment:
       - NGINXPORT=60000
