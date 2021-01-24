@@ -178,4 +178,5 @@ CONFIG.py
 db.sqlite3
 Docker/log/*
 Docker/db/*
+Docker/module/*
 STATICFILES/TMP/*
