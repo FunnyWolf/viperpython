@@ -40,6 +40,7 @@ class SessionLibSerializer(Serializer):
     arch = CharField(max_length=100)
     platform = CharField(max_length=100)
     last_checkin = IntegerField()
+    fromnow = IntegerField()
 
     tunnel_local = CharField(max_length=100)
     tunnel_peer = CharField(max_length=100)

@@ -1433,7 +1433,8 @@ class Session(object):
                 oneSession['info'] = info.get('info')
                 oneSession['arch'] = info.get('arch')
                 oneSession['platform'] = info.get('platform')
-                oneSession['last_checkin'] = info.get('last_checkin') // 20 * 20
+                oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
+                oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
                 oneSession['advanced_info'] = info.get('advanced_info')
                 try:
                     oneSession['os'] = info.get('advanced_info').get("sysinfo").get("OS")
@@ -1528,7 +1529,8 @@ class Session(object):
                 oneSession['info'] = info.get('info')
                 oneSession['arch'] = info.get('arch')
                 oneSession['platform'] = info.get('platform')
-                oneSession['last_checkin'] = info.get('last_checkin') // 20 * 20
+                oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
+                oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
                 oneSession['advanced_info'] = info.get('advanced_info')
                 try:
                     oneSession['os'] = info.get('advanced_info').get("sysinfo").get("OS")
@@ -1716,6 +1718,7 @@ class SessionLib(object):
             self.via_exploit = one.get('via_exploit')
             self.via_payload = one.get('via_payload')
             self.last_checkin = one.get('last_checkin')
+            self.fromnow = int(time.time()) - one.get('last_checkin')
             self.is_admin = one.get('isadmin')
             self.load_powershell = one.get('load_powershell')
             self.load_python = one.get('load_python')
