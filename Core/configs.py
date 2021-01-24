@@ -32,8 +32,8 @@ CODE_MSG = {
 BASEAUTH_MSG = {
     201: '登录成功',
 
-
     301: '登录失败,密码错误',
+    302: '配置错误,VIPER不允许使用diypassword作为密码!',
 
 }
 PORTFWD_MSG = {

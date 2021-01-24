@@ -133,6 +133,13 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
 
         nullResponse = {"status": "error", "type": "account", "currentAuthority": "guest",
                         "token": "forguest"}
+
+        # 检查是否为diypassword
+        password = request.data.get('password', None)
+        if password == "diypassword":
+            context = dict_data_return(302, BASEAUTH_MSG.get(302), nullResponse)
+            return Response(context)
+
         try:
             serializer = AuthTokenSerializer(data=request.data)
             if serializer.is_valid():
