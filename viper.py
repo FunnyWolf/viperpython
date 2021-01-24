@@ -119,6 +119,9 @@ if __name__ == '__main__':
         parser.print_help()
         exit(0)
 
+    # 初始化系统初始文件
+    init_copy_file()
+
     if newpassword is not None:
         if len(newpassword) < 8:
             print("[x] 新密码必须大于等于8位")
@@ -143,8 +146,7 @@ if __name__ == '__main__':
 
     if action is not None:
         if action.lower() == "start":
-            # 初始化系统初始文件
-            init_copy_file()
+
 
             # 启动服务
             # redis
