@@ -32,8 +32,3 @@ rm -rf /root/metasploit-framework/test/*
 
 # clean gem
 gem cleanup
-
-
-rm -rf ~/.bash_history
-
-history -c
