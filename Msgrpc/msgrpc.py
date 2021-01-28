@@ -1410,7 +1410,8 @@ class Session(object):
                 oneSession['info'] = info.get('info')
                 oneSession['arch'] = info.get('arch')
                 oneSession['platform'] = info.get('platform')
-                oneSession['last_checkin'] = info.get('last_checkin') // 20 * 20
+                oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
+                oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
                 oneSession['advanced_info'] = {"sysinfo": {}, "username": "Initializing"}
                 oneSession['os'] = None
                 oneSession['os_short'] = None
@@ -1506,7 +1507,8 @@ class Session(object):
                     oneSession['info'] = info.get('info')
                     oneSession['arch'] = info.get('arch')
                     oneSession['platform'] = info.get('platform')
-                    oneSession['last_checkin'] = info.get('last_checkin') // 20 * 20
+                    oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
+                    oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
                     oneSession['advanced_info'] = {"sysinfo": {}, "username": "Initializing"}
                     oneSession['os'] = None
                     oneSession['load_powershell'] = False
