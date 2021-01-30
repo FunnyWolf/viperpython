@@ -1826,29 +1826,18 @@ class SessionIO(object):
     def create(hid=None, sessionid=None, input=None):
         try:
             input = input.strip()
-            # 针对execute命令的特殊处理
-            if input.startswith('execute'):
-                command = input[len('execute'):]
-                cmd_result = SessionIO._shell_cmd(sessionid=sessionid, command=command.strip())
-                new_bufer = "{}{}\n{}\n".format(SHELL_PROMPT, command, cmd_result)
-                result = Xcache.add_sessionio_cache(hid, new_bufer)
-
-                context = dict_data_return(200, SessionIO_MSG.get(200), result)
-                return context
 
             if input.startswith('shell'):
                 command = input[len('shell'):]
                 if len(command) == 0:
                     new_bufer = "\n{}\n".format(
                         "Not support switch to Dos/Bash,input like\"shell whoami\" to run os cmd.")
+                    result = Xcache.add_sessionio_cache(hid, new_bufer)
+
+                    context = dict_data_return(200, SessionIO_MSG.get(200), result)
+                    return context
                 else:
-                    cmd_result = SessionIO._shell_cmd(sessionid=sessionid, command=command.strip())
-                    new_bufer = "{}{}\n{}\n".format(SHELL_PROMPT, command, cmd_result)
-
-                result = Xcache.add_sessionio_cache(hid, new_bufer)
-
-                context = dict_data_return(200, SessionIO_MSG.get(200), result)
-                return context
+                    input = f"shell -c '{command}'"
 
             if input.startswith('exit'):
                 params = [sessionid]
@@ -3353,7 +3342,6 @@ class MainMonitor(object):
 
         logger.warning("后台服务启动成功")
         Notices.send_success(f"后台服务启动成功，15秒后开始加载历史监听.")
-
 
     @staticmethod
     def run_bot_wait_list():
