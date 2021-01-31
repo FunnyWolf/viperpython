@@ -239,7 +239,7 @@ if __name__ == '__main__':
                     print("[+] 启动完成")
                     break
 
-            # 不要删除这个死循环,该循环是确保docker-compose后台运行基础
+            # 不要删除这个死循环,此循环是确保docker-compose后台运行基础
             while True:
                 time.sleep(60)
                 check_services()
