@@ -19,7 +19,8 @@ class DiyListField(models.TextField):
 
         return str(value)  # use str(value) in Python 3
 
-    def from_db_value(self, value, expression, connection):
+    @staticmethod
+    def from_db_value(value, expression, connection):
         if not value:
             value = []
         if isinstance(value, list):
@@ -29,6 +30,7 @@ class DiyListField(models.TextField):
             return ast.literal_eval(value)
         except Exception as E:
             from Core.lib import logger
+            logger.exception(E)
             logger.error(value)
             return []
 
@@ -60,6 +62,7 @@ class DiyDictField(models.TextField):
             return ast.literal_eval(value)
         except Exception as E:
             from Core.lib import logger
+            logger.exception(E)
             logger.error(value)
             return {}
 

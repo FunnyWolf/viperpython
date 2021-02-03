@@ -57,7 +57,7 @@ class TAG2CH(object):
     Impact = 'Impact'  # '影响破坏'
 
     @staticmethod
-    def get_moduletype_order(MODULETYPE):
+    def get_moduletype_order(module_type):
         order_dict = {
             "example": 0,
             "internal": 1,
@@ -74,7 +74,7 @@ class TAG2CH(object):
             "Exfiltration": 20,
             "Impact": 21,
         }
-        order = order_dict.get(MODULETYPE)
+        order = order_dict.get(module_type)
         if order is not None:
             return order
         else:

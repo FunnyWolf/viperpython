@@ -25,8 +25,8 @@ class PortService(object):
 
     @staticmethod
     def list_by_hid(hid=None):
-        models = PortServiceModel.objects.filter(hid=hid).order_by('port')
-        data = PortServiceSerializer(models, many=True).data
+        orm_models = PortServiceModel.objects.filter(hid=hid).order_by('port')
+        data = PortServiceSerializer(orm_models, many=True).data
 
         try:
             format_data = PortService.format_banner(data)
@@ -37,9 +37,9 @@ class PortService(object):
 
     @staticmethod
     def add_or_update(hid=None, port=None, proxy=None, banner=None, service=None):
-        defaultDict = {'hid': hid, 'proxy': proxy, 'port': port, 'banner': banner, 'service': service,
-                       'update_time': int(time.time())}  # 没有此主机数据时新建
-        model, created = PortServiceModel.objects.get_or_create(hid=hid, port=port, defaults=defaultDict)
+        default_dict = {'hid': hid, 'proxy': proxy, 'port': port, 'banner': banner, 'service': service,
+                        'update_time': int(time.time())}  # 没有此主机数据时新建
+        model, created = PortServiceModel.objects.get_or_create(hid=hid, port=port, defaults=default_dict)
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据
@@ -99,8 +99,8 @@ class Credential(object):
 
     @staticmethod
     def list():
-        models = CredentialModel.objects.all().order_by('username')
-        data = CredentialSerializer(models, many=True).data
+        orm_models = CredentialModel.objects.all().order_by('username')
+        data = CredentialSerializer(orm_models, many=True).data
         try:
             format_data = Credential.format_tag(data)
         except Exception as E:
@@ -111,8 +111,8 @@ class Credential(object):
 
     @staticmethod
     def list_credential():
-        models = CredentialModel.objects.all().order_by('username')
-        data = CredentialSerializer(models, many=True).data
+        orm_models = CredentialModel.objects.all().order_by('username')
+        data = CredentialSerializer(orm_models, many=True).data
         return data
 
     @staticmethod
@@ -135,14 +135,15 @@ class Credential(object):
     @staticmethod
     def update(cid=None, desc=None):
         try:
-            object = CredentialModel.objects.get(id=cid)
+            orm_model = CredentialModel.objects.get(id=cid)
         except Exception as E:
+            logger.exception(E)
             context = dict_data_return(404, Credential_MSG.get(404), {})
             return context
 
-        object.desc = desc
-        object.save()
-        data = CredentialSerializer(object).data
+        orm_model.desc = desc
+        orm_model.save()
+        data = CredentialSerializer(orm_model).data
         context = dict_data_return(202, Credential_MSG.get(202), data)
         return context
 
@@ -161,15 +162,15 @@ class Credential(object):
                       host_ipaddress=None, desc=None):
 
         # 没有此主机数据时新建
-        defaultDict = {'username': username, 'password': password, 'password_type': password_type, 'tag': tag,
-                       'source_module': source_module,
-                       'host_ipaddress': host_ipaddress,
-                       'desc': desc}
-        model, created = CredentialModel.objects.update_or_create(username=username, password=password,
-                                                                  password_type=password_type, tag=tag,
-                                                                  # source_module=source_module,
-                                                                  # host_ipaddress=host_ipaddress,
-                                                                  defaults=defaultDict)
+        default_dict = {'username': username, 'password': password, 'password_type': password_type, 'tag': tag,
+                        'source_module': source_module,
+                        'host_ipaddress': host_ipaddress,
+                        'desc': desc}
+        CredentialModel.objects.update_or_create(username=username,
+                                                 password=password,
+                                                 password_type=password_type,
+                                                 tag=tag,
+                                                 defaults=default_dict)
         return True
 
     @staticmethod
@@ -216,10 +217,10 @@ class Vulnerability(object):
     @staticmethod
     def list_vulnerability(hid=None):
         if hid is None:
-            models = VulnerabilityModel.objects.all().order_by('source_module_loadpath')
+            orm_models = VulnerabilityModel.objects.all().order_by('source_module_loadpath')
         else:
-            models = VulnerabilityModel.objects.filter(hid=hid).order_by('source_module_loadpath')
-        data = VulnerabilitySerializer(models, many=True).data
+            orm_models = VulnerabilityModel.objects.filter(hid=hid).order_by('source_module_loadpath')
+        data = VulnerabilitySerializer(orm_models, many=True).data
         return data
 
     @staticmethod
@@ -234,11 +235,11 @@ class Vulnerability(object):
 
     @staticmethod
     def add_or_update(hid=None, source_module_loadpath=None, extra_data=None, desc=None):
-        defaultDict = {'hid': hid, 'source_module_loadpath': source_module_loadpath, 'extra_data': extra_data,
-                       'desc': desc, 'update_time': int(time.time())}  # 没有此主机数据时新建
+        default_dict = {'hid': hid, 'source_module_loadpath': source_module_loadpath, 'extra_data': extra_data,
+                        'desc': desc, 'update_time': int(time.time())}  # 没有此主机数据时新建
         model, created = VulnerabilityModel.objects.get_or_create(hid=hid,
                                                                   source_module_loadpath=source_module_loadpath,
-                                                                  extra_data=extra_data, defaults=defaultDict)
+                                                                  extra_data=extra_data, defaults=default_dict)
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据

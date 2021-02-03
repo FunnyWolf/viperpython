@@ -23,7 +23,7 @@ from PostModule.lib.Configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, 
 from PostModule.lib.Host import Host
 
 
-class _ModuleCommon(object):
+class _CommonModule(object):
     MODULE_BROKER = BROKER.empty
     NAME = "基础模块"
     DESC = "基础描述"
@@ -146,28 +146,29 @@ class _ModuleCommon(object):
                     # 处理凭证,监听,文件等参数
                     try:
                         if key == HANDLER_OPTION.get("name"):
-                            handlerDict = json.loads(self._custom_param.get(key))
+                            handler_dict = json.loads(self._custom_param.get(key))
                             # 清理无效的参数
-                            new_params = {}
-                            new_params["PAYLOAD"] = handlerDict.get("PAYLOAD")
-                            new_params["LPORT"] = handlerDict.get("LPORT")
-                            if handlerDict.get("LHOST") is not None:
-                                new_params["LHOST"] = handlerDict.get("LHOST")
-                            if handlerDict.get("RHOST") is not None:
-                                new_params["RHOST"] = handlerDict.get("RHOST")
+                            new_params = {
+                                "PAYLOAD": handler_dict.get("PAYLOAD"),
+                                "LPORT": handler_dict.get("LPORT")
+                            }
+                            if handler_dict.get("LHOST") is not None:
+                                new_params["LHOST"] = handler_dict.get("LHOST")
+                            if handler_dict.get("RHOST") is not None:
+                                new_params["RHOST"] = handler_dict.get("RHOST")
 
                             opts[option.get("name_tag")] = json.dumps(new_params)
                         elif key == FILE_OPTION.get("name"):
-                            fileDict = json.loads(self._custom_param.get(key))
+                            file_dict = json.loads(self._custom_param.get(key))
                             opts[option.get("name_tag")] = json.dumps({
-                                "name": fileDict.get("name"),
+                                "name": file_dict.get("name"),
                             })
                         elif key == CREDENTIAL_OPTION.get("name"):
-                            credentialDict = json.loads(self._custom_param.get(key))
+                            credential_dict = json.loads(self._custom_param.get(key))
                             opts[option.get("name_tag")] = json.dumps({
-                                "username": credentialDict.get("username"),
-                                "password": credentialDict.get("password"),
-                                "password_type": credentialDict.get("password_type"),
+                                "username": credential_dict.get("username"),
+                                "password": credential_dict.get("password"),
+                                "password_type": credential_dict.get("password_type"),
                             })
                     except Exception as E:
                         logger.exception(E)
@@ -184,7 +185,7 @@ class _ModuleCommon(object):
     # 功能函数集
     @staticmethod
     def dqtoi(dq):
-        "将字符串ip地址转换为int数字."
+        """将字符串ip地址转换为int数字."""
         octets = dq.split(".")
         if len(octets) != 4:
             raise ValueError
@@ -197,11 +198,11 @@ class _ModuleCommon(object):
                (int(octets[3]))
 
     @staticmethod
-    def timeStampToStr(timeStamp):
-        "将时间戳转换为字符串."
-        timeArray = time.localtime(timeStamp)
-        otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-        return otherStyleTime
+    def timestamp_to_str(timestamp):
+        """将时间戳转换为字符串."""
+        time_array = time.localtime(timestamp)
+        other_style_time = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
+        return other_style_time
 
     @staticmethod
     def clean_tmp_dir():
@@ -270,7 +271,7 @@ class _ModuleCommon(object):
             return payload
 
 
-class _BotModuleCommon(_ModuleCommon):
+class _BotCommonModule(_CommonModule):
     """bot模块基础模板"""
 
     def __init__(self, ip, port, protocol, custom_param):
@@ -287,7 +288,7 @@ class _BotModuleCommon(_ModuleCommon):
         return self._ip
 
 
-class BotMSFModule(_BotModuleCommon):
+class BotMSFModule(_BotCommonModule):
     """bot msf模块基础模板"""
     MODULE_BROKER = BROKER.bot_msf_job
     SEARCH = ''
@@ -311,7 +312,7 @@ class BotMSFModule(_BotModuleCommon):
         logger.warning(self.opts)
 
 
-class _PostModuleCommon(_ModuleCommon):
+class _PostCommonModule(_CommonModule):
     """post类模块基础模板"""
     MODULE_BROKER = BROKER.post_msf_job
 
@@ -357,11 +358,12 @@ class _PostModuleCommon(_ModuleCommon):
                         if ip.compressed not in ipaddress_list:
                             ipaddress_list.append(ip.compressed)
                 except Exception as E:
-                    pass
+                    logger.exception(E)
+
         return ipaddress_list
 
 
-class _PostMSFModuleCommon(_PostModuleCommon):
+class _PostMSFModuleCommon(_PostCommonModule):
     """msf模块后台运行基础模板"""
     MODULE_BROKER = BROKER.post_msf_job
 
@@ -383,9 +385,21 @@ class _PostMSFModuleCommon(_PostModuleCommon):
         logger.warning(self.mname)
         logger.warning(self.opts)
 
+    @staticmethod
+    def deal_powershell_json_result(result):
+        result_without_error = re.sub('ERROR:.+\s', '', result)
+        result_without_empty = result_without_error.replace('\r', '').replace('\n', '').replace('\t', '')
+        try:
+            result_json = json.loads(result_without_empty)
+            return result_json
+        except Exception as E:
+            logger.warning(E)
+            logger.warning("解析powershell结果失败")
+            return None
+
 
 def _async_raise(tid, exctype):
-    '''Raises an exception in the threads with id tid'''
+    """Raises an exception in the threads with id tid"""
     if not inspect.isclass(exctype):
         raise TypeError("Only types can be raised (not instances)")
     res = ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(tid),
@@ -400,9 +414,9 @@ def _async_raise(tid, exctype):
 
 
 class ThreadWithExc(threading.Thread):
-    '''A thread class that supports raising exception in the thread from
+    """A thread class that supports raising exception in the thread from
        another thread.
-    '''
+    """
 
     def _get_my_tid(self):
         """determines this (self's) thread id
@@ -426,7 +440,7 @@ class ThreadWithExc(threading.Thread):
 
         raise AssertionError("could not determine the thread's id")
 
-    def raiseExc(self, exctype):
+    def raise_exc(self, exctype):
         """Raises the given exception type in the context of this thread.
 
         If the thread is busy in a system call (time.sleep(),
@@ -452,7 +466,7 @@ class ThreadWithExc(threading.Thread):
         _async_raise(self._get_my_tid(), exctype)
 
 
-class PostPythonModule(_PostModuleCommon):
+class PostPythonModule(_PostCommonModule):
     """多模块执行的基础模板"""
     MODULE_BROKER = BROKER.post_python_job
 
@@ -478,8 +492,8 @@ class PostPythonModule(_PostModuleCommon):
                 while t1.is_alive():
                     time.sleep(0.1)
                     try:
-                        t1.raiseExc(Exception)
-                    except Exception as E:
+                        t1.raise_exc(Exception)
+                    except Exception as _:
                         pass
                 break
             elif t1.is_alive() is not True:
@@ -536,17 +550,6 @@ class PostMSFPowershellModule(_PostMSFModuleCommon):
     def set_script_timeout(self, timeout):
         """API:设置脚本超时时间"""
         self.opts['TIMEOUT'] = timeout  # msf模块内部的超时时间
-
-    def deal_powershell_json_result(self, result):
-        result_without_error = re.sub('ERROR:.+\s', '', result)
-        result_without_empty = result_without_error.replace('\r', '').replace('\n', '').replace('\t', '')
-        try:
-            result_json = json.loads(result_without_empty)
-            return result_json
-        except Exception as E:
-            logger.warning(E)
-            logger.warning("解析powershell结果失败")
-            return None
 
 
 class PostMSFPythonModule(_PostMSFModuleCommon):
@@ -611,17 +614,6 @@ class PostMSFPowershellFunctionModule(_PostMSFModuleCommon):
         self.type = "post"  # 固定模块
         self.mname = "windows/manage/powershell/exec_powershell_function_mem_api"
         self.opts['SESSION'] = self._sessionid
-
-    def deal_powershell_json_result(self, result):
-        result_without_error = re.sub('ERROR:.+\s', '', result)
-        result_without_empty = result_without_error.replace('\r', '').replace('\n', '').replace('\t', '')
-        try:
-            result_json = json.loads(result_without_empty)
-            return result_json
-        except Exception as E:
-            logger.warning(E)
-            logger.warning("解析powershell结果失败")
-            return None
 
     def set_script(self, script):
         """API:设置脚本路径"""

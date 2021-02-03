@@ -4,20 +4,16 @@
 # @Desc  :
 
 import base64
-from urllib.parse import urlencode
-
-import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
 import datetime
 import json
 import ssl
+from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 
+import requests
 import telegram
 from django.db import transaction
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication
 from telegram.bot import Bot
@@ -29,6 +25,8 @@ from Msgrpc.msgrpc import FileMsf
 from Msgrpc.msgrpc import Session
 from PostLateral.models import PortServiceModel, VulnerabilityModel
 from PostLateral.postlateral import PortService
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class BaseAuth(TokenAuthentication):
@@ -141,11 +139,7 @@ class Settings(object):
     def create(kind=None, tag=None, setting=None):
         """创建系统配置"""
         if isinstance(setting, str):
-            try:
-                setting = json.loads(setting)
-            except Exception as E:
-                context = dict_data_return(301, Setting_MSG.get(301), {})
-                return context
+            setting = json.loads(setting)
 
         if kind == "telegram":
             token = setting.get("token")
@@ -249,10 +243,11 @@ class Settings(object):
         try:
             result = bot.get_updates()
         except Exception as E:
+            logger.exception(E)
             return user_chat_id_list
         for update in result:
-            first_name = update.effective_chat.first_name if update.effective_chat.first_name != None else ""
-            last_name = update.effective_chat.last_name if update.effective_chat.last_name != None else ""
+            first_name = update.effective_chat.first_name if update.effective_chat.first_name is not None else ""
+            last_name = update.effective_chat.last_name if update.effective_chat.last_name is not None else ""
             one_data = {
                 "user": "{}{}".format(first_name, last_name),
                 "chat_id": update.effective_chat.id
@@ -287,6 +282,7 @@ class Settings(object):
             try:
                 bot = Bot(token=token)
             except Exception as E:
+                logger.exception(E)
                 return []
         else:
             # proxy_url = 'socks5://127.0.0.1:1080'
@@ -295,12 +291,14 @@ class Settings(object):
             try:
                 bot = Bot(token=token, request=request)
             except Exception as E:
+                logger.exception(E)
                 return []
         for one_chat_id in chat_id:
             try:
-                result = bot.send_message(chat_id=one_chat_id, text=msg, timeout=1)
+                bot.send_message(chat_id=one_chat_id, text=msg, timeout=1)
                 send_result.append(one_chat_id)
             except Exception as E:
+                logger.exception(E)
                 logger.warning("无效的chat_id: {}".format(one_chat_id))
         return send_result
 
@@ -333,7 +331,7 @@ class HostAndSession(object):
         pass
 
     @staticmethod
-    def list_hostAndSession():
+    def list_hostandsession():
         hosts = Host.list_hosts()
         sessions = Session.list_sessions()
 
@@ -437,8 +435,8 @@ class Host(object):
 
     @staticmethod
     def create_host(ipaddress=None):
-        defaultDict = {'ipaddress': ipaddress, }  # 没有主机数据时新建
-        model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultDict)
+        defaultdict = {'ipaddress': ipaddress, }  # 没有主机数据时新建
+        model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
         if created is True:
             result = HostSerializer(model, many=False).data
             return result  # 新建后直接返回
@@ -469,8 +467,8 @@ class Host(object):
     @staticmethod
     def update_host(id=None, tag=None, comment=None):
 
-        defaultDict = {'id': id, 'tag': tag, 'comment': comment}  # 没有此主机数据时新建
-        model, created = HostModel.objects.get_or_create(id=id, defaults=defaultDict)
+        defaultdict = {'id': id, 'tag': tag, 'comment': comment}  # 没有此主机数据时新建
+        model, created = HostModel.objects.get_or_create(id=id, defaults=defaultdict)
         if created is True:
             result = HostSerializer(model, many=False).data
             return result  # 新建后直接返回
@@ -499,7 +497,7 @@ class Host(object):
     @staticmethod
     def destory_mulit(hids):
         for hid in hids:
-            hid_flag = Host.destory_host(hid)
+            Host.destory_host(hid)
 
         context = dict_data_return(202, Host_MSG.get(202), {})
         return context
@@ -517,7 +515,7 @@ class Host(object):
 
         try:
             # 删除主表信息
-            row_cont, row_cont_dict = HostModel.objects.filter(id=id).delete()
+            HostModel.objects.filter(id=id).delete()
             # 删除关联表信息
             for OneModel in Host.REGISTER_DESTORY:
                 OneModel.objects.filter(hid=id).delete()
@@ -591,7 +589,8 @@ class FOFAClient:
         res = self.__http_get(api_full_url, param)
         return res
 
-    def __http_get(self, url, param):
+    @staticmethod
+    def __http_get(url, param):
         param = urlencode(param)
         url = "%s?%s" % (url, param)
 
@@ -629,8 +628,8 @@ class NetworkSearch(object):
                 context = list_data_return(200, CODE_MSG.get(200), data)
             return context
 
-
         except Exception as E:
+            logger.exception(E)
             context = dict_data_return(303, NetworkSearch_MSG.get(303), {"errmsg": NetworkSearch_MSG.get(303)})
             return context
 
@@ -651,7 +650,7 @@ class NetworkTopology(object):
 
     @staticmethod
     def set_cache(cache_data):
-        result = Xcache.set_network_topology_cache(cache_data)
+        Xcache.set_network_topology_cache(cache_data)
         context = dict_data_return(201, CODE_MSG.get(201), {})
         return context
 
@@ -667,7 +666,8 @@ class DingDing(object):
         self.url = self.parse_token(token)
         self.headers = {"Content-Type": "application/json"}
 
-    def parse_token(self, token=None):
+    @staticmethod
+    def parse_token(token=None):
         """
         :param token:
         :return:
@@ -688,6 +688,7 @@ class DingDing(object):
         :param text: 消息类型，此时固定为:text
         :param at_mobiles: 被@人的手机号 ['13333333333', ]
         :param at_all: @所有人时:true,否则为:false
+        :param keyword: 关键字
         :return:
         """
         if at_mobiles is None:

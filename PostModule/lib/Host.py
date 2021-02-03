@@ -17,18 +17,18 @@ class Host(object):
     def _get_info(self, info_part):
         if self.sessionid is None:
             return None
-        type = "post"
+        module_type = "post"
         mname = "multi/gather/base_info"
         opts = {'SESSION': self.sessionid, 'INFO_PART': info_part}
         if self.sessionid is None or self.sessionid <= 0:
             return None
-        result = MSFModule.run(type=type, mname=mname, opts=opts)
+        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts)
 
         if result is None:
             return None
         try:
             result_dict = json.loads(result)
-            if result_dict.get('status') == True:
+            if result_dict.get('status'):
                 return result_dict.get('data')
             else:
                 return None

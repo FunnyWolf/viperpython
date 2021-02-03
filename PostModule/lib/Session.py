@@ -40,7 +40,7 @@ class SessionOperation(object):
         self._view = view
 
     def registry_getvalinfo(self, key, valname):
-        type = "post"
+        module_type = "post"
         mname = "windows/manage/registry_api"
         opts = {
             'SESSION': self._sessionid,
@@ -49,7 +49,7 @@ class SessionOperation(object):
             'KEY': key,
             'VALNAME': valname,
         }
-        result = MSFModule.run(type=type, mname=mname, opts=opts, timeout=12)
+        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=12)
         if result is None:
             return {'status': False, "message": "MSFRPC Error", "data": None}
         try:
@@ -59,7 +59,7 @@ class SessionOperation(object):
             return {'status': False, "message": E, "data": None}
 
     def registry_enumkeys(self, key):
-        type = "post"
+        module_type = "post"
         mname = "windows/manage/registry_api"
         opts = {
             'SESSION': self._sessionid,
@@ -67,7 +67,7 @@ class SessionOperation(object):
             'OPERATION': "registry_enumkeys",
             'KEY': key,
         }
-        result = MSFModule.run(type=type, mname=mname, opts=opts, timeout=12)
+        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=12)
         if result is None:
             return {'status': False, "message": "MSFRPC Error", "data": None}
         try:
@@ -79,7 +79,7 @@ class SessionOperation(object):
     def download_file(self, filepath=None):
         """返回下载的文件内容,二进制数据"""
         opts = {'OPERATION': 'download', 'SESSION': self._sessionid, 'SESSION_FILE': filepath}
-        result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
+        result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts,
                                timeout=300)  # 后台运行
         if result is None:
             return None

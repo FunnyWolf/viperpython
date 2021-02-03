@@ -4,6 +4,7 @@ from django.conf import settings
 
 JSON_RPC_IP = '127.0.0.1'
 JSON_RPC_PORT = 60005
+JSON_RPC_URL = "http://{}:{}/api/v1/json-rpc".format(JSON_RPC_IP, JSON_RPC_PORT)
 RPC_TOKEN = 'for_msf_token_as_password'
 MSFDIR = "/root/.msf4/"
 DEBUG = False

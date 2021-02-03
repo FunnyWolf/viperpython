@@ -70,17 +70,11 @@ class HostView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             if "," in hid_str:
                 hids = []
                 for i in hid_str.split(","):
-                    try:
-                        hids.append(int(i))
-                    except Exception as E:
-                        pass
+                    hids.append(int(i))
                 context = Host.destory_mulit(hids)
             else:
-                try:
-                    hid = int(hid_str)
-                    context = Host.destory_single(hid)
-                except Exception as E:
-                    context = dict_data_return(500, CODE_MSG.get(500), {})
+                hid = int(hid_str)
+                context = Host.destory_single(hid)
         except Exception as E:
             logger.error(E)
             context = dict_data_return(500, CODE_MSG.get(500), {})
@@ -131,13 +125,13 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
 
     def create(self, request, pk=None, **kwargs):
 
-        nullResponse = {"status": "error", "type": "account", "currentAuthority": "guest",
-                        "token": "forguest"}
+        null_response = {"status": "error", "type": "account", "currentAuthority": "guest",
+                         "token": "forguest"}
 
         # 检查是否为diypassword
         password = request.data.get('password', None)
         if password == "diypassword":
-            context = dict_data_return(302, BASEAUTH_MSG.get(302), nullResponse)
+            context = dict_data_return(302, BASEAUTH_MSG.get(302), null_response)
             return Response(context)
 
         try:
@@ -151,18 +145,18 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                     token = Token.objects.create(user=serializer.validated_data['user'])
                     token.created = time_now
                     token.save()
-                nullResponse['status'] = 'ok'
-                nullResponse['currentAuthority'] = 'admin'  # 当前为单用户模式,默认为admin
-                nullResponse['token'] = token.key
+                null_response['status'] = 'ok'
+                null_response['currentAuthority'] = 'admin'  # 当前为单用户模式,默认为admin
+                null_response['token'] = token.key
                 # 成功登录通知
                 Notices.send_info(f"{serializer.validated_data['user']} 成功登录")
-                context = dict_data_return(201, BASEAUTH_MSG.get(201), nullResponse)
+                context = dict_data_return(201, BASEAUTH_MSG.get(201), null_response)
                 return Response(context)
-            context = dict_data_return(301, BASEAUTH_MSG.get(301), nullResponse)
+            context = dict_data_return(301, BASEAUTH_MSG.get(301), null_response)
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(301, BASEAUTH_MSG.get(301), nullResponse)
+            context = dict_data_return(301, BASEAUTH_MSG.get(301), null_response)
             return Response(context)
 
 

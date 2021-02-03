@@ -31,7 +31,7 @@ def register_options(options_list=None):
 
 
 class _Option(object):
-    def __init__(self, name, name_tag=None, type='str', required=False, desc=None, default=None, enum_list=None,
+    def __init__(self, name, name_tag=None, option_type='str', required=False, desc=None, default=None, enum_list=None,
                  option_length=None, extra_data=None):
         if enum_list is None:
             enum_list = []
@@ -46,7 +46,7 @@ class _Option(object):
         else:
             self._desc = desc  # 参数提示信息,详细描述参数作用
 
-        self._type = type  # 参数类型,参考option_type_list
+        self._type = option_type  # 参数类型,参考option_type_list
         self._required = required  # 是否必填
         self._default = default  # 参数默认值
         self._enum_list = enum_list  # enum类型的待选列表,如果type为enum类型则此参数必须填写
@@ -88,21 +88,23 @@ class _Option(object):
 class OptionStr(_Option):
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
                  option_length=None):
-        super().__init__(type='str', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
+        super().__init__(option_type='str', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
                          option_length=option_length)
 
 
 class OptionIntger(_Option):
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
                  option_length=6):
-        super().__init__(type='integer', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
+        super().__init__(option_type='integer', name=name, name_tag=name_tag, desc=desc, required=required,
+                         default=default,
                          option_length=option_length)
 
 
 class OptionBool(_Option):
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
                  option_length=4):
-        super().__init__(type='bool', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
+        super().__init__(option_type='bool', name=name, name_tag=name_tag, desc=desc, required=required,
+                         default=default,
                          option_length=option_length)
 
 
@@ -111,12 +113,13 @@ class OptionEnum(_Option):
                  enum_list=None):
         if enum_list is None:
             enum_list = []
-        super().__init__(type='enum', name=name, name_tag=name_tag, required=required, desc=desc, default=default,
+        super().__init__(option_type='enum', name=name, name_tag=name_tag, required=required, desc=desc,
+                         default=default,
                          enum_list=enum_list,
                          option_length=option_length, extra_data=None)
-        self.isValid()
+        self.is_valid()
 
-    def isValid(self):
+    def is_valid(self):
         for oneEnum in self._enum_list:
             if oneEnum.get("name") is None:
                 logger.exception(f"参数 {self._name} 格式不符合要求,正确格式应为字典,其中包含name及value字段")
@@ -124,7 +127,7 @@ class OptionEnum(_Option):
 
 class OptionIPAddressRange(_Option):
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None):
-        super().__init__(type='address_range', name=name, name_tag=name_tag, desc=desc, required=required,
+        super().__init__(option_type='address_range', name=name, name_tag=name_tag, desc=desc, required=required,
                          default=default)
 
 
@@ -132,7 +135,7 @@ class OptionFileEnum(_Option):
     def __init__(self, required=True, ext=None):
         if ext is None:
             ext = []
-        super().__init__(type='enum',
+        super().__init__(option_type='enum',
                          name=FILE_OPTION.get('name'),
                          name_tag=FILE_OPTION.get('name_tag'),
                          desc=FILE_OPTION.get('desc'),
@@ -146,7 +149,7 @@ class OptionCredentialEnum(_Option):
     def __init__(self, required=True, password_type=None):
         if password_type is None:
             password_type = []
-        super().__init__(type='enum',
+        super().__init__(option_type='enum',
                          name=CREDENTIAL_OPTION.get('name'),
                          name_tag=CREDENTIAL_OPTION.get('name_tag'),
                          desc=CREDENTIAL_OPTION.get('desc'),
@@ -158,7 +161,7 @@ class OptionCredentialEnum(_Option):
 
 class OptionHander(_Option):
     def __init__(self, required=True):
-        super().__init__(type='enum',
+        super().__init__(option_type='enum',
                          name=HANDLER_OPTION.get('name'),
                          name_tag=HANDLER_OPTION.get('name_tag'),
                          desc=HANDLER_OPTION.get('desc'),
@@ -169,7 +172,7 @@ class OptionHander(_Option):
 
 class OptionCacheHanderConfig(_Option):
     def __init__(self):
-        super().__init__(type='bool',
+        super().__init__(option_type='bool',
                          name=CACHE_HANDLER_OPTION.get('name'),
                          name_tag=CACHE_HANDLER_OPTION.get('name_tag'),
                          desc=CACHE_HANDLER_OPTION.get('desc'),

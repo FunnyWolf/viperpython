@@ -51,20 +51,6 @@ class PostModule(PostMSFRawModule):
 
         return True, None
 
-    @staticmethod
-    def dqtoi(dq):
-        "Return an integer value given an IP address as dotted-quad string."
-        octets = dq.split(".")
-        if len(octets) != 4:
-            raise ValueError
-        for octet in octets:
-            if int(octet) > 255:
-                raise ValueError
-        return (int(octets[0]) << 24) + \
-               (int(octets[1]) << 16) + \
-               (int(octets[2]) << 8) + \
-               (int(octets[3]))
-
     def callback(self, status, message, data):
         if status is not True:
             self.log_error("模块执行失败,失败原因:{}".format(message))

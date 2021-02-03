@@ -28,7 +28,7 @@ class PostModuleConfig(object):
     def list(loadpath=None):
         all_modules_config = Xcache.list_moduleconfigs()
         if all_modules_config is None:
-            PostModuleConfig._load_all_modules_config()
+            PostModuleConfig.load_all_modules_config()
             all_modules_config = Xcache.list_moduleconfigs()
 
         # 删除内部模块
@@ -54,7 +54,7 @@ class PostModuleConfig(object):
 
     @staticmethod
     def update():
-        PostModuleConfig._load_all_modules_config()
+        PostModuleConfig.load_all_modules_config()
         all_modules_config = Xcache.list_moduleconfigs()
         for one in all_modules_config:
             one['OPTIONS'] = []
@@ -62,9 +62,9 @@ class PostModuleConfig(object):
         return context
 
     @staticmethod
-    def _load_all_modules_config():
-        def _sort_by_moduletype(one_module_config=None):
-            return TAG2CH.get_moduletype_order(one_module_config.get('MODULETYPE'))
+    def load_all_modules_config():
+        def _sort_by_moduletype(module_config=None):
+            return TAG2CH.get_moduletype_order(module_config.get('MODULETYPE'))
 
         all_modules_config = []
         # viper 内置模块
@@ -75,39 +75,39 @@ class PostModuleConfig(object):
             if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
                 continue
 
-            classIntent = importlib.import_module('MODULES.{}'.format(modulename))
+            class_intent = importlib.import_module('MODULES.{}'.format(modulename))
 
             try:
-                if isinstance(classIntent.PostModule.ATTCK, str):
-                    attck = [classIntent.PostModule.ATTCK]
-                elif isinstance(classIntent.PostModule.ATTCK, list):
-                    attck = [classIntent.PostModule.ATTCK]
+                if isinstance(class_intent.PostModule.ATTCK, str):
+                    attck = [class_intent.PostModule.ATTCK]
+                elif isinstance(class_intent.PostModule.ATTCK, list):
+                    attck = [class_intent.PostModule.ATTCK]
                 else:
                     attck = []
 
                 one_module_config = {
 
-                    "BROKER": classIntent.PostModule.MODULE_BROKER,  # 处理器
+                    "BROKER": class_intent.PostModule.MODULE_BROKER,  # 处理器
 
-                    "NAME": classIntent.PostModule.NAME,
-                    "DESC": classIntent.PostModule.DESC,
-                    "WARN": classIntent.PostModule.WARN,
-                    "AUTHOR": classIntent.PostModule.AUTHOR,
-                    "REFERENCES": classIntent.PostModule.REFERENCES,
+                    "NAME": class_intent.PostModule.NAME,
+                    "DESC": class_intent.PostModule.DESC,
+                    "WARN": class_intent.PostModule.WARN,
+                    "AUTHOR": class_intent.PostModule.AUTHOR,
+                    "REFERENCES": class_intent.PostModule.REFERENCES,
 
-                    "MODULETYPE": classIntent.PostModule.MODULETYPE,
+                    "MODULETYPE": class_intent.PostModule.MODULETYPE,
 
-                    "OPTIONS": classIntent.PostModule.OPTIONS,
+                    "OPTIONS": class_intent.PostModule.OPTIONS,
                     "loadpath": 'MODULES.{}'.format(modulename),
 
                     # post类配置
-                    "REQUIRE_SESSION": classIntent.PostModule.REQUIRE_SESSION,
-                    "PLATFORM": classIntent.PostModule.PLATFORM,
-                    "PERMISSIONS": classIntent.PostModule.PERMISSIONS,
+                    "REQUIRE_SESSION": class_intent.PostModule.REQUIRE_SESSION,
+                    "PLATFORM": class_intent.PostModule.PLATFORM,
+                    "PERMISSIONS": class_intent.PostModule.PERMISSIONS,
                     "ATTCK": attck,
 
                     # bot类配置
-                    "SEARCH": classIntent.PostModule.SEARCH,
+                    "SEARCH": class_intent.PostModule.SEARCH,
 
                 }
                 all_modules_config.append(one_module_config)
@@ -125,39 +125,39 @@ class PostModuleConfig(object):
             if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
                 continue
 
-            classIntent = importlib.import_module('Docker.module.{}'.format(modulename))
-            importlib.reload(classIntent)
+            class_intent = importlib.import_module('Docker.module.{}'.format(modulename))
+            importlib.reload(class_intent)
             try:
-                if isinstance(classIntent.PostModule.ATTCK, str):
-                    attck = [classIntent.PostModule.ATTCK]
-                elif isinstance(classIntent.PostModule.ATTCK, list):
-                    attck = [classIntent.PostModule.ATTCK]
+                if isinstance(class_intent.PostModule.ATTCK, str):
+                    attck = [class_intent.PostModule.ATTCK]
+                elif isinstance(class_intent.PostModule.ATTCK, list):
+                    attck = [class_intent.PostModule.ATTCK]
                 else:
                     attck = []
 
                 one_module_config = {
 
-                    "BROKER": classIntent.PostModule.MODULE_BROKER,  # 处理器
+                    "BROKER": class_intent.PostModule.MODULE_BROKER,  # 处理器
 
-                    "NAME": classIntent.PostModule.NAME,
-                    "DESC": classIntent.PostModule.DESC,
-                    "WARN": classIntent.PostModule.WARN,
-                    "AUTHOR": classIntent.PostModule.AUTHOR,
-                    "REFERENCES": classIntent.PostModule.REFERENCES,
+                    "NAME": class_intent.PostModule.NAME,
+                    "DESC": class_intent.PostModule.DESC,
+                    "WARN": class_intent.PostModule.WARN,
+                    "AUTHOR": class_intent.PostModule.AUTHOR,
+                    "REFERENCES": class_intent.PostModule.REFERENCES,
 
-                    "MODULETYPE": classIntent.PostModule.MODULETYPE,
+                    "MODULETYPE": class_intent.PostModule.MODULETYPE,
 
-                    "OPTIONS": classIntent.PostModule.OPTIONS,
+                    "OPTIONS": class_intent.PostModule.OPTIONS,
                     "loadpath": 'Docker.module.{}'.format(modulename),
 
                     # post类配置
-                    "REQUIRE_SESSION": classIntent.PostModule.REQUIRE_SESSION,
-                    "PLATFORM": classIntent.PostModule.PLATFORM,
-                    "PERMISSIONS": classIntent.PostModule.PERMISSIONS,
+                    "REQUIRE_SESSION": class_intent.PostModule.REQUIRE_SESSION,
+                    "PLATFORM": class_intent.PostModule.PLATFORM,
+                    "PERMISSIONS": class_intent.PostModule.PERMISSIONS,
                     "ATTCK": attck,
 
                     # bot类配置
-                    "SEARCH": classIntent.PostModule.SEARCH,
+                    "SEARCH": class_intent.PostModule.SEARCH,
 
                 }
                 all_modules_config.append(one_module_config)
@@ -261,9 +261,9 @@ class PostModuleConfig(object):
                     #     "mtime": 1552273961
                     # },
                     name = file.get("name")
-                    size = FileSession.getSizeInNiceString(file.get('size'))
+                    size = FileSession.get_size_in_nice_string(file.get('size'))
                     mtime = file.get("mtime")
-                    styleTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime))
+                    style_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime))
                     show = False  # 是否满足文件后缀要求
                     if isinstance(file_extension_list, list):
                         for ext in file_extension_list:
@@ -272,7 +272,7 @@ class PostModuleConfig(object):
                     else:
                         show = True
                     if show:
-                        name = "文件: {}   大小: {}   修改时间: {}".format(name, size, styleTime)
+                        name = "文件: {}   大小: {}   修改时间: {}".format(name, size, style_time)
                         value = json.dumps(file)
                         tmp_enum_list.append({'name': name, 'value': value})
                 option['enum_list'] = tmp_enum_list
@@ -437,6 +437,6 @@ class PostModuleResultHistory(object):
 
     @staticmethod
     def destory():
-        flag = Xcache.del_module_result_history()
+        Xcache.del_module_result_history()
         context = dict_data_return(204, PostModuleResultHistory_MSG.get(204), {})
         return context

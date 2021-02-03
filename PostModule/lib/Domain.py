@@ -14,7 +14,8 @@ class Domain(object):
     def __init__(self, sessionid):
         self._sessionid = sessionid
 
-    def _deal_powershell_json_result(self, result):
+    @staticmethod
+    def _deal_powershell_json_result(result):
         result_without_error = re.sub('ERROR:.+\s', '', result)
         result_without_empty = result_without_error.replace('\r', '').replace('\n', '').replace('\t', '')
         try:
@@ -26,7 +27,7 @@ class Domain(object):
             return None
 
     def get_domain_controller(self):
-        type = 'post'
+        module_type = 'post'
         mname = 'windows/manage/powershell/exec_powershell_function_mem'
         opts = {
             'SESSION': self._sessionid,
@@ -34,11 +35,11 @@ class Domain(object):
             'EXECUTE_STRING': 'Get-DomainController',
             'CHECK_FUNCTION': False,
         }
-        result = MsfModule.run_with_output(type, mname, opts)
+        result = MsfModule.run_with_output(module_type, mname, opts)
         return self._deal_powershell_json_result(result)
 
     def get_group_member(self, group):
-        type = 'post'
+        module_type = 'post'
         mname = 'windows/manage/powershell/exec_powershell_function_mem'
         opts = {
             'SESSION': self._sessionid,
@@ -46,7 +47,7 @@ class Domain(object):
             'EXECUTE_STRING': ' \'{}\' | Get-DomainGroupMember'.format(group),
             'CHECK_FUNCTION': False,
         }
-        result = MsfModule.run_with_output(type, mname, opts)
+        result = MsfModule.run_with_output(module_type, mname, opts)
         try:
             result_json = json.loads(result.replace('\r', '').replace('\n', '').replace('\t', ''))
             return result_json
@@ -55,7 +56,7 @@ class Domain(object):
             return None
 
     def find_local_admin_access(self):
-        type = 'post'
+        module_type = 'post'
         mname = 'windows/manage/powershell/exec_powershell_function_mem'
         opts = {
             'SESSION': self._sessionid,
@@ -63,7 +64,7 @@ class Domain(object):
             'EXECUTE_STRING': 'Find-LocalAdminAccess -Delay 1',
             'CHECK_FUNCTION': False,
         }
-        result = MsfModule.run_with_output(type, mname, opts)
+        result = MsfModule.run_with_output(module_type, mname, opts)
         try:
             result_json = json.loads(result.replace('\r', '').replace('\n', '').replace('\t', ''))
             return result_json
@@ -72,7 +73,7 @@ class Domain(object):
             return None
 
     def get_domain_computers(self):
-        type = 'post'
+        module_type = 'post'
         mname = 'windows/manage/powershell/exec_powershell_function_mem'
         opts = {
             'SESSION': self._sessionid,
@@ -80,7 +81,7 @@ class Domain(object):
             'EXECUTE_STRING': 'Get-DomainComputer |select-object name,distinguishedname,operatingsystem,dnshostname | ConvertTo-Json -maxDepth 2',
             'CHECK_FUNCTION': False,
         }
-        result = MsfModule.run_with_output(type, mname, opts)
+        result = MsfModule.run_with_output(module_type, mname, opts)
         computers = self._deal_powershell_json_result(result)
         ipaddresses = self.get_computers_ipaddress()
         if computers is None:
@@ -99,7 +100,7 @@ class Domain(object):
 
     def get_computers_ipaddress(self):
 
-        type = 'post'
+        module_type = 'post'
         mname = 'windows/manage/powershell/exec_powershell_function_mem'
         opts = {
             'SESSION': self._sessionid,
@@ -107,11 +108,11 @@ class Domain(object):
             'EXECUTE_STRING': 'Get-DomainComputer | select-object dnshostname | Resolve-IPAddress | ConvertTo-JSON',
             'CHECK_FUNCTION': False,
         }
-        result = MsfModule.run_with_output(type, mname, opts)
+        result = MsfModule.run_with_output(module_type, mname, opts)
         return self._deal_powershell_json_result(result)
 
     def get_domain_users(self):
-        type = 'post'
+        module_type = 'post'
         mname = 'windows/manage/powershell/exec_powershell_function_mem'
         opts = {
             'SESSION': self._sessionid,
@@ -119,5 +120,5 @@ class Domain(object):
             'EXECUTE_STRING': 'Get-DomainUser',
             'CHECK_FUNCTION': False,
         }
-        result = MsfModule.run_with_output(type, mname, opts)
+        result = MsfModule.run_with_output(module_type, mname, opts)
         return self._deal_powershell_json_result(result)

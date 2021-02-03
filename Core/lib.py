@@ -67,12 +67,13 @@ class Geoip(object):
         result = Xcache.get_city_reader_cache(ip)
         if result is not None:
             return result
-        City_mmdb_DIR = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'GeoLite2-City.mmdb')
-        city_reader = geoip2.database.Reader(City_mmdb_DIR)
+        city_mmdb_dir = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'GeoLite2-City.mmdb')
+        city_reader = geoip2.database.Reader(city_mmdb_dir)
 
         try:
             response = city_reader.city(ip)
         except Exception as E:
+            logger.exception(E)
             Xcache.set_city_reader_cache(ip, "局域网")
             return "局域网"
         country = ""
@@ -80,14 +81,14 @@ class Geoip(object):
             country = response.country.name
             country = response.country.names['zh-CN']
         except Exception as E:
-            pass
+            logger.exception(E)
         if country is None:
             country = ""
         subdivision = ""
         try:
             subdivision = response.subdivisions.most_specific.name
             subdivision = response.subdivisions.most_specific.names['zh-CN']
-        except Exception as E:
+        except Exception as _:
             pass
         if subdivision is None:
             subdivision = ""
@@ -95,7 +96,7 @@ class Geoip(object):
         try:
             city = response.city.name
             city = response.city.names['zh-CN']
-        except Exception as E:
+        except Exception as _:
             pass
         if city is None:
             city = ""
@@ -110,12 +111,12 @@ class Geoip(object):
         if asn_reader is not None:
             return asn_reader
 
-        ASN_mmdb_DIR = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'GeoLite2-ASN.mmdb')
-        asn_reader = geoip2.database.Reader(ASN_mmdb_DIR)
+        asn_mmdb_dir = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'GeoLite2-ASN.mmdb')
+        asn_reader = geoip2.database.Reader(asn_mmdb_dir)
 
         try:
             response = asn_reader.asn(ip)
-        except Exception as E:
+        except Exception as _:
             Xcache.set_asn_reader_cache(ip, "")
             return ""
         Xcache.set_asn_reader_cache(ip, response.autonomous_system_organization)
@@ -156,7 +157,7 @@ class Notices(object):
     @staticmethod
     def send_info(content):
         """通知消息"""
-        return Notices.send(content, 1)
+        return Notices.send(content)
 
     @staticmethod
     def send_warning(content):
@@ -279,7 +280,7 @@ class Xcache(object):
         for key in keys:
             try:
                 req = cache.get(key)
-            except Exception as E:
+            except Exception as _:
                 cache.delete(key)
                 continue
             if req.get("job_id") is None:
@@ -290,8 +291,8 @@ class Xcache(object):
         keys = cache.keys(re_key)
         for key in keys:
             try:
-                req = cache.delete(key)
-            except Exception as E:
+                cache.delete(key)
+            except Exception as _:
                 continue
         return True
 
@@ -356,9 +357,9 @@ class Xcache(object):
         return True
 
     @staticmethod
-    def get_module_task_by_uuid(uuid):
+    def get_module_task_by_uuid(task_uuid):
         for i in range(2):
-            key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, uuid)
+            key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, task_uuid)
             req = cache.get(key)
             if req is not None:
                 return req
@@ -367,8 +368,8 @@ class Xcache(object):
             time.sleep(1)
 
     @staticmethod
-    def get_module_task_by_uuid_nowait(uuid):
-        key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, uuid)
+    def get_module_task_by_uuid_nowait(task_uuid):
+        key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, task_uuid)
         req = cache.get(key)
         return req
 
@@ -395,8 +396,8 @@ class Xcache(object):
         return True
 
     @staticmethod
-    def del_module_task_by_uuid(uuid):
-        key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, uuid)
+    def del_module_task_by_uuid(task_uuid):
+        key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, task_uuid)
         cache.delete(key)
 
     # XCACHE_BOT_MODULES_WAIT_LIST
@@ -434,7 +435,6 @@ class Xcache(object):
     def del_bot_wait_by_group_uuid(group_uuid):
         re_key = "{}_*".format(Xcache.XCACHE_BOT_MODULES_WAIT_LIST)
         keys = cache.keys(re_key)
-        reqs = []
         for key in keys:
             req = cache.get(key)
             if req.get("group_uuid") == group_uuid:
@@ -606,7 +606,6 @@ class Xcache(object):
             handler_list = []
         return handler_list
 
-
     @staticmethod
     def add_virtual_handler(onehandler):
         handler_list = cache.get(Xcache.XCACHE_HADLER_VIRTUAL_LIST)
@@ -712,7 +711,7 @@ class Xcache(object):
             cache.set(Xcache.XCACHE_MSFCONSOLE_HISTORY_CURSOR, 1, None)  # 重置光标
         else:
             cache.set(Xcache.XCACHE_MSFCONSOLE_HISTORY_CURSOR, cursor + 1, None)  # 重置光标
-        cursor = cursor % len(historys)
+        cursor %= len(historys)
         return historys[cursor]
 
     @staticmethod
@@ -726,7 +725,7 @@ class Xcache(object):
             return None
         else:
             cache.set(Xcache.XCACHE_MSFCONSOLE_HISTORY_CURSOR, cursor - 1, None)  # 重置光标
-        cursor = cursor % len(historys)
+        cursor %= len(historys)
         return historys[cursor]
 
     @staticmethod

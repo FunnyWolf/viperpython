@@ -43,9 +43,9 @@ class JobView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             if job_id is not None:
                 job_id = int(job_id)
 
-            uuid = request.query_params.get('uuid', None)
+            task_uuid = request.query_params.get('uuid', None)
             broker = request.query_params.get('broker', None)
-            context = Job.destroy_adv_job(uuid=uuid, job_id=job_id, broker=broker)
+            context = Job.destroy_adv_job(task_uuid=task_uuid, job_id=job_id, broker=broker)
         except Exception as E:
             logger.error(E)
             context = dict_data_return(500, CODE_MSG.get(500), {})
@@ -90,8 +90,8 @@ class SessionIOView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         try:
             hid = int(request.data.get('hid', None))
             sessionid = int(request.data.get('sessionid', None))
-            input = str(request.data.get('input', ""))
-            context = SessionIO.create(hid, sessionid, input)
+            user_input = str(request.data.get('input', ""))
+            context = SessionIO.create(hid, sessionid, user_input)
         except Exception as E:
             logger.error(E)
             context = dict_data_return(500, CODE_MSG.get(500), {})
@@ -127,7 +127,6 @@ class SessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Session.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-
             context = dict_data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
@@ -161,6 +160,7 @@ class RouteView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             sessionid = int(request.query_params.get('sessionid', None))
             context = Route.list(sessionid=sessionid)
         except Exception as E:
+            logger.exception(E)
             context = dict_data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
@@ -210,7 +210,7 @@ class SocksView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         try:
             socks_type = str(request.query_params.get('type', None))
             jobid = str(request.query_params.get('ID', None))
-            context = Socks.destory(type=socks_type, jobid=jobid)
+            context = Socks.destory(socks_type=socks_type, jobid=jobid)
         except Exception as E:
             logger.error(E)
             context = dict_data_return(500, CODE_MSG.get(500), {})
@@ -233,15 +233,15 @@ class PortFwdView(ModelViewSet, UpdateAPIView, DestroyAPIView):
     def create(self, request, **kwargs):
         try:
             lport = int(request.data.get('lport', None))
-        except Exception as E:
+        except Exception as _:
             lport = None
         try:
             rport = int(request.data.get('rport', None))
-        except Exception as E:
+        except Exception as _:
             rport = None
         try:
             sessionid = int(request.data.get('sessionid', None))
-        except Exception as E:
+        except Exception as _:
             sessionid = None
 
         try:
@@ -259,15 +259,15 @@ class PortFwdView(ModelViewSet, UpdateAPIView, DestroyAPIView):
     def destroy(self, request, pk=None, **kwargs):
         try:
             rport = int(request.query_params.get('rport', None))
-        except Exception as E:
+        except Exception as _:
             rport = None
         try:
             lport = int(request.query_params.get('lport', None))
-        except Exception as E:
+        except Exception as _:
             lport = None
         try:
             sessionid = int(request.query_params.get('sessionid', None))
-        except Exception as E:
+        except Exception as _:
             sessionid = None
         try:
             lhost = request.query_params.get('lhost', None)
@@ -476,7 +476,7 @@ class LazyLoaderView(ModelViewSet, UpdateAPIView, DestroyAPIView):
 
         sourcecode = request.query_params.get('sourcecode', None)
         if sourcecode is not None:
-            response = LazyLoader.sourceCode()
+            response = LazyLoader.source_code()
             return response
         else:
             context = LazyLoader.list()
@@ -484,10 +484,10 @@ class LazyLoaderView(ModelViewSet, UpdateAPIView, DestroyAPIView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            uuid = request.data.get('uuid', None)
+            loader_uuid = request.data.get('uuid', None)
             field = request.data.get('field', None)
             data = request.data.get('data', None)
-            context = LazyLoader.update(uuid, field, data)
+            context = LazyLoader.update(loader_uuid, field, data)
             return Response(context)
         except Exception as E:
             logger.error(E)
@@ -496,8 +496,8 @@ class LazyLoaderView(ModelViewSet, UpdateAPIView, DestroyAPIView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            uuid = request.query_params.get('uuid', None)
-            context = LazyLoader.destory(uuid)
+            loader_uuid = request.query_params.get('uuid', None)
+            context = LazyLoader.destory(loader_uuid)
         except Exception as E:
             logger.error(E)
             context = dict_data_return(500, CODE_MSG.get(500), {})
@@ -510,43 +510,7 @@ class LazyLoaderInterfaceView(ModelViewSet, UpdateAPIView, DestroyAPIView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         req = request.query_params.get('c', None)
-        uuid = request.query_params.get('u', None)
+        loader_uuid = request.query_params.get('u', None)
         ipaddress = request.META.get("HTTP_X_REAL_IP")
-        context = LazyLoader.list_interface(req, uuid, ipaddress)
+        context = LazyLoader.list_interface(req, loader_uuid, ipaddress)
         return HttpResponse(context)
-
-
-class TestView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    permission_classes = (AllowAny,)  # 无需认证
-
-    def list(self, request, **kwargs):
-        """查询数据库中的信息"""
-        req = request.query_params.get('c', None)
-        uuid = request.query_params.get('u', None)
-        ipaddress = request.META.get("HTTP_X_REAL_IP")
-        context = LazyLoader.list_interface(req, uuid, ipaddress)
-        return HttpResponse(context)
-
-    def create(self, request, **kwargs):
-        a = request.data.get('a', None)
-        b = request.data.get('b', None)
-        context = list_data_return(200, "create", [{}])
-        return Response(context)
-
-    def retrieve(self, request, pk=None, **kwargs):
-        context = list_data_return(200, "retrieve", [{}])
-        return Response(context)
-
-    def update(self, request, pk=None, **kwargs):
-        """更新后台host信息到数据库"""
-
-        context = list_data_return(200, 'update', [{}])
-        return Response(context)
-
-    def partial_update(self, request, pk=None, **kwargs):
-        context = list_data_return(200, "partial_update", [{}])
-        return Response(context)
-
-    def destroy(self, request, pk=None, **kwargs):
-        context = list_data_return(200, "destroy", [{}])
-        return Response(context)

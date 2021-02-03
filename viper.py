@@ -23,65 +23,65 @@ def check_services():
     all_start = True
     print("-------------- 检查服务状态 ----------------")
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.settimeout(1)
+    redis_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    redis_client.settimeout(1)
     try:
-        client.connect((LOCALHOST, redis_port))
+        redis_client.connect((LOCALHOST, redis_port))
         print("[+] redis运行中")
-        client.close()
-    except Exception as err:
+        redis_client.close()
+    except Exception as _:
         all_start = False
         print("[x] redis未启动")
     finally:
-        client.close()
+        redis_client.close()
 
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.settimeout(1)
+    nginx_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    nginx_client.settimeout(1)
     try:
-        client.connect((LOCALHOST, nginx_port))
+        nginx_client.connect((LOCALHOST, nginx_port))
         print("[+] nginx运行中")
-        client.close()
-    except Exception as err:
+        nginx_client.close()
+    except Exception as _:
         all_start = False
         print("[x] nginx未启动")
     finally:
-        client.close()
+        nginx_client.close()
 
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.settimeout(1)
+    msf_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    msf_client.settimeout(1)
     try:
-        client.connect((LOCALHOST, msgrpc_port))
+        msf_client.connect((LOCALHOST, msgrpc_port))
         print("[+] msfrpcd运行中")
-        client.close()
-    except Exception as err:
+        msf_client.close()
+    except Exception as _:
         all_start = False
         print("[x] msfrpcd未启动")
     finally:
-        client.close()
+        msf_client.close()
 
-    serverAddr = '/root/viper/uwsgi.sock'
-    client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    uwsgi_addr = '/root/viper/uwsgi.sock'
+    viper_client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        client.connect(serverAddr)
+        viper_client.connect(uwsgi_addr)
         print("[+] VIPER主服务运行中")
-        client.close()
-    except Exception as err:
+        viper_client.close()
+    except Exception as _:
         all_start = False
         print("[x] VIPER主服务未启动")
     finally:
-        client.close()
+        viper_client.close()
 
-    serverAddr = '/root/viper/daphne.sock'
-    client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    daphne_addr = '/root/viper/daphne.sock'
+    daphne_client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        client.connect(serverAddr)
+        daphne_client.connect(daphne_addr)
         print("[+] daphne服务运行中")
-        client.close()
-    except Exception as err:
+        daphne_client.close()
+    except Exception as _:
         all_start = False
         print("[x] daphne主服务未启动")
     finally:
-        client.close()
+        daphne_client.close()
     return all_start
 
 
@@ -99,9 +99,7 @@ def init_copy_file():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        add_help=True,
-        description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
+    parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
     parser.add_argument('action', nargs='?', metavar='start/stop/check', help="启动/停止/检测 VIPER服务", type=str)
     parser.add_argument('-pw', metavar='newpassword', help="修改root密码")
 
@@ -141,7 +139,6 @@ if __name__ == '__main__':
 
     if action is not None:
         if action.lower() == "start":
-
 
             # 启动服务
             # redis
@@ -255,13 +252,13 @@ if __name__ == '__main__':
 
             try:
                 print("[*] 关闭msfrpcd服务")
-                result = subprocess.run(
+                subprocess.run(
                     ["/sbin/start-stop-daemon", "--quiet", "--stop", "--retry", "QUIT/5", "--pidfile",
                      "/root/puma.pid"],
                     stdout=devNull,
                     stderr=devNull
                 )
-                result = subprocess.Popen(
+                subprocess.Popen(
                     "kill -9 $(ps aux | grep puma | tr -s ' '| cut -d ' ' -f 2)", shell=True,
                     stdout=devNull,
                     stderr=devNull
@@ -276,17 +273,17 @@ if __name__ == '__main__':
 
             try:
                 print("[*] 关闭VIPER主服务")
-                result = subprocess.run(
+                subprocess.run(
                     ["uwsgi", "--stop", "/root/viper/uwsgi.pid"],
                     stdout=devNull,
                     stderr=devNull
                 )
-                result = subprocess.Popen(
+                subprocess.Popen(
                     "kill -9 $(ps aux | grep uwsgi | tr -s ' '| cut -d ' ' -f 2)", shell=True,
                     stdout=devNull,
                     stderr=devNull
                 )
-                result = subprocess.Popen(
+                subprocess.Popen(
                     "rm /root/viper/uwsgi.pid", shell=True,
                     stdout=devNull,
                     stderr=devNull

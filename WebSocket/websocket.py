@@ -15,7 +15,7 @@ class HeartBeat(object):
 
     @staticmethod
     def first_heartbeat_result():
-        hosts_sorted = HostAndSession.list_hostAndSession()
+        hosts_sorted = HostAndSession.list_hostandsession()
 
         result_history = PostModuleResultHistory.list_all()
         for one in result_history:
@@ -55,7 +55,7 @@ class HeartBeat(object):
         result = {}
 
         # hosts_sorted
-        hosts_sorted = HostAndSession.list_hostAndSession()
+        hosts_sorted = HostAndSession.list_hostandsession()
         cache_hosts_sorted = Xcache.get_heartbeat_cache_hosts_sorted()
         if cache_hosts_sorted == hosts_sorted:
             result["hosts_sorted_update"] = False
