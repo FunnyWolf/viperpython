@@ -210,6 +210,9 @@ class Notices(object):
         send_result = Settings.send_dingding_message(content)
         if send_result is True:
             flag = True
+        send_result = Settings.send_serverchan_message(content)
+        if send_result is True:
+            flag = True
         return flag
 
 
@@ -247,6 +250,7 @@ class Xcache(object):
 
     XCACHE_TELEGRAM_CONFIG = "XCACHE_TELEGRAM_CONFIG"
     XCACHE_DINGDING_CONFIG = "XCACHE_DINGDING_CONFIG"
+    XCACHE_SERVERCHAN_CONFIG = "XCACHE_SERVERCHAN_CONFIG"
     XCACHE_FOFA_CONFIG = "XCACHE_FOFA_CONFIG"
 
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
@@ -760,6 +764,16 @@ class Xcache(object):
     @staticmethod
     def get_dingding_conf():
         conf = cache.get(Xcache.XCACHE_DINGDING_CONFIG)
+        return conf
+
+    @staticmethod
+    def set_serverchan_conf(conf):
+        cache.set(Xcache.XCACHE_SERVERCHAN_CONFIG, conf, None)
+        return True
+
+    @staticmethod
+    def get_serverchan_conf():
+        conf = cache.get(Xcache.XCACHE_SERVERCHAN_CONFIG)
         return conf
 
     @staticmethod

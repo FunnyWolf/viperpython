@@ -103,6 +103,10 @@ class Settings(object):
             conf = Xcache.get_dingding_conf()
             if conf is None:
                 conf = {"access_token": "", "keyword": "", "alive": False}
+        elif kind == "serverchan":
+            conf = Xcache.get_serverchan_conf()
+            if conf is None:
+                conf = {"sendkey": "", "alive": False}
         elif kind == "FOFA":
             conf = Xcache.get_fofa_conf()
             if conf is None:
@@ -179,6 +183,20 @@ class Settings(object):
 
                 context = dict_data_return(203, Setting_MSG.get(203), data)
                 return context
+        elif kind == "serverchan":
+            sendkey = setting.get("sendkey")
+            if Settings._check_serverchan_aliveable(sendkey) is not True:
+                data = {"sendkey": sendkey, "alive": False}
+                Xcache.set_serverchan_conf(data)
+                context = dict_data_return(305, Setting_MSG.get(305), data)
+                return context
+            else:
+                Notices.send_success("设置Server酱通知成功")
+                data = {"sendkey": sendkey, "alive": True}
+                Xcache.set_serverchan_conf(data)
+
+                context = dict_data_return(207, Setting_MSG.get(207), data)
+                return context
 
         elif kind == "FOFA":
             email = setting.get("email")
@@ -200,7 +218,15 @@ class Settings(object):
         elif kind == "sessionmonitor":
             flag = setting.get("flag")
             Xcache.set_sessionmonitor_conf({"flag": flag})
-            Notices.send_success(f"设置Session监控成功,当前状态: {flag}")
+
+            if flag:
+                msg = "Session监控功能已打开"
+                Notices.send_success(msg)
+                Notices.send_sms(msg)
+            else:
+                msg = "Session监控功能已关闭"
+                Notices.send_info(msg)
+                Notices.send_sms(msg)
 
             context = dict_data_return(204, Setting_MSG.get(204), {"flag": flag})
             return context
@@ -229,6 +255,12 @@ class Settings(object):
         msg = "此消息为测试消息,Viper已加入通知bot"
         result = Settings.send_dingding_message(msg,
                                                 {"access_token": access_token, "keyword": keyword, "alive": True})
+        return result
+
+    @staticmethod
+    def _check_serverchan_aliveable(sendkey=None):
+        msg = "此消息为测试消息,Viper已加入通知bot"
+        result = Settings.send_serverchan_message(msg, {"sendkey": sendkey, "alive": True})
         return result
 
     @staticmethod
@@ -311,7 +343,7 @@ class Settings(object):
         if conf.get("alive"):
             pass
         else:
-            return []
+            return False
         access_token = conf.get("access_token")
         keyword = conf.get("keyword")
         try:
@@ -321,6 +353,25 @@ class Settings(object):
                 return True
             else:
                 return False
+        except Exception as E:
+            logger.warning(E)
+            return False
+
+    @staticmethod
+    def send_serverchan_message(msg=None, conf=None):
+        if conf is None:
+            conf = Xcache.get_serverchan_conf()
+        if conf is None:
+            return False
+        if conf.get("alive"):
+            pass
+        else:
+            return False
+        sendkey = conf.get("sendkey")
+        serverchan = ServerChan(sendkey=sendkey)
+        try:
+            result = serverchan.send_text(msg)
+            return result
         except Exception as E:
             logger.warning(E)
             return False
@@ -653,6 +704,34 @@ class NetworkTopology(object):
         Xcache.set_network_topology_cache(cache_data)
         context = dict_data_return(201, CODE_MSG.get(201), {})
         return context
+
+
+class ServerChan(object):
+    def __init__(self, sendkey=None):
+        self.url = f"https://sctapi.ftqq.com/{sendkey}.send"
+        self.headers = {"Content-type": "application/x-www-form-urlencoded"}
+
+    def send_text(self, text=None):
+        if text:
+            pass
+        else:
+            return False
+
+        msg = {'text': text[:32], 'desp': text}
+        r = requests.post(self.url, headers=self.headers, data=msg, timeout=3)
+        if r.status_code == 200:
+            content = json.loads(r.content.decode('utf-8', 'ignore'))
+            if content.get('data').get('error') != "SUCCESS":
+                logger.warning("ServerChan 消息发送失败,错误码:{} 错误消息:{}".format(content.get('code'), content.get('message')))
+                Notices.send_alert(
+                    "ServerChan 消息发送失败,错误码:{} 错误消息:{}".format(content.get('code'), content.get('message')))
+                return False
+            else:
+                return True
+
+        else:
+            logger.warning("ServerChan 消息发送失败,HTTP状态码:{} 结果:{}".format(r.status_code, r.content))
+            return False
 
 
 class DingDing(object):

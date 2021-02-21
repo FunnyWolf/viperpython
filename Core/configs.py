@@ -121,11 +121,12 @@ Setting_MSG = {
     204: "设置Session监控成功",
     205: "设置回连地址成功",
     206: "设置FOFA API成功",
-
+    207: "设置Server酱通知成功",
     301: "未知配置类型",
     302: "解析配置参数失败",
     303: "输入的Telegram配置不可用,请检查token是否正确且网络可以访问telegram",
     304: "输入的DingDing配置不可用,请检查token是否正确且安全关键字是否正确",
+    305: "输入的Server酱SendKey不可用,请检查SendKey是否正确",
     306: "输入的FOFA配置不可用,请检查email及key是否正确",
 }
 

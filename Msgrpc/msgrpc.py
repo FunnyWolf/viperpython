@@ -1580,10 +1580,11 @@ class Session(object):
 
         # session监控功能
         if Xcache.get_sessionmonitor_conf().get("flag"):
-            if Xcache.get_session_count() != sessions_available_count:
-                Xcache.set_session_count(sessions_available_count)
+            if Xcache.get_session_count() < sessions_available_count:
                 Notices.send_sms(f"Session 数量变化,当前Session数量: {len(sessions)} Session的IP列表:{sessionhosts}")
                 Notices.send_info(f"Session 数量变化,当前Session数量: {len(sessions)}")
+            if Xcache.get_session_count() != sessions_available_count:
+                Xcache.set_session_count(sessions_available_count)
         return sessions
 
     @staticmethod
