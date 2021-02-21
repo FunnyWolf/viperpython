@@ -72,8 +72,7 @@ class Geoip(object):
 
         try:
             response = city_reader.city(ip)
-        except Exception as E:
-            logger.exception(E)
+        except Exception as _:
             Xcache.set_city_reader_cache(ip, "局域网")
             return "局域网"
         country = ""

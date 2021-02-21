@@ -81,7 +81,7 @@ class PostModule(PostMSFPythonWithParamsModule):
         except Exception as E:
             return False, "输入的端口列表有误,请重新输入"
         # 检查timeout
-        if timeout <= 0 or timeout > 600:
+        if timeout <= 0 or timeout > 3600:
             return False, "输入的模块超时时间有误(最大值600),请重新输入"
         if connect_time_out <= 0 or connect_time_out > 3000:
             return False, "输入的连接超时时间有误(最大值3000),请重新输入"
