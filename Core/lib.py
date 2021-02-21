@@ -9,6 +9,7 @@ import os
 import socket
 import time
 import uuid
+from threading import Thread
 
 import geoip2.database
 import redis
@@ -202,6 +203,10 @@ class Notices(object):
 
     @staticmethod
     def send_sms(content):
+        Thread(target=Notices._send_bot_msg, args=(content,)).start()
+
+    @staticmethod
+    def _send_bot_msg(content):
         from Core.core import Settings
         flag = False
         send_result = Settings.send_telegram_message(content)
