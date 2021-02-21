@@ -1581,8 +1581,8 @@ class Session(object):
         # session监控功能
         if Xcache.get_sessionmonitor_conf().get("flag"):
             if Xcache.get_session_count() < sessions_available_count:
-                Notices.send_sms(f"Session 数量变化,当前Session数量: {len(sessions)} Session的IP列表:{sessionhosts}")
-                Notices.send_info(f"Session 数量变化,当前Session数量: {len(sessions)}")
+                Notices.send_sms(f"当前Session数量: {sessions_available_count} IP列表: {','.join(sessionhosts)}")
+                Notices.send_info(f"当前Session数量: {sessions_available_count}")
             if Xcache.get_session_count() != sessions_available_count:
                 Xcache.set_session_count(sessions_available_count)
         return sessions
@@ -3316,6 +3316,12 @@ class MainMonitor(object):
                                    trigger='interval',
                                    seconds=1, id='sub_heartbeat_thread')
 
+        # send_sms线程
+        self.MainScheduler.add_job(func=self.sub_send_sms_thread,
+                                   max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_send_sms_thread')
+
         # bot 运行测试线程
         self.MainScheduler.add_job(func=self.run_bot_wait_list, max_instances=1,
                                    trigger='interval',
@@ -3386,6 +3392,19 @@ class MainMonitor(object):
                 'message': result
             }
         )
+
+    @staticmethod
+    def sub_send_sms_thread():
+        """这个函数必须以线程的方式运行,监控msf发送的redis消息,获取job类任务推送的数据"""
+
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{VIPER_SEND_SMS_CHANNEL: Notices._send_bot_msg})
+        for message in ps.listen():
+            if message:
+                logger.warning("不应获取非空message {}".format(message))
 
     @staticmethod
     def sub_msf_module_result_thread():

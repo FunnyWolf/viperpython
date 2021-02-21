@@ -9,7 +9,6 @@ import os
 import socket
 import time
 import uuid
-from threading import Thread
 
 import geoip2.database
 import redis
@@ -17,6 +16,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from CONFIG import REDIS_URL
+from Core.configs import VIPER_SEND_SMS_CHANNEL
 
 # 单例模式引入
 logger = logging.getLogger('django')
@@ -203,11 +203,16 @@ class Notices(object):
 
     @staticmethod
     def send_sms(content):
-        Thread(target=Notices._send_bot_msg, args=(content,)).start()
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, content)
+        logger.info(f"send_sms: {result}")
 
     @staticmethod
-    def _send_bot_msg(content):
+    def _send_bot_msg(message=None):
         from Core.core import Settings
+        content = message.get('data')
         flag = False
         send_result = Settings.send_telegram_message(content)
         if len(send_result) > 0:
@@ -302,6 +307,8 @@ class Xcache(object):
                 cache.delete(key)
             except Exception as _:
                 continue
+        # 清理session_count 缓存
+        cache.set(Xcache.XCACHE_SESSION_CONT, 0, None)
         return True
 
     @staticmethod
@@ -801,7 +808,7 @@ class Xcache(object):
         conf = cache.get(Xcache.XCACHE_SESSIONMONITOR_CONFIG)
         if conf is None:
             conf = {"flag": False}
-            cache.set(Xcache.XCACHE_SESSION_CONT, conf, None)
+            cache.set(Xcache.XCACHE_SESSIONMONITOR_CONFIG, conf, None)
         return conf
 
     @staticmethod

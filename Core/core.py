@@ -717,7 +717,7 @@ class ServerChan(object):
         else:
             return False
 
-        msg = {'text': text[:32], 'desp': text}
+        msg = {'text': text, 'desp': text}
         r = requests.post(self.url, headers=self.headers, data=msg, timeout=3)
         if r.status_code == 200:
             content = json.loads(r.content.decode('utf-8', 'ignore'))
