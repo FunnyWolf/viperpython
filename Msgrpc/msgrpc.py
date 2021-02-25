@@ -1312,25 +1312,6 @@ class Handler(object):
         opts['ID'] = virtual_id
         return opts
 
-    # @staticmethod
-    # def get_license():
-    #     pub_key_path = os.path.join(settings.BASE_DIR, "STATICFILES/STATIC/rsa_public_key.pub")
-    #     if os.path.exists(LICENSEFILE):
-    #         with open(LICENSEFILE, 'r') as f:
-    #             get2user = f.read()
-    #     else:
-    #         return {"user": None, "timestamp": 0}
-    #
-    #     with open(pub_key_path, 'r') as f:
-    #         publicKey = rsa.PublicKey.load_pkcs1_openssl_pem(f.read().encode())
-    #     message = json.loads(base64.b64decode(get2user)).get("data").encode("utf-8")
-    #     signature = base64.b64decode(json.loads(base64.b64decode(get2user)).get("signature"))
-    #     try:
-    #         result = rsa.verify(message, signature, publicKey)
-    #         return json.loads(message)
-    #     except Exception as E:
-    #         return {"user": None, "timestamp": 0}
-
 
 class Session(object):
     """session信息"""

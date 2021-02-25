@@ -172,4 +172,10 @@ TEMPLATES = [
 ]
 
 ASGI_APPLICATION = 'Viper.routing.application'
-from CONFIG import DATABASES, CACHES, CHANNEL_LAYERS
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(settings.BASE_DIR, 'Docker', 'db', 'db.sqlite3'),
+    }
+}
+from CONFIG import CACHES, CHANNEL_LAYERS

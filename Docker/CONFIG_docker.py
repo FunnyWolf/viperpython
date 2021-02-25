@@ -1,7 +1,3 @@
-import os
-
-from django.conf import settings
-
 JSON_RPC_IP = '127.0.0.1'
 JSON_RPC_PORT = 60005
 JSON_RPC_URL = "http://{}:{}/api/v1/json-rpc".format(JSON_RPC_IP, JSON_RPC_PORT)
@@ -10,14 +6,6 @@ MSFDIR = "/root/.msf4/"
 DEBUG = False
 MSFLOOT = MSFDIR + "loot"
 MSFLOOTTRUE = MSFLOOT
-
-LICENSEFILE = MSFDIR + 'license'
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(settings.BASE_DIR, 'Docker', 'db', 'db.sqlite3'),
-    }
-}
 
 REDIS_URL = "unix://:foobared@/var/run/redis/redis-server.sock?db="
 

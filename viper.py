@@ -210,7 +210,7 @@ if __name__ == '__main__':
             except Exception as err:
                 print("[*] 启动VIPER主服务")
                 result = subprocess.run(
-                    ["uwsgi", "--ini", "/root/viper/uwsgi.ini", ],
+                    ["uwsgi", "--ini", "/root/viper/Docker/uwsgi.ini", ],
                     stdout=devNull,
                     stderr=devNull
                 )

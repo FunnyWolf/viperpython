@@ -22,10 +22,6 @@ from Core.configs import VIPER_SEND_SMS_CHANNEL
 logger = logging.getLogger('django')
 
 
-# def return_context(success: bool, data, showtype: int = 0, errormessage: str = ''):
-#     return {'success': success, 'data': data, 'showType': showtype, "errorMessage": errormessage}
-
-
 # 返回数据拼装函数,数据拼装应全部放在view模块中进行
 def list_data_return(code, message, data):
     if not isinstance(message, str):
