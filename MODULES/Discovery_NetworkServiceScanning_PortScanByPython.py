@@ -40,7 +40,7 @@ class PostModule(PostMSFPythonWithParamsModule):
     def check(self):
         """执行前的检查函数"""
         # session 检查
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
         self.session = Session(self._sessionid)
         if self.session.is_alive is not True:
             return False, "当前session不可用"
@@ -119,11 +119,11 @@ class PostModule(PostMSFPythonWithParamsModule):
 
                 # 存储部分
                 hid = Host.add(portservice.get('host'))
-                Host.add_port_service(hid, portservice.get('port'),
-                                      proxy={'type': 'Session',
-                                             'data': {'session_host': self.session.session_host,
-                                                      'sessionid': self._sessionid}},
-                                      banner={}, service="")
+                self.add_portservice(hid, portservice.get('port'),
+                                     proxy={'type': 'Session',
+                                            'data': {'session_host': self.session.session_host,
+                                                     'sessionid': self._sessionid}},
+                                     banner={}, service="")
         else:
             self.log_error("模块执行失败")
             self.log_error(message)

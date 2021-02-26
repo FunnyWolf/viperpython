@@ -1,23 +1,23 @@
-from rest_framework.generics import UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
-from PostLateral.postlateral import *
-from PostLateral.serializers import *
+from Lib.api import data_return
+from Lib.baseview import BaseView
+from Lib.configs import *
+from Lib.log import logger
+from PostLateral.Handle.credential import Credential
+from PostLateral.Handle.portservice import PortService
+from PostLateral.Handle.vulnerability import Vulnerability
 
 
 # Create your views here.
-class PortServiceView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = PortServiceModel.objects.all()
-    serializer_class = PortServiceSerializer
-
+class PortServiceView(BaseView):
     def list(self, request, **kwargs):
         try:
             hid = int(request.query_params.get('hid', None))
             context = PortService.list(hid=hid)
         except Exception as E:
             logger.error(E)
-            context = list_data_return(500, CODE_MSG.get(500), [])
+            context = data_return(500, CODE_MSG.get(500), [])
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -27,20 +27,17 @@ class PortServiceView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = PortService.destory(hid=hid, port=port)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class CredentialView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = CredentialModel.objects.all()  # 设置类的queryset
-    serializer_class = CredentialSerializer  # 设置类的serializer_class
-
+class CredentialView(BaseView):
     def list(self, request, **kwargs):
         try:
             context = Credential.list()
         except Exception as E:
             logger.error(E)
-            context = list_data_return(500, CODE_MSG.get(500), [])
+            context = data_return(500, CODE_MSG.get(500), [])
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -61,7 +58,7 @@ class CredentialView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Credential.create(username, password, password_type, source_module, tag)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -72,7 +69,7 @@ class CredentialView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Credential.update(cid, desc)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -81,21 +78,18 @@ class CredentialView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Credential.destory(cid=cid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class VulnerabilityView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = VulnerabilityModel.objects.all()  # 设置类的queryset
-    serializer_class = VulnerabilitySerializer  # 设置类的serializer_class
-
+class VulnerabilityView(BaseView):
     def list(self, request, **kwargs):
         try:
             hid = int(request.query_params.get('hid', -1))
             context = Vulnerability.list(hid=hid)
         except Exception as E:
             logger.error(E)
-            context = list_data_return(500, CODE_MSG.get(500), [])
+            context = data_return(500, CODE_MSG.get(500), [])
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -104,5 +98,5 @@ class VulnerabilityView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Vulnerability.destory(vid=vid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)

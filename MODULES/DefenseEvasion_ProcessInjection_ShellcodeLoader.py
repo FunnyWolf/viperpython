@@ -58,7 +58,7 @@ class PostModule(PostMSFRawModule):
 
         self.set_option(key='WAIT_OUTPUT', value=wait_ouput)
         self.set_option(key='KILL', value=self.param('KILL'))
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
         session = Session(self._sessionid)
         if session.is_alive:
             pass

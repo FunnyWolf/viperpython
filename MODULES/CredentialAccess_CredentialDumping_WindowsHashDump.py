@@ -26,7 +26,7 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
         self.session = Session(self._sessionid)
 
         if self.session.is_windows is not True:
@@ -39,9 +39,6 @@ class PostModule(PostMSFRawModule):
         if status:
             self.log_status("获取Hash列表:")
             domain = self.session.domain
-            # {'user_name': 'Administrator', 'user_id': '500', 'lanman': 'aad3b435b51404eeaad3b435b51404XX',
-            #  'ntlm': '31d6cfe0d16ae931b73c59d7e0c089XX',
-            #  'hash_string': 'Administrator:500:aad3b435b51404eeaad3b435b51404XX:31d6cfe0d16ae931b73c59d7e0c089XX:::'}
             for record in data:
                 self.log_raw(record.get("hash_string"))
                 try:
@@ -51,10 +48,7 @@ class PostModule(PostMSFRawModule):
                         continue
                     password = f"{record.get('lanman')}:{record.get('ntlm')}"
                     tag = {'domain': domain, 'type': type}
-                    Credential.add_credential(username=user, password=password,
-                                              password_type='windows', tag=tag,
-                                              source_module=self.NAME, host_ipaddress=Host.get_ipaddress(self._hid),
-                                              desc='')
+                    self.add_credential(username=user, password=password, password_type='windows', tag=tag)
                 except Exception as E:
                     self.log_except(E)
                     continue

@@ -29,7 +29,7 @@ class DiyListField(models.TextField):
         try:
             return ast.literal_eval(value)
         except Exception as E:
-            from Core.lib import logger
+            from Lib.log import logger
             logger.exception(E)
             logger.error(value)
             return []
@@ -61,7 +61,7 @@ class DiyDictField(models.TextField):
         try:
             return ast.literal_eval(value)
         except Exception as E:
-            from Core.lib import logger
+            from Lib.log import logger
             logger.exception(E)
             logger.error(value)
             return {}

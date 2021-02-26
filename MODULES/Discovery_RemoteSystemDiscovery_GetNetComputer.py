@@ -22,7 +22,7 @@ class PostModule(PostMSFPowershellFunctionModule):
         self.set_execute_string('Get-NetComputer')
 
     def check(self):
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if session.is_in_domain:

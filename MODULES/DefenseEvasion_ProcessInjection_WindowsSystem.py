@@ -34,7 +34,7 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
         session = Session(self._sessionid)
         if not session.is_windows:
             return False, "此模块只支持Windows的Meterpreter"

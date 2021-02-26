@@ -66,11 +66,11 @@ class PostModule(PostMSFRawModule):
                 # 存储部分
                 hid = Host.add(host_mac.get('host'))
                 # -1端口存储mac地址 -2端口存储网卡厂商
-                Host.add_port_service(hid, 0,
-                                      proxy={'type': 'Session',
-                                             'data': {'session_host': self.session.session_host,
-                                                      'sessionid': self._sessionid}},
-                                      banner={'mac': host_mac.get('mac')}, service="MAC")
+                self.add_portservice(hid, 0,
+                                     proxy={'type': 'Session',
+                                            'data': {'session_host': self.session.session_host,
+                                                     'sessionid': self._sessionid}},
+                                     banner={'mac': host_mac.get('mac')}, service="MAC")
 
         except Exception as E:
             self.log_error("模块执行失败,失败原因:{}".format(E))

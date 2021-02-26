@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.generics import UpdateAPIView, DestroyAPIView
@@ -5,49 +7,50 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from Core.core import *
+from Core.Handle.currentuser import CurrentUser
+from Core.Handle.host import Host
+from Core.Handle.networksearch import NetworkSearch
+from Core.Handle.networktopology import NetworkTopology
+from Core.Handle.setting import Settings
+from Lib.api import data_return
+from Lib.baseview import BaseView
+from Lib.configs import *
+from Lib.log import logger
+from Lib.notice import Notice
 
 
-# Create your views here.
-
-class NoticesView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = HostSerializer  # 设置类的serializer_class
-
+class NoticesView(BaseView):
     def list(self, request, **kwargs):
         try:
-            context = Notices.list_notices()
-            context = dict_data_return(200, CODE_MSG.get(200), context)
+            context = Notice.list_notices()
+            context = data_return(200, CODE_MSG.get(200), context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def create(self, request, pk=None, **kwargs):
         try:
             content = str(request.data.get('content', None))
             userkey = str(request.data.get('userkey', "0"))
-            context = Notices.send_userinput(content=content, userkey=userkey)
-            context = dict_data_return(200, Notice_MSG.get(200), context)
+            context = Notice.send_userinput(content=content, userkey=userkey)
+            context = data_return(200, Notice_MSG.get(200), context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            Notices.clean_notices()
-            context = dict_data_return(201, Notice_MSG.get(201), {})
+            Notice.clean_notices()
+            context = data_return(201, Notice_MSG.get(201), {})
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class HostView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = HostSerializer  # 设置类的serializer_class
-
+class HostView(BaseView):
     def list(self, request, **kwargs):
         context = Host.list()
         return Response(context)
@@ -60,7 +63,7 @@ class HostView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = Host.update(hid, tag, comment)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -77,14 +80,11 @@ class HostView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                 context = Host.destory_single(hid)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class NetworkSearchView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = HostSerializer  # 设置类的serializer_class
-
+class NetworkSearchView(BaseView):
     def list(self, request, **kwargs):
         try:
             engine = str(request.query_params.get('engine', None))
@@ -94,14 +94,11 @@ class NetworkSearchView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = NetworkSearch.list(engine=engine, querystr=querystr, page=page, size=size)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class NetworkTopologyView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = HostSerializer  # 设置类的serializer_class
-
+class NetworkTopologyView(BaseView):
     def list(self, request, **kwargs):
         context = NetworkTopology.load_cache()
         return Response(context)
@@ -114,7 +111,7 @@ class NetworkTopologyView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         except Exception as E:
             logger.error(E)
 
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
@@ -131,7 +128,7 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         # 检查是否为diypassword
         password = request.data.get('password', None)
         if password == "diypassword":
-            context = dict_data_return(302, BASEAUTH_MSG.get(302), null_response)
+            context = data_return(302, BASEAUTH_MSG.get(302), null_response)
             return Response(context)
 
         try:
@@ -149,21 +146,18 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                 null_response['currentAuthority'] = 'admin'  # 当前为单用户模式,默认为admin
                 null_response['token'] = token.key
                 # 成功登录通知
-                Notices.send_info(f"{serializer.validated_data['user']} 成功登录")
-                context = dict_data_return(201, BASEAUTH_MSG.get(201), null_response)
+                Notice.send_info(f"{serializer.validated_data['user']} 成功登录")
+                context = data_return(201, BASEAUTH_MSG.get(201), null_response)
                 return Response(context)
-            context = dict_data_return(301, BASEAUTH_MSG.get(301), null_response)
+            context = data_return(301, BASEAUTH_MSG.get(301), null_response)
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(301, BASEAUTH_MSG.get(301), null_response)
+            context = data_return(301, BASEAUTH_MSG.get(301), null_response)
             return Response(context)
 
 
-class CurrentUserView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None
-    serializer_class = HostSerializer
-
+class CurrentUserView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的host信息"""
         user = request.user
@@ -171,10 +165,7 @@ class CurrentUserView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         return Response(context)
 
 
-class SettingView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None
-    serializer_class = HostSerializer
-
+class SettingView(BaseView):
     def list(self, request, **kwargs):
         kind = str(request.query_params.get('kind', None))
         context = Settings.list(kind=kind)

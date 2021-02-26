@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from Core.views import BaseAuthView, CurrentUserView, NoticesView, SettingView, HostView
 from Core.views import NetworkTopologyView, NetworkSearchView
-from Msgrpc.msgrpc import MainMonitor
+from Lib.montior import MainMonitor
 from Msgrpc.views import LazyLoaderView, LazyLoaderInterfaceView
 from Msgrpc.views import ServiceStatusView, PayloadView, JobView, HandlerView, SessionView, SessionIOView, RouteView
 from Msgrpc.views import SocksView, TransportView, FileMsfView, FileSessionView, PortFwdView, HostFileView
@@ -34,9 +34,9 @@ router.register(r'api/v1/msgrpc/filemsf', FileMsfView, basename="FileMsfView")
 router.register(r'api/v1/msgrpc/filesession', FileSessionView, basename="FileSessionView")
 router.register(r'api/v1/msgrpc/lazyloader', LazyLoaderView, basename="LazyLoaderView")
 
-router.register(r'api/v1/postlateral/portservice', PortServiceView)
-router.register(r'api/v1/postlateral/credential', CredentialView)
-router.register(r'api/v1/postlateral/vulnerability', VulnerabilityView)
+router.register(r'api/v1/postlateral/portservice', PortServiceView, basename="PortServiceView")
+router.register(r'api/v1/postlateral/credential', CredentialView, basename="CredentialView")
+router.register(r'api/v1/postlateral/vulnerability', VulnerabilityView, basename="VulnerabilityView")
 router.register(r'api/v1/postmodule/postmoduleconfig', PostModuleConfigView, basename="PostModuleConfig")
 router.register(r'api/v1/postmodule/postmoduleactuator', PostModuleActuatorView, basename="PostModuleActuator")
 router.register(r'api/v1/postmodule/postmoduleresult', PostModuleResultView, basename="PostModuleResult")

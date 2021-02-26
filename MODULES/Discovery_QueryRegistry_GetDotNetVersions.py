@@ -26,7 +26,7 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        from PostModule.lib.Session import SessionOperation
+        from Lib.Module.Session import SessionOperation
         sessionOper = SessionOperation(self._sessionid)
         key = "HKEY_LOCAL_MACHINE\\\\Software\\\\Microsoft\\\\NET Framework Setup\\\\NDP"
         result = sessionOper.registry_enumkeys(key)

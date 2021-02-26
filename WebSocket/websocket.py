@@ -3,10 +3,11 @@
 # @Date  : 2020/3/24
 # @Desc  :
 
-from Core.core import HostAndSession, Notices
-from Core.lib import Xcache
-from Msgrpc.msgrpc import Job
-from PostModule.postmodule import PostModuleResultHistory
+from Core.Handle.hostandsession import HostAndSession
+from Lib.notice import Notice
+from Lib.xcache import Xcache
+from Msgrpc.Handle.job import Job
+from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
 
 
 class HeartBeat(object):
@@ -25,7 +26,7 @@ class HeartBeat(object):
                     break
         Xcache.set_heartbeat_cache_result_history(result_history)
 
-        notices = Notices.list_notices()
+        notices = Notice.list_notices()
 
         jobs = Job.list_jobs()
 
@@ -84,7 +85,7 @@ class HeartBeat(object):
             result["result_history"] = result_history
 
         # notices
-        notices = Notices.list_notices()
+        notices = Notice.list_notices()
         cache_notices = Xcache.get_heartbeat_cache_notices()
         if cache_notices == notices:
             result["notices_update"] = False

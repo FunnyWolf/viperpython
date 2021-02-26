@@ -1,11 +1,13 @@
 import json
 from threading import Thread
+
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.http.request import QueryDict
 
-from Core.lib import Xcache, logger
-from Msgrpc.msgrpc import Console
+from Lib.log import logger
+from Lib.xcache import Xcache
+from WebSocket.Handle.console import Console
 from WebSocket.websocket import HeartBeat
 
 

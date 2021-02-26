@@ -152,7 +152,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
-        'Core.core.BaseAuth',
+        'Core.Handle.baseauth.BaseAuth',
     )
 }
 TEMPLATES = [

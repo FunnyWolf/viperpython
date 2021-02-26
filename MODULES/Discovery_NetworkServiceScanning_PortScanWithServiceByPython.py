@@ -145,16 +145,16 @@ class PostModule(PostMSFPythonWithParamsModule):
                 self.log_good(tmpstr)
                 # 存储部分
                 hid = Host.add(portservice.get('host'))
-                Host.add_port_service(hid=hid,
-                                      port=portservice.get('port'),
-                                      proxy={
-                                          'type': 'Session',
-                                          'data':
-                                              {
-                                                  'session_host': self.session.session_host,
-                                              }
-                                      },
-                                      banner=tmpBanner, service=tmpService)
+                self.add_portservice(hid=hid,
+                                     port=portservice.get('port'),
+                                     proxy={
+                                         'type': 'Session',
+                                         'data':
+                                             {
+                                                 'session_host': self.session.session_host,
+                                             }
+                                     },
+                                     banner=tmpBanner, service=tmpService)
         else:
             self.log_error("模块执行失败")
             self.log_error(message)

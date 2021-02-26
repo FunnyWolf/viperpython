@@ -378,7 +378,7 @@ class Socks4aProxy(threading.Thread):
                 conn, addr = s.accept()
                 conn.settimeout(self._timeout)
                 data = conn.recv(self._bufsize)
-                # Got a connection, handle it with process_request()
+                # Got a connection, Handle it with process_request()
                 self._process_request(data, conn, addr)
                 self.logger.warning("Socks4a process_request finish")
             except KeyboardInterrupt as ki:

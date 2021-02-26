@@ -1,16 +1,17 @@
 # Create your views here.
-from rest_framework.generics import UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
-from PostModule.postmodule import *
-from PostModule.serializers import PostModuleResultHistorySerializer
+from Lib.api import data_return
+from Lib.baseview import BaseView
+from Lib.configs import CODE_MSG
+from Lib.log import logger
+from PostModule.Handle.postmoduleactuator import PostModuleActuator
+from PostModule.Handle.postmoduleconfig import PostModuleConfig
+from PostModule.Handle.postmoduleresult import PostModuleResult
+from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
 
 
-class PostModuleConfigView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleResultHistorySerializer  # 设置类的serializer_class
-
+class PostModuleConfigView(BaseView):
     def list(self, request, **kwargs):
         loadpath = request.query_params.get('loadpath', None)
 
@@ -22,10 +23,7 @@ class PostModuleConfigView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         return Response(context)
 
 
-class PostModuleActuatorView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleResultHistorySerializer  # 设置类的serializer_class
-
+class PostModuleActuatorView(BaseView):
     def create(self, request, **kwargs):
         moduletype = request.data.get('moduletype', None)
         if moduletype is None:  # 默认模块
@@ -40,7 +38,7 @@ class PostModuleActuatorView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                                                          custom_param=custom_param)
             except Exception as E:
                 logger.error(E)
-                context = dict_data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
         elif moduletype == "Bot":
             try:
@@ -52,17 +50,14 @@ class PostModuleActuatorView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                                                         custom_param=custom_param)
             except Exception as E:
                 logger.error(E)
-                context = dict_data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
         else:
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
             return Response(context)
 
 
-class PostModuleResultView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleResultHistorySerializer  # 设置类的serializer_class
-
+class PostModuleResultView(BaseView):
     def list(self, request, **kwargs):
         try:
             hid = int(request.query_params.get('hid', None))
@@ -70,19 +65,16 @@ class PostModuleResultView(ModelViewSet, UpdateAPIView, DestroyAPIView):
             context = PostModuleResult.list(hid=hid, loadpath=loadpath)
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
-class PostModuleResultHistoryView(ModelViewSet, UpdateAPIView, DestroyAPIView):
-    queryset = None  # 设置类的queryset
-    serializer_class = PostModuleResultHistorySerializer  # 设置类的serializer_class
-
+class PostModuleResultHistoryView(BaseView):
     def destroy(self, request, *args, **kwargs):
         try:
 
             context = PostModuleResultHistory.destory()
         except Exception as E:
             logger.error(E)
-            context = dict_data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)

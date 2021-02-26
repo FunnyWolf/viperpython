@@ -51,7 +51,7 @@ class PostModule(PostPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-        from PostModule.lib.Session import Session
+        from Lib.Module.Session import Session
 
         session = Session(self._sessionid, rightinfo=True, uacinfo=True)
         self.session = session
