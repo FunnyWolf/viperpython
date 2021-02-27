@@ -51,9 +51,15 @@ class MsfConsoleView(WebsocketConsumer):
         """接收前端用户输入"""
         message = json.loads(text_data)
         input_data = message.get("data")
+        cmd = message.get("cmd")
         # \r \t \x7f
         # ctrl+c \x03
         # ctrl+z \x1a
+        if cmd == "reset":
+            Console.reset_active_console()
+            Xcache.clean_msfconsoleinputcache()
+            Thread(target=self.send_msfrpc_read).start()
+            return
 
         cache_str = Xcache.get_msfconsoleinputcache()
         # 输入处理
@@ -61,9 +67,7 @@ class MsfConsoleView(WebsocketConsumer):
             Xcache.add_to_msfconsole_history_cache(cache_str)
             if cache_str.lower() == "exit -f":
                 cache_str = "exit"
-            elif cache_str.lower() == "viper":
-                Console.reset_active_console()
-                cache_str = ""
+
             Console.write(cache_str + "\r\n")
             Xcache.clean_msfconsoleinputcache()
             self.send_input_feedback("\r\n")
@@ -127,9 +131,11 @@ class MsfConsoleView(WebsocketConsumer):
             Console.write("\r\n")
             self.send_input_feedback("\r\n")
             Thread(target=self.send_msfrpc_read).start()
-        else:
+        elif isinstance(input_data, str):
             Xcache.add_to_msfconsoleinputcache(input_data)
             self.send_input_feedback(input_data)
+        else:
+            pass
 
     def send_input_feedback(self, data=''):
         message = {}
