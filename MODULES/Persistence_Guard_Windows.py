@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):

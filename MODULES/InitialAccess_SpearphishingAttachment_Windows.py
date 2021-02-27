@@ -3,7 +3,7 @@
 # @Date  : 2019/3/15
 # @Desc  :
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):

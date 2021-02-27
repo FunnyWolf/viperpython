@@ -7,7 +7,7 @@ import os
 
 import donut
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):

@@ -5,10 +5,10 @@
 
 import re
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
-# from Lib.Module import *
+# from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
@@ -29,7 +29,7 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        from Lib.Module.Session import Session
+
         session = Session(self._sessionid)
 
         if session.is_windows is not True:
@@ -64,12 +64,6 @@ class PostModule(PostMSFRawModule):
             return False
 
     def format_dict(self, tmpdict):
-        computerName = self.param('ComputerName')
-        if computerName is None:
-            host_ipaddress = Host.get_ipaddress(self._hid)
-        else:
-            host_ipaddress = computerName
-
         if tmpdict.get('Password') is not None:
             result_str = "用户名:{} 域:{} 密码:{}".format(tmpdict.get('Username'), tmpdict.get('Domain'),
                                                     tmpdict.get('Password'))
@@ -91,10 +85,6 @@ class PostModule(PostMSFRawModule):
                                                       tmpdict.get('SHA1'))
             self.log_good(result_str)
             tag = {'domain': tmpdict.get('Domain'), 'type': 'SHA1'}
-            # Credential.add_credential(username=tmpdict.get('Username'), password=tmpdict.get('SHA1'),
-            #                           password_type='windows', tag=tag,
-            #                           source_module=self.NAME, host_ipaddress=host_ipaddress,
-            #                           desc='')
 
     def callback(self, status, message, data):
 

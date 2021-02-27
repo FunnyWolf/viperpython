@@ -7,7 +7,7 @@
 import re
 from pathlib import PurePosixPath
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):

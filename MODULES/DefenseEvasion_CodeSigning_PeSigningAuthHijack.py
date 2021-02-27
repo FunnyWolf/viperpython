@@ -4,7 +4,7 @@
 # @Desc  :
 
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
@@ -39,7 +39,6 @@ class PostModule(PostMSFRawModule):
     def check(self):
         """执行前的检查函数"""
         action = self.param("action")
-        from Lib.Module.Session import Session
         session = Session(self._sessionid)
         if session.is_alive:
             pass

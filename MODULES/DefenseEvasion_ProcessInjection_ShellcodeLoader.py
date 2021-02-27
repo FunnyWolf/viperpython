@@ -3,7 +3,7 @@
 # @Date  : 2019/1/12
 # @Desc  :
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
@@ -58,7 +58,7 @@ class PostModule(PostMSFRawModule):
 
         self.set_option(key='WAIT_OUTPUT', value=wait_ouput)
         self.set_option(key='KILL', value=self.param('KILL'))
-        from Lib.Module.Session import Session
+
         session = Session(self._sessionid)
         if session.is_alive:
             pass

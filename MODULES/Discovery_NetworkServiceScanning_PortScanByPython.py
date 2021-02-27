@@ -7,7 +7,7 @@
 import base64
 import json
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonWithParamsModule):
@@ -40,7 +40,7 @@ class PostModule(PostMSFPythonWithParamsModule):
     def check(self):
         """执行前的检查函数"""
         # session 检查
-        from Lib.Module.Session import Session
+
         self.session = Session(self._sessionid)
         if self.session.is_alive is not True:
             return False, "当前session不可用"
@@ -118,7 +118,7 @@ class PostModule(PostMSFPythonWithParamsModule):
                 self.log_good(tmpstr)
 
                 # 存储部分
-                hid = Host.add(portservice.get('host'))
+                hid = self.add_host(portservice.get('host'))
                 self.add_portservice(hid, portservice.get('port'),
                                      proxy={'type': 'Session',
                                             'data': {'session_host': self.session.session_host,

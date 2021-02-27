@@ -4,7 +4,7 @@
 # @Desc  :
 
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
@@ -27,11 +27,10 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        from Lib.Module.Session import SessionOperation
-        sessionOper = SessionOperation(self._sessionid)
+        session = Session(self._sessionid)
         key = "HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp"
         valname = "PortNumber"
-        result = sessionOper.registry_getvalinfo(key, valname)
+        result = session.registry_getvalinfo(key, valname)
         if result.get("status"):
             self.log_good("RDP端口号注册表信息: {}".format(result.get("data")))
         else:

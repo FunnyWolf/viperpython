@@ -4,8 +4,8 @@
 # @Desc  :
 import os
 
+from Lib.ModuleAPI import *
 from MODULES_DATA.Defense_Evasion_CodeSigning_StolenMircosoftWindowsSignature import sigthief
-from PostModule.module import *
 
 
 class PostModule(PostPythonModule):

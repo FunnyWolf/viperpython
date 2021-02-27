@@ -6,7 +6,7 @@
 
 from urllib.parse import urlparse
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):

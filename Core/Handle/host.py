@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File  : host.py
+# @File  : hostinfo.py
 # @Date  : 2021/2/25
 # @Desc  :
 from django.db import transaction
@@ -39,6 +39,14 @@ class Host(object):
         except Exception as _:
             result = Host.create_host(ipaddress)
             return result
+
+    @staticmethod
+    def get_ipaddress_by_hid(hid):
+        result = Host.get_by_hid(hid)
+        if result is not None:
+            return result.get('ipaddress')
+        else:
+            return None
 
     @staticmethod
     def get_by_hid(hid=None):

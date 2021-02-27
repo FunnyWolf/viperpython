@@ -4,7 +4,7 @@
 # @Desc  :
 
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellModule):
@@ -40,7 +40,6 @@ class PostModule(PostMSFPowershellModule):
             return False, "输入的模块超时时间有误(最小值60,最大值3600),请重新输入"
         self.set_script_timeout(timeout)
 
-        from Lib.Module.Session import Session
         session = Session(self._sessionid)
         if session.is_alive:
             pass

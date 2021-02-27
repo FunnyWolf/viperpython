@@ -101,7 +101,7 @@ class OptionIntger(_Option):
 
 
 class OptionBool(_Option):
-    def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
+    def __init__(self, name, name_tag=None, desc=None, required=False, default=False,
                  option_length=4):
         super().__init__(option_type='bool', name=name, name_tag=name_tag, desc=desc, required=required,
                          default=default,

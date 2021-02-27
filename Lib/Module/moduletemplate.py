@@ -18,7 +18,6 @@ from ipaddr import summarize_address_range, IPv4Network, IPv4Address
 
 from Core.Handle.host import Host
 from Lib.Module.configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
-from Lib.Module.host import Host
 from Lib.lib import TMP_DIR
 from Lib.log import logger
 from Lib.xcache import Xcache
@@ -145,6 +144,11 @@ class _CommonModule(object):
                                                  self.loadpath,
                                                  extra_data, desc)
             return result
+
+    def add_host(self, ipaddress):
+        result = Host.create_host(ipaddress)
+        hid = result.get('id')
+        return hid
 
     # 存储结果函数集
     def clean_log(self):
@@ -371,8 +375,7 @@ class _PostCommonModule(_CommonModule):
         # 设置内部参数
         self._hid = hid  # 前端传入的hid信息
         self._sessionid = sessionid  # 前端传入的sessionid
-
-        self._ipaddress = Host.get_ipaddress(self._hid)
+        self._ipaddress = Host.get_ipaddress_by_hid(self._hid)
 
     @property
     def host_ipaddress(self):

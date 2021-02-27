@@ -181,8 +181,8 @@ class PostModuleConfig(object):
             # handler处理
             if option.get('name') == HANDLER_OPTION.get("name"):
                 option['enum_list'] = Handler.list_handler_config()
-                if len(tmp_enum_list) == 1:  # 只有一个监听
-                    option['default'] = tmp_enum_list[0].get("value")
+                if len(option['enum_list']) == 1:  # 只有一个监听
+                    option['default'] = option['enum_list'][0].get("value")
 
             # 凭证处理
             elif option.get('name') == CREDENTIAL_OPTION.get("name"):

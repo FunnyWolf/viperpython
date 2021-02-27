@@ -20,7 +20,7 @@ from Lib.redisclient import RedisClient
 from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
-from WebSocket.websocket import HeartBeat
+from WebSocket.Handle.heartbeat import HeartBeat
 
 
 class MainMonitor(object):

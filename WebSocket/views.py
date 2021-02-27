@@ -8,7 +8,7 @@ from django.http.request import QueryDict
 from Lib.log import logger
 from Lib.xcache import Xcache
 from WebSocket.Handle.console import Console
-from WebSocket.websocket import HeartBeat
+from WebSocket.Handle.heartbeat import HeartBeat
 
 
 class MsfConsoleView(WebsocketConsumer):

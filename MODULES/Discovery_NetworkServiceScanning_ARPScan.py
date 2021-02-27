@@ -3,7 +3,7 @@
 # @Date  : 2019/1/12
 # @Desc  :
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
@@ -64,7 +64,7 @@ class PostModule(PostMSFRawModule):
                                                            host_mac.get('company'))
                 self.log_good(tmpstr)
                 # 存储部分
-                hid = Host.add(host_mac.get('host'))
+                hid = self.add_host(host_mac.get('host'))
                 # -1端口存储mac地址 -2端口存储网卡厂商
                 self.add_portservice(hid, 0,
                                      proxy={'type': 'Session',

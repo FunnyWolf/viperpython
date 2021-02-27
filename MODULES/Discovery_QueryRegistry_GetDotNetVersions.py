@@ -3,7 +3,7 @@
 # @Date  : 2019/3/15
 # @Desc  :
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
@@ -26,10 +26,10 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        from Lib.Module.Session import SessionOperation
-        sessionOper = SessionOperation(self._sessionid)
+
+        session = Session(self._sessionid)
         key = "HKEY_LOCAL_MACHINE\\\\Software\\\\Microsoft\\\\NET Framework Setup\\\\NDP"
-        result = sessionOper.registry_enumkeys(key)
+        result = session.registry_enumkeys(key)
         if result.get("status"):
             self.log_good("已安装.Net framework版本:")
             version_list = result.get("data")

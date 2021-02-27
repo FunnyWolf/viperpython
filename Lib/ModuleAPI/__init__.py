@@ -2,16 +2,13 @@
 # @File  : __init__.py.py
 # @Date  : 2020/11/4
 # @Desc  :
-from Lib.Module.Session import (
-    Session,
-)
 from Lib.Module.configs import (
     TAG2CH,
     MODULE_DATA_DIR,
     FILE_OPTION,
 )
-from Lib.Module.host import (
-    Host
+from Lib.Module.hostinfo import (
+    HostInfo
 )
 from Lib.Module.moduletemplate import (
     PostMSFRawModule,
@@ -41,6 +38,11 @@ from Lib.Module.option import (
 )
 from Lib.lib import TMP_DIR
 from Lib.notice import Notice
+from Lib.sessionlib import (
+    SessionLib as Session,
+    UACLevel,
+    RegType,
+)
 
 __all__ = [
     "PostMSFRawModule",
@@ -66,8 +68,10 @@ __all__ = [
     "OptionFileEnum",
     "OptionCredentialEnum",
     "OptionCacheHanderConfig",
-    "Host",
+    "HostInfo",
     "Session",
     "Notice",
     "MsfModule",
+    "UACLevel",
+    "RegType",
 ]

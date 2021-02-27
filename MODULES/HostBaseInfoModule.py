@@ -9,8 +9,8 @@ import re
 
 import ipaddr
 
+from Lib.ModuleAPI import *
 from MODULES_DATA.HostBaseInfoModule.avjson import av_dict
-from PostModule.module import *
 
 
 class PostModule(PostMSFRawModule):

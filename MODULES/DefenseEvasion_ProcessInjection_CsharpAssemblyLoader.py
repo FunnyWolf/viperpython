@@ -5,7 +5,7 @@
 
 import base64
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
@@ -36,7 +36,6 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        from Lib.Module.Session import Session
         session = Session(self._sessionid)
         if not session.is_windows:
             return False, "此模块只支持Windows的Meterpreter"

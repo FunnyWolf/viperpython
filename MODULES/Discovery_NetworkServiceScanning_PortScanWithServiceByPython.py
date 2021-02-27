@@ -6,7 +6,7 @@
 import base64
 import json
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonWithParamsModule):
@@ -144,7 +144,7 @@ class PostModule(PostMSFPythonWithParamsModule):
                                                               tmpService)
                 self.log_good(tmpstr)
                 # 存储部分
-                hid = Host.add(portservice.get('host'))
+                hid = self.add_host(portservice.get('host'))
                 self.add_portservice(hid=hid,
                                      port=portservice.get('port'),
                                      proxy={

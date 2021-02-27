@@ -3,7 +3,7 @@
 # @Date  : 2019/1/12
 # @Desc  :
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
@@ -21,7 +21,6 @@ class PostModule(PostMSFPowershellFunctionModule):
         self.set_script("PowerView_dev.ps1")  # 设置目标机执行的脚本文件
 
     def check(self):
-        from Lib.Module.Session import Session
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if session.is_in_domain:

@@ -4,7 +4,7 @@
 # @Desc  :
 
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):

@@ -3,7 +3,7 @@
 # @Date  : 2019/3/15
 # @Desc  :
 
-from PostModule.module import *
+from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
@@ -51,8 +51,6 @@ class PostModule(PostPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-        from Lib.Module.Session import Session
-
         session = Session(self._sessionid, rightinfo=True, uacinfo=True)
         self.session = session
         if session.is_windows:
@@ -68,10 +66,10 @@ class PostModule(PostPythonModule):
         # 检查UAC设置
         if session.is_uac_enable is not True:
             return False, "当前Session用户所在主机未开启UAC或UAC情况未知,无需执行模块"
-        if session.uac_level in [Session.UAC_PROMPT_CREDS_IF_SECURE_DESKTOP,
-                                 Session.UAC_PROMPT_CONSENT_IF_SECURE_DESKTOP,
-                                 Session.UAC_PROMPT_CREDS,
-                                 Session.UAC_PROMPT_CONSENT]:
+        if session.uac_level in [UACLevel.UAC_PROMPT_CREDS_IF_SECURE_DESKTOP,
+                                 UACLevel.UAC_PROMPT_CONSENT_IF_SECURE_DESKTOP,
+                                 UACLevel.UAC_PROMPT_CREDS,
+                                 UACLevel.UAC_PROMPT_CONSENT]:
             return False, "当前Session用户设置的UAC级别为过高,无法执行模块"
         # 检查integrity_level
         if session.integrity is None or session.integrity == 'low':
