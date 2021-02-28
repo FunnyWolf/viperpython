@@ -63,9 +63,6 @@ class PostModuleConfig(object):
 
     @staticmethod
     def load_all_modules_config():
-        def _sort_by_moduletype(module_config=None):
-            return TAG2CH.get_moduletype_order(module_config.get('MODULETYPE'))
-
         all_modules_config = []
         # viper 内置模块
         viper_module_count = 0
@@ -124,9 +121,13 @@ class PostModuleConfig(object):
             modulename = modulename.split(".")[0]
             if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
                 continue
-
-            class_intent = importlib.import_module('Docker.module.{}'.format(modulename))
-            importlib.reload(class_intent)
+            try:
+                class_intent = importlib.import_module('Docker.module.{}'.format(modulename))
+                importlib.reload(class_intent)
+            except Exception as E:
+                logger.exception(E)
+                Notice.send_alert(f"加载自定义模块:{modulename} 失败")
+                continue
             try:
                 if isinstance(class_intent.PostModule.ATTCK, str):
                     attck = [class_intent.PostModule.ATTCK]
@@ -167,7 +168,8 @@ class PostModuleConfig(object):
                 continue
         logger.warning("自定义模块加载完成,加载{}个模块".format(diy_module_count))
         Notice.send_success(f"自定义模块加载完成,加载{diy_module_count}个模块")
-        all_modules_config.sort(key=_sort_by_moduletype)
+
+        all_modules_config.sort(key=lambda s: (TAG2CH.get_moduletype_order(s.get('MODULETYPE')), s.get('loadpath')))
         if Xcache.update_moduleconfigs(all_modules_config):
             return len(all_modules_config)
         else:
