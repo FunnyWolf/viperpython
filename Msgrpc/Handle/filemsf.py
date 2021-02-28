@@ -9,10 +9,10 @@ from urllib import parse
 
 from django.http import HttpResponse
 
-from CONFIG import MSFLOOT, MSFLOOTTRUE
+from CONFIG import MSFLOOTTRUE
 from Lib.aescrypt import Aescrypt
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, FileMsf_MSG
+from Lib.configs import CODE_MSG, FileMsf_MSG, MSFLOOT
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.filesession import FileSession

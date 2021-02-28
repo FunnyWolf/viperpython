@@ -4,8 +4,6 @@ JSON_RPC_URL = "http://{}:{}/api/v1/json-rpc".format(JSON_RPC_IP, JSON_RPC_PORT)
 RPC_TOKEN = 'for_msf_token_as_password'
 MSFDIR = "/root/.msf4/"
 DEBUG = False
-MSFLOOT = MSFDIR + "loot"
-MSFLOOTTRUE = MSFLOOT
 
 REDIS_URL = "unix://:foobared@/var/run/redis/redis-server.sock?db="
 
@@ -29,3 +27,4 @@ CHANNEL_LAYERS = {
         },
     },
 }
+MSFLOOTTRUE = "/root/.msf4/loot"  # 为了调试

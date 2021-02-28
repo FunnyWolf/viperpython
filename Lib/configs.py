@@ -2,6 +2,7 @@
 # @File  : configs.py
 # @Date  : 2019/1/11
 # @Desc  :
+from CONFIG import MSFDIR
 
 CODE_MSG = {
     200: '服务器成功返回请求的数据',
@@ -430,3 +431,4 @@ STATIC_STORE_PATH = "STATICFILES/STATIC/"
 # meterpreter prompt
 METERPRETER_PROMPT = "meterpreter > "
 SHELL_PROMPT = "shell > "
+MSFLOOT = MSFDIR + "loot"

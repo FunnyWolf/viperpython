@@ -190,17 +190,17 @@ class HeartBeat(object):
 
     @staticmethod
     def list_sessions():
-
-        msfjobs = Job.list_msfrpc_jobs()
         uuid_msfjobid = {}
-        for jobid in msfjobs:
-            datastore = msfjobs[jobid].get("datastore")
-            if datastore is not None:
-                uuid_msfjobid[msfjobs[jobid]["uuid"]] = {"job_id": int(jobid),
-                                                         "PAYLOAD": datastore.get("PAYLOAD"),
-                                                         "LPORT": datastore.get("LPORT"),
-                                                         "LHOST": datastore.get("LHOST"),
-                                                         "RHOST": datastore.get("RHOST")}
+        msfjobs = Job.list_msfrpc_jobs()
+        if msfjobs is not None:
+            for jobid in msfjobs:
+                datastore = msfjobs[jobid].get("datastore")
+                if datastore is not None:
+                    uuid_msfjobid[msfjobs[jobid]["uuid"]] = {"job_id": int(jobid),
+                                                             "PAYLOAD": datastore.get("PAYLOAD"),
+                                                             "LPORT": datastore.get("LPORT"),
+                                                             "LHOST": datastore.get("LHOST"),
+                                                             "RHOST": datastore.get("RHOST")}
 
         sessions_available_count = 0
         sessions = []

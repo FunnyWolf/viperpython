@@ -47,8 +47,7 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        # file = self.param(FILE_OPTION.get('name'))
-        # pe_file_path = MsfFile.absolute_path(file.get("name"))
+
         pe_file_path = self.get_option_filepath()
         if pe_file_path is None:
             self.log_error("非docker部署不支持此模块,请使用原版donut工具")
@@ -90,7 +89,7 @@ class PostModule(PostPythonModule):
             output_filename = "{}.bin".format(self.param("shellcodefilename"))
         else:
             output_filename = "{}.bin".format(os.path.splitext(self.get_option_filename())[0])
-        if FileMsf.write_msf_file(output_filename, shellcode):
+        if self.write_to_loot(output_filename, shellcode):
             self.log_good("转换完成,新文件名 : {}".format(output_filename))
         else:
             self.log_error("shellcode写入文件失败")

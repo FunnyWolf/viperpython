@@ -37,7 +37,7 @@ class PostModule(PostPythonModule):
         # 将msf服务器的exe写入viper本地
         old_exe = self.get_option_filename()
         self.log_status("将 {} 写入临时目录".format(old_exe))
-        old_exe_binary_data = FileMsf.read_msf_file(old_exe)
+        old_exe_binary_data = self.read_from_loot(old_exe)
         if old_exe_binary_data is None:
             self.log_error("{} 文件不存在".format(old_exe))
             return
@@ -64,7 +64,7 @@ class PostModule(PostPythonModule):
         self.log_status("清理临时文件")
         self.clean_tmp_dir()
 
-        if FileMsf.write_msf_file(output_finename, output_bin):
+        if self.write_to_loot(output_finename, output_bin):
             self.log_good("签名完成,新文件名 : {}".format(output_finename))
         else:
             self.log_error("签名失败,请检查后台渗透服务器配置")

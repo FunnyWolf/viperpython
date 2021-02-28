@@ -16,12 +16,13 @@ import time
 
 from ipaddr import summarize_address_range, IPv4Network, IPv4Address
 
+from CONFIG import MSFLOOTTRUE
 from Core.Handle.host import Host
 from Lib.Module.configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
+from Lib.configs import MSFLOOT
 from Lib.lib import TMP_DIR
 from Lib.log import logger
 from Lib.xcache import Xcache
-from Msgrpc.Handle.filemsf import FileMsf
 from Msgrpc.Handle.handler import Handler
 from PostLateral.Handle.credential import Credential
 from PostLateral.Handle.portservice import PortService
@@ -265,17 +266,33 @@ class _CommonModule(object):
         return True
 
     def get_option_filepath(self, msf=False):
-        """获取选项中的文件名"""
+        """获取选项中的文件绝对路径"""
         file = self.param(FILE_OPTION.get('name'))
         if file is None:
             return None
 
-        file_path = FileMsf.get_absolute_path(file.get("name"), msf)
-        if file_path is None:
-            self.log_error("非docker部署不支持此模块,请使用原版donut工具")
-            return None
+        filename = file.get("name")
+        if msf:
+            filepath = f"{MSFLOOTTRUE}/{filename}"
         else:
-            return file_path
+            filepath = os.path.join(MSFLOOT, filename)
+        return filepath
+
+    def write_to_loot(self, filename, data):
+        "向loot目录写文件"
+        filename = filename.replace("..", "")  # 任意文件读取问题
+        filepath = os.path.join(MSFLOOT, filename)
+        with open(filepath, "wb+") as f:
+            f.write(data)
+        return True
+
+    def read_from_loot(self, filename):
+        "从loot目录读取文件"
+        filename = filename.replace("..", "")  # 任意文件读取问题
+        filepath = os.path.join(MSFLOOT, filename)
+        with open(filepath, "rb+") as f:
+            data = f.read()
+        return data
 
     def get_option_fileinfo(self):
         """获取选项中的文件名"""
@@ -582,6 +599,46 @@ class PostMSFRawModule(_PostMSFModuleCommon):
         else:
             return True
         return True
+
+
+class PostMSFCSharpModule(_PostMSFModuleCommon):
+    """直接调用powershell脚本执行的模板模块"""
+    REQUIRE_SESSION = True
+    PLATFORM = ["Windows"]  # 平台
+
+    def __init__(self, sessionid, hid, custom_param):
+        super().__init__(sessionid, hid, custom_param)
+
+        # 设置MSF模块的固定参数
+        self.type = "post"  # 固定模块
+        self.mname = "windows/manage/execute_assembly_module_api"  # 固定模块
+        self.opts['SESSION'] = self._sessionid
+
+    def set_assembly(self, assembly):
+        """API:设置assembly文件名,不要加exe后缀"""
+        self.opts['ASSEMBLY'] = str(assembly)
+
+    def set_arguments(self, arguments):
+        """API:设置命令行参数"""
+        self.opts['ARGUMENTS'] = str(arguments)
+
+    def set_execute_wait(self, wait_second):
+        """API:执行后读取输出前的等待时间"""
+        self.opts['WAIT'] = wait_second  # msf模块内部的超时时间
+
+    def get_console_output(self, status, message, data):
+        if status is not True:
+            self.log_error("模块执行失败,失败原因:{}".format(message))
+            return None
+        else:
+            assembly_out = base64.b64decode(data).decode('utf-8', errors="ignore")
+            if assembly_out is None or len(assembly_out) == 0:
+                self.log_warning("exe文件未输出信息")
+                if self.param("ARGUMENTS") is None or len(self.param("ARGUMENTS")) == 0:
+                    self.log_warning("如果exe程序接受参数输入，请尝试输入参数")
+                return assembly_out
+            else:
+                return assembly_out.replace("\nExecuteSharp end", "")
 
 
 class PostMSFPowershellModule(_PostMSFModuleCommon):
