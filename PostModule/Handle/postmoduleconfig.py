@@ -56,6 +56,10 @@ class PostModuleConfig(object):
     def update():
         PostModuleConfig.load_all_modules_config()
         all_modules_config = Xcache.list_moduleconfigs()
+        # 删除内部模块
+        for one in all_modules_config[:]:
+            if one.get('MODULETYPE') == TAG2CH.internal:
+                all_modules_config.remove(one)
         for one in all_modules_config:
             one['OPTIONS'] = []
         context = data_return(201, PostModuleConfig_MSG.get(201), all_modules_config)
