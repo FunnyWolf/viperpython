@@ -24,6 +24,7 @@ from Lib.lib import TMP_DIR
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
+from Msgrpc.Handle.payload import Payload
 from PostLateral.Handle.credential import Credential
 from PostLateral.Handle.portservice import PortService
 from PostLateral.Handle.vulnerability import Vulnerability
@@ -318,6 +319,20 @@ class _CommonModule(object):
         z['disablepayloadhandler'] = True
         self.opts = z
         return True
+
+    def generate_shellcode_by_handler(self):
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        return shellcode
+
+    def generate_bypass_exe_by_handler(self):
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        return shellcode
 
     def cache_handlerconfig_for_persistence(self):
 

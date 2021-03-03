@@ -15,6 +15,7 @@ class RedisClient(object):
 
     @staticmethod
     def get_result_connection():
+        """用于订阅类操作,无需使用连接池"""
         try:
             rcon = redis.Redis.from_url(url=f"{REDIS_URL}5")
             return rcon

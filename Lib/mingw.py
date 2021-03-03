@@ -71,20 +71,21 @@ class Mingw(object):
         return cmd
 
     def compile_c(self, src, arch="x64"):
+        bindata = None
         exe_file = os.path.join(TMP_DIR, f"{self.file_name}.exe")
         cmd = self.build_cmd(src, arch)
         ret = subprocess.run(cmd, capture_output=True, text=True)
         if ret.returncode != 0:
             logger.warning(ret.stdout)
             logger.warning(ret.stderr)
-            return None
-        try:
-            with open(exe_file, 'rb') as f:
-                data = f.read()
-                return data
-        except Exception as E:
-            logger.exception(E)
-            return None
+        else:
+            try:
+                with open(exe_file, 'rb') as f:
+                    bindata = f.read()
+            except Exception as E:
+                logger.exception(E)
+        self.cleanup_files()
+        return bindata
 
     def cleanup_files(self):
         src_file = os.path.join(TMP_DIR, f"{self.file_name}.c")
