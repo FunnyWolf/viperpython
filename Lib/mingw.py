@@ -176,7 +176,7 @@ class Mingw(object):
                 logger.exception(E)
 
         # 清理遗留文件
-        # self._cleanup_files()
+        self._cleanup_files()
         return bindata
 
     def _cleanup_files(self):
