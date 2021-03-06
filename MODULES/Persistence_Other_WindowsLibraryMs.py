@@ -49,7 +49,7 @@ class PostModule(PostMSFRawModule):
         if status:
             self.log_good("模块执行成功")
             self.log_good("DLL路径: {}\n用户下次登录时或浏览桌面时生效".format(data))
-            self.cache_handlerconfig_for_persistence()
+            self.cache_handler()
         else:
             self.log_error("模块执行失败")
             self.log_error(message)

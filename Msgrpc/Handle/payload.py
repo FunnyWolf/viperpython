@@ -15,7 +15,7 @@ from jinja2 import Environment, FileSystemLoader
 from Lib.api import data_return
 from Lib.configs import Payload_MSG, PAYLOAD_LOADER_STORE_PATH
 from Lib.lib import TMP_DIR
-from Lib.mingw import Mingw
+from Lib.mingw import MingwOld
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 
@@ -261,12 +261,12 @@ class Payload(object):
     @staticmethod
     def _create_payload_by_mingw(mname=None, shellcode=None, payload_type="REVERSE_HEX"):
         if payload_type == "REVERSE_HEX":
-            env = Environment(loader=FileSystemLoader(Mingw.CODE_TEMPLATE_DIR))
+            env = Environment(loader=FileSystemLoader(MingwOld.CODE_TEMPLATE_DIR))
             tpl = env.get_template('REVERSE_HEX.c')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
             src = tpl.render(SHELLCODE_STR=reverse_hex_str)
         elif payload_type == "REVERSE_HEX_AS_SERVICE":
-            env = Environment(loader=FileSystemLoader(Mingw.CODE_TEMPLATE_DIR))
+            env = Environment(loader=FileSystemLoader(MingwOld.CODE_TEMPLATE_DIR))
             tpl = env.get_template('REVERSE_HEX_AS_SERVICE.c')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
             src = tpl.render(SHELLCODE_STR=reverse_hex_str)
@@ -279,7 +279,7 @@ class Payload(object):
             arch = 'x86'
         else:
             raise Exception('unspport mname')
-        mingwx64 = Mingw()
+        mingwx64 = MingwOld()
         byteresult = mingwx64.compile_c(src, arch)
         return byteresult
 

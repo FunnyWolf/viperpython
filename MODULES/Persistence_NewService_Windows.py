@@ -56,7 +56,7 @@ class PostModule(PostMSFRawModule):
         if status:
             self.log_good("模块执行成功")
             self.log_good("脚本输出: {} EXE路径: {}".format(data.get("psresult"), data.get("victim_path")))
-            self.cache_handlerconfig_for_persistence()
+            self.cache_handler()
         else:
             self.log_error("模块执行失败")
             self.log_error(message)

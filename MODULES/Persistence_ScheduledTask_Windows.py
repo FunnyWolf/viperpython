@@ -50,7 +50,7 @@ class PostModule(PostMSFRawModule):
             self.log_good("计划任务详情")
             self.log_good("{}".format(data.get("psresult")))
             self.log_good("EXE路径: {}\n用户下次登录时生效".format(data.get("victim_path")))
-            self.cache_handlerconfig_for_persistence()
+            self.cache_handler()
         else:
             self.log_error("模块执行失败")
             self.log_error(message)

@@ -44,7 +44,7 @@ class APSModule(object):
 
             logger.warning("模块放入列表:{} job_id: {} uuid: {}".format(post_module_intent.NAME, None, tmp_self_uuid))
             post_module_intent.module_self_uuid = tmp_self_uuid
-            self.ModuleJobsScheduler.add_job(func=post_module_intent.thread_run, max_instances=1, id=tmp_self_uuid)
+            self.ModuleJobsScheduler.add_job(func=post_module_intent._thread_run, max_instances=1, id=tmp_self_uuid)
 
             # 放入缓存队列,用于后续删除任务,存储结果等
             req = {

@@ -38,6 +38,7 @@ from Lib.Module.option import (
     OptionIPAddressRange,
 )
 from Lib.lib import TMP_DIR
+from Lib.mingw import Mingw
 from Lib.notice import Notice
 from Lib.sessionlib import (
     SessionLib as Session,
@@ -76,4 +77,5 @@ __all__ = [
     "MsfModule",
     "UACLevel",
     "RegType",
+    "Mingw",
 ]

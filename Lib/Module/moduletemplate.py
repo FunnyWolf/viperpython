@@ -15,10 +15,12 @@ import threading
 import time
 
 from ipaddr import summarize_address_range, IPv4Network, IPv4Address
+from jinja2 import Environment, FileSystemLoader
 
 from CONFIG import MSFLOOTTRUE
 from Core.Handle.host import Host
 from Lib.Module.configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
+from Lib.Module.configs import MODULE_DATA_DIR
 from Lib.configs import MSFLOOT
 from Lib.lib import TMP_DIR
 from Lib.log import logger
@@ -75,6 +77,17 @@ class _CommonModule(object):
     @property
     def host_ipaddress(self):
         return None
+
+    @property
+    def module_data_dir(self):
+
+        return os.path.join(MODULE_DATA_DIR, self.loadpath.split(".")[-1])
+
+    def generate_context_by_template(self, filename, **kwargs):
+        env = Environment(loader=FileSystemLoader(self.module_data_dir))
+        tpl = env.get_template(filename)
+        context = tpl.render(**kwargs)
+        return context
 
     # 模块参数
     def param(self, name):
@@ -320,22 +333,33 @@ class _CommonModule(object):
         self.opts = z
         return True
 
-    def generate_shellcode_by_handler(self):
+    def generate_hex_reverse_shellcode_by_handler(self):
+        """通过监听配置生成shellcode"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        reverse_hex_str = shellcode.hex()[::-1]
+        return reverse_hex_str
+
+    def generate_shellcode(self):
+        """通过监听配置生成shellcode"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         if handler_config is None:
             return None
         shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
         return shellcode
 
-    def generate_bypass_exe_by_handler(self):
+    def generate_exe(self):
+        """通过监听配置生成exe"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         if handler_config is None:
             return None
         shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
         return shellcode
 
-    def cache_handlerconfig_for_persistence(self):
-
+    def cache_handler(self):
+        """根据模块监听配置生成虚拟监听"""
         if self.param(CACHE_HANDLER_OPTION.get("name")):
             handler_config = self.param(HANDLER_OPTION.get('name'))
             if handler_config is None:
@@ -564,9 +588,9 @@ class PostPythonModule(_PostCommonModule):
 
     def run(self):
         """任务执行时框架会自动调用的函数,子类需要重新实现"""
-        self.log_error("module has no function run")
+        self.log_error("模块中未实现run函数")
 
-    def thread_run(self):
+    def _thread_run(self):
         t1 = ThreadWithExc(target=self.run)
         t1.start()
         while True:
