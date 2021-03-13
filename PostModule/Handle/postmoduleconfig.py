@@ -95,6 +95,7 @@ class PostModuleConfig(object):
                     "WARN": class_intent.PostModule.WARN,
                     "AUTHOR": class_intent.PostModule.AUTHOR,
                     "REFERENCES": class_intent.PostModule.REFERENCES,
+                    "README": class_intent.PostModule.README,
 
                     "MODULETYPE": class_intent.PostModule.MODULETYPE,
 
@@ -149,6 +150,7 @@ class PostModuleConfig(object):
                     "WARN": class_intent.PostModule.WARN,
                     "AUTHOR": class_intent.PostModule.AUTHOR,
                     "REFERENCES": class_intent.PostModule.REFERENCES,
+                    "README": class_intent.PostModule.README,
 
                     "MODULETYPE": class_intent.PostModule.MODULETYPE,
 

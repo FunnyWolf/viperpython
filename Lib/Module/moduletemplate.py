@@ -37,7 +37,8 @@ class _CommonModule(object):
     NAME = "基础模块"
     DESC = "基础描述"
     AUTHOR = "NoOne"  # 模块作者
-    REFERENCES = []
+    REFERENCES = []  # 参考链接
+    README = []  # 官方使用文档
     WARN = None  # 警告信息
 
     MODULETYPE = TAG2CH.example  # 模块类型

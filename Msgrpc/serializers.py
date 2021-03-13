@@ -62,6 +62,7 @@ class PostModuleSerializer(Serializer):
     AUTHOR = CharField(max_length=100)  # 模块作者
     PLATFORM = ListField()  # 平台
     PERMISSIONS = ListField()
+    README = ListField()
     ATTCK = ListField()
     REFERENCES = ListField()
     _custom_param = DictField()  # 前端传入的参数信息
@@ -75,6 +76,7 @@ class BotModuleSerializer(Serializer):
     MODULETYPE = CharField(max_length=100)  # 模块类型
     AUTHOR = CharField(max_length=100)  # 模块作者
     REFERENCES = ListField()
+    README = ListField()
     SEARCH = CharField(max_length=200)
     _custom_param = DictField()  # 前端传入的参数信息
     _ip = CharField(max_length=100)  # 前端传入的ip地址
