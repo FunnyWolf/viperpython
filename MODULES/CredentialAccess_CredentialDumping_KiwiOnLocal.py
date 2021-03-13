@@ -8,9 +8,6 @@ import re
 from Lib.ModuleAPI import *
 
 
-# from Lib.ModuleAPI import *
-
-
 class PostModule(PostMSFRawModule):
     NAME = "获取Windows内存密码"
     DESC = "Kiwi抓取内存中的windows用户明文密码,并保存到凭证列表.\n"
@@ -19,6 +16,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/gvirvd"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/"]
     AUTHOR = "Viper"
 

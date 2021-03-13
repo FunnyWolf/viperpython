@@ -18,6 +18,7 @@ class PostModule(PostMSFRawModule):
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1004"]  # ATTCK向量
     AUTHOR = "Viper"
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/ltteb3"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1004/"]
 
     REQUIRE_SESSION = True

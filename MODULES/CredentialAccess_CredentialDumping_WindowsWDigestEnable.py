@@ -8,7 +8,7 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "启用Windows WDigest开关"
+    NAME = "Windows WDigest开关"
     DESC = "用于打开WDigest凭证存储开关,Windows 8/2012以上版本默认关闭Wdigest开关.\n" \
            "通过修改注册表UseLogonCredential值打开开关.\n" \
            "当用户注销重新登录后即可使用mimikatz抓取密码."
@@ -18,6 +18,7 @@ class PostModule(PostMSFRawModule):
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/"]
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/qmdhwr"]
     AUTHOR = "Viper"
 
     def __init__(self, sessionid, hid, custom_param):

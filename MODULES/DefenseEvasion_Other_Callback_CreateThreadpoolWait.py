@@ -16,6 +16,7 @@ class PostModule(PostPythonModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/bvv2oq"]
     REFERENCES = ["https://docs.microsoft.com/zh-cn/windows/win32/procthread/using-the-thread-pool-functions"]
     AUTHOR = "Viper"
 

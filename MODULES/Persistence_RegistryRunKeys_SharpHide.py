@@ -13,7 +13,8 @@ class PostModule(PostMSFCSharpModule):
     MODULETYPE = TAG2CH.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
-    ATTCK = []  # ATTCK向量
+    ATTCK = ["T1037"]  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/fu3t5z"]
     REFERENCES = ["https://github.com/outflanknl/SharpHide"]
     AUTHOR = "Viper"
 

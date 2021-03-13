@@ -13,6 +13,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1018"]  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/uf2cs6"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1018/"]
     AUTHOR = "Viper"
 

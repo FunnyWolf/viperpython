@@ -19,6 +19,7 @@ class PostModule(PostMSFPythonWithParamsModule):
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1046"]  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/xu7u3f"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1046/"]
     AUTHOR = "Viper"
 

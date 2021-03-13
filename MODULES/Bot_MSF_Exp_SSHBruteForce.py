@@ -12,6 +12,7 @@ class PostModule(BotMSFModule):
     DESC = "模块使用内置字典或用户自定义字典对指定地址进行暴力破解攻击.\n" \
            "(模块主要用于测试全网扫描功能)"
     MODULETYPE = TAG2CH.Bot_MSF_Exp
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/ebif65"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1193/"]
     AUTHOR = "Viper"
     SEARCH = ' protocol="SSH" '

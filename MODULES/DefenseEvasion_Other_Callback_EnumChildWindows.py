@@ -16,6 +16,7 @@ class PostModule(PostPythonModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/xbt12u"]
     REFERENCES = ["https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows"]
     AUTHOR = "Viper"
 

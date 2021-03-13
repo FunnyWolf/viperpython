@@ -15,6 +15,7 @@ class PostModule(PostPythonModule):
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1012"]  # ATTCK向量
     AUTHOR = "Viper"
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/oz517i"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1012/"]
     OPTIONS = []
 

@@ -12,6 +12,7 @@ class PostModule(BotMSFModule):
     DESC = "模块使用CVE-2020-17496攻击选择的vbulletin网站.\n" \
            "建议选择php类型的payload"
     MODULETYPE = TAG2CH.Bot_MSF_Exp
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/gomgix"]
     REFERENCES = ["https://blog.exploitee.rs/2020/exploiting-vbulletin-a-tale-of-patch-fail/"]
     AUTHOR = "Viper"
     SEARCH = ' icon_hash="-601665621" '

@@ -12,6 +12,7 @@ class PostModule(PostMSFCSharpModule):
     MODULETYPE = TAG2CH.Defense_Evasion  # '防御绕过'模块,可以自行更改
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/ckhgsk"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/"]
     AUTHOR = "Viper"
 

@@ -15,6 +15,7 @@ class PostModule(PostMSFRawModule):
     MODULETYPE = TAG2CH.Defense_Evasion
 
     ATTCK = ["T1553"]  # ATTCK向量
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/dpgd0m"]
     REFERENCES = ["http://www.slideshare.net/ChrisJohnRiley/ssl-certificate-impersonation-for-shits-andgiggles"]
     AUTHOR = "Viper"
 
