@@ -12,7 +12,7 @@ class PostModule(PostPythonModule):
            "自动模式:自动选择绕过技术并执行\n" \
            "手动模式:手动选择某种绕过技术并执行\n" \
            "检测模式:自动检测Sesion适用哪些绕过技术(不执行)\n" \
-           "模块需要Session完整性权限为高并处于管理员组.\n" \
+           "模块需要Session完整性权限为中以上并处于管理员组.\n" \
            "自动模式会运行多个子模块尝试BypassUAC,杀软会拦截.\n" \
            "建议使用检测模式获取适用的子模块列表后,单独手工依次运行."
     REQUIRE_SESSION = True
