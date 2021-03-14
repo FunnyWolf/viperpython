@@ -1,15 +1,14 @@
 #!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
-
 import argparse
 import os
+import re
 import shutil
 import socket
 import subprocess
 import time
 
 LOCALHOST = "127.0.0.1"
-nginx_port = 60000
 viper_port = 60002
 daphne_port = 60003
 redis_port = 60004
@@ -18,8 +17,55 @@ LOGDIR = "/root/viper/Docker/log"
 devNull = open(os.devnull, 'w')
 
 
+def get_nginx_port():
+    with open("/root/viper/Docker/nginxconfig/viper.conf") as f:
+        data = f.read()
+        result = re.search(r'{}'.format("listen (\d+);"), data)
+        if result is None:
+            print("viper.conf is not right,can not find like 'listen XXXXX;'")
+            exit(1)
+        else:
+            if len(result.groups()) < 1:
+                print("viper.conf is not right,can not find like 'listen XXXXX;'")
+                exit(1)
+            else:
+                try:
+                    nginx_port = int(result.group(1))
+                    return nginx_port
+                except Exception as E:
+                    print("viper.conf is not right,can not find like 'listen XXXXX;'")
+                    exit(1)
+
+
+def restart_nginx():
+    try:
+        print("[*] 关闭nginx服务")
+        result = subprocess.run(["service", "nginx", "stop"], stdout=devNull)
+        result = subprocess.run(["service", "nginx", "stop"], stdout=devNull)
+    except Exception as E:
+        pass
+
+    while True:
+        try:
+            nginx_port = get_nginx_port()
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.settimeout(1)
+            client.connect((LOCALHOST, nginx_port))
+            print("[+] nginx运行中")
+            client.close()
+            exit(0)
+        except Exception as err:
+            print("[*] 启动nginx服务")
+            result = subprocess.run(
+                ["service", "nginx", "start"],
+                stdout=devNull,
+                stderr=devNull
+            )
+
+
 def check_services():
     """服务检查函数"""
+    nginx_port = get_nginx_port()
     all_start = True
     print("-------------- 检查服务状态 ----------------")
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
@@ -96,11 +142,17 @@ def init_copy_file():
             target_path = os.path.join("/root/.msf4/loot", file)
             if not os.path.exists(target_path):
                 shutil.copy(src_file, target_path)
+    for root, dirs, files in os.walk("/root/viper/Docker/nginxconfig_default"):
+        for file in files:
+            src_file = os.path.join("/root/viper/Docker/nginxconfig_default", file)
+            target_path = os.path.join("/root/viper/Docker/nginxconfig", file)
+            if not os.path.exists(target_path):
+                shutil.copy(src_file, target_path)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
-    parser.add_argument('action', nargs='?', metavar='start/stop/check', help="启动/停止/检测 VIPER服务", type=str)
+    parser.add_argument('action', nargs='?', metavar='start/stop/check/restartnginx', help="启动/停止/检测 VIPER服务", type=str)
     parser.add_argument('-pw', metavar='newpassword', help="修改root密码")
 
     args = parser.parse_args()
@@ -217,6 +269,7 @@ if __name__ == '__main__':
 
             # nginx
             try:
+                nginx_port = get_nginx_port()
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client.settimeout(1)
                 client.connect((LOCALHOST, nginx_port))
@@ -313,5 +366,7 @@ if __name__ == '__main__':
             time.sleep(5)
             check_services()
             exit(0)
+        elif action.lower() == "restartnginx":
+            restart_nginx()
         else:
             check_services()
