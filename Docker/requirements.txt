@@ -16,3 +16,4 @@ cryptography
 donut-shellcode
 geoip2
 jinja2
+unicorn
