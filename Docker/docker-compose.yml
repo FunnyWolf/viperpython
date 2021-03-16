@@ -10,4 +10,5 @@ services:
       - /root/viper/db:/root/viper/Docker/db
       - /root/viper/module:/root/viper/Docker/module
       - /root/viper/log:/root/viper/Docker/log
+      - /root/viper/nginxconfig:/root/viper/Docker/nginxconfig
     command: ["diypassword"]
