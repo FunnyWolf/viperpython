@@ -82,9 +82,16 @@ class PostModuleConfig(object):
                 if isinstance(class_intent.PostModule.ATTCK, str):
                     attck = [class_intent.PostModule.ATTCK]
                 elif isinstance(class_intent.PostModule.ATTCK, list):
-                    attck = [class_intent.PostModule.ATTCK]
+                    attck = class_intent.PostModule.ATTCK
                 else:
                     attck = []
+
+                if isinstance(class_intent.PostModule.AUTHOR, str):
+                    author = [class_intent.PostModule.AUTHOR]
+                elif isinstance(class_intent.PostModule.AUTHOR, list):
+                    author = class_intent.PostModule.AUTHOR
+                else:
+                    author = []
 
                 one_module_config = {
 
@@ -93,7 +100,7 @@ class PostModuleConfig(object):
                     "NAME": class_intent.PostModule.NAME,
                     "DESC": class_intent.PostModule.DESC,
                     "WARN": class_intent.PostModule.WARN,
-                    "AUTHOR": class_intent.PostModule.AUTHOR,
+                    "AUTHOR": author,
                     "REFERENCES": class_intent.PostModule.REFERENCES,
                     "README": class_intent.PostModule.README,
 
@@ -141,6 +148,13 @@ class PostModuleConfig(object):
                 else:
                     attck = []
 
+                if isinstance(class_intent.PostModule.AUTHOR, str):
+                    author = [class_intent.PostModule.AUTHOR]
+                elif isinstance(class_intent.PostModule.AUTHOR, list):
+                    author = class_intent.PostModule.AUTHOR
+                else:
+                    author = []
+
                 one_module_config = {
 
                     "BROKER": class_intent.PostModule.MODULE_BROKER,  # 处理器
@@ -148,7 +162,7 @@ class PostModuleConfig(object):
                     "NAME": class_intent.PostModule.NAME,
                     "DESC": class_intent.PostModule.DESC,
                     "WARN": class_intent.PostModule.WARN,
-                    "AUTHOR": class_intent.PostModule.AUTHOR,
+                    "AUTHOR": author,
                     "REFERENCES": class_intent.PostModule.REFERENCES,
                     "README": class_intent.PostModule.README,
 

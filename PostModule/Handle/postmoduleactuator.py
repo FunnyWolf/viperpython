@@ -37,9 +37,16 @@ class PostModuleActuator(object):
         except Exception as E:
             logger.warning(E)
             custom_param = {}
+
         # 获取模块实例
         class_intent = importlib.import_module(loadpath)
         post_module_intent = class_intent.PostModule(sessionid, hid, custom_param)
+
+        # 格式化固定字段
+        try:
+            post_module_intent.AUTHOR = module_config.get("AUTHOR")
+        except Exception as E:
+            logger.warning(E)
 
         # 模块前序检查,调用check函数
         try:
@@ -101,6 +108,11 @@ class PostModuleActuator(object):
             post_module_intent = class_intent.PostModule(ip=ipport.get("ip"), port=ipport.get("port"),
                                                          protocol=ipport.get("protocol"),
                                                          custom_param=custom_param)
+            # 格式化固定字段
+            try:
+                post_module_intent.AUTHOR = module_config.get("AUTHOR")
+            except Exception as E:
+                logger.warning(E)
 
             # 模块前序检查,调用check函数
             try:

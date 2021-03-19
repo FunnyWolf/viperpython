@@ -620,7 +620,7 @@ class PostModule(PostMSFPythonWithParamsModule):
     ATTCK = ["T1003"]  # ATTCK向量
     README = ["https://www.yuque.com/funnywolfdoc/viperdoc/sxvmui"]
     REFERENCES = ["https://github.com/wafinfo/Sunflower_get_Password"]
-    AUTHOR = "Somd5-小宇"
+    AUTHOR = ["Somd5-小宇", "Viper"]
 
     OPTIONS = register_options([
         OptionStr(name='input_config_path', name_tag="config.ini路径", desc="自定义向日葵config.ini配置文件路径",

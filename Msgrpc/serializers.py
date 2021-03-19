@@ -59,7 +59,7 @@ class PostModuleSerializer(Serializer):
     DESC = CharField(max_length=100)
     REQUIRE_SESSION = BooleanField()
     MODULETYPE = CharField(max_length=100)  # 模块类型
-    AUTHOR = CharField(max_length=100)  # 模块作者
+    AUTHOR = ListField()  # 模块作者
     PLATFORM = ListField()  # 平台
     PERMISSIONS = ListField()
     README = ListField()
@@ -74,7 +74,7 @@ class BotModuleSerializer(Serializer):
     NAME = CharField(max_length=100)
     DESC = CharField(max_length=100)
     MODULETYPE = CharField(max_length=100)  # 模块类型
-    AUTHOR = CharField(max_length=100)  # 模块作者
+    AUTHOR = ListField()  # 模块作者
     REFERENCES = ListField()
     README = ListField()
     SEARCH = CharField(max_length=200)
