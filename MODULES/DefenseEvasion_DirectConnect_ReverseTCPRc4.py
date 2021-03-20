@@ -16,7 +16,7 @@ class PostModule(PostPythonModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量
-    README = [""]
+    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/hbgu2a"]
     REFERENCES = [""]
     AUTHOR = "Viper"
 
