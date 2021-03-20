@@ -91,7 +91,7 @@ class OptionStr(_Option):
         super().__init__(option_type='str', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
                          option_length=option_length)
 
-
+#
 class OptionIntger(_Option):
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
                  option_length=6):
@@ -108,9 +108,14 @@ class OptionBool(_Option):
                          option_length=option_length)
 
 
+
 class OptionEnum(_Option):
     def __init__(self, name=None, name_tag=None, desc=None, required=False, default=None, option_length=6,
                  enum_list=None):
+        # enum_list = [
+        #     {'name': "劫持", 'value': "Hijack"},
+        #     {'name': "恢复", 'value': "Recovery"},
+        # ]
         if enum_list is None:
             enum_list = []
         super().__init__(option_type='enum', name=name, name_tag=name_tag, required=required, desc=desc,
