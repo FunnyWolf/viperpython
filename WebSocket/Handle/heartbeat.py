@@ -249,8 +249,8 @@ class HeartBeat(object):
                 one_session['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
                 one_session['uuid'] = info.get('uuid')
                 one_session['platform'] = info.get('platform')
-                one_session['last_checkin'] = info.get('last_checkin') // 10 * 10
-                one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 10 * 10
+                one_session['last_checkin'] = info.get('last_checkin') // 5 * 5
+                one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 5 * 5
                 one_session['info'] = info.get('info')
                 one_session['arch'] = info.get('arch')
                 try:
