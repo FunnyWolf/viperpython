@@ -9,8 +9,10 @@ import ctypes
 import inspect
 import json
 import os
+import random
 import re
 import shutil
+import string
 import threading
 import time
 
@@ -380,6 +382,14 @@ class _CommonModule(object):
         else:
             payload = handler_config.get("PAYLOAD")
             return payload
+
+    def get_handler_config(self):
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        return handler_config
+
+    def random_str(self, num):
+        salt = ''.join(random.sample(string.ascii_letters, num))
+        return salt
 
 
 class _BotCommonModule(_CommonModule):

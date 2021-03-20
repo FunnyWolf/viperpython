@@ -115,7 +115,7 @@ class Mingw(object):
         self._src_file = os.path.join(TMP_DIR, f"{self._filename}.cpp")
         self._exe_file = os.path.join(TMP_DIR, f"{self._filename}.exe")
 
-    def _build_cmd(self, arch="x64"):
+    def _build_cmd(self, arch="x64", extra_params=[]):
         cmd = []
         if arch == "x64":
             cmd.append("x86_64-w64-mingw32-gcc")
@@ -141,7 +141,10 @@ class Mingw(object):
 
         opt_level = "-O2"
         cmd.append(opt_level)
+        if extra_params != []:
+            cmd.extend(extra_params)
 
+        cmd.append(opt_level)
         # linux独有参数
         if DEBUG:
             if self.strip_syms:
@@ -156,14 +159,15 @@ class Mingw(object):
             cmd.append(link_options)
         return cmd
 
-    def compile(self, arch="x64"):
+    def compile(self, arch="x64", extra_params=[]):
+
         bindata = None
         # 生成源码文件
         with open(self._src_file, "wb") as f:
             f.write(self.source_code.encode("utf-8"))
 
         # 编译
-        cmd = self._build_cmd(arch)
+        cmd = self._build_cmd(arch, extra_params=extra_params)
         ret = subprocess.run(cmd, capture_output=True, text=True)
         if ret.returncode != 0:
             logger.warning(ret.stdout)
