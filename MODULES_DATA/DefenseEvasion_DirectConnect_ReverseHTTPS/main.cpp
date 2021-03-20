@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <Wininet.h>
+#include <wininet.h>
 
 static BOOL err_exit(const char* message) {
 	printf("\nError: %s\nGetLastError:%d", message, GetLastError());
