@@ -16,7 +16,7 @@ class PostModule(PostMSFExecPEModule):
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1081"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1081/", "https://github.com/moonD4rk/HackBrowserData"]
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/qr9zob"]
+    README = ["https://www.yuque.com/vipersec/module/tzbot0"]
     AUTHOR = "Viper"
 
     OPTIONS = register_options([])

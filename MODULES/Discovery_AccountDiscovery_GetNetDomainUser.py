@@ -13,7 +13,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1087"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/pmby17"]
+    README = ["https://www.yuque.com/vipersec/module/ozet21"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1087/"]
     AUTHOR = "Viper"
 

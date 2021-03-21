@@ -17,7 +17,7 @@ class PostModule(PostMSFRawModule):
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/"]
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/aacm7r"]
+    README = ["https://www.yuque.com/vipersec/module/wkqgqd"]
     AUTHOR = "Viper"
 
     def __init__(self, sessionid, hid, custom_param):

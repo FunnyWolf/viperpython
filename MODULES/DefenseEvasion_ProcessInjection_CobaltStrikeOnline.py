@@ -14,7 +14,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量
-    REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
+    REFERENCES = ["https://www.yuque.com/vipersec/module/urdpn7"]
     README = ["https://www.yuque.com/funnywolfdoc/viperdoc/rdtnla"]
     AUTHOR = "Viper"
 

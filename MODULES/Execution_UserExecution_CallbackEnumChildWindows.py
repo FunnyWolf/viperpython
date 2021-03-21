@@ -10,14 +10,14 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "Callback免杀(EnumWindows)"
-    DESC = "模块通过编码shellcode与EnumWindows Callback结合的方式实现免杀"
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME = "Callback免杀(EnumChildWindows)"
+    DESC = "模块通过编码shellcode与EnumChildWindows Callback结合的方式实现免杀"
+    MODULETYPE = TAG2CH.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/twnkr6"]
-    REFERENCES = ["https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows"]
+    README = ["https://www.yuque.com/vipersec/module/dkezaz"]
+    REFERENCES = ["https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows"]
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
@@ -44,7 +44,7 @@ class PostModule(PostPythonModule):
         else:
             arch = "x64"
         binbytes = mingw.compile(arch=arch)
-        filename = f"EnumWindows_{int(time.time())}.exe"
+        filename = f"EnumChildWindows_{int(time.time())}.exe"
         self.write_to_loot(filename=filename, data=binbytes)
         self.log_good("模块执行成功")
         self.log_good(f"请在<文件列表>中查看生成的exe文件: {filename}")

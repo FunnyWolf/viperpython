@@ -17,7 +17,7 @@ class PostModule(PostPythonModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1116"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/fv8mdv"]
+    README = ["https://www.yuque.com/vipersec/module/hfdahb"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1116/"]
     AUTHOR = "Viper"
 

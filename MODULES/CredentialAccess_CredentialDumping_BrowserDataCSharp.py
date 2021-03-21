@@ -14,8 +14,9 @@ class PostModule(PostMSFCSharpModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
-    REFERENCES = ["https://attack.mitre.org/techniques/T1003/", "https://github.com/QAX-A-Team/BrowserGhost"]
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/xfdq0q"]
+    REFERENCES = ["https://attack.mitre.org/techniques/T1003/",
+                  "https://github.com/QAX-A-Team/BrowserGhost"]
+    README = ["https://www.yuque.com/vipersec/module/ynbyqg"]
     AUTHOR = "Viper"
 
     def __init__(self, sessionid, hid, custom_param):

@@ -15,7 +15,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1193"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/iecrnq"]
+    README = ["https://www.yuque.com/vipersec/module/taxm8t"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1193/"]
     AUTHOR = "Viper"
 

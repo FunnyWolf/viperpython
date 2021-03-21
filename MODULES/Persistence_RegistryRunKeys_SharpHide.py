@@ -14,7 +14,7 @@ class PostModule(PostMSFCSharpModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1037"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/fu3t5z"]
+    README = ["https://www.yuque.com/vipersec/module/npl2d8"]
     REFERENCES = ["https://github.com/outflanknl/SharpHide"]
     AUTHOR = "Viper"
 

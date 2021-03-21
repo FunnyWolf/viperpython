@@ -16,7 +16,7 @@ class PostModule(PostMSFCSharpModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = []  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/crtc4y"]
+    README = ["https://www.yuque.com/vipersec/module/dkneiv"]
     REFERENCES = ["https://k8gege.org/Ladon/", "https://github.com/k8gege/Ladon"]
     AUTHOR = "Viper"
     WARN = "模块可能存在安全风险,请参考说明"

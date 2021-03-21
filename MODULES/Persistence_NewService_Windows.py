@@ -18,7 +18,7 @@ class PostModule(PostMSFRawModule):
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1050"]  # ATTCK向量
     AUTHOR = "Viper"
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/twfwm4"]
+    README = ["https://www.yuque.com/vipersec/module/wqyzcf"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     OPTIONS = register_options([
         OptionHander(),

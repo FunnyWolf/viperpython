@@ -20,7 +20,7 @@ class PostModule(PostPythonModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator"]  # 所需权限
     ATTCK = ["T1088"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/pm6e3z"]
+    README = ["https://www.yuque.com/vipersec/module/ygddsl"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1088/"]
     AUTHOR = "Viper"
 

@@ -15,7 +15,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/giyftb"]
+    README = ["https://www.yuque.com/vipersec/module/delftb"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1088/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([

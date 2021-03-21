@@ -15,7 +15,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = [""]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/ve2h6z"]
+    README = ["https://www.yuque.com/vipersec/module/rqqo3g"]
     REFERENCES = ["https://blog.f-secure.com/abusing-windows-library-files-for-persistence/"]
     AUTHOR = "Viper"
 

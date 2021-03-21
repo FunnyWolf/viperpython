@@ -18,7 +18,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/ye4b49"]
+    README = ["https://www.yuque.com/vipersec/module/ud0pd6"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     AUTHOR = "Viper"
     WARN = "成功注入系统进程后请勿关闭Session"

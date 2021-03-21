@@ -618,7 +618,7 @@ class PostModule(PostMSFPythonWithParamsModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
-    README = ["https://www.yuque.com/funnywolfdoc/viperdoc/sxvmui"]
+    README = ["https://www.yuque.com/vipersec/module/qz74vz"]
     REFERENCES = ["https://github.com/wafinfo/Sunflower_get_Password"]
     AUTHOR = ["Somd5-小宇", "Viper"]
 
