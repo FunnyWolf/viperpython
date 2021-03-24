@@ -190,6 +190,7 @@ class HeartBeat(object):
 
     @staticmethod
     def list_sessions():
+        # 更新session的监听配置
         uuid_msfjobid = {}
         msfjobs = Job.list_msfrpc_jobs()
         if msfjobs is not None:
@@ -204,58 +205,60 @@ class HeartBeat(object):
 
         sessions_available_count = 0
         sessions = []
-        infos = RpcClient.call(Method.SessionList, timeout=3)
-        if infos is None:
-            return sessions
+        session_info_dict = RpcClient.call(Method.SessionList, timeout=3)
+        if session_info_dict is None:
+            return []
 
-        if infos.get('error'):
-            logger.warning(infos.get('error_string'))
-            return sessions
+        if session_info_dict.get('error'):
+            logger.warning(session_info_dict.get('error_string'))
+            return []
+
         sessionhosts = []
-        for key in infos.keys():
-            info = infos.get(key)
-            if info is not None:
+        for session_id_str in session_info_dict.keys():
+            session_info = session_info_dict.get(session_id_str)
+            if session_info is not None:
                 one_session = {}
                 try:
-                    one_session['id'] = int(key)
+                    one_session['id'] = int(session_id_str)
                 except Exception as E:
                     logger.warning(E)
                     continue
 
                 # 处理linux的no-user问题
-                if str(info.get('info')).split(' @ ')[0] == "no-user":
-                    info['info'] = info.get('info')[10:]
+                if str(session_info.get('info')).split(' @ ')[0] == "no-user":
+                    session_info['info'] = session_info.get('info')[10:]
 
-                one_session['type'] = info.get('type')
-                one_session['session_host'] = info.get('session_host')
-                one_session['tunnel_local'] = info.get('tunnel_local')
-                one_session['tunnel_peer'] = info.get('tunnel_peer')
-                one_session['tunnel_peer_ip'] = info.get('tunnel_peer').split(":")[0]
-                one_session['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
-                one_session['via_exploit'] = info.get('via_exploit')
-                one_session['exploit_uuid'] = info.get('exploit_uuid')
-
-                if uuid_msfjobid.get(info.get('exploit_uuid')) is None:
+                # 处理session对应监听问题
+                one_session['exploit_uuid'] = session_info.get('exploit_uuid')
+                if uuid_msfjobid.get(session_info.get('exploit_uuid')) is None:
                     one_session['job_info'] = {"job_id": -1,
                                                "PAYLOAD": None,
                                                "LPORT": None,
                                                "LHOST": None,
                                                "RHOST": None}
                 else:
-                    one_session['job_info'] = uuid_msfjobid.get(info.get('exploit_uuid'))
+                    one_session['job_info'] = uuid_msfjobid.get(session_info.get('exploit_uuid'))
 
-                one_session['via_payload'] = info.get('via_payload')
-                one_session['tunnel_peer_ip'] = info.get('tunnel_peer').split(":")[0]
-                one_session['tunnel_peer_locate'] = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
-                one_session['uuid'] = info.get('uuid')
-                one_session['platform'] = info.get('platform')
-                one_session['last_checkin'] = info.get('last_checkin') // 5 * 5
-                one_session['fromnow'] = (int(time.time()) - info.get('last_checkin')) // 5 * 5
-                one_session['info'] = info.get('info')
-                one_session['arch'] = info.get('arch')
+                one_session['type'] = session_info.get('type')
+                one_session['session_host'] = session_info.get('session_host')
+                one_session['tunnel_local'] = session_info.get('tunnel_local')
+                one_session['tunnel_peer'] = session_info.get('tunnel_peer')
+                one_session['tunnel_peer_ip'] = session_info.get('tunnel_peer').split(":")[0]
+                one_session['tunnel_peer_locate'] = Geoip.get_city(session_info.get('tunnel_peer').split(":")[0])
+                one_session['via_exploit'] = session_info.get('via_exploit')
+                one_session['via_payload'] = session_info.get('via_payload')
+                one_session['tunnel_peer_ip'] = session_info.get('tunnel_peer').split(":")[0]
+                one_session['tunnel_peer_locate'] = Geoip.get_city(session_info.get('tunnel_peer').split(":")[0])
+                one_session['uuid'] = session_info.get('uuid')
+                one_session['platform'] = session_info.get('platform')
+                one_session['last_checkin'] = session_info.get('last_checkin') // 5 * 5
+                one_session['fromnow'] = (int(time.time()) - session_info.get('last_checkin')) // 5 * 5
+                one_session['info'] = session_info.get('info')
+                one_session['arch'] = session_info.get('arch')
+
                 try:
-                    one_session['user'] = str(info.get('info')).split(' @ ')[0]
-                    one_session['computer'] = str(info.get('info')).split(' @ ')[1]
+                    one_session['user'] = str(session_info.get('info')).split(' @ ')[0]
+                    one_session['computer'] = str(session_info.get('info')).split(' @ ')[1]
                 except Exception as _:
                     one_session['user'] = "Initializing"
                     one_session['computer'] = "Initializing"
@@ -269,25 +272,33 @@ class HeartBeat(object):
                     sessions.append(one_session)
                     continue
 
-                one_session['load_powershell'] = info.get('load_powershell')
-                one_session['load_python'] = info.get('load_python')
+                one_session['load_powershell'] = session_info.get('load_powershell')
+                one_session['load_python'] = session_info.get('load_python')
 
-                one_session['advanced_info'] = info.get('advanced_info')
+                advanced_info = session_info.get('advanced_info')
+                one_session['advanced_info'] = advanced_info
+
                 try:
-                    one_session['os'] = info.get('advanced_info').get("sysinfo").get("OS")
-                    one_session['os_short'] = info.get('advanced_info').get("sysinfo").get("OS").split("(")[0]
+                    one_session['os'] = advanced_info.get("sysinfo").get("OS")
+                    one_session['os_short'] = advanced_info.get("sysinfo").get("OS").split("(")[0]
                 except Exception as _:
                     one_session['os'] = None
                     one_session['os_short'] = None
+
                 try:
-                    one_session['isadmin'] = info.get('advanced_info').get("sysinfo").get("IsAdmin")
-                    if info.get('platform').lower().startswith('linux'):
+                    one_session['isadmin'] = advanced_info.get("sysinfo").get("IsAdmin")
+                    if session_info.get('platform').lower().startswith('linux'):
                         if "uid=0" in one_session['info'].lower():
                             one_session['isadmin'] = True
                 except Exception as _:
                     one_session['isadmin'] = None
 
-                routestrlist = info.get('routes')
+                try:
+                    one_session['pid'] = advanced_info.get("sysinfo").get("Pid")
+                except Exception as _:
+                    one_session['pid'] = -1  # linux暂时不支持展示pid
+
+                routestrlist = session_info.get('routes')
                 one_session['routes'] = []
                 try:
                     if isinstance(routestrlist, list):
@@ -301,7 +312,7 @@ class HeartBeat(object):
                 sessions.append(one_session)
 
                 # session监控统计信息
-                sessionhosts.append(info.get('session_host'))
+                sessionhosts.append(session_info.get('session_host'))
                 sessions_available_count += 1
 
         def split_ip(ip):
