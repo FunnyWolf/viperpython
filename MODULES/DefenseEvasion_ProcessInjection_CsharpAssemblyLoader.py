@@ -30,8 +30,8 @@ class PostModule(PostMSFRawModule):
         OptionBool(name='KILL', name_tag="结束进程", desc="执行完成后结束C#进程", default=True),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "post"
         self.mname = "windows/manage/execute_assembly_api"
 

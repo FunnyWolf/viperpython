@@ -627,8 +627,8 @@ class PostModule(PostMSFPythonWithParamsModule):
                   option_length=24),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
     def check(self):
         """执行前的检查函数"""

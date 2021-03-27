@@ -29,12 +29,12 @@ class PostModuleActuatorView(BaseView):
         if moduletype is None:  # 默认模块
             try:
                 sessionid = int(request.data.get('sessionid', None))
-                hid = int(request.data.get('hid', None))
+                ipaddress = request.data.get('ipaddress', None)
                 loadpath = str(request.data.get('loadpath', None))
                 custom_param = str(request.data.get('custom_param', None))
                 context = PostModuleActuator.create_post(loadpath=loadpath,
                                                          sessionid=sessionid,
-                                                         hid=hid,
+                                                         ipaddress=ipaddress,
                                                          custom_param=custom_param)
             except Exception as E:
                 logger.error(E)
@@ -60,9 +60,9 @@ class PostModuleActuatorView(BaseView):
 class PostModuleResultView(BaseView):
     def list(self, request, **kwargs):
         try:
-            hid = int(request.query_params.get('hid', None))
+            ipaddress = request.query_params.get('ipaddress', None)
             loadpath = str(request.query_params.get('loadpath', None))
-            context = PostModuleResult.list(hid=hid, loadpath=loadpath)
+            context = PostModuleResult.list(ipaddress=ipaddress, loadpath=loadpath)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})

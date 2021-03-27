@@ -13,8 +13,8 @@ from PostLateral.Handle.vulnerability import Vulnerability
 class PortServiceView(BaseView):
     def list(self, request, **kwargs):
         try:
-            hid = int(request.query_params.get('hid', None))
-            context = PortService.list(hid=hid)
+            ipaddress = request.query_params.get('ipaddress', None)
+            context = PortService.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), [])
@@ -22,9 +22,9 @@ class PortServiceView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            hid = int(request.query_params.get('hid', None))
+            ipaddress = request.query_params.get('ipaddress', None)
             port = int(request.query_params.get('port', None))
-            context = PortService.destory(hid=hid, port=port)
+            context = PortService.destory(ipaddress=ipaddress, port=port)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})
@@ -85,8 +85,8 @@ class CredentialView(BaseView):
 class VulnerabilityView(BaseView):
     def list(self, request, **kwargs):
         try:
-            hid = int(request.query_params.get('hid', -1))
-            context = Vulnerability.list(hid=hid)
+            ipaddress = request.query_params.get('ipaddress', None)
+            context = Vulnerability.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), [])

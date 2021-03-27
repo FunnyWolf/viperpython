@@ -24,8 +24,8 @@ class PostModule(PostMSFPythonModule):
         OptionIntger(name='timeout', name_tag="脚本超时时间(秒)", desc="脚本执行的超时时间(5-3600)", required=True, default=60),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
     def check(self):
         """执行前的检查函数"""

@@ -57,10 +57,10 @@ class HostView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            hid = int(request.data.get('hid', None))
+            ipaddress = request.data.get('ipaddress', None)
             tag = str(request.data.get('tag', None))
             comment = request.data.get('comment', None)
-            context = Host.update(hid, tag, comment)
+            context = Host.update(ipaddress, tag, comment)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})
@@ -68,16 +68,16 @@ class HostView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            hid_str = request.query_params.get('hid', -1)
+            ipaddress_str = request.query_params.get('ipaddress', -1)
             # 多个
-            if "," in hid_str:
-                hids = []
-                for i in hid_str.split(","):
-                    hids.append(int(i))
-                context = Host.destory_mulit(hids)
+            if "," in ipaddress_str:
+                ipaddress_list = []
+                for i in ipaddress_str.split(","):
+                    ipaddress_list.append(i)
+                context = Host.destory_mulit(ipaddress_list)
             else:
-                hid = int(hid_str)
-                context = Host.destory_single(hid)
+                ipaddress = ipaddress_str
+                context = Host.destory_single(ipaddress)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})

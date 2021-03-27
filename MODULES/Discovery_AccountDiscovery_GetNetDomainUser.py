@@ -17,8 +17,8 @@ class PostModule(PostMSFPowershellFunctionModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1087/"]
     AUTHOR = "Viper"
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.set_script("PowerView_dev.ps1")  # 设置目标机执行的脚本文件
         self.set_execute_string('Get-DomainUser | select memberof,whenchanged,useraccountcontrol,'
                                 'name,lastlogon,pwdlastset,displayname,whencreated,userprincipalname | Convertto-JSON -maxdepth 2')

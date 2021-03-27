@@ -25,8 +25,8 @@ class PostModule(PostMSFRawModule):
         OptionIntger(name='threads', name_tag="扫描线程数", desc="扫描线程数(最大值10)", required=True, default=10),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "post"
         self.mname = "windows/gather/arp_scanner_api"
 
@@ -65,13 +65,10 @@ class PostModule(PostMSFRawModule):
                                                            host_mac.get('company'))
                 self.log_good(tmpstr)
                 # 存储部分
-                hid = self.add_host(host_mac.get('host'))
+                ipaddress = host_mac.get('host')
+                result = self.add_host(ipaddress, source=self.host_ipaddress, linktype="scan", data={"method": "arp"})
                 # -1端口存储mac地址 -2端口存储网卡厂商
-                self.add_portservice(hid, 0,
-                                     proxy={'type': 'Session',
-                                            'data': {'session_host': self.session.session_host,
-                                                     'sessionid': self._sessionid}},
-                                     banner={'mac': host_mac.get('mac')}, service="MAC")
+                self.add_portservice(ipaddress, 0, banner={'mac': host_mac.get('mac')}, service="MAC")
 
         except Exception as E:
             self.log_error("模块执行失败,失败原因:{}".format(E))

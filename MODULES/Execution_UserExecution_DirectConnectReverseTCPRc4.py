@@ -27,8 +27,8 @@ class PostModule(PostPythonModule):
         # OptionStr("PASSWORD", name_tag="PASSWORD", desc="填写监听中RC4密码", required=True),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
     def check(self):
         """执行前的检查函数"""

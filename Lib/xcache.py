@@ -34,6 +34,7 @@ class Xcache(object):
     XCACHE_HEARTBEAT_CACHE_JOBS = "XCACHE_HEARTBEAT_CACHE_JOBS"
     XCACHE_HEARTBEAT_CACHE_BOT_WAIT_LIST = "XCACHE_HEARTBEAT_CACHE_BOT_WAIT_LIST"
     XCACHE_HEARTBEAT_CACHE_HOSTS_SORTED = "XCACHE_HEARTBEAT_CACHE_HOSTS_SORTED"
+    XCACHE_HEARTBEAT_CACHE_NETWORK_DATA = "XCACHE_HEARTBEAT_CACHE_NETWORK_DATA"
 
     XCACHE_MSFCONSOLE_INPUT_CACHE = "XCACHE_MSFCONSOLE_INPUT_CACHE"
     XCACHE_MSFCONSOLE_CID = "XCACHE_MSFCONSOLE_CID"
@@ -104,6 +105,16 @@ class Xcache(object):
     @staticmethod
     def set_heartbeat_cache_hosts_sorted(result):
         cache.set(Xcache.XCACHE_HEARTBEAT_CACHE_HOSTS_SORTED, result, None)
+        return True
+
+    @staticmethod
+    def get_heartbeat_cache_network_data():
+        result = cache.get(Xcache.XCACHE_HEARTBEAT_CACHE_NETWORK_DATA)
+        return result
+
+    @staticmethod
+    def set_heartbeat_cache_network_data(result):
+        cache.set(Xcache.XCACHE_HEARTBEAT_CACHE_NETWORK_DATA, result, None)
         return True
 
     @staticmethod
@@ -269,7 +280,7 @@ class Xcache(object):
         return True
 
     @staticmethod
-    def del_module_result_by_hid(ipaddress):
+    def del_module_result_by_ipaddress(ipaddress):
         re_key = "{}_{}_*".format(Xcache.XCACHE_MODULES_RESULT, ipaddress)
         keys = cache.keys(re_key)
         for key in keys:
@@ -307,7 +318,7 @@ class Xcache(object):
         return True
 
     @staticmethod
-    def del_module_result_history_by_hid(ipaddress):
+    def del_module_result_history_by_ipaddress(ipaddress):
         old_result = cache.get(Xcache.XCACHE_MODULES_RESULT_HISTORY)
         if old_result is None:
             return False
@@ -659,47 +670,47 @@ class Xcache(object):
         return cache_data
 
     @staticmethod
-    def get_sessionio_cache(hid):
+    def get_sessionio_cache(ipaddress):
         cache_dict = cache.get(Xcache.XCACHE_SESSIONIO_CACHE)
         if cache_dict is None:
-            cache_dict = {hid: ''}
+            cache_dict = {ipaddress: ''}
             cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-            return {'hid': hid, 'buffer': ''}
+            return {'ipaddress': ipaddress, 'buffer': ''}
 
-        if cache_dict.get(hid) is None:
-            cache_dict[hid] = ''
+        if cache_dict.get(ipaddress) is None:
+            cache_dict[ipaddress] = ''
             cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-            return {'hid': hid, 'buffer': ''}
-        old_buffer = cache_dict.get(hid)
-        return {'hid': hid, 'buffer': old_buffer}
+            return {'ipaddress': ipaddress, 'buffer': ''}
+        old_buffer = cache_dict.get(ipaddress)
+        return {'ipaddress': ipaddress, 'buffer': old_buffer}
 
     @staticmethod
-    def add_sessionio_cache(hid, buffer):
+    def add_sessionio_cache(ipaddress, buffer):
         cache_dict = cache.get(Xcache.XCACHE_SESSIONIO_CACHE)
         if cache_dict is None:
-            cache_dict = {hid: buffer}
+            cache_dict = {ipaddress: buffer}
             cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-            return {'hid': hid, 'buffer': buffer}
-        if cache_dict.get(hid) is None:
-            cache_dict[hid] = buffer
+            return {'ipaddress': ipaddress, 'buffer': buffer}
+        if cache_dict.get(ipaddress) is None:
+            cache_dict[ipaddress] = buffer
             cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-            return {'hid': hid, 'buffer': buffer}
+            return {'ipaddress': ipaddress, 'buffer': buffer}
 
-        new_buffer = cache_dict.get(hid) + buffer
-        cache_dict[hid] = new_buffer
+        new_buffer = cache_dict.get(ipaddress) + buffer
+        cache_dict[ipaddress] = new_buffer
         cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-        return {'hid': hid, 'buffer': new_buffer}
+        return {'ipaddress': ipaddress, 'buffer': new_buffer}
 
     @staticmethod
-    def del_sessionio_cache(hid):
+    def del_sessionio_cache(ipaddress):
         cache_dict = cache.get(Xcache.XCACHE_SESSIONIO_CACHE)
         if cache_dict is None:
-            cache_dict = {hid: ''}
+            cache_dict = {ipaddress: ''}
             cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-            return {'hid': hid, 'buffer': ''}
-        cache_dict[hid] = ''
+            return {'ipaddress': ipaddress, 'buffer': ''}
+        cache_dict[ipaddress] = ''
         cache.set(Xcache.XCACHE_SESSIONIO_CACHE, cache_dict)
-        return {'hid': hid, 'buffer': ''}
+        return {'ipaddress': ipaddress, 'buffer': ''}
 
     @staticmethod
     def list_lazyloader():

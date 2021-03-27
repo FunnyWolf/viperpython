@@ -67,7 +67,7 @@ class PostModuleSerializer(Serializer):
     REFERENCES = ListField()
     _custom_param = DictField()  # 前端传入的参数信息
     _sessionid = IntegerField()  # 前端传入的sessionid
-    _hid = IntegerField()  # 前端传入的hid信息
+    _ipaddress = CharField(max_length=100)  # 前端传入的ipaddress信息
 
 
 class BotModuleSerializer(Serializer):

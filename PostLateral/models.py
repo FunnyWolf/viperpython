@@ -5,8 +5,7 @@ from Core.models import DiyDictField
 
 # Create your models here.
 class PortServiceModel(models.Model):
-    hid = models.IntegerField(default=-1)
-    proxy = DiyDictField(default={})
+    ipaddress = models.CharField(blank=True, null=True, max_length=100)
     update_time = models.IntegerField(default=0)
     port = models.IntegerField(default=0)
     banner = DiyDictField(default={})
@@ -24,8 +23,15 @@ class CredentialModel(models.Model):
 
 
 class VulnerabilityModel(models.Model):
-    hid = models.IntegerField(default=-1)
+    ipaddress = models.CharField(blank=True, null=True, max_length=100)
     source_module_loadpath = models.CharField(blank=True, null=True, max_length=255)  # 密码信息和hash信息
     update_time = models.IntegerField(default=0)
     extra_data = DiyDictField(default={})  # 额外信息
     desc = models.TextField(blank=True, null=True)  # 关于凭证的说明
+
+
+class EdgeModel(models.Model):
+    source = models.CharField(blank=True, null=True, max_length=100)
+    target = models.CharField(blank=True, null=True, max_length=100)
+    type = models.CharField(blank=True, null=True, max_length=100)
+    data = DiyDictField(default={})

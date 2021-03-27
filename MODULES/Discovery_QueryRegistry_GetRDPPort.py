@@ -20,8 +20,8 @@ class PostModule(PostPythonModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1012/"]
     OPTIONS = []
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
     def check(self):
         """执行前的检查函数"""

@@ -23,8 +23,8 @@ class PostModule(PostMSFRawModule):
         OptionHander(),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "exploit"
         self.mname = "windows/local/payload_inject_api"
         self.opts['NEWPROCESS'] = True

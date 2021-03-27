@@ -6,9 +6,15 @@
 from rest_framework.serializers import Serializer, IntegerField, DictField, CharField
 
 
+class EdgeSerializer(Serializer):
+    source = CharField(max_length=100)
+    target = CharField(max_length=100)
+    type = CharField(max_length=100)
+    data = DictField()
+
+
 class PortServiceSerializer(Serializer):
-    hid = IntegerField()
-    proxy = DictField()
+    ipaddress = CharField(max_length=100)
     update_time = IntegerField()
     port = IntegerField()
     banner = DictField()
@@ -28,7 +34,7 @@ class CredentialSerializer(Serializer):
 
 class VulnerabilitySerializer(Serializer):
     id = IntegerField()
-    hid = IntegerField()
+    ipaddress = CharField(max_length=100)
     source_module_loadpath = CharField(max_length=255)  # 凭证来源的模块loadpath
     update_time = IntegerField()
     extra_data = DictField()

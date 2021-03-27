@@ -23,8 +23,8 @@ class PostModule(PostMSFPowershellFunctionModule):
         OptionStr(name='ComputerName', name_tag="主机名", desc="需要查询的主机名"),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.set_script("PowerView_dev.ps1")  # 设置目标机执行的脚本文件
 
     def check(self):

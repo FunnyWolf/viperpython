@@ -22,8 +22,8 @@ class PostModule(PostMSFPowershellFunctionModule):
         OptionBool(name='AllComputer', name_tag="所有主机", desc="查询域内所有主机的IP地址", default=False),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.set_script("PowerView_dev.ps1")  # 设置目标机执行的脚本文件
 
     def check(self):

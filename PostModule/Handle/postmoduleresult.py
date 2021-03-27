@@ -2,7 +2,6 @@
 # @File  : postmoduleresult.py
 # @Date  : 2021/2/26
 # @Desc  :
-from Core.Handle.host import Host
 from Lib.api import data_return
 from Lib.configs import CODE_MSG
 from Lib.xcache import Xcache
@@ -13,10 +12,9 @@ class PostModuleResult(object):
         pass
 
     @staticmethod
-    def list(hid=None, loadpath=None):
-        host = Host.get_by_hid(hid)
-        result = Xcache.get_module_result(ipaddress=host.get("ipaddress"), loadpath=loadpath)
-        result_dict = {"hid": hid,
+    def list(ipaddress=None, loadpath=None):
+        result = Xcache.get_module_result(ipaddress=ipaddress, loadpath=loadpath)
+        result_dict = {"ipaddress": ipaddress,
                        "loadpath": loadpath,
                        "update_time": result.get("update_time"),
                        "result": result.get("result")}

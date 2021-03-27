@@ -32,8 +32,8 @@ class PostModule(PostMSFPythonWithParamsModule):
         OptionIntger(name='max_threads', name_tag="扫描线程数", desc="扫描线程数(最大值20)", default=10),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.set_script("portScanWithService.py")  # 设置目标机执行的脚本文件
 
     def check(self):
@@ -145,16 +145,13 @@ class PostModule(PostMSFPythonWithParamsModule):
                                                               tmpService)
                 self.log_good(tmpstr)
                 # 存储部分
-                hid = self.add_host(portservice.get('host'))
-                self.add_portservice(hid=hid,
+                ipaddress = portservice.get('host')
+                result = self.add_host(ipaddress,
+                                       source=self.host_ipaddress,
+                                       linktype="scan",
+                                       data={"method": "portscan"})
+                self.add_portservice(ipaddress=ipaddress,
                                      port=portservice.get('port'),
-                                     proxy={
-                                         'type': 'Session',
-                                         'data':
-                                             {
-                                                 'session_host': self.session.session_host,
-                                             }
-                                     },
                                      banner=tmpBanner, service=tmpService)
         else:
             self.log_error("模块执行失败")

@@ -24,8 +24,8 @@ class PostModule(PostMSFRawModule):
         OptionStr(name='rhosts', name_tag="目标网站", required=True, desc="目标网站的网址,无需添加https://前缀"),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "auxiliary"
         self.mname = "gather/impersonate_ssl_api"
 

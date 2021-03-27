@@ -94,10 +94,10 @@ class HandlerView(BaseView):
 class SessionIOView(BaseView):
     def create(self, request, **kwargs):
         try:
-            hid = int(request.data.get('hid', None))
+            ipaddress = request.data.get('ipaddress', None)
             sessionid = int(request.data.get('sessionid', None))
             user_input = str(request.data.get('input', ""))
-            context = SessionIO.create(hid, sessionid, user_input)
+            context = SessionIO.create(ipaddress, sessionid, user_input)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})
@@ -105,9 +105,9 @@ class SessionIOView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            hid = int(request.data.get('hid', None))
+            ipaddress = request.data.get('ipaddress', None)
             sessionid = int(request.data.get('sessionid', None))
-            context = SessionIO.update(hid, sessionid)
+            context = SessionIO.update(ipaddress, sessionid)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})
@@ -115,8 +115,8 @@ class SessionIOView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            hid = int(request.query_params.get('hid', None))
-            context = SessionIO.destroy(hid)
+            ipaddress = request.query_params.get('ipaddress', None)
+            context = SessionIO.destroy(ipaddress)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})
@@ -146,8 +146,8 @@ class SessionView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            hid = int(request.query_params.get('sessionid', None))
-            context = Session.destroy(hid)
+            sessionid = int(request.query_params.get('sessionid', None))
+            context = Session.destroy(sessionid)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})

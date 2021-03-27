@@ -25,8 +25,8 @@ class PostModule(PostPythonModule):
         OptionFileEnum(ext=['exe', 'EXE']),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.session = None
         self.module_path_list = []
 

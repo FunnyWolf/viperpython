@@ -28,8 +28,8 @@ class PostModule(PostMSFCSharpModule):
                      desc="读取输出信息前等待的秒数", default=10),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
     def check(self):
         """执行前的检查函数"""

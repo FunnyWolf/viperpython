@@ -34,8 +34,8 @@ class PostModule(PostMSFRawModule):
         OptionStr(name='TOKEN', name_tag="用户TOKEN", desc="添加域用户时可将TOKEN设置为用户名或PID,模块会自动使用steal_token窃取token."),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "post"
         self.mname = "windows/manage/add_user_api"
 

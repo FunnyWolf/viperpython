@@ -60,7 +60,7 @@ class _CommonModule(object):
 
         super().__init__()  # 父类无需入参
         self._custom_param = custom_param  # 前端传入的参数信息
-        self._hid = None  # 补齐默认参数,为了Serializer
+        self._ipaddress = None  # 补齐默认参数,为了Serializer
         self._sessionid = None  # 补齐默认参数,为了Serializer
         self._ip = None  # 补齐默认参数,为了Serializer
         self._port = None  # 补齐默认参数,为了Serializer
@@ -112,27 +112,22 @@ class _CommonModule(object):
     def target_str(self):
         if self._sessionid is not None and self._sessionid != -1:
             return f"SID: {self._sessionid}"
-        elif self._hid is not None and self._hid != -1:
+        elif self._ipaddress is not None and self._ipaddress != -1:
             return f"IP: {self.host_ipaddress}"
         elif self._ip is not None:
             return f"IP: {self.host_ipaddress}"
         else:
             return ""
 
-    def add_portservice(self, hid, port, proxy=None, banner=None, service=""):
-        if proxy is None:
-            proxy = {}
+    def add_portservice(self, ipaddress, port, banner=None, service=""):
+
         if banner is None:
             banner = {}
 
-        # 数据类型检查
-        if isinstance(proxy, dict) is not True:
-            logger.warning('数据类型检查错误,数据 {}'.format(proxy))
-            proxy = {}
         if isinstance(banner, dict) is not True:
             logger.warning('数据类型检查错误,数据 {}'.format(banner))
             banner = {}
-        result = PortService.add_or_update(hid=hid, port=port, proxy=proxy, banner=banner, service=service)
+        result = PortService.add_or_update(ipaddress=ipaddress, port=port, banner=banner, service=service)
         return result
 
     def add_credential(self, username='', password='', password_type='', tag=None, desc=''):
@@ -148,25 +143,21 @@ class _CommonModule(object):
                                           desc)
         return result
 
-    def add_vulnerability(self, hid_or_ipaddress=None, extra_data=None, desc=''):
+    def add_vulnerability(self, ipaddress=None, extra_data=None, desc=''):
         if extra_data is None:
             extra_data = {}
         if isinstance(extra_data, dict) is not True:
             logger.warning('数据类型检查错误,数据 {}'.format(extra_data))
             extra_data = {}
-        if isinstance(hid_or_ipaddress, int):
-            result = Vulnerability.add_or_update(hid_or_ipaddress, self.loadpath, extra_data, desc)
-            return result
-        elif isinstance(hid_or_ipaddress, str):
-            result = Vulnerability.add_or_update(Host.get_by_ipaddress(hid_or_ipaddress).get('id'),
-                                                 self.loadpath,
-                                                 extra_data, desc)
-            return result
 
-    def add_host(self, ipaddress):
-        result = Host.create_host(ipaddress)
-        hid = result.get('id')
-        return hid
+        result = Vulnerability.add_or_update(ipaddress,
+                                             self.loadpath,
+                                             extra_data, desc)
+        return result
+
+    def add_host(self, ipaddress, source, linktype, data):
+        result = Host.create_host(ipaddress, source, linktype, data)
+        return result
 
     # 存储结果函数集
     def clean_log(self):
@@ -437,12 +428,11 @@ class _PostCommonModule(_CommonModule):
     """post类模块基础模板"""
     MODULE_BROKER = BROKER.post_msf_job
 
-    def __init__(self, sessionid, hid, custom_param):
+    def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(custom_param)  # 父类无需入参
         # 设置内部参数
-        self._hid = hid  # 前端传入的hid信息
+        self._ipaddress = ipaddress  # 前端传入的ipaddress信息
         self._sessionid = sessionid  # 前端传入的sessionid
-        self._ipaddress = Host.get_ipaddress_by_hid(self._hid)
 
     @property
     def host_ipaddress(self):
@@ -487,8 +477,8 @@ class _PostMSFModuleCommon(_PostCommonModule):
     """msf模块后台运行基础模板"""
     MODULE_BROKER = BROKER.post_msf_job
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)  # 父类无需入参
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)  # 父类无需入参
 
         # 设置MSF模块参数
         self.type = None  # msf模块类型
@@ -590,8 +580,8 @@ class PostPythonModule(_PostCommonModule):
     """多模块执行的基础模板"""
     MODULE_BROKER = BROKER.post_python_job
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)  # 父类无需参数
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)  # 父类无需参数
 
         # 设置模块参数
         self.module_self_uuid = None  # 为了存储uuid设置的字段
@@ -627,8 +617,8 @@ class PostMSFRawModule(_PostMSFModuleCommon):
     """调用原始msf模块的模板模块"""
     MODULE_BROKER = BROKER.post_msf_job
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)  # 传递参数,请勿移动此行代码
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)  # 传递参数,请勿移动此行代码
 
     def set_smb_info_by_credential(self):
         credential_record = self.param(CREDENTIAL_OPTION.get('name'))
@@ -656,8 +646,8 @@ class PostMSFCSharpModule(_PostMSFModuleCommon):
     REQUIRE_SESSION = True
     PLATFORM = ["Windows"]  # 平台
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
         # 设置MSF模块的固定参数
         self.type = "post"  # 固定模块
@@ -695,8 +685,8 @@ class PostMSFPowershellModule(_PostMSFModuleCommon):
     """直接调用powershell脚本执行的模板模块"""
     REQUIRE_SESSION = True
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
         # 设置MSF模块的固定参数
         self.type = "post"  # 固定模块
@@ -716,8 +706,8 @@ class PostMSFPythonModule(_PostMSFModuleCommon):
     """调用python脚本的模板模块"""
     REQUIRE_SESSION = True
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
         # 设置MSF模块的固定参数
         self.type = "post"  # 固定模块
@@ -737,8 +727,8 @@ class PostMSFPythonWithParamsModule(_PostMSFModuleCommon):
     """调用python脚本(带参数)的模板模块(注意在脚本中必须带有get_script_param函数,可参考)"""
     REQUIRE_SESSION = True
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
         # 设置MSF模块的必填参数
         self.type = "post"  # 固定模块
@@ -767,8 +757,8 @@ class PostMSFPowershellFunctionModule(_PostMSFModuleCommon):
     """模块用于加载powershell脚本后执行其中的函数的模板模块"""
     REQUIRE_SESSION = True
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
         # 设置MSF模块的必填参数
         self.type = "post"  # 固定模块
@@ -792,8 +782,8 @@ class PostMSFExecPEModule(_PostMSFModuleCommon):
     """直接调用powershell脚本执行的模板模块"""
     REQUIRE_SESSION = True
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
 
         # 设置MSF模块的必填参数
         self.type = "post"

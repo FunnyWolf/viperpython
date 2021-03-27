@@ -24,7 +24,7 @@ class PostModuleActuator(object):
         pass
 
     @staticmethod
-    def create_post(loadpath=None, sessionid=None, hid=None, custom_param=None):
+    def create_post(loadpath=None, sessionid=None, ipaddress=None, custom_param=None):
         module_config = Xcache.get_moduleconfig(loadpath)
         # 获取模块配置
         if module_config is None:
@@ -40,7 +40,7 @@ class PostModuleActuator(object):
 
         # 获取模块实例
         class_intent = importlib.import_module(loadpath)
-        post_module_intent = class_intent.PostModule(sessionid, hid, custom_param)
+        post_module_intent = class_intent.PostModule(sessionid, ipaddress, custom_param)
 
         # 格式化固定字段
         try:

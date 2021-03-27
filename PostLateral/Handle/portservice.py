@@ -18,14 +18,14 @@ class PortService(object):
         pass
 
     @staticmethod
-    def list(hid=None):
-        result = PortService.list_by_hid(hid)
+    def list(ipaddress=None):
+        result = PortService.list_by_ipaddress(ipaddress)
         context = data_return(200, CODE_MSG.get(200), result)
         return context
 
     @staticmethod
-    def list_by_hid(hid=None):
-        orm_models = PortServiceModel.objects.filter(hid=hid).order_by('port')
+    def list_by_ipaddress(ipaddress=None):
+        orm_models = PortServiceModel.objects.filter(ipaddress=ipaddress).order_by('port')
         data = PortServiceSerializer(orm_models, many=True).data
 
         try:
@@ -36,17 +36,16 @@ class PortService(object):
         return format_data
 
     @staticmethod
-    def add_or_update(hid=None, port=None, proxy=None, banner=None, service=None):
-        default_dict = {'hid': hid, 'proxy': proxy, 'port': port, 'banner': banner, 'service': service,
+    def add_or_update(ipaddress=None, port=None, banner=None, service=None):
+        default_dict = {'ipaddress': ipaddress, 'port': port, 'banner': banner, 'service': service,
                         'update_time': int(time.time())}  # 没有此主机数据时新建
-        model, created = PortServiceModel.objects.get_or_create(hid=hid, port=port, defaults=default_dict)
+        model, created = PortServiceModel.objects.get_or_create(ipaddress=ipaddress, port=port, defaults=default_dict)
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据
         with transaction.atomic():
             try:
-                model = PortServiceModel.objects.select_for_update().get(hid=hid, port=port)
-                model.proxy = proxy
+                model = PortServiceModel.objects.select_for_update().get(ipaddress=ipaddress, port=port)
                 model.banner = banner
                 model.service = service
                 model.save()
@@ -56,9 +55,9 @@ class PortService(object):
                 return False
 
     @staticmethod
-    def destory(hid=None, port=None):
+    def destory(ipaddress=None, port=None):
         try:
-            PortServiceModel.objects.filter(hid=hid, port=port).delete()
+            PortServiceModel.objects.filter(ipaddress=ipaddress, port=port).delete()
             context = data_return(204, PortService_MSG.get(204), {})
         except Exception as E:
             logger.error(E)

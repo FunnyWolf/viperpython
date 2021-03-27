@@ -16,8 +16,8 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     MODULETYPE = TAG2CH.internal
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "post"
         self.mname = "multi/manage/file_system_operation_api"
 

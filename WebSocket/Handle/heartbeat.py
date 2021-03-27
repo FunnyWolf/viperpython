@@ -3,6 +3,7 @@
 # @Date  : 2021/2/27
 # @Desc  :
 import copy
+import ipaddress as ipaddr
 import time
 
 from Core.Handle.host import Host
@@ -13,6 +14,7 @@ from Lib.notice import Notice
 from Lib.rpcclient import RpcClient
 from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
+from PostLateral.Handle.edge import Edge
 from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
 
 
@@ -22,14 +24,10 @@ class HeartBeat(object):
 
     @staticmethod
     def first_heartbeat_result():
-        hosts_sorted = HeartBeat.list_hostandsession()
+        hosts_sorted, network_data = HeartBeat.list_hostandsession()
 
         result_history = PostModuleResultHistory.list_all()
-        for one in result_history:
-            for host in hosts_sorted:
-                if one.get("hid") == host.get("id"):
-                    one["ipaddress"] = host.get("ipaddress")
-                    break
+
         Xcache.set_heartbeat_cache_result_history(result_history)
 
         notices = Notice.list_notices()
@@ -44,6 +42,8 @@ class HeartBeat(object):
         result = {
             'hosts_sorted_update': True,
             'hosts_sorted': hosts_sorted,
+            'network_data_update': True,
+            'network_data': network_data,
             'result_history_update': True,
             'result_history': result_history,
             'notices_update': True,
@@ -72,8 +72,9 @@ class HeartBeat(object):
             result["jobs_update"] = True
             result["jobs"] = jobs
 
-        # hosts_sorted
-        hosts_sorted = HeartBeat.list_hostandsession()
+        # hosts_sorted,network_data
+        hosts_sorted, network_data = HeartBeat.list_hostandsession()
+
         cache_hosts_sorted = Xcache.get_heartbeat_cache_hosts_sorted()
         if cache_hosts_sorted == hosts_sorted:
             result["hosts_sorted_update"] = False
@@ -83,13 +84,17 @@ class HeartBeat(object):
             result["hosts_sorted_update"] = True
             result["hosts_sorted"] = hosts_sorted
 
+        cache_network_data = Xcache.get_heartbeat_cache_network_data()
+        if cache_network_data == network_data:
+            result["network_data_update"] = False
+            result["network_data"] = []
+        else:
+            Xcache.set_heartbeat_cache_network_data(network_data)
+            result["network_data_update"] = True
+            result["network_data"] = network_data
+
         # result_history
         result_history = PostModuleResultHistory.list_all()
-        for one in result_history:
-            for host in hosts_sorted:
-                if one.get("hid") == host.get("id"):
-                    one["ipaddress"] = host.get("ipaddress")
-                    break
 
         cache_result_history = Xcache.get_heartbeat_cache_result_history()
 
@@ -131,6 +136,16 @@ class HeartBeat(object):
 
     @staticmethod
     def list_hostandsession():
+
+        def filter_session_by_ipaddress(ipaddress, sessions):
+            result = []
+            for session in sessions:
+                if session.get("available"):
+                    if session.get("session_host") == ipaddress:
+                        result.append(session)
+
+            return result
+
         hosts = Host.list_hosts()
         sessions = HeartBeat.list_sessions()
 
@@ -141,38 +156,38 @@ class HeartBeat(object):
         hosts_with_session = []
 
         # 聚合Session和host
-        host_exist = False
         for session in sessions:
+            session_host = session.get("session_host")
+            if session_host is None or session_host == "":
+                continue
+
+            if session.get("available"):  # 确保每个session成功后都会添加edge
+                Edge.create_edge(source="255.255.255.255",
+                                 target=session_host,
+                                 type="online",
+                                 data={"payload": "/".join(session.get("via_payload").split("/")[1:])})
+
             for host in hosts:
-                if session.get("session_host") == host.get('ipaddress'):
+                if session_host == host.get('ipaddress'):
                     temp_host = copy.deepcopy(host)
                     temp_host['session'] = session
                     hosts_with_session.append(temp_host)
-                    host_exist = True
                     break
-
-            if host_exist is True:
-                host_exist = False
-            else:
-                if session.get("session_host") is None or session.get("session_host") == "":
-                    host_exist = False
+            else:  # 未找到对应的host
+                # 减少新建无效的host
+                if session.get("available"):
+                    host_create = Host.create_host(session_host)
                 else:
-                    # 减少新建无效的host
-                    if session.get("available"):
-                        host_create = Host.create_host(session.get("session_host"))
-                    else:
-                        host_create = Host.create_host("255.255.255.255")
-                    host_create['session'] = session
-                    hosts_with_session.append(host_create)
-                    host_exist = False
+                    host_create = Host.create_host("255.255.255.255")
+                host_create['session'] = session
+                hosts_with_session.append(host_create)
 
+        # 处理没有session的host
         for host in hosts:
-            add = True
             for temp_host in hosts_with_session:
-                if temp_host.get("id") == host.get("id"):
-                    add = False
+                if temp_host.get("ipaddress") == host.get("ipaddress"):
                     break
-            if add:
+            else:
                 hosts_with_session.append(host)
 
         # 设置host的proxy信息
@@ -186,7 +201,102 @@ class HeartBeat(object):
             one["order_id"] = i
             i += 1
 
-        return hosts_with_session
+        # 开始处理network数据
+        # 在这里处理是因为已经将session和host信息查找出来,直接使用即可
+        # 获取nodes数据
+        nodes = [
+            {
+                "id": '255.255.255.255',
+                "data": {
+                    "type": 'viper',
+                },
+            },
+        ]
+        edges = []
+
+        # 添加scan类型的edge
+        online_edge_list = Edge.list_edge(type="scan")
+        for online_edge in online_edge_list:
+            edge_data = {
+                "source": online_edge.get("source"),
+                "target": online_edge.get("target"),
+                "data": {
+                    "type": 'scan',
+                    "method": online_edge.get("data").get("method"),
+                },
+            }
+            edges.append(edge_data)
+
+        for host in hosts:
+            ipaddress = host.get("ipaddress")
+            if ipaddress == "255.255.255.255":
+                continue
+            filter_sessions = filter_session_by_ipaddress(ipaddress, sessions)
+
+            # host存在session
+            if filter_sessions:
+                nodes.append({
+                    "id": ipaddress,
+                    "data": {
+                        "type": 'session',
+                        "sessionnum": len(filter_sessions),
+                        "platform": filter_sessions[0].get("platform"),
+                    },
+                })
+                for session in filter_sessions:
+                    # session连接edge
+                    edge_data = {
+                        "source": '255.255.255.255',
+                        "target": ipaddress,
+                        "data": {
+                            "type": 'session',
+                            "payload": "/".join(session.get("via_payload").split("/")[1:]),
+                        },
+                    }
+                    edges.append(edge_data)
+                    # route edge
+                    routes = session.get("routes")
+                    sid = session.get("id")
+                    for route in routes:
+                        ipnetwork = ipaddr.ip_network(f"{route.get('subnet')}/{route.get('netmask')}", strict=False)
+                        for host_in in hosts:
+                            ipaddress_in = host_in.get("ipaddress")
+                            if ipaddress_in == "255.255.255.255" or ipaddress_in == ipaddress:
+                                continue
+                            if ipaddr.ip_address(ipaddress_in) in ipnetwork:
+                                edge_data = {
+                                    "source": ipaddress,
+                                    "target": ipaddress_in,
+                                    "data": {
+                                        "type": "route",
+                                        "sid": sid,
+                                    },
+                                }
+                                edges.append(edge_data)
+
+            else:
+                # host不存在session
+                nodes.append({
+                    "id": ipaddress,
+                    "data": {
+                        "type": 'host',
+                    },
+                })
+                # 查看是否存在online类型的edge
+
+                online_edge_list = Edge.list_edge(target=ipaddress, type="online")
+                for online_edge in online_edge_list:
+                    edge_data = {
+                        "source": '255.255.255.255',
+                        "target": ipaddress,
+                        "data": {
+                            "type": 'online',
+                            "payload": online_edge.get("data").get("payload"),
+                        },
+                    }
+                    edges.append(edge_data)
+        network_data = {"nodes": nodes, "edges": edges}
+        return hosts_with_session, network_data
 
     @staticmethod
     def list_sessions():

@@ -10,8 +10,9 @@ from Lib.api import data_return
 from Lib.configs import CODE_MSG, Host_MSG
 from Lib.log import logger
 from Lib.xcache import Xcache
+from PostLateral.Handle.edge import Edge
 from PostLateral.Handle.portservice import PortService
-from PostLateral.models import PortServiceModel, VulnerabilityModel
+from PostLateral.models import PortServiceModel, VulnerabilityModel, EdgeModel
 
 
 class Host(object):
@@ -24,39 +25,11 @@ class Host(object):
     def list():
         hosts = Host.list_hosts()
         for host in hosts:
-            hid = host.get('id')
-            host['portService'] = PortService.list_by_hid(hid)
+            ipaddress = host.get('ipaddress')
+            host['portService'] = PortService.list_by_ipaddress(ipaddress)
 
         context = data_return(200, CODE_MSG.get(200), hosts)
         return context
-
-    @staticmethod
-    def get_by_ipaddress(ipaddress=None):
-        try:
-            model = HostModel.objects.get(ipaddress=ipaddress)
-            result = HostSerializer(model).data
-            return result
-        except Exception as _:
-            result = Host.create_host(ipaddress)
-            return result
-
-    @staticmethod
-    def get_ipaddress_by_hid(hid):
-        result = Host.get_by_hid(hid)
-        if result is not None:
-            return result.get('ipaddress')
-        else:
-            return None
-
-    @staticmethod
-    def get_by_hid(hid=None):
-        try:
-            model = HostModel.objects.get(id=hid)
-            result = HostSerializer(model).data
-            return result
-        except Exception as E:
-            logger.warning(E)
-            return None
 
     @staticmethod
     def list_hosts():
@@ -65,30 +38,20 @@ class Host(object):
         return result
 
     @staticmethod
-    def create_host(ipaddress=None):
+    def create_host(ipaddress, source=None, linktype=None, data={}):
+        # 新建edge信息
+        if source is not None:
+            Edge.create_edge(source=source, target=ipaddress, type=linktype, data=data)
+
         defaultdict = {'ipaddress': ipaddress, }  # 没有主机数据时新建
         model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
-        if created is True:
-            result = HostSerializer(model, many=False).data
-            return result  # 新建后直接返回
-        # 有历史数据
-        with transaction.atomic():
-            try:
-                model = HostModel.objects.select_for_update().get(id=model.id)
-                model.ipaddress = ipaddress
-
-                model.save()
-                result = HostSerializer(model, many=False).data
-                return result
-            except Exception as E:
-                logger.error(E)
-                result = HostSerializer(model, many=False).data
-                return result
+        result = HostSerializer(model, many=False).data
+        return result
 
     @staticmethod
-    def update(hid=None, tag=None, comment=None):
+    def update(ipaddress=None, tag=None, comment=None):
         """更新主机标签,说明"""
-        host_update = Host.update_host(hid, tag, comment)
+        host_update = Host.update_host(ipaddress, tag, comment)
         if host_update is None:
             context = data_return(304, Host_MSG.get(304), host_update)
         else:
@@ -96,17 +59,17 @@ class Host(object):
         return context
 
     @staticmethod
-    def update_host(id=None, tag=None, comment=None):
+    def update_host(ipaddress=None, tag=None, comment=None):
 
-        defaultdict = {'id': id, 'tag': tag, 'comment': comment}  # 没有此主机数据时新建
-        model, created = HostModel.objects.get_or_create(id=id, defaults=defaultdict)
+        defaultdict = {'ipaddress': ipaddress, 'tag': tag, 'comment': comment}  # 没有此主机数据时新建
+        model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
         if created is True:
             result = HostSerializer(model, many=False).data
             return result  # 新建后直接返回
         # 有历史数据
         with transaction.atomic():
             try:
-                model = HostModel.objects.select_for_update().get(id=id)
+                model = HostModel.objects.select_for_update().get(ipaddress=ipaddress)
                 model.tag = tag
                 model.comment = comment
                 model.save()
@@ -117,39 +80,41 @@ class Host(object):
                 return None
 
     @staticmethod
-    def destory_single(hid=-1):
-        hid_flag = Host.destory_host(hid)
-        if hid_flag:
+    def destory_single(ipaddress=None):
+        flag = Host.destory_host(ipaddress)
+        if flag:
             context = data_return(202, Host_MSG.get(202), {})
         else:
             context = data_return(301, Host_MSG.get(301), {})
         return context
 
     @staticmethod
-    def destory_mulit(hids):
-        for hid in hids:
-            Host.destory_host(hid)
+    def destory_mulit(ipaddress_list):
+        for ipaddress in ipaddress_list:
+            Host.destory_host(ipaddress)
 
         context = data_return(202, Host_MSG.get(202), {})
         return context
 
     @staticmethod
-    def destory_host(id=None):
+    def destory_host(ipaddress=None):
         # 删除相关缓存信息
-        host = Host.get_by_hid(hid=id)
         # 删除缓存的session命令行结果
-        Xcache.del_sessionio_cache(hid=id)
+        Xcache.del_sessionio_cache(ipaddress=ipaddress)
         # 删除缓存的模块结果
-        Xcache.del_module_result_by_hid(ipaddress=host.get("ipaddress"))
+        Xcache.del_module_result_by_ipaddress(ipaddress=ipaddress)
         # 删除缓存的模块历史结果
-        Xcache.del_module_result_history_by_hid(ipaddress=host.get("ipaddress"))
+        Xcache.del_module_result_history_by_ipaddress(ipaddress=ipaddress)
 
         try:
             # 删除主表信息
-            HostModel.objects.filter(id=id).delete()
+            HostModel.objects.filter(ipaddress=ipaddress).delete()
             # 删除关联表信息
             for OneModel in Host.REGISTER_DESTORY:
-                OneModel.objects.filter(hid=id).delete()
+                OneModel.objects.filter(ipaddress=ipaddress).delete()
+            # 删除edge表信息
+            EdgeModel.objects.filter(source=ipaddress).delete()
+            EdgeModel.objects.filter(target=ipaddress).delete()
             return True
         except Exception as E:
             logger.error(E)

@@ -33,8 +33,8 @@ class PostModule(PostMSFRawModule):
                    ]),
     ])
 
-    def __init__(self, sessionid, hid, custom_param):
-        super().__init__(sessionid, hid, custom_param)
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
         self.type = "post"
         self.mname = "windows/manage/process_handle_api"
 
