@@ -158,7 +158,7 @@ def init_copy_file():
 
     # 强制替换
     src_file = "/root/viper/Docker/nginxconfig_default/gencert.sh"
-    target_file = "/root/viper/Docker/nginxconfig_default/gencert.sh"
+    target_file = "/root/viper/Docker/nginxconfig/gencert.sh"
     try:
         shutil.copy(src_file, target_file)
     except shutil.SameFileError:
