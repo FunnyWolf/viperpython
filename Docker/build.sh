@@ -34,11 +34,9 @@ rm -rf /root/metasploit-framework/test/*
 gem cleanup
 
 # mkdir
-mkdir -p /root/viper/Docker/module
-mkdir -p /root/viper/Docker/log
-mkdir -p /root/viper/Docker/db
 
 mkdir -p /root/viper/Docker/module
 mkdir -p /root/viper/Docker/log
 mkdir -p /root/viper/Docker/db
+mkdir -p /root/viper/Docker/nginxconfig
 mkdir -p /root/viper/STATICFILES/TMP

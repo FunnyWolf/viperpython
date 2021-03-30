@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 import argparse
 import os
+import random
 import re
 import shutil
 import socket
+import string
 import subprocess
 import time
 
@@ -15,6 +17,11 @@ redis_port = 60004
 msgrpc_port = 60005
 LOGDIR = "/root/viper/Docker/log"
 devNull = open(os.devnull, 'w')
+
+
+def random_str(num):
+    salt = ''.join(random.sample(string.ascii_letters, num))
+    return salt
 
 
 def get_nginx_port():
@@ -40,8 +47,8 @@ def get_nginx_port():
 def restart_nginx():
     try:
         print("[*] 关闭nginx服务")
-        result = subprocess.run(["service", "nginx", "stop"], stdout=devNull)
-        result = subprocess.run(["service", "nginx", "stop"], stdout=devNull)
+        result = subprocess.run(["nginx", "-s", "reload"], stdout=devNull)
+        result = subprocess.run(["nginx", "-s", "reload"], stdout=devNull)
     except Exception as E:
         pass
 
@@ -136,9 +143,9 @@ def init_copy_file():
         src_file = "/root/viper/Docker/db_empty.sqlite3"
         target_path = "/root/viper/Docker/db/db.sqlite3"
         shutil.copy(src_file, target_path)
-    for root, dirs, files in os.walk("/root/viper/Docker/loot"):
+    for root, dirs, files in os.walk("/root/viper/Docker/loot_default"):
         for file in files:
-            src_file = os.path.join("/root/viper/Docker/loot", file)
+            src_file = os.path.join("/root/viper/Docker/loot_default", file)
             target_path = os.path.join("/root/.msf4/loot", file)
             if not os.path.exists(target_path):
                 shutil.copy(src_file, target_path)
@@ -148,6 +155,14 @@ def init_copy_file():
             target_path = os.path.join("/root/viper/Docker/nginxconfig", file)
             if not os.path.exists(target_path):
                 shutil.copy(src_file, target_path)
+
+    # 强制替换
+    src_file = "/root/viper/Docker/nginxconfig_default/gencert.sh"
+    target_file = "/root/viper/Docker/nginxconfig_default/gencert.sh"
+    try:
+        shutil.copy(src_file, target_file)
+    except shutil.SameFileError:
+        pass
 
 
 if __name__ == '__main__':
@@ -172,6 +187,42 @@ if __name__ == '__main__':
             print("[x] 新密码必须大于等于8位")
             exit(0)
         else:
+            # 写入yml文件
+            try:
+                token = random_str(10)
+            except Exception as E:
+                print("生成token失败")
+                token = "foobared"
+
+            try:
+                token_yml = f'token: "{token}"'
+                with open("/root/.msf4/token.yml", "w+", encoding="utf-8") as f:
+                    f.write(token_yml)
+                redis_yml = f'redis_password: "{token}"\nredis_sock: "/var/run/redis/redis-server.sock"'
+                with open("/root/.msf4/redis.yml", "w+", encoding="utf-8") as f:
+                    f.write(redis_yml)
+            except Exception as E:
+                print("写入token.yml失败")
+                print(E)
+
+            # 写入redis配置文件
+            try:
+                requirepass = f"requirepass {token}"
+                with open("/root/viper/Docker/redis.conf", "w+", encoding="utf-8") as f:
+                    f.write(requirepass)
+            except Exception as E:
+                print("写入redis.conf失败")
+                print(E)
+            # 重启redis
+            try:
+                print("[*] 重启redis服务")
+                result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
+                result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
+                result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
+                result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
+            except Exception as E:
+                pass
+
             # 启动django项目
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Viper.settings")
             import django
@@ -187,6 +238,7 @@ if __name__ == '__main__':
             from rest_framework.authtoken.models import Token
 
             Token.objects.all().delete()
+
             print("[+] 修改密码完成,新密码为: {}".format(newpassword))
 
     if action is not None:
