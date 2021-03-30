@@ -5,7 +5,7 @@
 import os
 
 from Lib.ModuleAPI import *
-from MODULES_DATA.Defense_Evasion_CodeSigning_StolenMircosoftWindowsSignature import sigthief
+from MODULES_DATA.DefenseEvasion_CodeSigning_StolenMircosoftWindowsSignature import sigthief
 
 
 class PostModule(PostPythonModule):
@@ -51,7 +51,7 @@ class PostModule(PostPythonModule):
         output_path = os.path.join(TMP_DIR, output_finename)
         # 读取签名文件
         self.log_status("签名文件")
-        with open(os.path.join(MODULE_DATA_DIR, "Defense_Evasion_CodeSigning_StolenMircosoftWindowsSignature",
+        with open(os.path.join(MODULE_DATA_DIR, "DefenseEvasion_CodeSigning_StolenMircosoftWindowsSignature",
                                "consent.exe_sig"), "rb") as sf:
             sigfile_bin = sf.read()
 
