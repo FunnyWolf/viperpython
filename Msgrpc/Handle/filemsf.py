@@ -131,6 +131,8 @@ class FileMsf(object):
     @staticmethod
     def read_msf_file(filename=None):
         filename = filename.replace("..", "")  # 任意文件读取问题
+        if os.path.exists(filename):
+            return None
         filepath = os.path.join(MSFLOOT, filename)
         if os.path.isfile(filepath):
             with open(filepath, "rb+") as f:
