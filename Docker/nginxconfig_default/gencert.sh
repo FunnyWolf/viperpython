@@ -40,11 +40,16 @@ Gen_Cert(){
 
 
 
-
-
-
-
 Echo_c "输入Viper端口 [默认60000]" && read -r INPUTNGINXPORT
+
+
+if [ $INPUTNGINXPORT -gt 0 ] 2>/dev/null ;then
+    Echo_c "使用端口号: $INPUTNGINXPORT"
+else
+    Echo_c "输入端口号不符合要求,使用默认端口60000"
+    INPUTNGINXPORT=60000
+fi
+
 
 Echo_c "是否配置Nginx双向认证? [y/N,默认No]" && read -r input
 case $input in
