@@ -42,13 +42,13 @@ class PostModule(PostPythonModule):
         if old_exe_binary_data is None:
             self.log_error("{} 文件不存在".format(old_exe))
             return
-        exe_path = os.path.join(TMP_DIR, old_exe)
+        exe_path = safe_os_path_join(TMP_DIR, old_exe)
         with open(exe_path, "wb") as f:
             f.write(old_exe_binary_data)
 
         # 设置输出exe路径
         output_finename = "{}_signed.exe".format(os.path.splitext(old_exe)[0])
-        output_path = os.path.join(TMP_DIR, output_finename)
+        output_path = safe_os_path_join(TMP_DIR,output_finename)
         # 读取签名文件
         self.log_status("签名文件")
         with open(os.path.join(MODULE_DATA_DIR, "DefenseEvasion_CodeSigning_StolenMircosoftWindowsSignature",

@@ -4,12 +4,12 @@
 # @Desc  :
 import base64
 import json
-import os
 import re
 from pathlib import PurePosixPath
 
 from Lib.api import data_return
 from Lib.configs import FileSession_MSG, CODE_MSG
+from Lib.lib import safe_os_path_join
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 
@@ -64,8 +64,8 @@ class FileSession(object):
                         one['cat_able'] = True
 
                     if one.get('type') in ['directory', 'file', 'fixed', "remote"]:
-                        one['absolute_path'] = os.path.join(path, one.get('name')).replace('\\\\', '/').replace('\\',
-                                                                                                                '/')
+                        one['absolute_path'] = safe_os_path_join(path, one.get('name')).replace('\\\\', '/').replace(
+                            '\\', '/')
                     elif one.get('type') in ['fix', 'cdrom']:
                         one['absolute_path'] = "{}".format(one.get('name'))
                     else:
@@ -100,9 +100,8 @@ class FileSession(object):
                     else:
                         one['cat_able'] = True
                     if one.get('type') in ['directory', 'file']:
-
-                        one['absolute_path'] = os.path.join(path, one.get('name')).replace('\\\\', '/').replace('\\',
-                                                                                                                '/')
+                        one['absolute_path'] = safe_os_path_join(path, one.get('name')).replace('\\\\', '/').replace(
+                            '\\', '/')
                     elif one.get('type') in ['fix', 'cdrom']:
                         one['absolute_path'] = "{}".format(one.get('name'))
                     else:

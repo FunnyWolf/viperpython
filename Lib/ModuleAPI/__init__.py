@@ -37,7 +37,7 @@ from Lib.Module.option import (
     OptionHander,
     OptionIPAddressRange,
 )
-from Lib.lib import TMP_DIR
+from Lib.lib import TMP_DIR,safe_os_path_join
 from Lib.mingw import Mingw
 from Lib.notice import Notice
 from Lib.sessionlib import (
@@ -78,4 +78,5 @@ __all__ = [
     "UACLevel",
     "RegType",
     "Mingw",
+    "safe_os_path_join",
 ]

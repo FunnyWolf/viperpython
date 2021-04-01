@@ -25,6 +25,7 @@ from Lib.Module.configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, CACH
 from Lib.Module.configs import MODULE_DATA_DIR
 from Lib.configs import MSFLOOT
 from Lib.lib import TMP_DIR
+from Lib.lib import safe_os_path_join
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
@@ -281,23 +282,21 @@ class _CommonModule(object):
 
         filename = file.get("name")
         if msf:
-            filepath = f"{MSFLOOTTRUE}/{filename}"
+            filepath = safe_os_path_join(MSFLOOTTRUE, filename)
         else:
-            filepath = os.path.join(MSFLOOT, filename)
+            filepath = safe_os_path_join(MSFLOOT, filename)
         return filepath
 
     def write_to_loot(self, filename, data):
         "向loot目录写文件"
-        filename = filename.replace("..", "")  # 任意文件读取问题
-        filepath = os.path.join(MSFLOOT, filename)
+        filepath = safe_os_path_join(MSFLOOT, filename)
         with open(filepath, "wb+") as f:
             f.write(data)
         return True
 
     def read_from_loot(self, filename):
         "从loot目录读取文件"
-        filename = filename.replace("..", "")  # 任意文件读取问题
-        filepath = os.path.join(MSFLOOT, filename)
+        filepath = safe_os_path_join(MSFLOOT, filename)
         with open(filepath, "rb+") as f:
             data = f.read()
         return data
