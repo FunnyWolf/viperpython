@@ -10,6 +10,10 @@ from Lib.msfmodule import MSFModule
 
 
 class HostInfo(object):
+    """
+    获取主机相关信息
+    """
+
     def __init__(self, sessionid=None):
         self.sessionid = sessionid
 

@@ -40,7 +40,7 @@ class APSModule(object):
             tmp_self_uuid = str(uuid.uuid1())
 
             # 清空历史记录
-            post_module_intent.clean_log()
+            post_module_intent._clean_log()
 
             logger.warning("模块放入列表:{} job_id: {} uuid: {}".format(post_module_intent.NAME, None, tmp_self_uuid))
             post_module_intent.module_self_uuid = tmp_self_uuid
@@ -56,7 +56,7 @@ class APSModule(object):
             }
             Xcache.create_module_task(req)
             Notice.send_info(
-                "模块: {} {} 开始执行".format(post_module_intent.NAME, post_module_intent.target_str))
+                "模块: {} {} 开始执行".format(post_module_intent.NAME, post_module_intent._target_str))
             return True
         except Exception as E:
             logger.error(E)
@@ -103,7 +103,7 @@ class APSModule(object):
         try:
             module_common_instance._store_result_in_history()
             Notice.send_success(
-                "模块: {} {} 执行完成".format(module_common_instance.NAME, module_common_instance.target_str))
+                "模块: {} {} 执行完成".format(module_common_instance.NAME, module_common_instance._target_str))
             logger.warning("多模块实例执行完成:{}".format(module_common_instance.NAME))
             Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
             return True
@@ -151,7 +151,7 @@ class APSModule(object):
 
         # 存储已经生成的结果
         try:
-            module_common_instance.log_status("用户手动删除任务")
+            module_common_instance.log_info("用户手动删除任务")
             module_common_instance._store_result_in_history()
         except Exception as E:
             logger.error("删除多模块实例异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
@@ -161,7 +161,7 @@ class APSModule(object):
 
         # 发送通知
         Notice.send_info(
-            "模块: {} {} 手动删除".format(module_common_instance.NAME, module_common_instance.target_str))
+            "模块: {} {} 手动删除".format(module_common_instance.NAME, module_common_instance._target_str))
         logger.warning("多模块实例手动删除:{}".format(module_common_instance.NAME))
         return True
 

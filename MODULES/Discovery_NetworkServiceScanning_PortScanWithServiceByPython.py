@@ -26,10 +26,10 @@ class PostModule(PostMSFPythonWithParamsModule):
         OptionStr(name='stopip', name_tag="结束IP", required=True, desc="扫描的结束IP"),
         OptionStr(name='port_list', name_tag="端口列表", required=True, desc="扫描的端口,以逗号分隔(例如22,80,445)",
                   default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443", option_length=24),
-        OptionIntger(name='timeout', name_tag="模块超时时间(秒)", desc="模块执行的超时时间", required=True, default=3600),
-        OptionIntger(name='connect_time_out', name_tag="连接超时时间(毫秒)", desc="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
-                     default=500),
-        OptionIntger(name='max_threads', name_tag="扫描线程数", desc="扫描线程数(最大值20)", default=10),
+        OptionInt(name='timeout', name_tag="模块超时时间(秒)", desc="模块执行的超时时间", required=True, default=3600),
+        OptionInt(name='connect_time_out', name_tag="连接超时时间(毫秒)", desc="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
+                  default=500),
+        OptionInt(name='max_threads', name_tag="扫描线程数", desc="扫描线程数(最大值20)", default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -122,10 +122,10 @@ class PostModule(PostMSFPythonWithParamsModule):
                 return
 
             if len(portservice_list) == 0:
-                self.log_status("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试")
-                self.log_status("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描")
+                self.log_info("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试")
+                self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描")
                 return
-            self.log_status("扫描结果")
+            self.log_info("扫描结果")
             for portservice in portservice_list:
                 # 输出部分
 

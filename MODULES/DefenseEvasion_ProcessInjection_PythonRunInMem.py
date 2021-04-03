@@ -21,7 +21,7 @@ class PostModule(PostMSFPythonModule):
 
     OPTIONS = register_options([
         OptionFileEnum(ext=['py', 'pyc']),
-        OptionIntger(name='timeout', name_tag="脚本超时时间(秒)", desc="脚本执行的超时时间(5-3600)", required=True, default=60),
+        OptionInt(name='timeout', name_tag="脚本超时时间(秒)", desc="脚本执行的超时时间(5-3600)", required=True, default=60),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

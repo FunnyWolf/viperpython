@@ -13,7 +13,7 @@ from CONFIG import MSFLOOTTRUE
 from Lib.aescrypt import Aescrypt
 from Lib.api import data_return
 from Lib.configs import CODE_MSG, FileMsf_MSG, MSFLOOT
-from Lib.lib import safe_os_path_join
+from Lib.file import File
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.filesession import FileSession
@@ -94,7 +94,7 @@ class FileMsf(object):
         try:
             filelist = os.listdir(MSFLOOT)
             for file in filelist:
-                filepath = safe_os_path_join(MSFLOOT, file)
+                filepath = File.safe_os_path_join(MSFLOOT, file)
                 if os.path.isfile(filepath):
                     fileinfo = os.stat(filepath)
                     enfilename = FileMsf.encrypt_file_name(file)
@@ -113,7 +113,7 @@ class FileMsf(object):
     def upload_file_to_msf(file=None):
         try:
             filename = file.name
-            filepath = safe_os_path_join(MSFLOOT, filename)
+            filepath = File.safe_os_path_join(MSFLOOT, filename)
             with open(filepath, "wb+") as f:
                 for chunk in file.chunks():
                     f.write(chunk)
@@ -124,14 +124,14 @@ class FileMsf(object):
 
     @staticmethod
     def write_msf_file(filename=None, data=None):
-        filepath = safe_os_path_join(MSFLOOT, filename)
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
         with open(filepath, "wb+") as f:
             f.write(data)
         return True
 
     @staticmethod
     def read_msf_file(filename=None):
-        filepath = safe_os_path_join(MSFLOOT, filename)
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
         if os.path.isfile(filepath):
             with open(filepath, "rb+") as f:
                 binary_data = f.read()
@@ -141,7 +141,7 @@ class FileMsf(object):
 
     @staticmethod
     def destory_msf_file(filename=None):
-        filepath = safe_os_path_join(MSFLOOT, filename)
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
         if os.path.isfile(filepath):
             os.remove(filepath)
             return True
@@ -174,5 +174,5 @@ class FileMsf(object):
         if msf:
             filepath = f"{MSFLOOTTRUE}/{filename}"
         else:
-            filepath = safe_os_path_join(MSFLOOT, filename)
+            filepath = File.safe_os_path_join(MSFLOOT, filename)
         return filepath

@@ -21,7 +21,7 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionHander(required=False),
-        OptionIntger(name='PID', name_tag="进程PID", desc="进程PID", required=True),
+        OptionInt(name='PID', name_tag="进程PID", desc="进程PID", required=True),
         OptionEnum(name='ACTION', name_tag="操作", desc="选择针对进程的操作", required=True,
                    default="inject",
                    option_length=18,

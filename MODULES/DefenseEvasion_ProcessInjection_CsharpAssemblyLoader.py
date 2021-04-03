@@ -26,7 +26,7 @@ class PostModule(PostMSFRawModule):
     OPTIONS = register_options([
         OptionFileEnum(ext=['exe', 'EXE']),
         OptionStr(name='ARGUMENTS', name_tag="命令行参数", option_length=24, desc="运行exe时输入的参数"),
-        OptionIntger(name='WAIT', name_tag="等待时间", desc="读取输出前等待时间", default=10),
+        OptionInt(name='WAIT', name_tag="等待时间", desc="读取输出前等待时间", default=10),
         OptionBool(name='KILL', name_tag="结束进程", desc="执行完成后结束C#进程", default=True),
     ])
 

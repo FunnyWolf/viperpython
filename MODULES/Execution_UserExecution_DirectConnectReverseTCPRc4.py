@@ -23,7 +23,7 @@ class PostModule(PostPythonModule):
     OPTIONS = register_options([
         OptionHander(),
         # OptionStr("LHOST", name_tag="LHOST", desc="填写监听中LHOST字段", required=True),
-        # OptionIntger("LPORT", name_tag="LPORT", desc="填写监听中LPORT字段", required=True),
+        # OptionInt("LPORT", name_tag="LPORT", desc="填写监听中LPORT字段", required=True),
         # OptionStr("PASSWORD", name_tag="PASSWORD", desc="填写监听中RC4密码", required=True),
     ])
 

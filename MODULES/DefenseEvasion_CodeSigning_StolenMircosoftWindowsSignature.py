@@ -37,22 +37,21 @@ class PostModule(PostPythonModule):
     def run(self):
         # 将msf服务器的exe写入viper本地
         old_exe = self.get_option_filename()
-        self.log_status("将 {} 写入临时目录".format(old_exe))
+        self.log_info("将 {} 写入临时目录".format(old_exe))
         old_exe_binary_data = self.read_from_loot(old_exe)
         if old_exe_binary_data is None:
             self.log_error("{} 文件不存在".format(old_exe))
             return
-        exe_path = safe_os_path_join(TMP_DIR, old_exe)
+        exe_path = File.safe_os_path_join(File.tmp_dir(), old_exe)
         with open(exe_path, "wb") as f:
             f.write(old_exe_binary_data)
 
         # 设置输出exe路径
         output_finename = "{}_signed.exe".format(os.path.splitext(old_exe)[0])
-        output_path = safe_os_path_join(TMP_DIR,output_finename)
+        output_path = File.safe_os_path_join(File.tmp_dir(), output_finename)
         # 读取签名文件
-        self.log_status("签名文件")
-        with open(os.path.join(MODULE_DATA_DIR, "DefenseEvasion_CodeSigning_StolenMircosoftWindowsSignature",
-                               "consent.exe_sig"), "rb") as sf:
+        self.log_info("签名文件")
+        with open(os.path.join(self.module_data_dir, "consent.exe_sig"), "rb") as sf:
             sigfile_bin = sf.read()
 
         # 签名exe
@@ -62,8 +61,8 @@ class PostModule(PostPythonModule):
         with open(output_path, 'rb') as of:
             output_bin = of.read()
         # 清理临时文件
-        self.log_status("清理临时文件")
-        self.clean_tmp_dir()
+        self.log_info("清理临时文件")
+        File.clean_tmp_dir()
 
         if self.write_to_loot(output_finename, output_bin):
             self.log_good("签名完成,新文件名 : {}".format(output_finename))

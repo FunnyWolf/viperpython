@@ -4,6 +4,7 @@
 # @Desc  :
 
 import os
+from enum import Enum
 
 from django.conf import settings
 
@@ -21,7 +22,7 @@ CREDENTIAL_OPTION = {'name': '_postmodule_credential', 'name_tag': '凭证', 'ty
                      'option_length': 24}
 
 FILE_OPTION = {'name': '_postmodule_file', 'name_tag': '文件', 'type': 'enum',
-               'desc': '模块执行需要的文件,可以通过<数据管理>-<文件>处上传',
+               'desc': '模块执行需要的文件,可以通过<文件管理>上传',
                'option_length': 24}
 
 
@@ -33,10 +34,13 @@ class BROKER(object):
 
 
 class TAG2CH(object):
+    """
+    模块分类标识
+    """
     example = 'example'  # '样例模块',
     internal = 'internal'  # 内部模块(不提供可视化输出,用于内部的模块)
 
-    # 蠕虫模块
+    # 全网扫描类型模块
     Bot_MSF_Scan = "Bot_MSF_Scan"  # 基于msf的扫描模块
     Bot_MSF_Exp = "Bot_MSF_Exp"  # 基于msf的攻击模块
     Bot_PY_Scan = "Bot_PY_Scan"  # python原生扫描模块
@@ -79,3 +83,24 @@ class TAG2CH(object):
             return order
         else:
             return 100
+
+
+class UACLevel(Enum):
+    UAC_NO_PROMPT = 0
+    UAC_PROMPT_CREDS_IF_SECURE_DESKTOP = 1
+    UAC_PROMPT_CONSENT_IF_SECURE_DESKTOP = 2
+    UAC_PROMPT_CREDS = 3
+    UAC_PROMPT_CONSENT = 4
+    UAC_DEFAULT = 5
+
+
+class RegType(Enum):
+    REG_NONE = 0
+    REG_SZ = 1
+    REG_EXPAND_SZ = 2
+    REG_BINARY = 3
+    REG_DWORD = 4
+    REG_DWORD_LITTLE_ENDIAN = 4
+    REG_DWORD_BIG_ENDIAN = 5
+    REG_LINK = 6
+    REG_MULTI_SZ = 7

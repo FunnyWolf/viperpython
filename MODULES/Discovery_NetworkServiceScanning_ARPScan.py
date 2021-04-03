@@ -22,7 +22,7 @@ class PostModule(PostMSFRawModule):
     OPTIONS = register_options([
         OptionIPAddressRange(name='address_range', name_tag="IP列表", desc="IP列表(支持1.1.1.1,2.2.2.2,3.3.3.3-3.3.3.10格式输入)",
                              required=True),
-        OptionIntger(name='threads', name_tag="扫描线程数", desc="扫描线程数(最大值10)", required=True, default=10),
+        OptionInt(name='threads', name_tag="扫描线程数", desc="扫描线程数(最大值10)", required=True, default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -58,7 +58,7 @@ class PostModule(PostMSFRawModule):
             return
         try:
             host_mac_list = data
-            self.log_status("扫描结果:")
+            self.log_info("扫描结果:")
             for host_mac in host_mac_list:
                 # 输出部分
                 tmpstr = "IP地址: {} MAC: {} 网卡厂商:{}".format(host_mac.get('host'), host_mac.get('mac'),

@@ -53,7 +53,7 @@ class MSFModule(object):
 
         if result.get("job_id") is None:
             logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME, result.get("uuid")))
-            Notice.send_warning("模块: {} {} 创建后台任务失败,请检查输入参数".format(msf_module.NAME, msf_module.target_str))
+            Notice.send_warning("模块: {} {} 创建后台任务失败,请检查输入参数".format(msf_module.NAME, msf_module._target_str))
             return False
         else:
             logger.warning(
@@ -67,7 +67,7 @@ class MSFModule(object):
                 'job_id': result.get("job_id"),
             }
             Xcache.create_module_task(req)
-            Notice.send_info("模块: {} {} 开始执行".format(msf_module.NAME, msf_module.target_str))
+            Notice.send_info("模块: {} {} 开始执行".format(msf_module.NAME, msf_module._target_str))
             return True
 
     @staticmethod
@@ -110,7 +110,7 @@ class MSFModule(object):
             logger.warning(f"模块回调:{module_intent.NAME} "
                            f"job_id: {msf_module_return_dict.get('job_id')} "
                            f"uuid: {msf_module_return_dict.get('uuid')}")
-            module_intent.clean_log()  # 清理历史结果
+            module_intent._clean_log()  # 清理历史结果
         except Exception as E:
             logger.error(E)
             return False
@@ -128,7 +128,7 @@ class MSFModule(object):
             logger.error(E)
 
         Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
-        Notice.send_success("模块: {} {} 执行完成".format(module_intent.NAME, module_intent.target_str))
+        Notice.send_success("模块: {} {} 执行完成".format(module_intent.NAME, module_intent._target_str))
 
     @staticmethod
     def store_monitor_from_sub(message=None):
@@ -153,7 +153,7 @@ class MSFModule(object):
             logger.warning(
                 "模块回调:{} job_id: {} uuid: {}".format(module_intent.NAME, msf_module_return_dict.get("job_id"),
                                                      msf_module_return_dict.get("uuid")))
-            module_intent.clean_log()  # 清理结果
+            module_intent._clean_log()  # 清理结果
         except Exception as E:
             logger.error(E)
             return False

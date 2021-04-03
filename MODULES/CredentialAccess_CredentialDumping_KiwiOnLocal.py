@@ -88,7 +88,7 @@ class PostModule(PostMSFRawModule):
 
         if status:
             output = data.replace('\x00', '')
-            self.log_status("获取密码列表")
+            self.log_info("获取密码列表")
             tmpdict = {'Username': None, 'Domain': None, 'Password': None, 'LM': None, 'NTLM': None, 'SHA1': None}
             for line in output.split('\n'):
                 username = self.search('username', line, 'isusername')
@@ -117,7 +117,7 @@ class PostModule(PostMSFRawModule):
                     tmpdict['SHA1'] = SHA1
 
             self.log_raw("\n\n")
-            self.log_status("原始结果")
+            self.log_info("原始结果")
             self.log_raw(output)
 
         else:

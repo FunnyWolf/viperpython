@@ -10,7 +10,7 @@ from django.conf import settings
 
 from CONFIG import DEBUG
 from Lib.configs import STATIC_STORE_PATH
-from Lib.lib import TMP_DIR
+from Lib.file import File
 from Lib.log import logger
 
 
@@ -27,8 +27,8 @@ class MingwOld(object):
 
     def build_cmd(self, src, arch="x64"):
 
-        src_file = os.path.join(TMP_DIR, f"{self.file_name}.c")
-        exe_file = os.path.join(TMP_DIR, f"{self.file_name}.exe")
+        src_file = os.path.join(File.tmp_dir(), f"{self.file_name}.c")
+        exe_file = os.path.join(File.tmp_dir(), f"{self.file_name}.exe")
         cmd = []
         with open(src_file, "wb") as f:
             f.write(src.encode("utf-8"))
@@ -72,7 +72,7 @@ class MingwOld(object):
 
     def compile_c(self, src, arch="x64"):
         bindata = None
-        exe_file = os.path.join(TMP_DIR, f"{self.file_name}.exe")
+        exe_file = os.path.join(File.tmp_dir(), f"{self.file_name}.exe")
         cmd = self.build_cmd(src, arch)
         ret = subprocess.run(cmd, capture_output=True, text=True)
         if ret.returncode != 0:
@@ -88,8 +88,8 @@ class MingwOld(object):
         return bindata
 
     def cleanup_files(self):
-        src_file = os.path.join(TMP_DIR, f"{self.file_name}.c")
-        exe_file = os.path.join(TMP_DIR, f"{self.file_name}.exe")
+        src_file = os.path.join(File.tmp_dir(), f"{self.file_name}.c")
+        exe_file = os.path.join(File.tmp_dir(), f"{self.file_name}.exe")
         try:
             os.remove(src_file)
         except Exception as E:
@@ -112,8 +112,8 @@ class Mingw(object):
         self.link_script = None
 
         self._filename = str(time.time() * 1000_0000)
-        self._src_file = os.path.join(TMP_DIR, f"{self._filename}.cpp")
-        self._exe_file = os.path.join(TMP_DIR, f"{self._filename}.exe")
+        self._src_file = os.path.join(File.tmp_dir(), f"{self._filename}.cpp")
+        self._exe_file = os.path.join(File.tmp_dir(), f"{self._filename}.exe")
 
     def _build_cmd(self, arch="x64", extra_params=[]):
         cmd = []

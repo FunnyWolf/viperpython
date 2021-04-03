@@ -14,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from Lib.api import data_return
 from Lib.configs import Payload_MSG, PAYLOAD_LOADER_STORE_PATH
-from Lib.lib import TMP_DIR
+from Lib.file import File
 from Lib.mingw import MingwOld
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
@@ -101,7 +101,7 @@ class Payload(object):
             byteresult = base64.b64decode(result.get('payload'))
             filename = Payload._create_payload_with_loader(mname, byteresult, payload_type=tmp_type)
             # 读取新的zip文件内容
-            payloadfile = os.path.join(TMP_DIR, filename)
+            payloadfile = os.path.join(File.tmp_dir(), filename)
             if opts.get("HandlerName") is not None:
                 filename = f"{opts.get('HandlerName')}_{filename}"
             byteresult = open(payloadfile, 'rb')
@@ -115,7 +115,7 @@ class Payload(object):
             byteresult = base64.b64decode(result.get('payload'))
             filename = Payload._create_payload_use_msbuild(mname, byteresult)
             # 读取新的zip文件内容
-            payloadfile = os.path.join(TMP_DIR, filename)
+            payloadfile = os.path.join(File.tmp_dir(), filename)
             byteresult = open(payloadfile, 'rb')
         elif opts.get("Format") == "exe-src":
             opts["Format"] = "hex"
@@ -288,7 +288,7 @@ class Payload(object):
     def _create_payload_with_loader(mname=None, result=None, payload_type="exe-diy"):
         filename = "{}.zip".format(int(time.time()))
 
-        payloadfile = os.path.join(TMP_DIR, filename)
+        payloadfile = os.path.join(File.tmp_dir(), filename)
         extraloader_filepath = None
         extra_arcname = None
         if payload_type == "exe-diy":
@@ -421,7 +421,7 @@ echo    ^</Task^>>>a.xml
 echo  ^</UsingTask^>>>a.xml
 echo ^</Project^>>>a.xml"""
 
-        payloadfile = os.path.join(TMP_DIR, filename)
+        payloadfile = os.path.join(File.tmp_dir(), filename)
 
         new_zip = zipfile.ZipFile(payloadfile, 'w')
         new_zip.writestr("cmd.bat", data=filedata, compress_type=zipfile.ZIP_DEFLATED)
@@ -432,8 +432,8 @@ echo ^</Project^>>>a.xml"""
 
     @staticmethod
     def _destroy_old_files():
-        for file in os.listdir(TMP_DIR):
-            file_path = os.path.join(TMP_DIR, file)
+        for file in os.listdir(File.tmp_dir()):
+            file_path = os.path.join(File.tmp_dir(), file)
             if os.path.isdir(file_path):
                 continue
             else:

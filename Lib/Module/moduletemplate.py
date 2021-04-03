@@ -11,7 +11,6 @@ import json
 import os
 import random
 import re
-import shutil
 import string
 import threading
 import time
@@ -24,8 +23,7 @@ from Core.Handle.host import Host
 from Lib.Module.configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
 from Lib.Module.configs import MODULE_DATA_DIR
 from Lib.configs import MSFLOOT
-from Lib.lib import TMP_DIR
-from Lib.lib import safe_os_path_join
+from Lib.file import File
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
@@ -37,9 +35,9 @@ from PostLateral.Handle.vulnerability import Vulnerability
 
 class _CommonModule(object):
     MODULE_BROKER = BROKER.empty
-    NAME = "基础模块"
-    DESC = "基础描述"
-    AUTHOR = ["NoOne"]  # 模块作者
+    NAME = "基础模块"  # 模块名
+    DESC = "基础描述"  # 描述
+    AUTHOR = ["NoOne"]  # 作者
     REFERENCES = []  # 参考链接
     README = []  # 官方使用文档
     WARN = None  # 警告信息
@@ -69,6 +67,7 @@ class _CommonModule(object):
         self.opts = {}
 
     # 公用函数
+
     def check(self):
         """执行前的检查函数,子类需要重新实现"""
         return True, None
@@ -80,20 +79,15 @@ class _CommonModule(object):
 
     @property
     def host_ipaddress(self):
+        """运行模块的主机ip地址"""
         return None
 
-    @property
-    def module_data_dir(self):
+    def set_option(self, key, value):
+        """设置msf模块参数"""
+        self.opts[key] = value  # msf模块参数
 
-        return os.path.join(MODULE_DATA_DIR, self.loadpath.split(".")[-1])
+    # 模块参数相关函数
 
-    def generate_context_by_template(self, filename, **kwargs):
-        env = Environment(loader=FileSystemLoader(self.module_data_dir))
-        tpl = env.get_template(filename)
-        context = tpl.render(**kwargs)
-        return context
-
-    # 模块参数
     def param(self, name):
         """获取输入参数的接口"""
         if name in [HANDLER_OPTION.get('name'), CREDENTIAL_OPTION.get('name'), FILE_OPTION.get('name')]:
@@ -109,8 +103,52 @@ class _CommonModule(object):
         else:
             return self._custom_param.get(name)
 
+    # 文件操作相关函数
+
+    def _get_option_fileinfo(self):
+        """获取选项中的文件详细信息"""
+        fileinfo = self.param(FILE_OPTION.get('name'))
+        return fileinfo
+
+    def get_option_filepath(self, msf=False):
+        """获取选项中的文件绝对路径"""
+        file = self.param(FILE_OPTION.get('name'))
+        if file is None:
+            return None
+
+        filename = file.get("name")
+        if msf:
+            filepath = File.safe_os_path_join(MSFLOOTTRUE, filename)
+        else:
+            filepath = File.safe_os_path_join(MSFLOOT, filename)
+        return filepath
+
+    def get_option_filename(self):
+        """获取选项中的文件名"""
+        fileinfo = self._get_option_fileinfo()
+        if fileinfo is None:
+            return None
+        else:
+            filename = self.param(FILE_OPTION.get('name')).get("name")
+            return filename
+
+    def read_from_loot(self, filename):
+        "从loot(文件列表)目录读取文件"
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
+        with open(filepath, "rb+") as f:
+            data = f.read()
+        return data
+
+    def write_to_loot(self, filename, data):
+        """向loot目录写文件"""
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
+        with open(filepath, "wb+") as f:
+            f.write(data)
+        return True
+
     @property
-    def target_str(self):
+    def _target_str(self):
+        """返回模块实例的标识"""
         if self._sessionid is not None and self._sessionid != -1:
             return f"SID: {self._sessionid}"
         elif self._ipaddress is not None and self._ipaddress != -1:
@@ -120,8 +158,22 @@ class _CommonModule(object):
         else:
             return ""
 
-    def add_portservice(self, ipaddress, port, banner=None, service=""):
+    @property
+    def module_data_dir(self):
+        """模块对应的Data目录路径"""
+        return os.path.join(MODULE_DATA_DIR, self.loadpath.split(".")[-1])
 
+    def generate_context_by_template(self, filename, **kwargs):
+        """根据模板获取内容"""
+        env = Environment(loader=FileSystemLoader(self.module_data_dir))
+        tpl = env.get_template(filename)
+        context = tpl.render(**kwargs)
+        return context
+
+    # 新增数据相关函数
+
+    def add_portservice(self, ipaddress, port, banner=None, service=""):
+        """增加一个端口/服务信息"""
         if banner is None:
             banner = {}
 
@@ -132,6 +184,7 @@ class _CommonModule(object):
         return result
 
     def add_credential(self, username='', password='', password_type='', tag=None, desc=''):
+        """增加一个凭证信息"""
         if tag is None:
             tag = {}
         if isinstance(tag, dict) is not True:
@@ -140,42 +193,38 @@ class _CommonModule(object):
         if password is '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
 
-        result = Credential.add_or_update(username, password, password_type, tag, self.NAME, self.host_ipaddress,
-                                          desc)
+        result = Credential.add_or_update(username, password, password_type, tag, self.NAME, self.host_ipaddress, desc)
         return result
 
     def add_vulnerability(self, ipaddress=None, extra_data=None, desc=''):
+        """增加一个漏洞信息"""
         if extra_data is None:
             extra_data = {}
         if isinstance(extra_data, dict) is not True:
             logger.warning('数据类型检查错误,数据 {}'.format(extra_data))
             extra_data = {}
 
-        result = Vulnerability.add_or_update(ipaddress,
-                                             self.loadpath,
-                                             extra_data, desc)
+        result = Vulnerability.add_or_update(ipaddress, self.loadpath, extra_data, desc)
         return result
 
     def add_host(self, ipaddress, source, linktype, data):
+        """新增主机
+        ipaddress:新增主机ip地址
+        source:数据来源,ip地址格式
+        linktype: 如何连接到网络拓扑中, "scan"标识通过网络扫描新增主机,source必须填写正确ip地址
+        data:补充信息 {"method": "arp"}
+        """
         result = Host.create_host(ipaddress, source, linktype, data)
         return result
 
-    # 存储结果函数集
-    def clean_log(self):
-        flag = Xcache.set_module_result(self.host_ipaddress, self.loadpath, "")
-        return flag
-
-    def store_log(self, result_format):
-        """API:存储结果到数据库"""
-        result_format = result_format.strip()
-        Xcache.set_module_result(self.host_ipaddress, self.loadpath, result_format)
+    # 模块输出相关函数
 
     def log_raw(self, result_line):
         if not result_line.endswith('\n'):
             result_line = "{}\n".format(result_line)
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_line)
 
-    def log_status(self, result_line):
+    def log_info(self, result_line):
         result_format = "[*] {} \n".format(result_line)
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
@@ -195,8 +244,17 @@ class _CommonModule(object):
         result_format = "[x] {} \n".format(result_line)
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
+    def log_store(self, result_format):
+        """清空已有结果并存储当前输出"""
+        result_format = result_format.strip()
+        Xcache.set_module_result(self.host_ipaddress, self.loadpath, result_format)
+
+    def _clean_log(self):
+        flag = Xcache.set_module_result(self.host_ipaddress, self.loadpath, "")
+        return flag
+
     def _store_result_in_history(self):
-        # 特殊处理
+        """存储模块运行结果到历史记录"""
         if self.MODULETYPE in [TAG2CH.internal]:
             return None
         opts = {}
@@ -246,75 +304,7 @@ class _CommonModule(object):
                                                 result=module_result.get("result"))
         return flag
 
-    # 功能函数集
-    @staticmethod
-    def dqtoi(dq):
-        """将字符串ip地址转换为int数字."""
-        octets = dq.split(".")
-        if len(octets) != 4:
-            raise ValueError
-        for octet in octets:
-            if int(octet) > 255:
-                raise ValueError
-        return (int(octets[0]) << 24) + \
-               (int(octets[1]) << 16) + \
-               (int(octets[2]) << 8) + \
-               (int(octets[3]))
-
-    @staticmethod
-    def timestamp_to_str(timestamp):
-        """将时间戳转换为字符串."""
-        time_array = time.localtime(timestamp)
-        other_style_time = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
-        return other_style_time
-
-    @staticmethod
-    def clean_tmp_dir():
-        shutil.rmtree(TMP_DIR)
-        os.mkdir(TMP_DIR)
-        return True
-
-    def get_option_filepath(self, msf=False):
-        """获取选项中的文件绝对路径"""
-        file = self.param(FILE_OPTION.get('name'))
-        if file is None:
-            return None
-
-        filename = file.get("name")
-        if msf:
-            filepath = safe_os_path_join(MSFLOOTTRUE, filename)
-        else:
-            filepath = safe_os_path_join(MSFLOOT, filename)
-        return filepath
-
-    def write_to_loot(self, filename, data):
-        "向loot目录写文件"
-        filepath = safe_os_path_join(MSFLOOT, filename)
-        with open(filepath, "wb+") as f:
-            f.write(data)
-        return True
-
-    def read_from_loot(self, filename):
-        "从loot目录读取文件"
-        filepath = safe_os_path_join(MSFLOOT, filename)
-        with open(filepath, "rb+") as f:
-            data = f.read()
-        return data
-
-    def get_option_fileinfo(self):
-        """获取选项中的文件名"""
-        fileinfo = self.param(FILE_OPTION.get('name'))
-        return fileinfo
-
-    def get_option_filename(self):
-        """获取选项中的文件名"""
-        fileinfo = self.get_option_fileinfo()
-        if fileinfo is None:
-            return None
-        else:
-            filename = self.param(FILE_OPTION.get('name')).get("name")
-            return filename
-
+    # 监听相关函数
     def set_payload_by_handler(self):
         """通过handler参数设置msf模块的payload"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
@@ -325,31 +315,6 @@ class _CommonModule(object):
         z['disablepayloadhandler'] = True
         self.opts = z
         return True
-
-    def generate_hex_reverse_shellcode_by_handler(self):
-        """通过监听配置生成shellcode"""
-        handler_config = self.param(HANDLER_OPTION.get('name'))
-        if handler_config is None:
-            return None
-        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
-        reverse_hex_str = shellcode.hex()[::-1]
-        return reverse_hex_str
-
-    def generate_shellcode(self):
-        """通过监听配置生成shellcode"""
-        handler_config = self.param(HANDLER_OPTION.get('name'))
-        if handler_config is None:
-            return None
-        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
-        return shellcode
-
-    def generate_exe(self):
-        """通过监听配置生成exe"""
-        handler_config = self.param(HANDLER_OPTION.get('name'))
-        if handler_config is None:
-            return None
-        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
-        return shellcode
 
     def cache_handler(self):
         """根据模块监听配置生成虚拟监听"""
@@ -374,10 +339,35 @@ class _CommonModule(object):
             return payload
 
     def get_handler_config(self):
+        """货物handler详细配置信息"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         return handler_config
 
-    def random_str(self, num):
+    # 功能函数集
+    @staticmethod
+    def dqtoi(dq):
+        """将字符串ip地址转换为int数字."""
+        octets = dq.split(".")
+        if len(octets) != 4:
+            raise ValueError
+        for octet in octets:
+            if int(octet) > 255:
+                raise ValueError
+        return (int(octets[0]) << 24) + \
+               (int(octets[1]) << 16) + \
+               (int(octets[2]) << 8) + \
+               (int(octets[3]))
+
+    @staticmethod
+    def timestamp_to_str(timestamp):
+        """将时间戳转换为字符串."""
+        time_array = time.localtime(timestamp)
+        other_style_time = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
+        return other_style_time
+
+    @staticmethod
+    def random_str(num):
+        """生成随机字符串"""
         salt = ''.join(random.sample(string.ascii_letters, num))
         return salt
 
@@ -396,11 +386,12 @@ class _BotCommonModule(_CommonModule):
 
     @property
     def host_ipaddress(self):
+        """重载host_ipaddress函数"""
         return self._ip
 
 
 class BotMSFModule(_BotCommonModule):
-    """bot msf模块基础模板"""
+    """bot msf模块(全网扫描)基础模板"""
     MODULE_BROKER = BROKER.bot_msf_job
     SEARCH = ''
 
@@ -411,10 +402,6 @@ class BotMSFModule(_BotCommonModule):
         self.type = None  # msf模块类型
         self.mname = None  # msf模块路径
         self.opts = {}  # 设置MSF模块的必填参数
-
-    def set_option(self, key, value):
-        """设置msf模块参数"""
-        self.opts[key] = value  # msf模块参数
 
     def callback(self, status, message, data):
         """后台运行模块回调函数"""
@@ -435,6 +422,7 @@ class _PostCommonModule(_CommonModule):
 
     @property
     def host_ipaddress(self):
+        """重载host_ipaddress参数"""
         return self._ipaddress
 
     def param_address_range(self, name="address_range"):
@@ -483,10 +471,6 @@ class _PostMSFModuleCommon(_PostCommonModule):
         self.type = None  # msf模块类型
         self.mname = None  # msf模块路径
         self.opts = {'SESSION': self._sessionid}  # 设置MSF模块的必填参数
-
-    def set_option(self, key, value):
-        """设置msf模块参数"""
-        self.opts[key] = value  # msf模块参数
 
     def callback(self, status, message, data):
         """后台运行模块回调函数"""
@@ -576,7 +560,7 @@ class ThreadWithExc(threading.Thread):
 
 
 class PostPythonModule(_PostCommonModule):
-    """多模块执行的基础模板"""
+    """Viper本地执行python脚本的模块模板"""
     MODULE_BROKER = BROKER.post_python_job
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -585,6 +569,32 @@ class PostPythonModule(_PostCommonModule):
         # 设置模块参数
         self.module_self_uuid = None  # 为了存储uuid设置的字段
         self.exit_flag = False
+
+    # shellcode及exe相关函数
+    def generate_hex_reverse_shellcode_by_handler(self):
+        """通过监听配置生成shellcode"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        reverse_hex_str = shellcode.hex()[::-1]
+        return reverse_hex_str
+
+    def generate_shellcode(self):
+        """通过监听配置生成shellcode"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        return shellcode
+
+    def generate_exe(self):
+        """通过监听配置生成exe"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        return shellcode
 
     def run(self):
         """任务执行时框架会自动调用的函数,子类需要重新实现"""
@@ -611,9 +621,8 @@ class PostPythonModule(_PostCommonModule):
                 time.sleep(1)
 
 
-# 后台运行模板
 class PostMSFRawModule(_PostMSFModuleCommon):
-    """调用原始msf模块的模板模块"""
+    """调用原始msf模块的模板"""
     MODULE_BROKER = BROKER.post_msf_job
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -641,7 +650,7 @@ class PostMSFRawModule(_PostMSFModuleCommon):
 
 
 class PostMSFCSharpModule(_PostMSFModuleCommon):
-    """直接调用powershell脚本执行的模板模块"""
+    """主机内存执行CSharp可执行文件的模块模板"""
     REQUIRE_SESSION = True
     PLATFORM = ["Windows"]  # 平台
 
@@ -681,7 +690,7 @@ class PostMSFCSharpModule(_PostMSFModuleCommon):
 
 
 class PostMSFPowershellModule(_PostMSFModuleCommon):
-    """直接调用powershell脚本执行的模板模块"""
+    """主机内存执行powershell脚本模块模板"""
     REQUIRE_SESSION = True
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -702,7 +711,7 @@ class PostMSFPowershellModule(_PostMSFModuleCommon):
 
 
 class PostMSFPythonModule(_PostMSFModuleCommon):
-    """调用python脚本的模板模块"""
+    """主机内存执行python脚本的模块模板"""
     REQUIRE_SESSION = True
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -723,7 +732,8 @@ class PostMSFPythonModule(_PostMSFModuleCommon):
 
 
 class PostMSFPythonWithParamsModule(_PostMSFModuleCommon):
-    """调用python脚本(带参数)的模板模块(注意在脚本中必须带有get_script_param函数,可参考)"""
+    """主机内存执行python脚本的模块模板(带参数)
+    (注意在脚本中必须带有get_script_param函数)"""
     REQUIRE_SESSION = True
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -753,7 +763,7 @@ class PostMSFPythonWithParamsModule(_PostMSFModuleCommon):
 
 
 class PostMSFPowershellFunctionModule(_PostMSFModuleCommon):
-    """模块用于加载powershell脚本后执行其中的函数的模板模块"""
+    """主机内存加载加载powershell脚本后执行其中的函数的模块模板"""
     REQUIRE_SESSION = True
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -778,7 +788,7 @@ class PostMSFPowershellFunctionModule(_PostMSFModuleCommon):
 
 
 class PostMSFExecPEModule(_PostMSFModuleCommon):
-    """直接调用powershell脚本执行的模板模块"""
+    """上传pe文件到主机并执行的模块模板"""
     REQUIRE_SESSION = True
 
     def __init__(self, sessionid, ipaddress, custom_param):

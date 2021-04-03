@@ -31,7 +31,7 @@ class PostModule(PostMSFRawModule):
                    ],
                    option_length=24),
         OptionStr("cshost", name_tag="Host", desc="CS listener的host参数", required=True),
-        OptionIntger("csport", name_tag="Port", desc="CS listener的port参数", required=True)
+        OptionInt("csport", name_tag="Port", desc="CS listener的port参数", required=True)
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

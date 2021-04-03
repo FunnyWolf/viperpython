@@ -17,7 +17,7 @@ option_type_default_length = {
 
 
 def register_options(options_list=None):
-    """注册参数"""
+    """注册模块参数"""
     if options_list is None:
         options_list = []
     options = []
@@ -86,13 +86,18 @@ class _Option(object):
 
 
 class OptionStr(_Option):
+    """字符串类型参数"""
+
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
                  option_length=None):
         super().__init__(option_type='str', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
                          option_length=option_length)
 
+
 #
-class OptionIntger(_Option):
+class OptionInt(_Option):
+    """数字类型参数"""
+
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
                  option_length=6):
         super().__init__(option_type='integer', name=name, name_tag=name_tag, desc=desc, required=required,
@@ -101,6 +106,8 @@ class OptionIntger(_Option):
 
 
 class OptionBool(_Option):
+    """布尔类型参数"""
+
     def __init__(self, name, name_tag=None, desc=None, required=False, default=False,
                  option_length=4):
         super().__init__(option_type='bool', name=name, name_tag=name_tag, desc=desc, required=required,
@@ -108,14 +115,17 @@ class OptionBool(_Option):
                          option_length=option_length)
 
 
-
 class OptionEnum(_Option):
+    """枚举类型参数
+    enum_list参数样例:
+    enum_list = [
+        {'name': "劫持", 'value': "Hijack"},
+        {'name': "恢复", 'value': "Recovery"},
+    ]
+    """
+
     def __init__(self, name=None, name_tag=None, desc=None, required=False, default=None, option_length=6,
                  enum_list=None):
-        # enum_list = [
-        #     {'name': "劫持", 'value': "Hijack"},
-        #     {'name': "恢复", 'value': "Recovery"},
-        # ]
         if enum_list is None:
             enum_list = []
         super().__init__(option_type='enum', name=name, name_tag=name_tag, required=required, desc=desc,
@@ -131,12 +141,18 @@ class OptionEnum(_Option):
 
 
 class OptionIPAddressRange(_Option):
+    """IP地址范围类型参数"""
+
     def __init__(self, name, name_tag=None, desc=None, required=False, default=None):
         super().__init__(option_type='address_range', name=name, name_tag=name_tag, desc=desc, required=required,
                          default=default)
 
 
 class OptionFileEnum(_Option):
+    """文件类型参数
+    返回<文件列表>中的用户选择的文件
+    """
+
     def __init__(self, required=True, ext=None):
         if ext is None:
             ext = []
@@ -151,6 +167,10 @@ class OptionFileEnum(_Option):
 
 
 class OptionCredentialEnum(_Option):
+    """凭据类型参数
+    展示<凭据列表>中的所有凭据,返回用户选择的凭据
+    """
+
     def __init__(self, required=True, password_type=None):
         if password_type is None:
             password_type = []
@@ -165,6 +185,8 @@ class OptionCredentialEnum(_Option):
 
 
 class OptionHander(_Option):
+    """监听配置参数"""
+
     def __init__(self, required=True):
         super().__init__(option_type='enum',
                          name=HANDLER_OPTION.get('name'),
@@ -176,6 +198,8 @@ class OptionHander(_Option):
 
 
 class OptionCacheHanderConfig(_Option):
+    """是否选择新建缓存监听"""
+
     def __init__(self):
         super().__init__(option_type='bool',
                          name=CACHE_HANDLER_OPTION.get('name'),

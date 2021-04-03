@@ -28,7 +28,7 @@ class PostModule(PostMSFRawModule):
     OPTIONS = register_options([
         OptionFileEnum(ext=['exe', 'EXE']),
         OptionStr(name='ARGUMENTS', name_tag="命令行参数", option_length=24, desc="运行exe时输入的参数"),
-        OptionIntger(name='WAIT', name_tag="等待时间", desc="读取输出前等待时间", default=10),
+        OptionInt(name='WAIT', name_tag="等待时间", desc="读取输出前等待时间", default=10),
         OptionBool(name='KILL', name_tag="结束进程", desc="执行完成后结束C#进程", default=True),
         OptionEnum(name="Signature", name_tag="入口函数", desc="C#程序的入口函数", default="Main(string[])",
                    enum_list=[
@@ -37,8 +37,8 @@ class PostModule(PostMSFRawModule):
                    ]),
 
         OptionStr(name='PROCESS', name_tag="新进程名", option_length=6, default="notepad.exe", desc="新启动进程名称"),
-        OptionIntger("PID", name_tag="PID", desc="注入的进程pid(0表示新建进程)", default=0),
-        OptionIntger("PPID", name_tag="PPID", desc="新建进程时,伪装的PPID(父进程id)", default=0)
+        OptionInt("PID", name_tag="PID", desc="注入的进程pid(0表示新建进程)", default=0),
+        OptionInt("PPID", name_tag="PPID", desc="新建进程时,伪装的PPID(父进程id)", default=0)
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

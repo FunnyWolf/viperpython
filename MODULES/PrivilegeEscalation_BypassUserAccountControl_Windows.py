@@ -193,8 +193,8 @@ class PostModule(PostPythonModule):
             self.log_good("存在 {} 个符合要求的模块,准备执行".format(len(self.module_path_list)))
             # 运行模块
             for one in self.module_path_list:
-                self.log_status("正在执行 {}".format(one.get('mname')))
+                self.log_info("正在执行 {}".format(one.get('mname')))
                 MsfModule.run_with_output(module_type=one.get('type'), mname=one.get('mname'), opts=self.opts)
 
             # 调用父类函数存储结果(必须调用)
-            self.log_status("执行完成,请查看新生成Session的权限")
+            self.log_info("执行完成,请查看新生成Session的权限")

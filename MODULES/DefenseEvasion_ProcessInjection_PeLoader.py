@@ -25,8 +25,8 @@ class PostModule(PostMSFRawModule):
         OptionFileEnum(ext=['exe']),
         OptionBool(name='CHANNELIZED', name_tag="获取输出", desc="是否需要获取shellcode执行后输出结果", required=True, default=True),
         OptionStr(name='ARGUMENTS', name_tag="命令行参数", desc="运行exe时输入的参数", option_length=24),
-        OptionIntger(name='WAIT_OUTPUT', name_tag="等待输出时间(秒)", desc="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
-                     default=3),
+        OptionInt(name='WAIT_OUTPUT', name_tag="等待输出时间(秒)", desc="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
+                  default=3),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

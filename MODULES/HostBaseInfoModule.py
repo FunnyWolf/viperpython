@@ -108,6 +108,6 @@ class PostModule(PostMSFRawModule):
             data["listen_address"] = listen_address
             data["interface_ipaddress"] = interface_ipaddress
             data["useful_processes"] = useful_processes
-            self.store_log(json.dumps(data))
+            self.log_store(json.dumps(data))
         else:
             print(message)

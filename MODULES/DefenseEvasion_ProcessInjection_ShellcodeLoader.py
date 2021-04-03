@@ -32,8 +32,8 @@ class PostModule(PostMSFRawModule):
                        {'name': 'x64', 'value': 'x64'},
                    ]),
         OptionBool(name='CHANNELIZED', name_tag="获取输出", desc="是否需要获取shellcode执行后输出结果", required=True, default=True),
-        OptionIntger(name='WAIT_OUTPUT', name_tag="等待输出时间(秒)", desc="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
-                     default=3),
+        OptionInt(name='WAIT_OUTPUT', name_tag="等待输出时间(秒)", desc="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
+                  default=3),
         OptionBool(name='KILL', name_tag="关闭进程", desc="执行shellcode完成后关闭新增的进程.", required=True, default=True),
 
     ])
