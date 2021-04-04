@@ -137,6 +137,13 @@ class HeartBeat(object):
     @staticmethod
     def list_hostandsession():
 
+        def short_payload(payload):
+            payload = payload.replace("windows", "win")
+            payload = payload.replace("linux", "lin")
+            payload = payload.replace("meterpreter", "met")
+
+            return payload
+
         def filter_session_by_ipaddress(ipaddress, sessions):
             result = []
             for session in sessions:
@@ -235,25 +242,50 @@ class HeartBeat(object):
 
             # host存在session
             if filter_sessions:
+                # 加入 "包含session的主机节点"
                 nodes.append({
                     "id": ipaddress,
                     "data": {
-                        "type": 'session',
+                        "type": 'host',
                         "sessionnum": len(filter_sessions),
                         "platform": filter_sessions[0].get("platform"),
                     },
                 })
                 for session in filter_sessions:
-                    # session连接edge
-                    edge_data = {
+                    sid = session.get("id")
+                    platform = session.get("platform")
+                    payload = "/".join(session.get("via_payload").split("/")[1:])
+                    # 主机节点连接到viper节点
+                    edges.append({
                         "source": '255.255.255.255',
                         "target": ipaddress,
                         "data": {
                             "type": 'session',
-                            "payload": "/".join(session.get("via_payload").split("/")[1:]),
+                            "payload": short_payload(payload),
                         },
-                    }
-                    edges.append(edge_data)
+                    })
+
+                    # 加入session节点
+                    sesison_node_id = f"SID - {sid}"
+                    nodes.append({
+                        "id": sesison_node_id,
+                        "data": {
+                            "type": 'session',
+                            "sid": sid,
+                            "platform": platform,
+                        },
+                    })
+
+                    # 主机节点连接到session节点
+                    edges.append({
+                        "source": ipaddress,
+                        "target": sesison_node_id,
+                        "data": {
+                            "type": 'session',
+                            "payload": short_payload(payload),
+                        },
+                    })
+
                     # route edge
                     routes = session.get("routes")
                     sid = session.get("id")
@@ -264,15 +296,14 @@ class HeartBeat(object):
                             if ipaddress_in == "255.255.255.255" or ipaddress_in == ipaddress:
                                 continue
                             if ipaddr.ip_address(ipaddress_in) in ipnetwork:
-                                edge_data = {
-                                    "source": ipaddress,
+                                edges.append({
+                                    "source": sesison_node_id,
                                     "target": ipaddress_in,
                                     "data": {
                                         "type": "route",
                                         "sid": sid,
                                     },
-                                }
-                                edges.append(edge_data)
+                                })
 
             else:
                 # host不存在session
@@ -282,8 +313,8 @@ class HeartBeat(object):
                         "type": 'host',
                     },
                 })
-                # 查看是否存在online类型的edge
 
+                # 查看是否存在online类型的edge
                 online_edge_list = Edge.list_edge(target=ipaddress, type="online")
                 for online_edge in online_edge_list:
                     edge_data = {
@@ -291,7 +322,7 @@ class HeartBeat(object):
                         "target": ipaddress,
                         "data": {
                             "type": 'online',
-                            "payload": online_edge.get("data").get("payload"),
+                            "payload": short_payload(online_edge.get("data").get("payload")),
                         },
                     }
                     edges.append(edge_data)
