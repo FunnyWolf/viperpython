@@ -44,7 +44,12 @@ class Host(object):
             Edge.create_edge(source=source, target=ipaddress, type=linktype, data=data)
 
         defaultdict = {'ipaddress': ipaddress, }  # 没有主机数据时新建
-        model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
+        try:
+            model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
+        except Exception as E:
+            # ip地址重复
+            HostModel.objects.filter(ipaddress=ipaddress).delete()
+            model = HostModel.objects.create(ipaddress=ipaddress)
         result = HostSerializer(model, many=False).data
         return result
 
@@ -100,6 +105,10 @@ class Host(object):
     def destory_host(ipaddress=None):
         # 删除相关缓存信息
         # 删除缓存的session命令行结果
+        # 255.255.255.255 特殊处理
+        if ipaddress == "255.255.255.255":
+            return False
+
         Xcache.del_sessionio_cache(ipaddress=ipaddress)
         # 删除缓存的模块结果
         Xcache.del_module_result_by_ipaddress(ipaddress=ipaddress)

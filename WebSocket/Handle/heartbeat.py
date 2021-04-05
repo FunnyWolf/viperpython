@@ -459,8 +459,7 @@ class HeartBeat(object):
         def split_ip(ip):
             try:
                 result = tuple(int(part) for part in ip.split('.'))
-            except Exception as E:
-                logger.exception(E)
+            except Exception as _:
                 return 0, 0, 0
             return result
 
