@@ -138,6 +138,215 @@ def check_services():
     return all_start
 
 
+def start_services():
+    # redis
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1)
+        client.connect((LOCALHOST, redis_port))
+        print("[+] redis运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动redis服务")
+        result = subprocess.run(
+            ["service", "redis-server", "start"],
+            stdout=devNull,
+            stderr=devNull
+        )
+
+    # msfrpcd
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1)
+        client.connect((LOCALHOST, msgrpc_port))
+        print("[+] msfrpcd运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动msfrpcd服务")
+        res = subprocess.Popen(
+            f"nohup puma -b tcp://127.0.0.1:{msgrpc_port} -e production --pidfile /root/viper/puma.pid "
+            f"--redirect-stdout {LOGDIR}/puma.log --redirect-stderr {LOGDIR}/puma.log /root/metasploit-framework/msf-json-rpc.ru &",
+            shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+
+    # daphne
+    try:
+        serverAddr = '/root/viper/daphne.sock'
+        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        client.connect(serverAddr)
+        print("[+] daphne服务运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动daphne主服务")
+        os.chdir("/root/viper/")
+        subprocess.Popen(
+            "rm /root/viper/daphne.sock.lock", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "rm /root/viper/daphne.sock", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+        res = subprocess.Popen(
+            f"nohup daphne -u /root/viper/daphne.sock --access-log {LOGDIR}/daphne.log Viper.asgi:application &",
+            shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+
+    # viper
+    try:
+        serverAddr = '/root/viper/uwsgi.sock'
+        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        client.connect(serverAddr)
+        print("[+] VIPER主服务运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动VIPER主服务")
+        result = subprocess.run(
+            ["uwsgi", "--ini", "/root/viper/Docker/uwsgi.ini", ],
+            stdout=devNull,
+            stderr=devNull
+        )
+
+    # nginx
+    try:
+        nginx_port = get_nginx_port()
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1)
+        client.connect((LOCALHOST, nginx_port))
+        print("[+] nginx运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动nginx服务")
+        result = subprocess.run(
+            ["service", "nginx", "start"],
+            stdout=devNull,
+            stderr=devNull
+        )
+
+    for i in range(6):
+        time.sleep(5)
+        if check_services():
+            print("[+] 启动完成")
+            break
+
+
+def stop_services():
+    # 停止服务
+    try:
+        print("[*] 关闭nginx服务")
+        result = subprocess.run(["service", "nginx", "stop"], stdout=devNull)
+    except Exception as E:
+        pass
+
+    try:
+        print("[*] 关闭msfrpcd服务")
+        subprocess.run(
+            ["/sbin/start-stop-daemon", "--quiet", "--stop", "--retry", "QUIT/5", "--pidfile",
+             "/root/puma.pid"],
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "kill -9 $(ps aux | grep puma | tr -s ' '| cut -d ' ' -f 2)", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "rm /root/puma.pid", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+    except Exception as E:
+        pass
+
+    try:
+        print("[*] 关闭VIPER主服务")
+        subprocess.run(
+            ["uwsgi", "--stop", "/root/viper/uwsgi.pid"],
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "kill -9 $(ps aux | grep uwsgi | tr -s ' '| cut -d ' ' -f 2)", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "rm /root/viper/uwsgi.pid", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+    except Exception as E:
+        pass
+
+    try:
+        print("[*] 关闭daphne服务")
+        subprocess.Popen(
+            "kill -9 $(ps aux | grep daphne | tr -s ' '| cut -d ' ' -f 2)", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "rm /root/viper/daphne.sock.lock", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+        subprocess.Popen(
+            "rm /root/viper/daphne.sock", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+    except Exception as E:
+        pass
+    time.sleep(5)
+    check_services()
+
+
+def gen_random_token():
+    """生成随机密码"""
+    # 写入yml文件
+    try:
+        token = random_str(10)
+    except Exception as E:
+        print("生成token失败")
+        token = "foobared"
+
+    try:
+        token_yml = f'token: "{token}"'
+        with open("/root/.msf4/token.yml", "w+", encoding="utf-8") as f:
+            f.write(token_yml)
+        redis_yml = f'redis_password: "{token}"\nredis_sock: "/var/run/redis/redis-server.sock"'
+        with open("/root/.msf4/redis.yml", "w+", encoding="utf-8") as f:
+            f.write(redis_yml)
+    except Exception as E:
+        print("写入token.yml失败")
+        print(E)
+
+    # 写入redis配置文件
+    try:
+        requirepass = f"requirepass {token}"
+        with open("/root/viper/Docker/redis.conf", "w+", encoding="utf-8") as f:
+            f.write(requirepass)
+    except Exception as E:
+        print("写入redis.conf失败")
+        print(E)
+    # 重启redis
+    try:
+        print("[*] 重启redis服务")
+        result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
+        result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
+        result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
+        result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
+    except Exception as E:
+        pass
+
+
 def init_copy_file():
     if not os.path.exists("/root/viper/Docker/db/db.sqlite3"):
         src_file = "/root/viper/Docker/db_empty.sqlite3"
@@ -167,7 +376,8 @@ def init_copy_file():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
-    parser.add_argument('action', nargs='?', metavar='start/stop/check/restartnginx', help="启动/停止/检测 VIPER服务", type=str)
+    parser.add_argument('action', nargs='?', metavar='start/stop/check/init/restartnginx', help="启动/停止/检测 VIPER服务",
+                        type=str)
     parser.add_argument('-pw', metavar='newpassword', help="修改root密码")
 
     args = parser.parse_args()
@@ -179,49 +389,11 @@ if __name__ == '__main__':
         parser.print_help()
         exit(0)
 
-    # 初始化系统初始文件
-    init_copy_file()
-
     if newpassword is not None:
         if len(newpassword) < 8:
             print("[x] 新密码必须大于等于8位")
             exit(0)
         else:
-            # 写入yml文件
-            try:
-                token = random_str(10)
-            except Exception as E:
-                print("生成token失败")
-                token = "foobared"
-
-            try:
-                token_yml = f'token: "{token}"'
-                with open("/root/.msf4/token.yml", "w+", encoding="utf-8") as f:
-                    f.write(token_yml)
-                redis_yml = f'redis_password: "{token}"\nredis_sock: "/var/run/redis/redis-server.sock"'
-                with open("/root/.msf4/redis.yml", "w+", encoding="utf-8") as f:
-                    f.write(redis_yml)
-            except Exception as E:
-                print("写入token.yml失败")
-                print(E)
-
-            # 写入redis配置文件
-            try:
-                requirepass = f"requirepass {token}"
-                with open("/root/viper/Docker/redis.conf", "w+", encoding="utf-8") as f:
-                    f.write(requirepass)
-            except Exception as E:
-                print("写入redis.conf失败")
-                print(E)
-            # 重启redis
-            try:
-                print("[*] 重启redis服务")
-                result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
-                result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
-                result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
-                result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
-            except Exception as E:
-                pass
 
             # 启动django项目
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Viper.settings")
@@ -242,181 +414,26 @@ if __name__ == '__main__':
             print("[+] 修改密码完成,新密码为: {}".format(newpassword))
 
     if action is not None:
-        if action.lower() == "start":
+        if action.lower() == "init":  # 初始化处理
+            # 初始化系统初始文件
+            init_copy_file()
+
+            # 生成随机密码
+            gen_random_token()
 
             # 启动服务
-            # redis
-            try:
-                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.settimeout(1)
-                client.connect((LOCALHOST, redis_port))
-                print("[+] redis运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动redis服务")
-                result = subprocess.run(
-                    ["service", "redis-server", "start"],
-                    stdout=devNull,
-                    stderr=devNull
-                )
-
-            # msfrpcd
-            try:
-                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.settimeout(1)
-                client.connect((LOCALHOST, msgrpc_port))
-                print("[+] msfrpcd运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动msfrpcd服务")
-                res = subprocess.Popen(
-                    f"nohup puma -b tcp://127.0.0.1:{msgrpc_port} -e production --pidfile /root/viper/puma.pid "
-                    f"--redirect-stdout {LOGDIR}/puma.log --redirect-stderr {LOGDIR}/puma.log /root/metasploit-framework/msf-json-rpc.ru &",
-                    shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-
-            # daphne
-            try:
-                serverAddr = '/root/viper/daphne.sock'
-                client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                client.connect(serverAddr)
-                print("[+] daphne服务运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动daphne主服务")
-                os.chdir("/root/viper/")
-                subprocess.Popen(
-                    "rm /root/viper/daphne.sock.lock", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "rm /root/viper/daphne.sock", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                res = subprocess.Popen(
-                    f"nohup daphne -u /root/viper/daphne.sock --access-log {LOGDIR}/daphne.log Viper.asgi:application &",
-                    shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-
-            # viper
-            try:
-                serverAddr = '/root/viper/uwsgi.sock'
-                client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                client.connect(serverAddr)
-                print("[+] VIPER主服务运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动VIPER主服务")
-                result = subprocess.run(
-                    ["uwsgi", "--ini", "/root/viper/Docker/uwsgi.ini", ],
-                    stdout=devNull,
-                    stderr=devNull
-                )
-
-            # nginx
-            try:
-                nginx_port = get_nginx_port()
-                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.settimeout(1)
-                client.connect((LOCALHOST, nginx_port))
-                print("[+] nginx运行中")
-                client.close()
-            except Exception as err:
-                print("[*] 启动nginx服务")
-                result = subprocess.run(
-                    ["service", "nginx", "start"],
-                    stdout=devNull,
-                    stderr=devNull
-                )
-
-            for i in range(6):
-                time.sleep(5)
-                if check_services():
-                    print("[+] 启动完成")
-                    break
+            start_services()
 
             # 不要删除这个死循环,此循环是确保docker-compose后台运行基础
             while True:
-                time.sleep(60)
+                time.sleep(30)
                 check_services()
 
+        elif action.lower() == "start":
+            # 启动服务
+            start_services()
         elif action.lower() == "stop":
-
-            # 停止服务
-            try:
-                print("[*] 关闭nginx服务")
-                result = subprocess.run(["service", "nginx", "stop"], stdout=devNull)
-            except Exception as E:
-                pass
-
-            try:
-                print("[*] 关闭msfrpcd服务")
-                subprocess.run(
-                    ["/sbin/start-stop-daemon", "--quiet", "--stop", "--retry", "QUIT/5", "--pidfile",
-                     "/root/puma.pid"],
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "kill -9 $(ps aux | grep puma | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "rm /root/puma.pid", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-            except Exception as E:
-                pass
-
-            try:
-                print("[*] 关闭VIPER主服务")
-                subprocess.run(
-                    ["uwsgi", "--stop", "/root/viper/uwsgi.pid"],
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "kill -9 $(ps aux | grep uwsgi | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "rm /root/viper/uwsgi.pid", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-            except Exception as E:
-                pass
-
-            try:
-                print("[*] 关闭daphne服务")
-                subprocess.Popen(
-                    "kill -9 $(ps aux | grep daphne | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "rm /root/viper/daphne.sock.lock", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-                subprocess.Popen(
-                    "rm /root/viper/daphne.sock", shell=True,
-                    stdout=devNull,
-                    stderr=devNull
-                )
-            except Exception as E:
-                pass
-            time.sleep(5)
-            check_services()
+            stop_services()
             exit(0)
         elif action.lower() == "restartnginx":
             restart_nginx()

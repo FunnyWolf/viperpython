@@ -1,4 +1,4 @@
 FROM viper:latest
-ENTRYPOINT ["viper", "start","-pw"]
+ENTRYPOINT ["viper", "init","-pw"]
 CMD ["diypassword"]
 EXPOSE 60000
