@@ -389,6 +389,9 @@ if __name__ == '__main__':
         parser.print_help()
         exit(0)
 
+    # 初始化系统初始文件 必须在修改密码之前,确保数据库文件已经初始化
+    init_copy_file()
+
     if newpassword is not None:
         if len(newpassword) < 8:
             print("[x] 新密码必须大于等于8位")
@@ -415,8 +418,6 @@ if __name__ == '__main__':
 
     if action is not None:
         if action.lower() == "init":  # 初始化处理
-            # 初始化系统初始文件
-            init_copy_file()
 
             # 生成随机密码
             gen_random_token()
