@@ -17,6 +17,7 @@ from Lib.baseview import BaseView
 from Lib.configs import *
 from Lib.log import logger
 from Lib.notice import Notice
+from Lib.xcache import Xcache
 
 
 class NoticesView(BaseView):
@@ -149,8 +150,12 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                 Notice.send_info(f"{serializer.validated_data['user']} 成功登录")
                 context = data_return(201, BASEAUTH_MSG.get(201), null_response)
                 return Response(context)
-            context = data_return(301, BASEAUTH_MSG.get(301), null_response)
-            return Response(context)
+            else:
+                if Xcache.login_fail_count():
+                    Notice.send_alert("Viper遭到暴力破解,服务器地址可能已经暴露")
+
+                context = data_return(301, BASEAUTH_MSG.get(301), null_response)
+                return Response(context)
         except Exception as E:
             logger.error(E)
             context = data_return(301, BASEAUTH_MSG.get(301), null_response)

@@ -65,6 +65,8 @@ class Xcache(object):
 
     XCACHE_LAZYLOADER_CACHE = "XCACHE_LAZYLOADER_CACHE"
 
+    XCACHE_LOGIN_FAIL_COUNT = "XCACHE_LOGIN_FAIL_COUNT"
+
     def __init__(self):
         pass
 
@@ -739,3 +741,19 @@ class Xcache(object):
         key = f"{Xcache.XCACHE_LAZYLOADER_CACHE}_{loader_uuid}"
         cache.delete(key)
         return True
+
+    @staticmethod
+    def login_fail_count():
+        key = f"{Xcache.XCACHE_LOGIN_FAIL_COUNT}"
+        count = cache.get(key)
+        if count is None:  # 第一次错误
+            cache.set(key, 1, 60 * 10)  # 10分钟计时周期
+        elif count == -1:  # 已经发送报警
+            return False
+        elif count >= 10:  # 发送报警
+            cache.set(key, -1, 60 * 10)  # 10分钟计时周期
+            return True
+        else:
+            count += 1
+            cache.set(key, count, 60 * 10)  # 10分钟计时周期
+            return False
