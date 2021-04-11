@@ -192,14 +192,16 @@ class HeartBeatView(WebsocketConsumer):
         self.accept()
 
         query_string = self.scope.get('query_string')
-        ssh_args = QueryDict(query_string=query_string, encoding='utf-8')
+        connect_request_args = QueryDict(query_string=query_string, encoding='utf-8')
 
-        token = ssh_args.get('token')
+        token = connect_request_args.get('token')
         if Xcache.alive_token(token):
             result = HeartBeat.first_heartbeat_result()
             self.send(json.dumps(result))
             return
         else:
+
+            logger.warning("Websocket 鉴权失败")
             self.disconnect()
 
     def disconnect(self, close_code=0):
