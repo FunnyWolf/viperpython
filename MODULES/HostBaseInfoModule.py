@@ -26,7 +26,6 @@ class PostModule(PostMSFRawModule):
         self.mname = "multi/gather/base_info"
 
     def check(self):
-
         return True, None
 
     def callback(self, status, message, data):

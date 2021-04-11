@@ -19,20 +19,21 @@ class MsfConsoleView(WebsocketConsumer):
         打开 websocket 连接
         :return:
         """
-        async_to_sync(self.channel_layer.group_add)("msfconsole", self.channel_name)
-        self.accept()
         query_string = self.scope.get('query_string')
-        ssh_args = QueryDict(query_string=query_string, encoding='utf-8')
+        connect_request_args = QueryDict(query_string=query_string, encoding='utf-8')
 
-        token = ssh_args.get('token')
+        token = connect_request_args.get('token')
         if Xcache.alive_token(token):
             result = Console.get_active_console()
             if result:
+                self.accept()
+                async_to_sync(self.channel_layer.group_add)("msfconsole", self.channel_name)
                 return
             else:
                 self.disconnect(True)
                 return
         else:
+            logger.warning("Websocket 鉴权失败")
             self.disconnect(True)
 
     def disconnect(self, close_code):
@@ -188,19 +189,18 @@ class HeartBeatView(WebsocketConsumer):
         打开 websocket 连接
         :return:
         """
-        async_to_sync(self.channel_layer.group_add)("heartbeat", self.channel_name)
-        self.accept()
-
         query_string = self.scope.get('query_string')
         connect_request_args = QueryDict(query_string=query_string, encoding='utf-8')
 
         token = connect_request_args.get('token')
+
         if Xcache.alive_token(token):
             result = HeartBeat.first_heartbeat_result()
+            self.accept()
+            async_to_sync(self.channel_layer.group_add)("heartbeat", self.channel_name)
             self.send(json.dumps(result))
             return
         else:
-
             logger.warning("Websocket 鉴权失败")
             self.disconnect()
 
