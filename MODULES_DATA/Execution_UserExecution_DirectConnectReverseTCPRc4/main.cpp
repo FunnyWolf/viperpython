@@ -7,8 +7,9 @@
 #include "rc4.h"
 #include "sha1.h"
 
-
-
+#ifdef _WIN32
+	#pragma comment(lib,"ws2_32.lib")
+#endif
 
 static BOOL err_exit(const char* message) {
 	printf("\nError: %s\nGetLastError:%d", message, GetLastError());

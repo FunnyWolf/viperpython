@@ -51,7 +51,12 @@ class PostModule(PostPythonModule):
         else:
             arch = "x64"
         binbytes = mingw.compile(arch=arch, extra_params=["-lws2_32", "-lwininet"])
-        filename = f"Reverse_https_{int(time.time())}.exe"
-        self.write_to_loot(filename=filename, data=binbytes)
+
+
+        exefilename = f"Reverse_https_{int(time.time())}.exe"
+        projectfilename = f"Reverse_https_{int(time.time())}.zip"
+        self.write_zip_vs_project(filename=projectfilename, source_code=source_code, exe_file=exefilename,
+                                  exe_data=binbytes)
+
         self.log_good("模块执行成功")
-        self.log_good(f"请在<文件列表>中查看生成的exe文件: {filename}")
+        self.log_good(f"请在<文件列表>中查看生成的zip文件: {projectfilename}")

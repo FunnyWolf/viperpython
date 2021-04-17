@@ -3,7 +3,6 @@
 # @Date  : 2019/1/11
 # @Desc  :
 
-
 import time
 
 from Lib.ModuleAPI import *
@@ -41,7 +40,8 @@ class PostModule(PostPythonModule):
         source_code = self.generate_context_by_template(filename="main.cpp", SHELLCODE_STR=shellcode, FUNCTION=FUNCTION,
                                                         FUNCTION1=FUNCTION1)
 
-        filename = f"FakePPID_main_{int(time.time())}.cpp"
-        self.write_to_loot(filename=filename, data=str.encode(source_code))
+        filename = f"FakePPID_{int(time.time())}.zip"
+        self.write_zip_vs_project(filename, source_code, )
+
         self.log_good("模块执行成功")
-        self.log_good(f"请在<文件列表>中查看生成的cpp文件: {filename}")
+        self.log_good(f"请在<文件列表>中查看生成的源码: {filename}")

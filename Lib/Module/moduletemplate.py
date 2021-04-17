@@ -14,6 +14,7 @@ import re
 import string
 import threading
 import time
+import zipfile
 
 from ipaddr import summarize_address_range, IPv4Network, IPv4Address
 from jinja2 import Environment, FileSystemLoader
@@ -169,6 +170,24 @@ class _CommonModule(object):
         tpl = env.get_template(filename)
         context = tpl.render(**kwargs)
         return context
+
+    def write_zip_vs_project(self, filename, source_code, source_code_filename="main.cpp",
+                             exe_file=None,
+                             exe_data=None):
+
+        projectfile = os.path.join(File.loot_dir(), filename)
+        new_zip = zipfile.ZipFile(projectfile, 'w')
+        sourcepath = os.path.join(self.module_data_dir, "source")
+        for file in os.listdir(sourcepath):
+            src_file = os.path.join(sourcepath, file)
+            new_zip.write(src_file, arcname=file, compress_type=zipfile.ZIP_DEFLATED)
+        new_zip.writestr(zinfo_or_arcname=source_code_filename, data=source_code, compress_type=zipfile.ZIP_DEFLATED)
+        if exe_file is not None:
+            new_zip.writestr(zinfo_or_arcname=exe_file, data=exe_data,
+                             compress_type=zipfile.ZIP_DEFLATED)
+
+        new_zip.close()
+        return True
 
     # 新增数据相关函数
 
@@ -579,6 +598,20 @@ class PostPythonModule(_PostCommonModule):
         shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
         reverse_hex_str = shellcode.hex()[::-1]
         return reverse_hex_str
+
+    # shellcode及exe相关函数
+    def generate_hex_reverse_shellcode_array_by_handler(self):
+        """通过监听配置生成shellcode"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        reverse_hex_str = shellcode.hex()[::-1]
+        tmp = []
+        for a in reverse_hex_str:
+            tmp.append(f"'{a}'")
+        reverse_hex_str_array = ",".join(tmp)
+        return reverse_hex_str_array
 
     def generate_shellcode(self):
         """通过监听配置生成shellcode"""

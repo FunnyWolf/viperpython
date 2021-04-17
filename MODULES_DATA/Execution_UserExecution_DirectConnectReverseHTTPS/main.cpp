@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <wininet.h>
-
+#ifdef _WIN32
+#pragma comment(lib, "WinInet.lib")
+#endif
 static BOOL err_exit(const char* message) {
 	printf("\nError: %s\nGetLastError:%d", message, GetLastError());
 	return FALSE;

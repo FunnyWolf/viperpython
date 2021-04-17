@@ -7,6 +7,8 @@ import shutil
 
 from django.conf import settings
 
+from Lib.configs import MSFLOOT
+
 TMP_DIR = os.path.join(settings.BASE_DIR, 'STATICFILES', 'TMP')
 
 
@@ -34,3 +36,7 @@ class File(object):
         shutil.rmtree(TMP_DIR)
         os.mkdir(TMP_DIR)
         return True
+
+    @staticmethod
+    def loot_dir():
+        return MSFLOOT
