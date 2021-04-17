@@ -69,7 +69,7 @@ class HostView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            ipaddress_str = request.query_params.get('ipaddress', -1)
+            ipaddress_str = request.data.get('ipaddress', None)
             # 多个
             if "," in ipaddress_str:
                 ipaddress_list = []
