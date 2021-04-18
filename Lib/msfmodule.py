@@ -44,9 +44,6 @@ class MSFModule(object):
         if result is None:
             Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}")
             return False
-        elif result == "license expire":
-            Notice.send_warning(f"License 过期,无法执行模块 :{msf_module.NAME}")
-            return False
 
         # result 数据格式
         # {'job_id': 3, 'uuid': 'dbcb2530-95b1-0137-5100-000c2966078a', 'module': b'\x80\ub.'}

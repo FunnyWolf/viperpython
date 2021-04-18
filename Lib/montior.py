@@ -94,7 +94,7 @@ class MainMonitor(object):
         self.MainScheduler.start()
 
         logger.warning("后台服务启动成功")
-        Notice.send_success(f"后台服务启动成功，15秒后开始加载历史监听.")
+        Notice.send_success(f"后台服务启动成功,15秒后开始加载历史监听.")
 
     @staticmethod
     def run_bot_wait_list():
