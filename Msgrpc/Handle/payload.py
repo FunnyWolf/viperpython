@@ -65,6 +65,7 @@ class Payload(object):
         if opts.get('OverrideRequestHost') is True:
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
+            opts['OverrideRequestHost'] = False
             Notice.send_warn("Payload包含OverrideRequestHost参数")
             Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
             Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
@@ -198,6 +199,7 @@ class Payload(object):
         if opts.get('OverrideRequestHost') is True:
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
+            opts['OverrideRequestHost'] = False
             Notice.send_warn("Payload包含OverrideRequestHost参数")
             Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
             Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
@@ -243,6 +245,7 @@ class Payload(object):
         if opts.get('OverrideRequestHost') is True:
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
+            opts['OverrideRequestHost'] = False
             Notice.send_warn("Payload包含OverrideRequestHost参数")
             Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
             Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
