@@ -456,15 +456,13 @@ class HeartBeat(object):
                 sessionhosts.append(session_info.get('session_host'))
                 sessions_available_count += 1
 
-        def split_ip(ip):
+        def session_host_key(item):
             try:
+                ip = item.get("session_host")
                 result = tuple(int(part) for part in ip.split('.'))
             except Exception as _:
-                return 0, 0, 0
+                return 0, 0, 0, 0
             return result
-
-        def session_host_key(item):
-            return split_ip(item.get("session_host"))
 
         sessions = sorted(sessions, key=session_host_key)
 
