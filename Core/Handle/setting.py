@@ -57,7 +57,7 @@ class Settings(object):
             conf = Xcache.get_fofa_conf()
             if conf is None:
                 conf = {"email": "", "key": "", "alive": False}
-        elif kind == "360QUAKE":
+        elif kind == "Quake":
             conf = Xcache.get_quake_conf()
             if conf is None:
                 conf = {"key": "", "alive": False}
