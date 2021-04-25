@@ -48,6 +48,7 @@ class Xcache(object):
     XCACHE_DINGDING_CONFIG = "XCACHE_DINGDING_CONFIG"
     XCACHE_SERVERCHAN_CONFIG = "XCACHE_SERVERCHAN_CONFIG"
     XCACHE_FOFA_CONFIG = "XCACHE_FOFA_CONFIG"
+    XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
 
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
     XCACHE_SESSION_CONT = "XCACHE_SESSION_CONT"
@@ -594,6 +595,16 @@ class Xcache(object):
     @staticmethod
     def get_fofa_conf():
         conf = cache.get(Xcache.XCACHE_FOFA_CONFIG)
+        return conf
+
+    @staticmethod
+    def set_quake_conf(conf):
+        cache.set(Xcache.XCACHE_QUAKE_CONFIG, conf, None)
+        return True
+
+    @staticmethod
+    def get_quake_conf():
+        conf = cache.get(Xcache.XCACHE_QUAKE_CONFIG)
         return conf
 
     @staticmethod

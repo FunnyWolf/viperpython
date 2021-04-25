@@ -87,15 +87,23 @@ class HostView(BaseView):
 
 class NetworkSearchView(BaseView):
     def list(self, request, **kwargs):
-        try:
-            engine = str(request.query_params.get('engine', None))
-            querystr = str(request.query_params.get('querystr', None))
-            page = int(request.query_params.get('page', 1))
-            size = int(request.query_params.get('size', 100))
-            context = NetworkSearch.list(engine=engine, querystr=querystr, page=page, size=size)
-        except Exception as E:
-            logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+        cmdtype = request.query_params.get('cmdtype', None)
+        if cmdtype is None or cmdtype != "list_config":
+            try:
+                engine = str(request.query_params.get('engine', None))
+                moduleQuery = str(request.query_params.get('moduleQuery', None))
+                inputstr = str(request.query_params.get('inputstr', None))
+                page = int(request.query_params.get('page', 1))
+                size = int(request.query_params.get('size', 100))
+                context = NetworkSearch.list_search(engine=engine,
+                                                    moduleQuery=moduleQuery,
+                                                    inputstr=inputstr,
+                                                    page=page, size=size)
+            except Exception as E:
+                logger.error(E)
+                context = data_return(500, CODE_MSG.get(500), {})
+        else:
+            context = NetworkSearch.list_engine()
         return Response(context)
 
 

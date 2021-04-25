@@ -184,6 +184,8 @@ class MsfConsoleView(WebsocketConsumer):
 
 
 class HeartBeatView(WebsocketConsumer):
+    Unauth = 3000
+
     def connect(self):
         """
         打开 websocket 连接
@@ -202,13 +204,13 @@ class HeartBeatView(WebsocketConsumer):
             return
         else:
             logger.warning("Websocket 鉴权失败")
-            self.disconnect()
 
     def disconnect(self, close_code=0):
         try:
             async_to_sync(self.channel_layer.group_discard)("heartbeat", self.channel_name)
         except:
             pass
+        super().close(code=close_code)
 
     def send_message(self, event):
         message = event['message']

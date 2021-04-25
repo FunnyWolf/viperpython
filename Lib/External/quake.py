@@ -1,0 +1,141 @@
+# -*- coding: utf-8 -*-
+# @File  : fofaclient.py
+# @Date  : 2021/2/25
+# @Desc  :
+
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+from Lib.xcache import Xcache
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+
+class Quake:
+    def __init__(self):
+        self.key = None
+        self.base_url = "https://quake.360.cn"
+        self.search_api_url = "/api/v3/search/quake_service"
+        self.user_info_url = "/api/v3/user/info"
+        self.fields = ["ip", "port", "protocol", "country_name", "as_organization"]
+        self.headers = {
+            "X-QuakeToken": self.key,
+            "Content-Type": "application/json",
+            'Connection': 'close'
+        }
+
+    def set_key(self, key):
+        self.key = key
+
+    def init_conf_from_cache(self):
+        conf = Xcache.get_quake_conf()
+        if conf is None:
+            return False
+        else:
+            if conf.get("alive") is not True:
+                return False
+            else:
+                self.key = conf.get("key")
+                return True
+
+    def get_userinfo(self):
+        api_full_url = f"{self.base_url}{self.user_info_url}"
+
+        res = self.__http_get(api_full_url)
+        return res
+
+    def is_alive(self):
+
+        userdata = self.get_userinfo()
+        if userdata is None:
+            return False
+        if userdata.get("message") == "Successful.":
+            return True
+        else:
+            return False
+
+    def get_data(self, query_str, page=1, size=100):
+        postresult = self.get_json_data(query_str, page, size)
+
+        format_results = []
+        if postresult.get("message") == 'Successful.':
+            data = postresult.get("data")
+            for onedict in data:
+                one_line = {
+                    "ip": onedict.get('ip'),
+                    "port": onedict.get('port'),
+                    "protocol": onedict.get('service').get('name'),
+                    "country_name": onedict.get('location').get('country_cn'),
+                    "as_organization": onedict.get('location').get('isp'),
+                }
+                format_results.append(one_line)
+
+            # 加入虚拟数据
+            format_results.extend([
+                {
+                    "ip": "192.168.146.130",
+                    "port": 22,
+                    "protocol": "ssh",
+                    "country_name": "ssh",
+                    "as_organization": "ssh",
+                },
+                {
+                    "ip": "192.168.146.131",
+                    "port": 22,
+                    "protocol": "ssh",
+                    "country_name": "ssh",
+                    "as_organization": "ssh",
+                },
+                {
+                    "ip": "192.168.146.132",
+                    "port": 22,
+                    "protocol": "ssh",
+                    "country_name": "ssh",
+                    "as_organization": "ssh",
+                },
+                {
+                    "ip": "192.168.146.133",
+                    "port": 22,
+                    "protocol": "ssh",
+                    "country_name": "ssh",
+                    "as_organization": "ssh",
+                },
+            ])
+
+            return True, format_results
+        else:
+            return False, postresult.get("message")
+
+    def get_json_data(self, query_str, page=1, size=100):
+        api_full_url = f"{self.base_url}{self.search_api_url}"
+        data = {
+            "query": query_str,
+            "start": (page - 1) * size,
+            "size": size,
+        }
+        res = self.__http_post(api_full_url, data)
+        return res
+
+    def __http_post(self, url, data):
+        try:
+            headers = {
+                "X-QuakeToken": self.key,
+                "Content-Type": "application/json",
+                'Connection': 'close'
+            }
+            r = requests.post(url=url, json=data, verify=False, headers=headers)
+            return r.json()
+        except Exception as e:
+            return None
+
+    def __http_get(self, url):
+        try:
+            headers = {
+                "X-QuakeToken": self.key,
+                "Content-Type": "application/json",
+                'Connection': 'close'
+            }
+            r = requests.get(url=url, verify=False, headers=headers)
+            return r.json()
+        except Exception as e:
+            return None

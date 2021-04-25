@@ -7,6 +7,7 @@ import socket
 
 from Lib.External.dingding import DingDing
 from Lib.External.fofaclient import FOFAClient
+from Lib.External.quake import Quake
 from Lib.External.serverchan import ServerChan
 from Lib.External.telegram import Telegram
 from Lib.api import data_return
@@ -56,6 +57,10 @@ class Settings(object):
             conf = Xcache.get_fofa_conf()
             if conf is None:
                 conf = {"email": "", "key": "", "alive": False}
+        elif kind == "360QUAKE":
+            conf = Xcache.get_quake_conf()
+            if conf is None:
+                conf = {"key": "", "alive": False}
         elif kind == "sessionmonitor":
             conf = Xcache.get_sessionmonitor_conf()
         else:
@@ -157,6 +162,22 @@ class Settings(object):
                 data = {"email": email, "key": key, "alive": True}
                 Xcache.set_fofa_conf(data)
                 context = data_return(206, Setting_MSG.get(206), data)
+                return context
+
+        elif kind == "Quake":
+            key = setting.get("key").strip()
+            client = Quake()
+            client.set_key(key)
+            if client.is_alive() is not True:
+                data = {"key": key, "alive": False}
+                Xcache.set_quake_conf(data)
+                context = data_return(307, Setting_MSG.get(307), data)
+                return context
+            else:
+                Notice.send_success("设置360Quake API 成功")
+                data = {"key": key, "alive": True}
+                Xcache.set_quake_conf(data)
+                context = data_return(208, Setting_MSG.get(208), data)
                 return context
 
         elif kind == "sessionmonitor":
