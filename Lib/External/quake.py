@@ -69,39 +69,6 @@ class Quake:
                     "as_organization": onedict.get('location').get('isp'),
                 }
                 format_results.append(one_line)
-
-            # 加入虚拟数据
-            format_results.extend([
-                {
-                    "ip": "192.168.146.130",
-                    "port": 22,
-                    "protocol": "ssh",
-                    "country_name": "ssh",
-                    "as_organization": "ssh",
-                },
-                {
-                    "ip": "192.168.146.131",
-                    "port": 22,
-                    "protocol": "ssh",
-                    "country_name": "ssh",
-                    "as_organization": "ssh",
-                },
-                {
-                    "ip": "192.168.146.132",
-                    "port": 22,
-                    "protocol": "ssh",
-                    "country_name": "ssh",
-                    "as_organization": "ssh",
-                },
-                {
-                    "ip": "192.168.146.133",
-                    "port": 22,
-                    "protocol": "ssh",
-                    "country_name": "ssh",
-                    "as_organization": "ssh",
-                },
-            ])
-
             return True, format_results
         else:
             return False, postresult.get("message")
