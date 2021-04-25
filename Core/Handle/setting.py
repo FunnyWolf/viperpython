@@ -43,24 +43,24 @@ class Settings(object):
         elif kind == "telegram":
             conf = Xcache.get_telegram_conf()
             if conf is None:
-                conf = {"token": "", "chat_id": [], "proxy": "", "alive": False}
+                conf = {"token": None, "chat_id": [], "proxy": None, "alive": False}
 
         elif kind == "dingding":
             conf = Xcache.get_dingding_conf()
             if conf is None:
-                conf = {"access_token": "", "keyword": "", "alive": False}
+                conf = {"access_token": None, "keyword": None, "alive": False}
         elif kind == "serverchan":
             conf = Xcache.get_serverchan_conf()
             if conf is None:
-                conf = {"sendkey": "", "alive": False}
+                conf = {"sendkey": None, "alive": False}
         elif kind == "FOFA":
             conf = Xcache.get_fofa_conf()
             if conf is None:
-                conf = {"email": "", "key": "", "alive": False}
+                conf = {"email": None, "key": None, "alive": False}
         elif kind == "Quake":
             conf = Xcache.get_quake_conf()
             if conf is None:
-                conf = {"key": "", "alive": False}
+                conf = {"key": None, "alive": False}
         elif kind == "sessionmonitor":
             conf = Xcache.get_sessionmonitor_conf()
         else:

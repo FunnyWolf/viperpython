@@ -595,6 +595,8 @@ class Xcache(object):
     @staticmethod
     def get_fofa_conf():
         conf = cache.get(Xcache.XCACHE_FOFA_CONFIG)
+        if conf is None:
+            return {"email": None, "key": None, "alive": False}
         return conf
 
     @staticmethod
@@ -605,6 +607,9 @@ class Xcache(object):
     @staticmethod
     def get_quake_conf():
         conf = cache.get(Xcache.XCACHE_QUAKE_CONFIG)
+
+        if conf is None:
+            return {"key": None, "alive": True}
         return conf
 
     @staticmethod
