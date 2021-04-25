@@ -44,6 +44,7 @@ class NetworkSearch(object):
             if flag is not True:
                 context = data_return(303, NetworkSearch_MSG.get(303), {"errmsg": data})
             else:
+                data.extend(NetworkSearch.get_test_data())
                 context = data_return(200, CODE_MSG.get(200), data)
             return context
 
@@ -51,6 +52,41 @@ class NetworkSearch(object):
             logger.exception(E)
             context = data_return(303, NetworkSearch_MSG.get(303), {"errmsg": NetworkSearch_MSG.get(303)})
             return context
+
+    @staticmethod
+    def get_test_data():
+        """生成测试数据"""
+        data = [
+            {
+                "ip": "127.0.0.1",
+                "port": 2222,
+                "protocol": "ssh",
+                "country_name": "viper",
+                "as_organization": "viper测试",
+            },
+            {
+                "ip": "127.0.0.1",
+                "port": 8888,
+                "protocol": "ssh",
+                "country_name": "viper",
+                "as_organization": "viper测试",
+            },
+            {
+                "ip": "192.168.146.130",
+                "port": 2222,
+                "protocol": "ssh",
+                "country_name": "viper",
+                "as_organization": "viper测试",
+            },
+            {
+                "ip": "192.168.146.130",
+                "port": 8888,
+                "protocol": "ssh",
+                "country_name": "viper",
+                "as_organization": "viper测试",
+            },
+        ]
+        return data
 
     @staticmethod
     def list_engine():
