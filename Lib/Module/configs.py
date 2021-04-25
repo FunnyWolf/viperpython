@@ -30,7 +30,7 @@ class BROKER(object):
     empty = 'empty'  # 多模块配合
     post_python_job = 'post_python_job'  # 多模块配合
     post_msf_job = 'post_msf_job'  # 后台运行的模块
-    bot_msf_job = 'bot_msf_job'  # 后台运行的模块
+    bot_msf_module = 'bot_msf_module'  # 后台运行的模块
 
 
 class TAG2CH(object):

@@ -65,7 +65,7 @@ class _CommonModule(object):
         self._ip = None  # 补齐默认参数,为了Serializer
         self._port = None  # 补齐默认参数,为了Serializer
         self._protocol = None  # 补齐默认参数,为了Serializer
-        self.opts = {}
+        self.opts = {} # 用于存储msf模块的options
 
     # 公用函数
 
@@ -411,7 +411,7 @@ class _BotCommonModule(_CommonModule):
 
 class BotMSFModule(_BotCommonModule):
     """bot msf模块(全网扫描)基础模板"""
-    MODULE_BROKER = BROKER.bot_msf_job
+    MODULE_BROKER = BROKER.bot_msf_module
     SEARCH = ''
 
     def __init__(self, ip, port, protocol, custom_param):
@@ -421,12 +421,14 @@ class BotMSFModule(_BotCommonModule):
         self.type = None  # msf模块类型
         self.mname = None  # msf模块路径
         self.opts = {}  # 设置MSF模块的必填参数
+        self.timeout = 60  # 模块运行的超时时间(秒)
 
-    def callback(self, status, message, data):
+    def callback(self, module_output):
         """后台运行模块回调函数"""
         logger.warning(self.type)
         logger.warning(self.mname)
         logger.warning(self.opts)
+        logger.warning(module_output)
 
 
 class _PostCommonModule(_CommonModule):

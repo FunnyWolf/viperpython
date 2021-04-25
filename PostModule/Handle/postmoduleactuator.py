@@ -39,10 +39,16 @@ class PostModuleActuator(object):
             custom_param = {}
 
         # 获取模块实例
-        class_intent = importlib.import_module(loadpath)
-        post_module_intent = class_intent.PostModule(sessionid, ipaddress, custom_param)
+        try:
+            class_intent = importlib.import_module(loadpath)
+            post_module_intent = class_intent.PostModule(sessionid, ipaddress, custom_param)
+        except Exception as E:
+            logger.warning(E)
+            context = data_return(305, PostModuleActuator_MSG.get(305), {})
+            return context
 
         # 格式化固定字段
+        # AUTHOR字段可能为list或者str,需要统一处理
         try:
             post_module_intent.AUTHOR = module_config.get("AUTHOR")
         except Exception as E:
@@ -105,10 +111,12 @@ class PostModuleActuator(object):
         group_uuid = str(uuid.uuid1()).replace('-', "")
         class_intent = importlib.import_module(loadpath)
         for ipport in ipportlist:
-            post_module_intent = class_intent.PostModule(ip=ipport.get("ip"), port=ipport.get("port"),
+            post_module_intent = class_intent.PostModule(ip=ipport.get("ip"),
+                                                         port=ipport.get("port"),
                                                          protocol=ipport.get("protocol"),
                                                          custom_param=custom_param)
             # 格式化固定字段
+            # AUTHOR字段可能为list或者str,需要统一处理
             try:
                 post_module_intent.AUTHOR = module_config.get("AUTHOR")
             except Exception as E:

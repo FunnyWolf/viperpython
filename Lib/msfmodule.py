@@ -68,6 +68,47 @@ class MSFModule(object):
             return True
 
     @staticmethod
+    def run_bot_msf_module(msf_module=None):
+        """实时运行bot_msf_job类型的任务"""
+
+        params = [msf_module.type,
+                  msf_module.mname,
+                  msf_module.opts,
+                  False,  # 强制设置后台运行
+                  msf_module.timeout  # 超时时间
+                  ]
+
+        result = RpcClient.call(Method.ModuleExecute, params)
+        if result is None:
+            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}")
+            return False
+
+        # 清理历史结果
+        try:
+            logger.warning(f"模块回调:{msf_module.NAME}")
+            msf_module._clean_log()  # 清理历史结果
+        except Exception as E:
+            logger.error(E)
+            return False
+
+        # 调用回调函数
+        flag = False
+        try:
+            flag = msf_module.callback(module_output=result)
+        except Exception as E:
+            Notice.send_error("模块 {} 的回调函数callhack运行异常".format(msf_module.NAME))
+            logger.error(E)
+
+        # 如果是积极结果,存储
+        if flag:
+            try:
+                msf_module._store_result_in_history()  # 存储到历史记录
+            except Exception as E:
+                logger.error(E)
+
+        Notice.send_success("模块: {} {} 执行完成".format(msf_module.NAME, msf_module._target_str))
+
+    @staticmethod
     def store_result_from_sub(message=None):
         # 回调报文数据格式
         # {

@@ -110,9 +110,8 @@ class MainMonitor(object):
 
         broker = req.get("broker")
         module_intent = req.get("module")
-        if broker == BROKER.bot_msf_job:
-            # 放入后台运行队列
-            MSFModule.putin_post_msf_module_queue(module_intent)
+        if broker == BROKER.bot_msf_module:
+            MSFModule.run_bot_msf_module(module_intent)
         else:
             logger.error("unknow broker")
 

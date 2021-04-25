@@ -15,7 +15,10 @@ class PostModule(BotMSFModule):
     README = ["https://www.yuque.com/vipersec/module/qp8b51"]
     REFERENCES = ["https://blog.exploitee.rs/2020/exploiting-vbulletin-a-tale-of-patch-fail/"]
     AUTHOR = "Viper"
-    SEARCH = ' icon_hash="-601665621" '
+    SEARCH = {
+        "FOFA": 'icon_hash="-601665621"',
+        "Quake": 'favicon:"c1f20852dd1caf078f49de77a2de8e3f"',
+    }
     OPTIONS = register_options([
         OptionHander(),
     ])
@@ -23,7 +26,7 @@ class PostModule(BotMSFModule):
     def __init__(self, ip, port, protocol, custom_param):
         super().__init__(ip, port, protocol, custom_param)
         self.type = "exploit"
-        self.mname = "multi/http/vbulletin_widget_template_rce_api"
+        self.mname = "multi/http/vbulletin_widget_template_rce"
 
     def check(self):
         """执行前的检查函数"""
@@ -39,9 +42,9 @@ class PostModule(BotMSFModule):
             self.set_option("RPORT", self._port)
             return True, ""
 
-    def callback(self, status, message, data):
+    def callback(self, module_output):
         # 调用父类函数存储结果(必须调用)
-        if status:
+        if "The target is vulnerable." in module_output:
             self.log_good("检测完成,检测到网站存在CVE-2020-17496漏洞,执行payload")
         else:
             self.log_error("网站不存在漏洞")
