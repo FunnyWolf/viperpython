@@ -80,9 +80,26 @@ class Job(object):
             new_option = {}
             old_option = json.loads(_custom_param.get(HANDLER_OPTION.get("name")))
             new_option["PAYLOAD"] = old_option.get("PAYLOAD")
-            new_option["LHOST"] = old_option.get("LHOST")
-            new_option["RHOST"] = old_option.get("RHOST")
             new_option["LPORT"] = old_option.get("LPORT")
+
+            if old_option.get("LHOST") is not None:
+                new_option["LHOST"] = old_option.get("LHOST")
+
+            if old_option.get("RHOST") is not None:
+                new_option["RHOST"] = old_option.get("RHOST")
+
+            if old_option.get("LURI") is not None:
+                new_option["LURI"] = old_option.get("LURI")
+
+            if old_option.get("HandlerSSLCert") is not None:
+                new_option["HandlerSSLCert"] = old_option.get("HandlerSSLCert")
+
+            if old_option.get("RC4PASSWORD") is not None:
+                new_option["RC4PASSWORD"] = old_option.get("RC4PASSWORD")
+
+            if old_option.get("proxies") is not None:
+                new_option["proxies"] = old_option.get("proxies")
+
             _custom_param[HANDLER_OPTION.get("name")] = json.dumps(new_option)
 
         return _custom_param

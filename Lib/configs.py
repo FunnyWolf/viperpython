@@ -80,6 +80,23 @@ PostModuleActuator_MSG = {
 
 }
 
+PostModuleAuto_MSG = {
+    201: "新建自动执行配置成功",
+    202: "",
+    203: "",
+    204: "删除自动执行配置成功",
+    205: "",
+    206: "",
+
+    301: "",
+    302: "",
+    303: "",
+    304: "删除自动执行配置失败",
+    305: "",
+    306: "新建自动执行配置失败",
+
+}
+
 PostModuleConfig_MSG = {
     201: "重新加载所有模块成功",
     202: "",
@@ -121,6 +138,7 @@ Setting_MSG = {
     206: "设置FOFA API成功",
     207: "设置Server酱通知成功",
     208: "设置360Quake API成功",
+    209: "设置自动编排配置成功",
     301: "未知配置类型",
     302: "解析配置参数失败",
     303: "输入的Telegram配置不可用,请检查token是否正确且网络可以访问telegram",
@@ -424,6 +442,7 @@ MSF_RPC_DATA_CHANNEL = "MSF_RPC_DATA_CHANNEL"
 MSF_RPC_LOG_CHANNEL = "MSF_RPC_LOG_CHANNEL"
 MSF_RPC_CONSOLE_CHANNEL = "MSF_RPC_CONSOLE_CHANNEL"
 VIPER_SEND_SMS_CHANNEL = "VIPER_SEND_SMS_CHANNEL"
+VIPER_POSTMODULE_AUTO_CHANNEL = "VIPER_POSTMODULE_AUTO_CHANNEL"
 
 PAYLOAD_LOADER_STORE_PATH = "STATICFILES/STATIC/SHELLCODELOADER/"
 

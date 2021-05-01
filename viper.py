@@ -11,8 +11,6 @@ import subprocess
 import time
 
 LOCALHOST = "127.0.0.1"
-viper_port = 60002
-daphne_port = 60003
 redis_port = 60004
 msgrpc_port = 60005
 LOGDIR = "/root/viper/Docker/log"

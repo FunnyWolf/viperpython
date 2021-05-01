@@ -9,7 +9,7 @@ from Msgrpc.views import ServiceStatusView, PayloadView, JobView, HandlerView, S
 from Msgrpc.views import SocksView, TransportView, FileMsfView, FileSessionView, PortFwdView, HostFileView
 from PostLateral.views import PortServiceView, CredentialView, VulnerabilityView
 from PostModule.views import PostModuleConfigView, PostModuleActuatorView, PostModuleResultView
-from PostModule.views import PostModuleResultHistoryView
+from PostModule.views import PostModuleResultHistoryView, PostModuleAutoView
 
 router = routers.DefaultRouter()
 router.register(r'api/v1/core/baseauth', BaseAuthView, basename="BaseAuth")
@@ -42,7 +42,8 @@ router.register(r'api/v1/postmodule/postmoduleactuator', PostModuleActuatorView,
 router.register(r'api/v1/postmodule/postmoduleresult', PostModuleResultView, basename="PostModuleResult")
 router.register(r'api/v1/postmodule/postmoduleresulthistory', PostModuleResultHistoryView,
                 basename="PostModuleResultHistoryView")
-
+router.register(r'api/v1/postmodule/postmoduleauto', PostModuleAutoView,
+                basename="PostModuleAutoView")
 # 无需认证的api
 router.register(r'api/v1/d', HostFileView, basename="HostFileView")
 router.register(r'api/v1/c', LazyLoaderInterfaceView, basename="LazyLoaderInterfaceView")

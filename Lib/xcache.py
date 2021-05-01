@@ -51,7 +51,7 @@ class Xcache(object):
     XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
 
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
-    XCACHE_SESSION_CONT = "XCACHE_SESSION_CONT"
+    XCACHE_SESSION_LIST = "XCACHE_SESSION_LIST"
 
     XCACHE_AES_KEY = "XCACHE_AES_KEY"
 
@@ -68,8 +68,56 @@ class Xcache(object):
 
     XCACHE_LOGIN_FAIL_COUNT = "XCACHE_LOGIN_FAIL_COUNT"
 
+    XCACHE_POSTMODULE_AUTO_LIST = "XCACHE_POSTMODULE_AUTO_LIST"
+
+    XCACHE_POSTMODULE_AUTO_CONF = "XCACHE_POSTMODULE_AUTO_CONF"
+
     def __init__(self):
         pass
+
+    @staticmethod
+    def get_postmodule_auto_dict():
+        """获取自动化模块配置字典"""
+        result = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_LIST)
+        if result is None:
+            return {}
+        return result
+
+    @staticmethod
+    def add_postmodule_auto_list(module_uuid, loadpath, custom_param):
+        """新增一个自动化模块配置到有序字典"""
+        result = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_LIST)
+        if result is None:
+            result = {}
+        result[module_uuid] = {"loadpath": loadpath, "custom_param": custom_param}
+        cache.set(Xcache.XCACHE_POSTMODULE_AUTO_LIST, result, None)
+        return True
+
+    @staticmethod
+    def set_postmodule_auto_conf(conf):
+        old_conf = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_CONF)
+        if old_conf is None:
+            old_conf = {"flag": False, "interval": 5}
+        old_conf.update(conf)
+        cache.set(Xcache.XCACHE_POSTMODULE_AUTO_CONF, old_conf, None)
+        return old_conf
+
+    @staticmethod
+    def get_postmodule_auto_conf():
+        conf = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_CONF)
+        if conf is None:
+            return {"flag": False, "interval": 1, "max_session": 3}
+        return conf
+
+    @staticmethod
+    def delete_postmodule_auto_list(module_uuid):
+        """从字典中删除一个自动化模块配置"""
+        result = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_LIST)
+        if result is None:
+            result = {}
+        result.pop(module_uuid)
+        cache.set(Xcache.XCACHE_POSTMODULE_AUTO_LIST, result, None)
+        return True
 
     @staticmethod
     def init_xcache_on_start():
@@ -96,8 +144,7 @@ class Xcache(object):
                 cache.delete(key)
             except Exception as _:
                 continue
-        # 清理session_count 缓存
-        cache.set(Xcache.XCACHE_SESSION_CONT, 0, None)
+
         return True
 
     @staticmethod
@@ -627,15 +674,32 @@ class Xcache(object):
 
     @staticmethod
     def set_session_count(count):
-        cache.set(Xcache.XCACHE_SESSION_CONT, count, None)
+        cache.set(Xcache.XCACHE_SESSION_LIST, count, None)
         return True
 
     @staticmethod
     def get_session_count():
-        conf = cache.get(Xcache.XCACHE_SESSION_CONT)
+        conf = cache.get(Xcache.XCACHE_SESSION_LIST)
         if conf is None:
             return 0
         return conf
+
+    @staticmethod
+    def update_session_list(sessions):
+        old_sessions_dict = cache.get(Xcache.XCACHE_SESSION_LIST)
+        if old_sessions_dict is None:
+            old_sessions_dict = {}
+        return_sessions_dict = {}
+        new_sessions_dict = {}
+        for session in sessions:
+            if session.get("available"):
+                session_uuid = session.get("uuid")
+                new_sessions_dict[session_uuid] = session
+                if old_sessions_dict.get(session.get("uuid")) is None:
+                    return_sessions_dict[session_uuid] = session
+
+        cache.set(Xcache.XCACHE_SESSION_LIST, new_sessions_dict, None)
+        return return_sessions_dict
 
     @staticmethod
     def get_lhost_config():

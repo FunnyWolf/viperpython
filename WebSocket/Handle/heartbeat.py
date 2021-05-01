@@ -4,6 +4,7 @@
 # @Desc  :
 import copy
 import ipaddress as ipaddr
+import json
 import time
 
 from Core.Handle.host import Host
@@ -15,6 +16,7 @@ from Lib.rpcclient import RpcClient
 from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
 from PostLateral.Handle.edge import Edge
+from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
 
 
@@ -464,13 +466,37 @@ class HeartBeat(object):
                 return 0, 0, 0, 0
             return result
 
+        def session_cout_by_session_host(session, sessions):
+            count = 0
+            sesison_host = session.get("session_host")
+            for tmp in sessions:
+                if tmp.get("available"):
+                    if tmp.get("session_host") == sesison_host:
+                        count += 1
+            return count
+
         sessions = sorted(sessions, key=session_host_key)
 
+        # 获取新增的session配置信息
+        add_session_dict = Xcache.update_session_list(sessions)
         # session监控功能
         if Xcache.get_sessionmonitor_conf().get("flag"):
-            if Xcache.get_session_count() < sessions_available_count:
-                Notice.send_sms(f"当前Session数量: {sessions_available_count} IP列表: {','.join(sessionhosts)}")
-                Notice.send_info(f"当前Session数量: {sessions_available_count}")
-            if Xcache.get_session_count() != sessions_available_count:
-                Xcache.set_session_count(sessions_available_count)
+            for session_uuid in add_session_dict:
+                Notice.send_sms(f"新增session: {json.dumps(add_session_dict.get(session_uuid))}")
+
+        # postmoduleauto功能
+        if Xcache.get_postmodule_auto_conf().get("flag"):
+            max_session = Xcache.get_postmodule_auto_conf().get("max_session")
+            if max_session is None:
+                max_session = 3
+            if max_session < 3 or max_session > 5:
+                max_session = 3
+
+            for session_uuid in add_session_dict:
+                if session_cout_by_session_host(add_session_dict.get(session_uuid), sessions) >= max_session:
+                    continue
+
+                PostModuleAuto.send_task(json.dumps(add_session_dict.get(session_uuid)))
+                Notice.send_info(f"发送自动编排任务: SID {add_session_dict.get(session_uuid).get('id')}")
+
         return sessions

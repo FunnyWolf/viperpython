@@ -19,6 +19,7 @@ from Lib.notice import Notice
 from Lib.redisclient import RedisClient
 from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
+from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
 from WebSocket.Handle.heartbeat import HeartBeat
 
@@ -79,6 +80,12 @@ class MainMonitor(object):
                                    trigger='interval',
                                    seconds=1, id='sub_send_sms_thread')
 
+        # postmoduleauto处理线程
+        self.MainScheduler.add_job(func=self.sub_postmodule_auto_handle_thread,
+                                   max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_postmodule_auto_handle_thread')
+
         # bot 运行测试线程
         self.MainScheduler.add_job(func=self.run_bot_wait_list, max_instances=1,
                                    trigger='interval',
@@ -129,8 +136,21 @@ class MainMonitor(object):
         )
 
     @staticmethod
+    def sub_postmodule_auto_handle_thread():
+        """这个函数必须以线程的方式运行"""
+
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{VIPER_POSTMODULE_AUTO_CHANNEL: PostModuleAuto.handle_task})
+        for message in ps.listen():
+            if message:
+                logger.warning("不应获取非空message {}".format(message))
+
+    @staticmethod
     def sub_send_sms_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息,获取job类任务推送的数据"""
+        """这个函数必须以线程的方式运行"""
 
         rcon = RedisClient.get_result_connection()
         if rcon is None:
@@ -155,7 +175,7 @@ class MainMonitor(object):
 
     @staticmethod
     def sub_msf_module_data_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息,获取job类任务推送的数据"""
+        """这个函数必须以线程的方式运行,监控msf发送的redis消息"""
         rcon = RedisClient.get_result_connection()
         if rcon is None:
             return

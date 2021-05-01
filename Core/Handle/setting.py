@@ -63,6 +63,8 @@ class Settings(object):
                 conf = {"key": None, "alive": False}
         elif kind == "sessionmonitor":
             conf = Xcache.get_sessionmonitor_conf()
+        elif kind == "postmoduleautoconf":
+            conf = Xcache.get_postmodule_auto_conf()
         else:
             context = data_return(301, Setting_MSG.get(301), {})
             return context
@@ -200,6 +202,11 @@ class Settings(object):
             Xcache.set_lhost_config(setting)
             Notice.send_success(f"设置回连地址成功,当前回连地址: {setting.get('lhost')}")
             context = data_return(205, Setting_MSG.get(205), setting)
+            return context
+        elif kind == "postmoduleautoconf":
+            new_conf = Xcache.set_postmodule_auto_conf(setting)
+            Notice.send_success(f"设置自动编排配置成功")
+            context = data_return(209, Setting_MSG.get(209), new_conf)
             return context
         else:
             context = data_return(301, Setting_MSG.get(301), {})
