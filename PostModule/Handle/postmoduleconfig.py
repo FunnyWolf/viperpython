@@ -76,47 +76,53 @@ class PostModuleConfig(object):
             if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
                 continue
 
-            class_intent = importlib.import_module(f'MODULES.{modulename}')
+            try:
+                class_intent = importlib.import_module(f'MODULES.{modulename}')
+                module_intent = class_intent.PostModule
+            except Exception as E:
+                logger.exception(E)
+                Notice.send_alert(f"加载内置模块:{modulename} 失败")
+                continue
 
             try:
-                if isinstance(class_intent.PostModule.ATTCK, str):
-                    attck = [class_intent.PostModule.ATTCK]
-                elif isinstance(class_intent.PostModule.ATTCK, list):
-                    attck = class_intent.PostModule.ATTCK
+                if isinstance(module_intent.ATTCK, str):
+                    attck = [module_intent.ATTCK]
+                elif isinstance(module_intent.ATTCK, list):
+                    attck = module_intent.ATTCK
                 else:
                     attck = []
 
-                if isinstance(class_intent.PostModule.AUTHOR, str):
-                    author = [class_intent.PostModule.AUTHOR]
-                elif isinstance(class_intent.PostModule.AUTHOR, list):
-                    author = class_intent.PostModule.AUTHOR
+                if isinstance(module_intent.AUTHOR, str):
+                    author = [module_intent.AUTHOR]
+                elif isinstance(module_intent.AUTHOR, list):
+                    author = module_intent.AUTHOR
                 else:
                     author = []
 
                 one_module_config = {
 
-                    "BROKER": class_intent.PostModule.MODULE_BROKER,  # 处理器
+                    "BROKER": module_intent.MODULE_BROKER,  # 处理器
 
-                    "NAME": class_intent.PostModule.NAME,
-                    "DESC": class_intent.PostModule.DESC,
-                    "WARN": class_intent.PostModule.WARN,
+                    "NAME": module_intent.NAME,
+                    "DESC": module_intent.DESC,
+                    "WARN": module_intent.WARN,
                     "AUTHOR": author,
-                    "REFERENCES": class_intent.PostModule.REFERENCES,
-                    "README": class_intent.PostModule.README,
+                    "REFERENCES": module_intent.REFERENCES,
+                    "README": module_intent.README,
 
-                    "MODULETYPE": class_intent.PostModule.MODULETYPE,
+                    "MODULETYPE": module_intent.MODULETYPE,
 
-                    "OPTIONS": class_intent.PostModule.OPTIONS,
+                    "OPTIONS": module_intent.OPTIONS,
                     "loadpath": 'MODULES.{}'.format(modulename),
 
                     # post类配置
-                    "REQUIRE_SESSION": class_intent.PostModule.REQUIRE_SESSION,
-                    "PLATFORM": class_intent.PostModule.PLATFORM,
-                    "PERMISSIONS": class_intent.PostModule.PERMISSIONS,
+                    "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
+                    "PLATFORM": module_intent.PLATFORM,
+                    "PERMISSIONS": module_intent.PERMISSIONS,
                     "ATTCK": attck,
 
                     # bot类配置
-                    "SEARCH": class_intent.PostModule.SEARCH,
+                    "SEARCH": module_intent.SEARCH,
 
                 }
                 all_modules_config.append(one_module_config)
@@ -136,49 +142,50 @@ class PostModuleConfig(object):
             try:
                 class_intent = importlib.import_module('Docker.module.{}'.format(modulename))
                 importlib.reload(class_intent)
+                module_intent = class_intent.PostModule
             except Exception as E:
                 logger.exception(E)
                 Notice.send_alert(f"加载自定义模块:{modulename} 失败")
                 continue
             try:
-                if isinstance(class_intent.PostModule.ATTCK, str):
-                    attck = [class_intent.PostModule.ATTCK]
-                elif isinstance(class_intent.PostModule.ATTCK, list):
-                    attck = [class_intent.PostModule.ATTCK]
+                if isinstance(module_intent.ATTCK, str):
+                    attck = [module_intent.ATTCK]
+                elif isinstance(module_intent.ATTCK, list):
+                    attck = [module_intent.ATTCK]
                 else:
                     attck = []
 
-                if isinstance(class_intent.PostModule.AUTHOR, str):
-                    author = [class_intent.PostModule.AUTHOR]
-                elif isinstance(class_intent.PostModule.AUTHOR, list):
-                    author = class_intent.PostModule.AUTHOR
+                if isinstance(module_intent.AUTHOR, str):
+                    author = [module_intent.AUTHOR]
+                elif isinstance(module_intent.AUTHOR, list):
+                    author = module_intent.AUTHOR
                 else:
                     author = []
 
                 one_module_config = {
 
-                    "BROKER": class_intent.PostModule.MODULE_BROKER,  # 处理器
+                    "BROKER": module_intent.MODULE_BROKER,  # 处理器
 
-                    "NAME": class_intent.PostModule.NAME,
-                    "DESC": class_intent.PostModule.DESC,
-                    "WARN": class_intent.PostModule.WARN,
+                    "NAME": module_intent.NAME,
+                    "DESC": module_intent.DESC,
+                    "WARN": module_intent.WARN,
                     "AUTHOR": author,
-                    "REFERENCES": class_intent.PostModule.REFERENCES,
-                    "README": class_intent.PostModule.README,
+                    "REFERENCES": module_intent.REFERENCES,
+                    "README": module_intent.README,
 
-                    "MODULETYPE": class_intent.PostModule.MODULETYPE,
+                    "MODULETYPE": module_intent.MODULETYPE,
 
-                    "OPTIONS": class_intent.PostModule.OPTIONS,
+                    "OPTIONS": module_intent.OPTIONS,
                     "loadpath": 'Docker.module.{}'.format(modulename),
 
                     # post类配置
-                    "REQUIRE_SESSION": class_intent.PostModule.REQUIRE_SESSION,
-                    "PLATFORM": class_intent.PostModule.PLATFORM,
-                    "PERMISSIONS": class_intent.PostModule.PERMISSIONS,
+                    "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
+                    "PLATFORM": module_intent.PLATFORM,
+                    "PERMISSIONS": module_intent.PERMISSIONS,
                     "ATTCK": attck,
 
                     # bot类配置
-                    "SEARCH": class_intent.PostModule.SEARCH,
+                    "SEARCH": module_intent.SEARCH,
 
                 }
                 all_modules_config.append(one_module_config)
