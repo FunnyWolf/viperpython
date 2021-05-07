@@ -35,11 +35,11 @@ class PostModule(BotMSFModule):
             return False, "无法解析Handler,请选择正确的监听"
         else:
             if self._port == 443:
-                self.set_option("SSL", True)
+                self.set_msf_option("SSL", True)
             else:
-                self.set_option("SSL", False)
-            self.set_option("RHOSTS", self._ip)
-            self.set_option("RPORT", self._port)
+                self.set_msf_option("SSL", False)
+            self.set_msf_option("RHOSTS", self._ip)
+            self.set_msf_option("RPORT", self._port)
             return True, ""
 
     def callback(self, module_output):

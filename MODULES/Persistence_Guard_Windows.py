@@ -31,7 +31,7 @@ class PostModule(PostMSFRawModule):
     def check(self):
         """执行前的检查函数"""
         # from PostModule.lib.Session import Session
-        self.set_option(key="GUARD", value=True)
+        self.set_msf_option(key="GUARD", value=True)
         session = Session(self._sessionid)
         if session.is_windows:
             pass

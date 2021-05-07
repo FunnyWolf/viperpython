@@ -51,8 +51,8 @@ class PostModule(PostMSFRawModule):
             if flag is not True:
                 return False, "Handler解析失败,请重新选择Handler参数"
 
-        self.set_option(key='PID', value=self.param("PID"))
-        self.set_option(key='ACTION', value=self.param("ACTION"))
+        self.set_msf_option(key='PID', value=self.param("PID"))
+        self.set_msf_option(key='ACTION', value=self.param("ACTION"))
 
         return True, None
 

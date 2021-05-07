@@ -50,7 +50,7 @@ class PostModule(PostMSFRawModule):
         else:
             return False, "模块需要系统管理员权限"
 
-        self.set_option("Action", action)
+        self.set_msf_option("Action", action)
         return True, None
 
     def callback(self, status, message, data):

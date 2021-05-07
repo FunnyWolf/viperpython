@@ -58,10 +58,10 @@ class PostModule(PostMSFRawModule):
         return tmppath
 
     def check(self):
-        self.set_option("OPERATION", 'upload')
+        self.set_msf_option("OPERATION", 'upload')
         SESSION_DIR = self.deal_path(self.param("SESSION_DIR"))
-        self.set_option("SESSION_DIR", SESSION_DIR)
-        self.set_option("MSF_FILE", self.param("MSF_FILE"))
+        self.set_msf_option("SESSION_DIR", SESSION_DIR)
+        self.set_msf_option("MSF_FILE", self.param("MSF_FILE"))
         return True, None
 
     def callback(self, status, message, data):

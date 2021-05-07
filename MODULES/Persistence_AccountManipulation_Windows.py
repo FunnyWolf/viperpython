@@ -47,11 +47,11 @@ class PostModule(PostMSFRawModule):
         else:
             return False, "此模块只支持Meterpreter类型的Session"
 
-        self.set_option("ADDTODOMAIN", self.param("ADDTODOMAIN"))
-        self.set_option("USERNAME", self.param("USERNAME"))
-        self.set_option("PASSWORD", self.param("PASSWORD"))
-        self.set_option("GROUP", self.param("GROUP"))
-        self.set_option("TOKEN", self.param("TOKEN"))
+        self.set_msf_option("ADDTODOMAIN", self.param("ADDTODOMAIN"))
+        self.set_msf_option("USERNAME", self.param("USERNAME"))
+        self.set_msf_option("PASSWORD", self.param("PASSWORD"))
+        self.set_msf_option("GROUP", self.param("GROUP"))
+        self.set_msf_option("TOKEN", self.param("TOKEN"))
 
         return True, None
 

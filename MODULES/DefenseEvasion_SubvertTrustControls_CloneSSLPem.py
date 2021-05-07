@@ -35,11 +35,11 @@ class PostModule(PostMSFRawModule):
         if "https://" in rhosts.lower():
             try:
                 urlParse = urlparse(rhosts)
-                self.set_option("RHOSTS", urlParse.netloc)
+                self.set_msf_option("RHOSTS", urlParse.netloc)
             except Exception as E:
                 return False, f"解析网址失败:{E}"
         else:
-            self.set_option("RHOSTS", rhosts)
+            self.set_msf_option("RHOSTS", rhosts)
 
         return True, None
 

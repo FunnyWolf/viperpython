@@ -39,10 +39,10 @@ class PostModule(BotMSFModule):
         else:
             Username = self.param("Username")
             Password = self.param("Password")
-            self.set_option("USERNAME", Username)  # 设置exploit/multi/ssh/sshexec模块的USERNAME参数
-            self.set_option("PASSWORD", Password)
-            self.set_option("RHOSTS", self._ip)
-            self.set_option("RPORT", self._port)
+            self.set_msf_option("USERNAME", Username)  # 设置exploit/multi/ssh/sshexec模块的USERNAME参数
+            self.set_msf_option("PASSWORD", Password)
+            self.set_msf_option("RHOSTS", self._ip)
+            self.set_msf_option("RPORT", self._port)
             return True, ""
 
     def callback(self, module_output):

@@ -45,20 +45,20 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        script = self.get_option_filename()
+        script = self.get_fileenum_option()
         if script is None:
             return False, "请选择执行shellcode文件,文件后缀必须为bin"
         else:
-            self.set_option(key='SHELLCODE_FILE', value=script)
-        self.set_option(key='CHANNELIZED', value=self.param('CHANNELIZED'))
+            self.set_msf_option(key='SHELLCODE_FILE', value=script)
+        self.set_msf_option(key='CHANNELIZED', value=self.param('CHANNELIZED'))
         wait_ouput = self.param('WAIT_OUTPUT')
         if wait_ouput < 3:
             wait_ouput = 3
         elif wait_ouput > 180:
             wait_ouput = 180
 
-        self.set_option(key='WAIT_OUTPUT', value=wait_ouput)
-        self.set_option(key='KILL', value=self.param('KILL'))
+        self.set_msf_option(key='WAIT_OUTPUT', value=wait_ouput)
+        self.set_msf_option(key='KILL', value=self.param('KILL'))
 
         session = Session(self._sessionid)
         if session.is_alive:
@@ -71,7 +71,7 @@ class PostModule(PostMSFRawModule):
             return False, "模块只支持Windows系统"
 
         if self.param('ARCH') in ["x86", "x64"]:
-            self.set_option(key='ARCH', value=self.param("ARCH"))
+            self.set_msf_option(key='ARCH', value=self.param("ARCH"))
         else:
             return False, "Arch输入错误"
         return True, None

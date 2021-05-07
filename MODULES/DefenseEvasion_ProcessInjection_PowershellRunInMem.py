@@ -30,7 +30,7 @@ class PostModule(PostMSFPowershellModule):
 
     def check(self):
         """执行前的检查函数"""
-        script = self.get_option_filename()
+        script = self.get_fileenum_option()
         if script is None:
             return False, "请选择执行的脚本,脚本后缀必须为ps或ps1"
         self.set_script(script)

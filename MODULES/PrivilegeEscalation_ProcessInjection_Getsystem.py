@@ -42,7 +42,7 @@ class PostModule(PostMSFRawModule):
         if not session.is_windows:
             return False, "模块只支持Windows的Meterpreter"
         if session.is_admin is True:
-            self.set_option('TECHNIQUE', self.param('TECHNIQUE'))
+            self.set_msf_option('TECHNIQUE', self.param('TECHNIQUE'))
             return True, None
         else:
             return False, "模块需要管理员权限,请尝试使用UAC绕过模块"

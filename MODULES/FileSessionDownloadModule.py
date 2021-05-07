@@ -57,9 +57,9 @@ class PostModule(PostMSFRawModule):
         return tmppath
 
     def check(self):
-        self.set_option("OPERATION", 'download')
+        self.set_msf_option("OPERATION", 'download')
         SESSION_FILE = self.deal_path(self.param("SESSION_FILE"))
-        self.set_option("SESSION_FILE", SESSION_FILE)
+        self.set_msf_option("SESSION_FILE", SESSION_FILE)
 
         return True, None
 

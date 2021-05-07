@@ -42,13 +42,13 @@ class PostModule(PostMSFRawModule):
             return False, "扫描IP范围过大(超过256),请缩小范围"
         elif len(address_range) < 0:
             return False, "输入的IP列表格式有误,请重新输入"
-        self.set_option('RHOSTS', ", ".join(address_range))
+        self.set_msf_option('RHOSTS', ", ".join(address_range))
 
         threads = self.param('threads')
         # 检查port_list
         if threads <= 0 or threads > 20:
             return False, "输入的扫描线程数有误(最大值10),请重新输入"
-        self.set_option('THREADS', threads)
+        self.set_msf_option('THREADS', threads)
 
         return True, None
 

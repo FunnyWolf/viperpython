@@ -42,8 +42,8 @@ class PostModule(PostMSFRawModule):
         if len(address_range) > 256:
             return False, "扫描IP范围过大(超过256),请缩小范围"
         elif len(address_range) < 0:
-            self.set_option(key='RHOSTS', value=self.host_ipaddress)
-        self.set_option('RHOSTS', ", ".join(address_range))
+            self.set_msf_option(key='RHOSTS', value=self.host_ipaddress)
+        self.set_msf_option('RHOSTS', ", ".join(address_range))
 
         # timeout = self.param('TIMEOUT')
         # # 设置TIMEOUT参数
@@ -63,9 +63,9 @@ class PostModule(PostMSFRawModule):
             user = self.param('SMBUser')
             password = self.param('SMBPass')
             if domain is not None and user is not None and password is not None:
-                self.set_option(key='SMBDomain', value=domain)
-                self.set_option(key='SMBUser', value=user)
-                self.set_option(key='SMBPass', value=password)
+                self.set_msf_option(key='SMBDomain', value=domain)
+                self.set_msf_option(key='SMBUser', value=user)
+                self.set_msf_option(key='SMBPass', value=password)
                 return True, None
 
         else:
@@ -74,11 +74,11 @@ class PostModule(PostMSFRawModule):
             user = self.param('SMBUser')
             password = self.param('SMBPass')
             if domain is not None and domain != "":
-                self.set_option(key='SMBDomain', value=domain)
+                self.set_msf_option(key='SMBDomain', value=domain)
             if user is not None and user != "":
-                self.set_option(key='SMBUser', value=user)
+                self.set_msf_option(key='SMBUser', value=user)
             if password is not None and password != "":
-                self.set_option(key='SMBPass', value=password)
+                self.set_msf_option(key='SMBPass', value=password)
             return True, None
         return True, None
 

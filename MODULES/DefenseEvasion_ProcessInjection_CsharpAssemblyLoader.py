@@ -41,19 +41,19 @@ class PostModule(PostMSFRawModule):
         if not session.is_windows:
             return False, "此模块只支持Windows的Meterpreter"
 
-        exe_file = self.get_option_filename()
+        exe_file = self.get_fileenum_option()
         if exe_file is None:
             return False, "请选择执行exe文件,文件后缀必须为exe"
         else:
-            self.set_option(key='ASSEMBLY', value=exe_file)
+            self.set_msf_option(key='ASSEMBLY', value=exe_file)
 
         arguments = self.param("ARGUMENTS")
-        self.set_option(key='ARGUMENTS', value=arguments)
+        self.set_msf_option(key='ARGUMENTS', value=arguments)
 
         wait = self.param("WAIT")
-        self.set_option(key='WAIT', value=wait)
+        self.set_msf_option(key='WAIT', value=wait)
         kill = self.param("KILL")
-        self.set_option(key='KILL', value=kill)
+        self.set_msf_option(key='KILL', value=kill)
         return True, None
 
     def callback(self, status, message, data):

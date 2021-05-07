@@ -154,8 +154,6 @@ class OptionFileEnum(_Option):
     """
 
     def __init__(self, required=True, ext=None):
-        if ext is None:
-            ext = []
         super().__init__(option_type='enum',
                          name=FILE_OPTION.get('name'),
                          name_tag=FILE_OPTION.get('name_tag'),

@@ -65,7 +65,7 @@ class _CommonModule(object):
         self._ip = None  # 补齐默认参数,为了Serializer
         self._port = None  # 补齐默认参数,为了Serializer
         self._protocol = None  # 补齐默认参数,为了Serializer
-        self.opts = {} # 用于存储msf模块的options
+        self.opts = {}  # 用于存储msf模块的options
 
     # 公用函数
 
@@ -83,7 +83,7 @@ class _CommonModule(object):
         """运行模块的主机ip地址"""
         return None
 
-    def set_option(self, key, value):
+    def set_msf_option(self, key, value):
         """设置msf模块参数"""
         self.opts[key] = value  # msf模块参数
 
@@ -124,7 +124,7 @@ class _CommonModule(object):
             filepath = File.safe_os_path_join(MSFLOOT, filename)
         return filepath
 
-    def get_option_filename(self):
+    def get_fileenum_option(self):
         """获取选项中的文件名"""
         fileinfo = self._get_option_fileinfo()
         if fileinfo is None:
@@ -669,16 +669,16 @@ class PostMSFRawModule(_PostMSFModuleCommon):
             return False
 
         if credential_record.get('username') is not None:
-            self.set_option(key='SMBUser', value=credential_record.get('username'))
+            self.set_msf_option(key='SMBUser', value=credential_record.get('username'))
         else:
             return False
 
         if credential_record.get('password') is not None:
-            self.set_option(key='SMBPass', value=credential_record.get('password'))
+            self.set_msf_option(key='SMBPass', value=credential_record.get('password'))
         else:
             return False
         if credential_record.get('tag').get('domain') is not None:
-            self.set_option(key='SMBDomain', value=credential_record.get('tag').get('domain'))
+            self.set_msf_option(key='SMBDomain', value=credential_record.get('tag').get('domain'))
         else:
             return True
         return True

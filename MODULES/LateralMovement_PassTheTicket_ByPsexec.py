@@ -54,15 +54,15 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         rhost = self.param('RHOST')
         if rhost is None:
-            self.set_option(key='RHOSTS', value=self.host_ipaddress)
+            self.set_msf_option(key='RHOSTS', value=self.host_ipaddress)
         else:
-            self.set_option(key='RHOSTS', value=rhost)
+            self.set_msf_option(key='RHOSTS', value=rhost)
 
         if self.param('SHARE') is not None:
-            self.set_option(key='SHARE', value=self.param('SHARE'))
+            self.set_msf_option(key='SHARE', value=self.param('SHARE'))
 
         if self.param('TARGET') is not None:
-            self.set_option(key='TARGET', value=self.param('TARGET'))
+            self.set_msf_option(key='TARGET', value=self.param('TARGET'))
 
         flag = self.set_smb_info_by_credential()
         if flag is not True:
@@ -70,9 +70,9 @@ class PostModule(PostMSFRawModule):
             user = self.param('SMBUser')
             password = self.param('SMBPass')
             if domain is not None and user is not None and password is not None:
-                self.set_option(key='SMBDomain', value=domain)
-                self.set_option(key='SMBUser', value=user)
-                self.set_option(key='SMBPass', value=password)
+                self.set_msf_option(key='SMBDomain', value=domain)
+                self.set_msf_option(key='SMBUser', value=user)
+                self.set_msf_option(key='SMBPass', value=password)
             else:
                 return False, "请选择凭证或手工输入凭证"
         else:
@@ -81,22 +81,22 @@ class PostModule(PostMSFRawModule):
             user = self.param('SMBUser')
             password = self.param('SMBPass')
             if domain is not None and domain != "":
-                self.set_option(key='SMBDomain', value=domain)
+                self.set_msf_option(key='SMBDomain', value=domain)
             if user is not None and user != "":
-                self.set_option(key='SMBUser', value=user)
+                self.set_msf_option(key='SMBUser', value=user)
             if password is not None and password != "":
-                self.set_option(key='SMBPass', value=password)
+                self.set_msf_option(key='SMBPass', value=password)
 
         # 自定义exe
         pe_file_path = self.get_option_filepath(msf=True)  # msf=True是为了调试
 
         if pe_file_path is not None:
             pe_file_path = self.get_option_filepath(msf=True)
-            self.set_option(key='TARGET', value=2)
-            self.set_option(key='PAYLOAD', value="generic/custom")
-            self.set_option(key='PAYLOADFILE', value=pe_file_path)
-            self.set_option(key='EXE::Custom', value=pe_file_path)
-            self.set_option(key='disablepayloadhandler', value=True)
+            self.set_msf_option(key='TARGET', value=2)
+            self.set_msf_option(key='PAYLOAD', value="generic/custom")
+            self.set_msf_option(key='PAYLOADFILE', value=pe_file_path)
+            self.set_msf_option(key='EXE::Custom', value=pe_file_path)
+            self.set_msf_option(key='disablepayloadhandler', value=True)
             return True, None
         else:
             payload = self.get_handler_payload()

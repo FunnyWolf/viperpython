@@ -24,8 +24,8 @@ class PostModule(PostMSFExecPEModule):
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)
         self.set_pepath('hbd.exe')
-        self.set_option("RESULTFILE", "hbd_results.zip")
-        self.set_option("CLEANUP", True)
+        self.set_msf_option("RESULTFILE", "hbd_results.zip")
+        self.set_msf_option("CLEANUP", True)
 
     def check(self):
         """执行前的检查函数"""
