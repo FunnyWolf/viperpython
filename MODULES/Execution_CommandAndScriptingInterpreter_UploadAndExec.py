@@ -9,7 +9,7 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFRawModule):
     NAME = "上传并执行可执行文件"
-    DESC = "模块会将用户指定文件上传到目标机并执行.\n"
+    DESC = "模块将用户指定文件上传到目标机并执行.\n"
     MODULETYPE = TAG2CH.Execution
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
@@ -17,7 +17,7 @@ class PostModule(PostMSFRawModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1059/"]
     README = ["https://www.yuque.com/vipersec/module/gkm65g"]
     AUTHOR = "Viper"
-
+    REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(),
         OptionStr(name='ARGS', name_tag="命令行参数", option_length=24, desc="运行可执行文件时命令行参数"),
