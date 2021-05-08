@@ -213,7 +213,6 @@ def signfile(exe, sigfile, output):
 
 
 def signbin(exe, sigfile_bin, output):
-
     flItms = gather_file_info_win(exe)
     cert = sigfile_bin
     shutil.copy2(exe, output)
