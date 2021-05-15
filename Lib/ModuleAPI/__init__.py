@@ -32,6 +32,7 @@ from Lib.Module.option import (
     OptionHander,
 )
 from Lib.file import File
+from Lib.gcc import Gcc
 from Lib.mingw import Mingw
 from Lib.notice import Notice
 from Lib.sessionlib import (
@@ -63,6 +64,7 @@ __all__ = [
     "Notice",
     "MsfModule",
     "Mingw",
+    "Gcc",
     "File",
     "TAG2CH",
     "UACLevel",

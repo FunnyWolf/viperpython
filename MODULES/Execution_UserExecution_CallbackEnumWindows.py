@@ -43,7 +43,7 @@ class PostModule(PostPythonModule):
             arch = "x86"
         else:
             arch = "x64"
-        binbytes = mingw.compile(arch=arch)
+        binbytes = mingw.compile_cpp(arch=arch)
         exefilename = f"CallbackEnumWindows_{int(time.time())}.exe"
         projectfilename = f"CallbackEnumWindows_{int(time.time())}.zip"
         self.write_zip_vs_project(filename=projectfilename, source_code=source_code, exe_file=exefilename,

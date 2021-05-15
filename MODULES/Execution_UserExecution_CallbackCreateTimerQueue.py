@@ -43,7 +43,7 @@ class PostModule(PostPythonModule):
             arch = "x86"
         else:
             arch = "x64"
-        binbytes = mingw.compile(arch=arch)
+        binbytes = mingw.compile_cpp(arch=arch)
 
         exefilename = f"CallbackCreateTimerQueue_{int(time.time())}.exe"
         projectfilename = f"CallbackCreateTimerQueue_{int(time.time())}.zip"

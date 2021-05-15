@@ -96,8 +96,14 @@ class Xcache(object):
     @staticmethod
     def set_postmodule_auto_conf(conf):
         old_conf = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_CONF)
+
         if old_conf is None:
-            old_conf = {"flag": False, "interval": 5}
+            old_conf = {"flag": False, "interval": 1, "max_session": 3}
+        if old_conf.get("interval") is None:
+            old_conf["interval"] = 1
+        if old_conf.get("max_session") is None:
+            old_conf["max_session"] = 3
+
         old_conf.update(conf)
         cache.set(Xcache.XCACHE_POSTMODULE_AUTO_CONF, old_conf, None)
         return old_conf

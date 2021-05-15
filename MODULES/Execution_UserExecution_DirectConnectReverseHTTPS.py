@@ -50,7 +50,7 @@ class PostModule(PostPythonModule):
             arch = "x86"
         else:
             arch = "x64"
-        binbytes = mingw.compile(arch=arch, extra_params=["-lws2_32", "-lwininet"])
+        binbytes = mingw.compile_cpp(arch=arch, extra_params=["-lws2_32", "-lwininet"])
 
         exefilename = f"Reverse_https_{int(time.time())}.exe"
         projectfilename = f"Reverse_https_{int(time.time())}.zip"

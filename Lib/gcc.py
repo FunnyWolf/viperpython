@@ -8,19 +8,15 @@ import time
 
 from django.conf import settings
 
-from CONFIG import DEBUG
 from Lib.configs import STATIC_STORE_PATH
 from Lib.file import File
 from Lib.log import logger
 
-MINGW_INCULDE_DIR = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "mingw_header")
-MINGW_CODE_TEMPLATE_DIR = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "mingw_template")
+GCC_INCULDE_DIR = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "gcc_header")
+GCC_CODE_TEMPLATE_DIR = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "gcc_template")
 
 
-class Mingw(object):
-    MINGW_BIN_X64 = "x86_64-w64-mingw32-gcc"
-    MINGW_BIN_X86 = "i686-w64-mingw32-gcc"
-
+class Gcc(object):
     def __init__(self, include_dir: str, source_code: str):
         self.include_dir = include_dir
         self.source_code = source_code  # 源码文件的内容,str格式
@@ -30,14 +26,15 @@ class Mingw(object):
         self._filename = str(time.time() * 1000_0000)
         self._c_src_file = os.path.join(File.tmp_dir(), f"{self._filename}.c")
         self._cpp_src_file = os.path.join(File.tmp_dir(), f"{self._filename}.cpp")
-        self._exe_file = os.path.join(File.tmp_dir(), f"{self._filename}.exe")
+        self._exe_file = os.path.join(File.tmp_dir(), f"{self._filename}.elf")
 
     def _c_build_cmd(self, arch="x64", extra_params=[]):
         cmd = []
+        cmd.append("gcc")
         if arch == "x64":
-            cmd.append("x86_64-w64-mingw32-gcc")
+            pass
         else:
-            cmd.append("i686-w64-mingw32-gcc")
+            cmd.append("-m32")
         # cpp文件
         cmd.append(self._c_src_file)
         # 头文件
@@ -47,41 +44,21 @@ class Mingw(object):
         cmd.append("-o")
         cmd.append(self._exe_file)
 
-        # cmd.append("-nostdlib")
-
         # 其他参数
-        cmd.append("-mwindows")
-        cmd.append("-fno-ident")
-        cmd.append("-ffunction-sections")
+        cmd.append("-static")
+        cmd.append("-z execstack")
 
-        cmd.append("-fvisibility=hidden")
-
-        opt_level = "-O2"
-        cmd.append(opt_level)
         if extra_params != []:
             cmd.extend(extra_params)
-
-        cmd.append(opt_level)
-        # linux独有参数
-        if DEBUG:
-            if self.strip_syms:
-                cmd.append("-s")
-        else:
-            cmd.append("-fno-asynchronous-unwind-tables")
-            link_options = '-Wl,' + '--no-seh,'
-            if self.strip_syms:
-                link_options += '-s'
-            if self.link_script:
-                link_options += f",-T{self.link_script}"
-            cmd.append(link_options)
         return cmd
 
     def _cpp_build_cmd(self, arch="x64", extra_params=[]):
         cmd = []
+        cmd.append("gcc")
         if arch == "x64":
-            cmd.append("x86_64-w64-mingw32-gcc")
+            pass
         else:
-            cmd.append("i686-w64-mingw32-gcc")
+            cmd.append("-m32")
         # cpp文件
         cmd.append(self._cpp_src_file)
         # 头文件
@@ -91,33 +68,12 @@ class Mingw(object):
         cmd.append("-o")
         cmd.append(self._exe_file)
 
-        # cmd.append("-nostdlib")
-
         # 其他参数
-        cmd.append("-mwindows")
-        cmd.append("-fno-ident")
-        cmd.append("-ffunction-sections")
+        cmd.append("-static")
+        cmd.append("-z execstack")
 
-        cmd.append("-fvisibility=hidden")
-
-        opt_level = "-O2"
-        cmd.append(opt_level)
         if extra_params != []:
             cmd.extend(extra_params)
-
-        cmd.append(opt_level)
-        # linux独有参数
-        if DEBUG:
-            if self.strip_syms:
-                cmd.append("-s")
-        else:
-            cmd.append("-fno-asynchronous-unwind-tables")
-            link_options = '-Wl,' + '--no-seh,'
-            if self.strip_syms:
-                link_options += '-s'
-            if self.link_script:
-                link_options += f",-T{self.link_script}"
-            cmd.append(link_options)
         return cmd
 
     def compile_cpp(self, arch="x64", extra_params=[]):
