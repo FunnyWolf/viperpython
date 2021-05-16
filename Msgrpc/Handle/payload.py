@@ -139,14 +139,24 @@ class Payload(object):
             filename = "{}.exe".format(int(time.time()))
         # linux类型免杀
         elif opts.get("Format") == "elf-src":
-            opts["Format"] = "hex"
-            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
-            if result is None:
-                context = data_return(305, Payload_MSG.get(305), {})
-                return context
-            byteresult = base64.b64decode(result.get('payload'))
-            byteresult = Payload._create_payload_by_gcc(mname=mname, shellcode=byteresult)
-            filename = "{}.elf".format(int(time.time()))
+            if mname in ['linux/x86/meterpreter/reverse_tcp', 'linux/x86/meterpreter/bind_tcp',
+                         'linux/x64/meterpreter/reverse_tcp', 'linux/x64/meterpreter/bind_tcp', ]:
+                opts["Format"] = "hex"
+                result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+                if result is None:
+                    context = data_return(305, Payload_MSG.get(305), {})
+                    return context
+                byteresult = base64.b64decode(result.get('payload'))
+                byteresult = Payload._create_payload_by_gcc(mname=mname, shellcode=byteresult)
+                filename = "{}.elf".format(int(time.time()))
+            else:
+                opts["Format"] = "elf"
+                result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+                if result is None:
+                    context = data_return(305, Payload_MSG.get(305), {})
+                    return context
+                byteresult = base64.b64decode(result.get('payload'))
+                filename = "{}.elf".format(int(time.time()))
         else:
             file_suffix = {
                 "c": "c",

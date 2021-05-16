@@ -11,7 +11,10 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostPythonModule):
     NAME = "基础ShellcodeLoader免杀(Linux)"
-    DESC = "模块通过编码shellcode与基础的shellcodeloader结合的方式实现免杀"
+    DESC = "模块通过编码shellcode与基础的shellcodeloader结合的方式实现免杀.\n" \
+           "模块适配以下类型载荷:\n" \
+           "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
+           "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
     MODULETYPE = TAG2CH.Execution
     PLATFORM = ["Linux"]  # 平台
     PERMISSIONS = ["User", "Root"]  # 所需权限
@@ -30,8 +33,9 @@ class PostModule(PostPythonModule):
     def check(self):
         """执行前的检查函数"""
         payload = self.get_handler_payload()
-        if "linux" not in payload:
-            return False, "模块只支持linux类型载荷"
+        if payload not in ['linux/x86/meterpreter/reverse_tcp', 'linux/x86/meterpreter/bind_tcp',
+                           'linux/x64/meterpreter/reverse_tcp', 'linux/x64/meterpreter/bind_tcp', ]:
+            return False, "输入的载荷类型不满足要求,请参考模块说明"
         return True, None
 
     def run(self):

