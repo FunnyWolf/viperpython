@@ -126,6 +126,10 @@ class Handler(object):
     def create(opts=None):
         # 所有的参数必须大写
         # opts = {'PAYLOAD': payload, 'LHOST': LHOST, 'LPORT': LPORT, 'RHOST': RHOST}
+        # 处理SessionExpirationTimeout参数
+        if opts.get("SessionExpirationTimeout") is None or opts.get("SessionExpirationTimeout") < 3600 * 24 * 365:
+            opts["SessionExpirationTimeout"] = 3600 * 24 * 365
+
         if opts.get('VIRTUALHANDLER') is True:  # 虚拟监听
             opts.pop('VIRTUALHANDLER')
             result = Handler.create_virtual_handler(opts)

@@ -97,7 +97,6 @@ class PostModule(PostMSFPythonWithParamsModule):
 
     def callback(self, status, message, data):
         if status:
-
             try:
                 result = base64.b64decode(bytes(data, encoding="utf8")).decode('ascii')
                 portservice_list = json.loads(result)
