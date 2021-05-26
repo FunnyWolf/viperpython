@@ -27,6 +27,7 @@ from Lib.configs import MSFLOOT
 from Lib.file import File
 from Lib.log import logger
 from Lib.xcache import Xcache
+from Msgrpc.Handle.filemsf import FileMsf
 from Msgrpc.Handle.handler import Handler
 from Msgrpc.Handle.payload import Payload
 from PostLateral.Handle.credential import Credential
@@ -140,12 +141,12 @@ class _CommonModule(object):
             data = f.read()
         return data
 
-    def write_to_loot(self, filename, data):
+    def write_to_loot(self, filename, data, msf=True):
         """向loot目录写文件"""
         filepath = File.safe_os_path_join(MSFLOOT, filename)
         with open(filepath, "wb+") as f:
             f.write(data)
-        return True
+        return FileMsf.get_absolute_path(filename, msf=msf)
 
     @property
     def _target_str(self):
@@ -361,6 +362,34 @@ class _CommonModule(object):
         """货物handler详细配置信息"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         return handler_config
+
+    def generate_shellcode(self):
+        """通过监听配置生成shellcode"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        return shellcode
+
+    def generate_bypass_exe_data(self):
+        """通过监听配置生成exe,返回exe内容"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+
+        return shellcode
+
+    def generate_bypass_exe_file(self, service_exe=False, msf=True):
+        """通过监听配置生成exe,返回exe文件路径"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config,
+                                                service_exe=service_exe)
+        filename = f"tmp_{int(time.time())}.exe"
+        filepath = self.write_to_loot(filename, shellcode, msf=msf)
+        return filepath
 
     # 功能函数集
     @staticmethod
@@ -614,22 +643,6 @@ class PostPythonModule(_PostCommonModule):
             tmp.append(f"'{a}'")
         reverse_hex_str_array = ",".join(tmp)
         return reverse_hex_str_array
-
-    def generate_shellcode(self):
-        """通过监听配置生成shellcode"""
-        handler_config = self.param(HANDLER_OPTION.get('name'))
-        if handler_config is None:
-            return None
-        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
-        return shellcode
-
-    def generate_exe(self):
-        """通过监听配置生成exe"""
-        handler_config = self.param(HANDLER_OPTION.get('name'))
-        if handler_config is None:
-            return None
-        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
-        return shellcode
 
     def run(self):
         """任务执行时框架会自动调用的函数,子类需要重新实现"""

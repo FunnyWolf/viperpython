@@ -20,7 +20,7 @@ class PostModule(PostMSFCSharpModule):
 
     OPTIONS = register_options([
         OptionEnum(name='action', name_tag="执行动作", required=True,
-                   desc="输入执行Ladon.exe时的命令行参数.可参考:https://k8gege.org/Ladon/",
+                   desc="针对键值的执行的命令",
                    enum_list=[
                        {'name': "创建", 'value': "create"},
                        {'name': "删除", 'value': "delete"},

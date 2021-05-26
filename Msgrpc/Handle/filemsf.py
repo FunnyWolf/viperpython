@@ -171,6 +171,7 @@ class FileMsf(object):
 
     @staticmethod
     def get_absolute_path(filename, msf=False):
+        """获取loot目录文件的绝对路径,msf表示是不是msf模块使用此路径"""
         if msf:
             filepath = f"{MSFLOOTTRUE}/{filename}"
         else:

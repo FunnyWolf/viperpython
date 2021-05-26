@@ -39,9 +39,12 @@ class PostModule(PostMSFRawModule):
         else:
             return False, "此模块只支持Meterpreter类型的Session"
 
+        if 'windows' not in self.get_handler_payload().lower():
+            return False, "选择handler错误,请选择windows平台的handler"
+
         self.set_payload_by_handler()
-        if 'windows' not in self.opts.get('PAYLOAD').lower():
-            return False, "选择handler错误,建议选择windows平台的handler"
+        exe_filepath = self.generate_bypass_exe_file()
+        self.set_msf_option("EXE::Custom", exe_filepath)
         return True, None
 
     def callback(self, status, message, data):
