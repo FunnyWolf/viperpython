@@ -15,6 +15,9 @@ from Lib.log import logger
 GCC_INCULDE_DIR = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "gcc_header")
 GCC_CODE_TEMPLATE_DIR = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "gcc_template")
 
+GLIBC_PATH = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "glibc", "lib64")
+GLIBC_LD_PATH = os.path.join(settings.BASE_DIR, STATIC_STORE_PATH, "glibc", "lib64", "ld-linux-x86-64.so.2")
+
 
 class Gcc(object):
     def __init__(self, include_dir: str, source_code: str):
@@ -43,6 +46,9 @@ class Gcc(object):
         # 输出文件
         cmd.append("-o")
         cmd.append(self._exe_file)
+
+        # static link glibc
+        cmd.append(f"-Wl,-rpath='{GLIBC_PATH}',-dynamic-linker='{GLIBC_LD_PATH}'")
 
         # 其他参数
         cmd.append("-static")
