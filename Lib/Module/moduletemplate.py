@@ -371,24 +371,25 @@ class _CommonModule(object):
         shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
         return shellcode
 
-    def generate_bypass_exe_data(self):
+    def generate_bypass_exe_data(self, template):
         """通过监听配置生成exe,返回exe内容"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         if handler_config is None:
             return None
-        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        bytedata = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config,
+                                               template=template)
 
-        return shellcode
+        return bytedata
 
-    def generate_bypass_exe_file(self, service_exe=False, msf=True):
+    def generate_bypass_exe_file(self, template, msf=True):
         """通过监听配置生成exe,返回exe文件路径"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         if handler_config is None:
             return None
-        shellcode = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config,
-                                                service_exe=service_exe)
+        bytedata = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config,
+                                               template=template)
         filename = f"tmp_{int(time.time())}.exe"
-        filepath = self.write_to_loot(filename, shellcode, msf=msf)
+        filepath = self.write_to_loot(filename, bytedata, msf=msf)
         return filepath
 
     # 功能函数集

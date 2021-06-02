@@ -42,7 +42,7 @@ class PostModule(PostMSFRawModule):
         self.set_payload_by_handler()
         if 'windows' not in self.opts.get('PAYLOAD').lower():
             return False, "选择handler错误,建议选择windows平台的handler"
-        exe_filepath = self.generate_bypass_exe_file()
+        exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_BASE")
         self.set_msf_option("EXE::Custom", exe_filepath)
         return True, None
 
