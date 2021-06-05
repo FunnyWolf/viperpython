@@ -1,4 +1,7 @@
 FROM viper:latest
+
 ENTRYPOINT ["viper", "init","-pw"]
+
 CMD ["diypassword"]
-EXPOSE 60000
+
+HEALTHCHECK CMD viper healthcheck
