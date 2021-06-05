@@ -386,6 +386,11 @@ if __name__ == '__main__':
     if action is None and newpassword is None:
         parser.print_help()
         exit(0)
+    if action.lower() == "healthcheck":
+        if check_services():
+            exit(0)
+        else:
+            exit(1)
 
     # 初始化系统初始文件 必须在修改密码之前,确保数据库文件已经初始化
     init_copy_file()
