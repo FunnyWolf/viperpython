@@ -4,11 +4,11 @@
 # @Desc  :
 import os
 import subprocess
-import time
 
 from django.conf import settings
 
 from CONFIG import DEBUG
+from Lib.api import get_random_str
 from Lib.configs import STATIC_STORE_PATH
 from Lib.file import File
 from Lib.log import logger
@@ -21,13 +21,13 @@ class Mingw(object):
     MINGW_BIN_X64 = "x86_64-w64-mingw32-gcc"
     MINGW_BIN_X86 = "i686-w64-mingw32-gcc"
 
-    def __init__(self, include_dir: str, source_code: str):
+    def __init__(self, include_dir, source_code: str):
         self.include_dir = include_dir
         self.source_code = source_code  # 源码文件的内容,str格式
         self.strip_syms = True
         self.link_script = None
 
-        self._filename = str(time.time() * 1000_0000)
+        self._filename = get_random_str(8)
         self._c_src_file = os.path.join(File.tmp_dir(), f"{self._filename}.c")
         self._cpp_src_file = os.path.join(File.tmp_dir(), f"{self._filename}.cpp")
         self._exe_file = os.path.join(File.tmp_dir(), f"{self._filename}.exe")
@@ -41,8 +41,9 @@ class Mingw(object):
         # cpp文件
         cmd.append(self._c_src_file)
         # 头文件
-        cmd.append("-I")
-        cmd.append(self.include_dir)
+        if self.include_dir:
+            cmd.append("-I")
+            cmd.append(self.include_dir)
         # 输出文件
         cmd.append("-o")
         cmd.append(self._exe_file)
@@ -82,16 +83,18 @@ class Mingw(object):
             cmd.append("x86_64-w64-mingw32-gcc")
         else:
             cmd.append("i686-w64-mingw32-gcc")
+
         # cpp文件
         cmd.append(self._cpp_src_file)
+
         # 头文件
-        cmd.append("-I")
-        cmd.append(self.include_dir)
+        if self.include_dir:
+            cmd.append("-I")
+            cmd.append(self.include_dir)
+
         # 输出文件
         cmd.append("-o")
         cmd.append(self._exe_file)
-
-        # cmd.append("-nostdlib")
 
         # 其他参数
         cmd.append("-mwindows")
@@ -105,7 +108,7 @@ class Mingw(object):
         if extra_params != []:
             cmd.extend(extra_params)
 
-        cmd.append(opt_level)
+        # cmd.append("-static")
         # linux独有参数
         if DEBUG:
             if self.strip_syms:
@@ -169,6 +172,8 @@ class Mingw(object):
         return bindata
 
     def _cleanup_files(self):
+        if DEBUG:
+            return
         try:
             os.remove(self._cpp_src_file)
             os.remove(self._c_src_file)

