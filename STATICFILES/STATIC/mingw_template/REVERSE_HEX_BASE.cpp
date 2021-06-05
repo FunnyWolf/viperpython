@@ -28,7 +28,7 @@ void hardCodeM() {
 	RtlMoveMemory(ptr, array, memory_allocation);
 
 	//callback
-    ::EnumWindows((WNDENUMPROC)ptr, NULL);
+    ::EnumDisplayMonitors(NULL, NULL, (MONITORENUMPROC)ptr, NULL);
 }
 
 
