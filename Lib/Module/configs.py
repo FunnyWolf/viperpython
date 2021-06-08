@@ -47,6 +47,7 @@ class TAG2CH(object):
     Bot_PY_Exp = "Bot_PY_Exp"  # python原生攻击模块
 
     # 内网渗透类模块
+    Reconnaissance = 'Reconnaissance'  # '初始访问'
     Initial_Access = 'Initial_Access'  # '初始访问'
     Execution = 'Execution'  # '执行'
     Persistence = 'Persistence'  # '持久化',
