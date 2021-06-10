@@ -407,6 +407,38 @@ class _CommonModule(object):
                (int(octets[2]) << 8) + \
                (int(octets[3]))
 
+    def str_to_ips(self, ipstr):
+        """字符串转ip地址列表"""
+        iplist = []
+        lines = ipstr.split(",")
+        for raw in lines:
+            if '/' in raw:
+                addr, mask = raw.split('/')
+                mask = int(mask)
+
+                bin_addr = ''.join([(8 - len(bin(int(i))[2:])) * '0' + bin(int(i))[2:] for i in addr.split('.')])
+                start = bin_addr[:mask] + (32 - mask) * '0'
+                end = bin_addr[:mask] + (32 - mask) * '1'
+                bin_addrs = [(32 - len(bin(int(i))[2:])) * '0' + bin(i)[2:] for i in
+                             range(int(start, 2), int(end, 2) + 1)]
+
+                dec_addrs = ['.'.join([str(int(bin_addr[8 * i:8 * (i + 1)], 2)) for i in range(0, 4)]) for bin_addr in
+                             bin_addrs]
+
+                iplist.extend(dec_addrs)
+
+            elif '-' in raw:
+                addr, end = raw.split('-')
+                end = int(end)
+                start = int(addr.split('.')[3])
+                prefix = '.'.join(addr.split('.')[:-1])
+                addrs = [prefix + '.' + str(i) for i in range(start, end + 1)]
+                iplist.extend(addrs)
+                return addrs
+            else:
+                iplist.extend([raw])
+        return iplist
+
     @staticmethod
     def timestamp_to_str(timestamp):
         """将时间戳转换为字符串."""
