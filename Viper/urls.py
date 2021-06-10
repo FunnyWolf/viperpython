@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from Core.views import BaseAuthView, CurrentUserView, NoticesView, SettingView, HostView
+from Core.views import BaseAuthView, CurrentUserView, NoticesView, SettingView, HostView, HostInfoView
 from Core.views import NetworkTopologyView, NetworkSearchView
 from Lib.montior import MainMonitor
 from Msgrpc.views import LazyLoaderView, LazyLoaderInterfaceView
@@ -17,6 +17,7 @@ router.register(r'api/v1/core/currentuser', CurrentUserView, basename="CurrentUs
 router.register(r'api/v1/core/notices', NoticesView, basename="Notice")
 router.register(r'api/v1/core/setting', SettingView, basename="Setting")
 router.register(r'api/v1/core/host', HostView, basename="Host")
+router.register(r'api/v1/core/hostinfo', HostInfoView, basename="HostInfo")
 
 router.register(r'api/v1/core/networktopology', NetworkTopologyView, basename="NetworkTopology")
 router.register(r'api/v1/core/networksearch', NetworkSearchView, basename="NetworkSearch")

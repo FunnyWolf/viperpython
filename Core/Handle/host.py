@@ -38,7 +38,9 @@ class Host(object):
         return result
 
     @staticmethod
-    def create_host(ipaddress, source=None, linktype=None, data={}):
+    def create_host(ipaddress, source=None, linktype=None, data=None):
+        if data is None:
+            data = {}
         # 新建edge信息
         if source is not None:
             Edge.create_edge(source=source, target=ipaddress, type=linktype, data=data)
@@ -124,6 +126,10 @@ class Host(object):
             # 删除edge表信息
             EdgeModel.objects.filter(source=ipaddress).delete()
             EdgeModel.objects.filter(target=ipaddress).delete()
+
+            # 删除host_info信息
+            Xcache.del_host_info(ipaddress)
+
             return True
         except Exception as E:
             logger.error(E)

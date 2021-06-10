@@ -108,6 +108,14 @@ class PostModule(PostMSFPythonWithParamsModule):
             for portservice in portservice_list:
                 # 输出部分
                 ipaddress = portservice.get("ipaddress")
+
+                # 新增主机
+                result = self.add_host(ipaddress, source=self.host_ipaddress, linktype="scan",
+                                       data={"method": "netbios"})
+
+                portservice.pop("ipaddress")  # 弹出ipaddress数据
+                HostInfo.update_info(ipaddress, portservice)
+
                 group = portservice.get("group")
                 unique = portservice.get("unique")
                 self.log_raw(f"{ipaddress}    {group}/{unique}")

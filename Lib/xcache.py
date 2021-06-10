@@ -17,6 +17,8 @@ class Xcache(object):
 
     XCACHE_SESSION_INFO = "XCACHE_SESSION_INFO"
 
+    XCACHE_HOST_INFO = "XCACHE_HOST_INFO"
+
     XCACHE_HADLER_VIRTUAL_LIST = "XCACHE_HADLER_VIRTUAL_LIST"
 
     XCACHE_HADLER_CACHE = "XCACHE_HADLER_CACHE"
@@ -42,15 +44,14 @@ class Xcache(object):
     XCACHE_MSFCONSOLE_HISTORY_CURSOR = "XCACHE_MSFCONSOLE_HISTORY_CURSOR"
 
     XCACHE_MSF_JOB_CACHE = "XCACHE_MSF_JOB_CACHE"
-    XCACHE_MSF_SESSION_CACHE = "XCACHE_MSF_SESSION_CACHE"
 
     XCACHE_TELEGRAM_CONFIG = "XCACHE_TELEGRAM_CONFIG"
     XCACHE_DINGDING_CONFIG = "XCACHE_DINGDING_CONFIG"
     XCACHE_SERVERCHAN_CONFIG = "XCACHE_SERVERCHAN_CONFIG"
     XCACHE_FOFA_CONFIG = "XCACHE_FOFA_CONFIG"
     XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
-
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
+
     XCACHE_SESSION_LIST = "XCACHE_SESSION_LIST"
 
     XCACHE_AES_KEY = "XCACHE_AES_KEY"
@@ -453,6 +454,31 @@ class Xcache(object):
         key = "{}_{}".format(Xcache.XCACHE_SESSION_INFO, sessionid)
         session_info = cache.get(key)
         return session_info
+
+    @staticmethod
+    def get_host_info(ipaddress):
+        key = "{}_{}".format(Xcache.XCACHE_HOST_INFO, ipaddress)
+        host_info = cache.get(key)
+        if host_info is None:
+            return {}
+        return host_info
+
+    @staticmethod
+    def update_host_info(ipaddress, new_value: dict):
+        key = "{}_{}".format(Xcache.XCACHE_HOST_INFO, ipaddress)
+        host_info_old = Xcache.get_host_info(ipaddress)
+        host_info_old.update(new_value)
+        cache.set(key, host_info_old, None)
+        return host_info_old
+
+    @staticmethod
+    def del_host_info(ipaddress):
+        key = "{}_{}".format(Xcache.XCACHE_HOST_INFO, ipaddress)
+        try:
+            cache.delete(key)
+            return True
+        except Exception as _:
+            return False
 
     @staticmethod
     def get_virtual_handlers():

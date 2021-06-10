@@ -5,6 +5,9 @@
 from Lib.Module.configs import (
     TAG2CH, UACLevel, RegType,
 )
+from Lib.Module.hostinfo import (
+    HostInfo
+)
 from Lib.Module.moduletemplate import (
     PostMSFRawModule,
     PostPythonModule,
@@ -69,4 +72,5 @@ __all__ = [
     "TAG2CH",
     "UACLevel",
     "RegType",
+    "HostInfo",
 ]
