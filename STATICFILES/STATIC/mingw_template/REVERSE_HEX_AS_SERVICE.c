@@ -1,5 +1,5 @@
-#include <String.h>
-#include <Windows.h>
+#include <string.h>
+#include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
 
