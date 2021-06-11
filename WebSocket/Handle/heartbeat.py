@@ -258,14 +258,16 @@ class HeartBeat(object):
                     platform = session.get("platform")
                     payload = "/".join(session.get("via_payload").split("/")[1:])
                     # 主机节点连接到viper节点
-                    edges.append({
+                    edge = {
                         "source": '255.255.255.255',
                         "target": ipaddress,
                         "data": {
                             "type": 'session',
                             "payload": short_payload(payload),
                         },
-                    })
+                    }
+                    if edge not in edges:
+                        edges.append(edge)
 
                     # 加入session节点
                     sesison_node_id = f"SID - {sid}"
