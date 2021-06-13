@@ -234,7 +234,8 @@ class HeartBeat(object):
                     "method": online_edge.get("data").get("method"),
                 },
             }
-            edges.append(edge_data)
+            if edge_data not in edges:
+                edges.append(edge_data)
 
         for host in hosts:
             ipaddress = host.get("ipaddress")
@@ -271,6 +272,7 @@ class HeartBeat(object):
 
                     # 加入session节点
                     sesison_node_id = f"SID - {sid}"
+
                     nodes.append({
                         "id": sesison_node_id,
                         "data": {
@@ -281,14 +283,16 @@ class HeartBeat(object):
                     })
 
                     # 主机节点连接到session节点
-                    edges.append({
+                    edge_data = {
                         "source": ipaddress,
                         "target": sesison_node_id,
                         "data": {
                             "type": 'session',
                             "payload": short_payload(payload),
                         },
-                    })
+                    }
+                    if edge_data not in edges:
+                        edges.append(edge_data)
 
                     # route edge
                     routes = session.get("routes")
@@ -300,14 +304,16 @@ class HeartBeat(object):
                             if ipaddress_in == "255.255.255.255" or ipaddress_in == ipaddress:
                                 continue
                             if ipaddr.ip_address(ipaddress_in) in ipnetwork:
-                                edges.append({
+                                edge_data = {
                                     "source": sesison_node_id,
                                     "target": ipaddress_in,
                                     "data": {
                                         "type": "route",
                                         "sid": sid,
                                     },
-                                })
+                                }
+                                if edge_data not in edges:
+                                    edges.append(edge_data)
 
             else:
                 # host不存在session
@@ -329,7 +335,8 @@ class HeartBeat(object):
                             "payload": short_payload(online_edge.get("data").get("payload")),
                         },
                     }
-                    edges.append(edge_data)
+                    if edge_data not in edges:
+                        edges.append(edge_data)
         network_data = {"nodes": nodes, "edges": edges}
         return hosts_with_session, network_data
 
