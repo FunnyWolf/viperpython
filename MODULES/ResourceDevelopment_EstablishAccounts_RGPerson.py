@@ -9,13 +9,14 @@ from MODULES_DATA.Reconnaissance_Other_RGPerson.RGPerson import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "随机身份生成"
+    NAME = "随机身份生成(中文)"
     DESC = "该脚本生成信息：中国黑客ID\姓名\年龄\性别\身份证\手机号\组织机构代码\统一社会信用代码."
-    MODULETYPE = TAG2CH.Reconnaissance
+    MODULETYPE = TAG2CH.Resource_Development
 
-    ATTCK = [""]  # ATTCK向量
+    ATTCK = ["T1585"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/gsz9lt"]
-    REFERENCES = ["https://github.com/gh0stkey/RGPerson"]
+    REFERENCES = ["https://github.com/gh0stkey/RGPerson",
+                  "https://attack.mitre.org/techniques/T1585/"]
     AUTHOR = "Viper"
 
     REQUIRE_SESSION = False
