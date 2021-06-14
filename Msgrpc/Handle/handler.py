@@ -2,6 +2,7 @@
 # @File  : handler.py
 # @Date  : 2021/2/25
 # @Desc  :
+import time
 import uuid
 
 from Lib.api import data_return
@@ -119,7 +120,7 @@ class Handler(object):
                 Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败")
             else:
                 Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,未知的返回值：f{code}")
-
+            time.sleep(1)
         Notice.send_info("所有历史监听加载完成")
 
     @staticmethod

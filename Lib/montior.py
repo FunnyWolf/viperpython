@@ -94,14 +94,14 @@ class MainMonitor(object):
         # 恢复上次运行保存的监听
         self.MainScheduler.add_job(func=Handler.recovery_cache_last_handler,
                                    trigger='date',
-                                   next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=15),
+                                   next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10),
                                    args=[handler_list],
                                    id='recovery_cache_last_handler')
 
         self.MainScheduler.start()
 
         logger.warning("后台服务启动成功")
-        Notice.send_success(f"后台服务启动成功,15秒后开始加载历史监听.")
+        Notice.send_success(f"后台服务启动成功,10秒后开始加载历史监听.")
 
     @staticmethod
     def run_bot_wait_list():
