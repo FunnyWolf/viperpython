@@ -46,8 +46,7 @@ void hardCodeM() {
 	RtlMoveMemory(ptr, buf, memory_allocation);
 
 	//callback
-
-	::EnumSystemLocalesEx((LOCALE_ENUMPROCEX)ptr, LOCALE_ALL, NULL, NULL);
+    ::EnumWindows((WNDENUMPROC)ptr, NULL);
 }
 
 
