@@ -240,6 +240,8 @@ class _CommonModule(object):
     # 模块输出相关函数
 
     def log_raw(self, result_line):
+        if result_line is None:
+            return
         if not result_line.endswith('\n'):
             result_line = "{}\n".format(result_line)
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_line)
