@@ -76,7 +76,7 @@ class MsfModuleAsFunction(object):
             data = result.get('data')
             if isinstance(data, list):
                 for record in data:
-                    if record.get('password') is '' or record.get('password').find('n.a.') >= 0:
+                    if record.get('password') == '' or record.get('password').find('n.a.') >= 0:
                         continue
                     credential_list.append(
                         {'domain': record.get('domain'), 'user': record.get('user'),

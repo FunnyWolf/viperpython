@@ -178,4 +178,5 @@ DATABASES = {
         'NAME': os.path.join(settings.BASE_DIR, 'Docker', 'db', 'db.sqlite3'),
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 from CONFIG import CACHES, CHANNEL_LAYERS

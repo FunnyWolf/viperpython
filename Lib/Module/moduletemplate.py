@@ -210,7 +210,7 @@ class _CommonModule(object):
         if isinstance(tag, dict) is not True:
             logger.warning('数据类型检查错误,数据 {}'.format(tag))
             tag = {}
-        if password is '' or password.find('n.a.(') > 0 or len(password) > 100:
+        if password == '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
 
         result = Credential.add_or_update(username, password, password_type, tag, self.NAME, self.host_ipaddress, desc)

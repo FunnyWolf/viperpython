@@ -180,3 +180,4 @@ Docker/log/*
 Docker/db/*
 Docker/module/*
 STATICFILES/TMP/*
+STATICFILES/STATIC/glibc/lib64/*
