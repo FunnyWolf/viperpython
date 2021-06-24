@@ -123,10 +123,12 @@ class Encoder(object):
 
     @staticmethod
     def encode_ready_receive():
+        """可以开始接收数据数据包"""
         raise NotImplementedError()
 
     @staticmethod
     def encode_finish_send():
+        """传输结束数据包"""
         raise NotImplementedError()
 
     @staticmethod
@@ -135,6 +137,7 @@ class Encoder(object):
 
     @staticmethod
     def encode_registration(client_id, status):
+        """注册成功数据包"""
         raise NotImplementedError()
 
 
@@ -340,10 +343,10 @@ class Registrator(object):
         self.id_list = [chr(i) for i in range(ord('a'), ord('z') + 1)]  # 用于注册client_id
         self.clientMap = {}  # {client_id:client}
         self.servers = {}  # {server_id:[client,client]}
-        self.stagers = {}
+        self.stagers = {}  # {server_id:StageClient(data)}
         self.waited_servers = {}  # {server_id:[server]}
         self.unregister_list = []
-        self.lock = threading.Lock()
+        self.lock = threading.Lock()  # waited_servers的锁
         self.logger = logging.getLogger(self.__class__.__name__)
         self.default_stager = StageClient()
         self.timeout_service = TimeoutService(timeout=20)
@@ -381,12 +384,12 @@ class Registrator(object):
             self.logger.info("Notify server(%s)", notify_server)
             notify_server.on_new_client()
 
-    def subscribe(self, server_id, server):
+    def add_to_waited_servers(self, server_id, server):
         with self.lock:
             self.waited_servers.setdefault(server_id, []).append(server)
         self.logger.info("Subscription is done for server with %s id.", server_id)
 
-    def unsubscribe(self, server_id, server):
+    def remove_from_waited_servers(self, server_id, server):
         with self.lock:
             waited_lst = self.waited_servers.get(server_id, [])
             if waited_lst:
@@ -552,7 +555,7 @@ class Client(object):
         self.send_data = None
         self.server_queue = Queue.Queue()
         self.client_queue = Queue.Queue()
-        self.server = None
+        self.server = None  # client对应的server实例
         self.client_id = None
         self.server_id = None
         self.register_for_server_needed = False
@@ -569,13 +572,14 @@ class Client(object):
             return not self.server and not self.received_data.is_complete()
 
     def register_client(self, server_id, encoder):
+        """注册新的client"""
         client_id = Registrator.instance().request_client_id(self)
         if client_id:
             self.client_id = client_id
             self.server_id = server_id
             self.register_for_server_needed = True
             self.logger.info("Registered new client with %s id for server_id %s", client_id, server_id)
-            return encoder.encode_registration(client_id, 0)
+            return encoder.encode_registration(client_id, 0)  # 返回注册成功数据包
         else:
             self.logger.info("Can't register client")
             return encoder.encode_finish_send()
@@ -584,12 +588,14 @@ class Client(object):
         return self.client_id
 
     def _setup_receive(self, exp_data_size, padding):
+        """创建接收数据环境"""
         self.state = self.INCOMING_DATA
         self.received_data.reset(exp_data_size)
         self.last_received_index = -1
         self.padding = padding
 
     def _initial_state(self):
+        """初始化接收数据环境"""
         self.state = self.INITIAL
         self.received_data.reset()
         self.last_received_index = -1
@@ -600,6 +606,7 @@ class Client(object):
             self.server = server
 
     def incoming_data_header(self, data_size, padding, encoder):
+        """client开始接收session返回数据"""
         if self.received_data.get_expected_size() == data_size and self.state == self.INCOMING_DATA:
             self.logger.info("Duplicated header request: waiting %d bytes of data with padding %d", data_size, padding)
             return encoder.encode_ready_receive()
@@ -611,6 +618,7 @@ class Client(object):
         return encoder.encode_ready_receive()
 
     def incoming_data(self, data, index, counter, encoder):
+        """client接收session返回数据"""
         self.logger.debug("Data %s, index %d", data, index)
         if self.state != self.INCOMING_DATA:
             self.logger.error("Bad state(%d) for this action. Send finish.", self.state)
@@ -650,6 +658,7 @@ class Client(object):
         return encoder.encode_send_more_data()
 
     def request_data_header(self, sub_domain, encoder):
+        """client开始向session发送数据(通过dns返回报文)"""
         if sub_domain == self.sub_domain:
             if self.register_for_server_needed:
                 Registrator.instance().register_client_for_server(self.server_id, self)
@@ -679,6 +688,7 @@ class Client(object):
             self.send_data = None
 
     def request_data(self, sub_domain, index, encoder):
+        """client向session发送数据(通过dns返回报文)"""
         self.logger.debug("request_data - %s, %d", sub_domain, index)
         if sub_domain != self.sub_domain:
             self.logger.error("request_data: subdomains are not equal(%s-%s)", self.sub_domain, sub_domain)
@@ -728,10 +738,11 @@ class StageClient(object):
         self.ts = int(time.time())
 
     def request_data_header(self, encoder):
-        """打包要发送给session的数据"""
+        """client开始向session发送数据(通过dns返回报文)"""
         return encoder.encode_data_header(self.subdomain, self.data_len)
 
     def request_data(self, index, encoder):
+        """client向session发送数据(通过dns返回报文)"""
         if not self.stage_data:
             return encoder.encode_finish_send()
 
@@ -850,6 +861,7 @@ class IncomingDataHeaderRequest(Request):
 
 
 class IncomingNewClient(Request):
+    """新的请求正则"""
     EXPR = re.compile(r"7812\.reg0\.\d+\.(?P<server_id>\w+)")
     OPTIONS = ["new_client"]
 
@@ -992,6 +1004,7 @@ def dns_response(data, transport):
 
 
 class BaseRequestHandlerDNS(SocketServer.BaseRequestHandler):
+    """DNS请求处理基础类"""
     TRANSPORT_UDP = 1
     TRANSPORT_TCP = 2
     TRANSPORT = TRANSPORT_UDP
@@ -1016,6 +1029,7 @@ class BaseRequestHandlerDNS(SocketServer.BaseRequestHandler):
 
 
 class PartedDataReader(object):
+    """读取部分数据的类"""
     INITIAL = 1
     RECEIVING_DATA = 2
 
@@ -1056,6 +1070,7 @@ class PartedDataReader(object):
 
 
 class MSFClient(object):
+    """处理msf handler连接的类"""
     HEADER_SIZE = 32
     LOGGER = logging.getLogger("MSFClient")
 
@@ -1088,7 +1103,7 @@ class MSFClient(object):
                 Registrator.instance().unregister_client(client_id)
             self.client.set_server(None)
             self.client = None
-        Registrator.instance().unsubscribe(self.msf_id, self)
+        Registrator.instance().remove_from_waited_servers(self.msf_id, self)
         self.close()
         self.server.remove_me(self)
 
@@ -1112,7 +1127,7 @@ class MSFClient(object):
             if not self.client:
                 if self._setup_client():
                     self._setup_status_request_reader()
-                    Registrator.instance().unsubscribe(self.msf_id, self)
+                    Registrator.instance().remove_from_waited_servers(self.msf_id, self)
                     self.wait_client = False
                     self.polling()
             else:
@@ -1172,7 +1187,7 @@ class MSFClient(object):
                                   self.msf_id)
             self.parted_reader = None
             self.wait_client = True
-            Registrator.instance().subscribe(self.msf_id, self)
+            Registrator.instance().add_to_waited_servers(self.msf_id, self)
 
     def _read_stage_header(self, data):
         MSFClient.LOGGER.info("Start reading stager")
@@ -1218,7 +1233,7 @@ class MSFClient(object):
             MSFClient.LOGGER.info("There are no clients for server id %s. Create subscription", self.msf_id)
             self.parted_reader = None
             self.wait_client = True
-            Registrator.instance().subscribe(self.msf_id, self)
+            Registrator.instance().add_to_waited_servers(self.msf_id, self)
 
     def _read_tlv_header(self, data):
         header = self._read_data(MSFClient.HEADER_SIZE - len(data))
