@@ -2,6 +2,7 @@
 cd /root/viper/
 mv ./Docker/CONFIG_docker.py CONFIG.py
 chmod 755 viper.py
+chmod 755 ./Tools/dns_server
 find . -type f -exec dos2unix {} \;
 
 # clean viper
