@@ -386,6 +386,7 @@ if __name__ == '__main__':
     if action is None and newpassword is None:
         parser.print_help()
         exit(0)
+
     if action is not None and action.lower() == "healthcheck":
         if check_services():
             exit(0)
