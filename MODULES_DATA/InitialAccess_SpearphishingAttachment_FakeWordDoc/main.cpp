@@ -164,8 +164,7 @@ void directRun() {
 
 	BOOL bRet = SHGetSpecialFolderPath(NULL, szPath, CSIDL_PERSONAL, FALSE);
 	strcat(szPath, "/");
-	strcat(szPath, filename);
-	strcat(szPath, ".exe");
+	strcat(szPath, "{{LOADERFILE}}");
 
 	CopyFile(path, szPath, FALSE);
 

