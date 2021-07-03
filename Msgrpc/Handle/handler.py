@@ -171,6 +171,7 @@ class Handler(object):
                             opts.pop('LHOST')
                         except Exception as _:
                             pass
+                        opts['AutoVerifySessionTimeout'] = 3600  # DNS传输较慢,默认等待一个小时
                     else:
                         try:
                             opts.pop('RHOST')
