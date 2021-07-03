@@ -1,6 +1,6 @@
 # 注意事项
 
-Viper默认的glibc版本为GLIBC 2.27,所以编译出的elf文件也依赖glic 2.27,如果目标linux的glibc版本低于2.27,elf文件会执行失败.
+Viper默认的glibc版本为GLIBC 2.5,所以编译出的elf文件也依赖glic 2.5,如果目标linux的glibc版本低于2.5(极少),elf文件会执行失败.
 
 请按照如下方法自行编译elf:
 
