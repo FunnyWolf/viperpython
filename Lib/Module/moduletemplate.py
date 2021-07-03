@@ -121,6 +121,7 @@ class _CommonModule(object):
         filename = file.get("name")
         if msf:
             filepath = File.safe_os_path_join(MSFLOOTTRUE, filename)
+            filepath = filepath.replace("\\", "/")
         else:
             filepath = File.safe_os_path_join(MSFLOOT, filename)
         return filepath
