@@ -18,6 +18,11 @@ rm -rf /root/viper/STATICFILES/MODULES_DEBUG/*
 rm -rf /root/viper/STATICFILES/SOURCE/*
 rm -rf /root/viper/STATICFILES/TMP/*
 
+# format msf file
+cd /root/metasploit-framework
+find . -name *.py -exec dos2unix {} \;
+find . -name *.py -exec chmod 755 {} \;
+
 # clean install cache
 rm -rf /root/.cache/*
 rm -rf /root/.bundle/cache
