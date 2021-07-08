@@ -5,6 +5,7 @@
 
 import json
 
+from Lib.configs import RPC_SESSION_OPERTION_API_REQ
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 
@@ -25,7 +26,7 @@ class HostRunningInfo(object):
         opts = {'SESSION': self.sessionid, 'INFO_PART': info_part}
         if self.sessionid is None or self.sessionid <= 0:
             return None
-        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts)
+        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=RPC_SESSION_OPERTION_API_REQ)
 
         if result is None:
             return None

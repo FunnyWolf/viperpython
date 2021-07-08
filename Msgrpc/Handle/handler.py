@@ -6,7 +6,7 @@ import time
 import uuid
 
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, Handler_MSG
+from Lib.configs import CODE_MSG, Handler_MSG, RPC_JOB_API_REQ
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
@@ -206,7 +206,8 @@ class Handler(object):
                 context = data_return(500, CODE_MSG.get(500), {})
                 return context
 
-            result = MSFModule.run(module_type="exploit", mname="multi/handler", opts=opts, runasjob=True)
+            result = MSFModule.run(module_type="exploit", mname="multi/handler", opts=opts, runasjob=True,
+                                   timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['ID'] = None
                 context = data_return(301, Handler_MSG.get(301), opts)

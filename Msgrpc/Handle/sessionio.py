@@ -3,7 +3,7 @@
 # @Date  : 2021/2/25
 # @Desc  :
 from Lib.api import data_return
-from Lib.configs import SessionIO_MSG, METERPRETER_PROMPT, CODE_MSG
+from Lib.configs import SessionIO_MSG, METERPRETER_PROMPT, CODE_MSG, RPC_SESSION_OPERTION_API_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.rpcclient import RpcClient
@@ -31,13 +31,14 @@ class SessionIO(object):
 
             if user_input.startswith('exit'):
                 params = [sessionid]
-                result = RpcClient.call(Method.SessionMeterpreterSessionKill, params)
+                result = RpcClient.call(Method.SessionMeterpreterSessionKill, params,
+                                        timeout=RPC_SESSION_OPERTION_API_REQ)
 
                 context = data_return(203, SessionIO_MSG.get(203), result)
                 return context
 
             params = [sessionid, user_input]
-            result = RpcClient.call(Method.SessionMeterpreterWrite, params)
+            result = RpcClient.call(Method.SessionMeterpreterWrite, params, timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(305, SessionIO_MSG.get(305), {})
             elif result.get('result') == 'success':
@@ -59,7 +60,7 @@ class SessionIO(object):
             return context
         try:
             params = [sessionid]
-            result = RpcClient.call(Method.SessionMeterpreterRead, params)
+            result = RpcClient.call(Method.SessionMeterpreterRead, params, timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None or (isinstance(result, dict) is not True):
                 context = data_return(303, SessionIO_MSG.get(303), old_result)
                 return context

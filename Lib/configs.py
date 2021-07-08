@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @File  : configs.py
 # @Date  : 2019/1/11
-# @Desc  :
+# @Desc  : 存储viper通用的配置信息
 from CONFIG import MSFDIR
 
 CODE_MSG = {
@@ -453,3 +453,8 @@ STATIC_STORE_PATH = "STATICFILES/STATIC/"
 METERPRETER_PROMPT = "meterpreter > "
 SHELL_PROMPT = "shell > "
 MSFLOOT = MSFDIR + "loot"
+
+# timeout
+RPC_FRAMEWORK_API_REQ = 15  # 框架类请求
+RPC_JOB_API_REQ = 3  # 后台任务类请求
+RPC_SESSION_OPERTION_API_REQ = 1800  # 涉及Session操作类请求

@@ -5,7 +5,7 @@
 import json
 
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, Route_MSG
+from Lib.configs import CODE_MSG, Route_MSG, RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPERTION_API_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.msfmodule import MSFModule
@@ -22,7 +22,7 @@ class Route(object):
         if ipaddress_list is []:
             return []
         params = [ipaddress_list]
-        result = RpcClient.call(Method.SessionMeterpreterRouteGet, params)
+        result = RpcClient.call(Method.SessionMeterpreterRouteGet, params, timeout=RPC_FRAMEWORK_API_REQ)
 
         return result
 
@@ -62,7 +62,8 @@ class Route(object):
             opts = {'CMD': 'autoadd', 'SESSION': sessionid}
         else:
             opts = {'CMD': 'add', 'SUBNET': subnet, 'NETMASK': netmask, 'SESSION': sessionid}
-        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts)
+        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts,
+                               timeout=RPC_SESSION_OPERTION_API_REQ)
         if result is None:
             context = data_return(505, CODE_MSG.get(505), [])
             return context
@@ -90,7 +91,8 @@ class Route(object):
     @staticmethod
     def destory(subnet=None, netmask=None, sessionid=None):
         opts = {'CMD': 'delete', 'SUBNET': subnet, 'NETMASK': netmask, 'SESSION': sessionid}
-        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts)
+        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts,
+                               timeout=RPC_SESSION_OPERTION_API_REQ)
         if result is None:
             context = data_return(505, CODE_MSG.get(505), [])
             return context

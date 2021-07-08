@@ -1,4 +1,5 @@
 import json
+import time
 from threading import Thread
 
 from asgiref.sync import async_to_sync
@@ -73,6 +74,8 @@ class MsfConsoleView(WebsocketConsumer):
             Xcache.clean_msfconsoleinputcache()
             self.send_input_feedback("\r\n")
             Thread(target=self.send_msfrpc_read).start()
+            # Thread(target=self.send_msfrpc_read_loop).start()
+
         elif input_data == "\x7f":  # 删除键
             return_str = Xcache.del_one_from_msfconsoleinputcache()
             self.send_input_feedback(return_str)
@@ -151,6 +154,31 @@ class MsfConsoleView(WebsocketConsumer):
                 'message': message
             }
         )
+
+    def send_msfrpc_read_loop(self):
+        first_flag = True
+        while True:
+            flag, result = Console.read()
+
+            if flag is not True:
+                self.send_input_feedback("\r\nConnect Error >")
+                return
+
+            data = result.get("data").replace("\n", "\r\n")
+            if len(data) == 0:
+                if first_flag:
+                    self.send_input_feedback(result.get("prompt"))
+                    first_flag = False
+                else:
+                    continue
+            else:
+                self.send_input_feedback(result.get("data").replace("\n", "\r\n"))
+
+            if len(Xcache.get_msfconsoleinputcache()) == 0:
+                time.sleep(1)
+                continue
+            else:
+                return
 
     def send_msfrpc_read(self):
         while True:

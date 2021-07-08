@@ -9,7 +9,7 @@ import re
 from pathlib import PurePosixPath
 
 from Lib.api import data_return
-from Lib.configs import FileSession_MSG, CODE_MSG
+from Lib.configs import FileSession_MSG, CODE_MSG, RPC_SESSION_OPERTION_API_REQ, RPC_JOB_API_REQ
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 
@@ -26,7 +26,8 @@ class FileSession(object):
         if operation == "list" and sessionid is not None and dirpath is not None:  # 列目录
             formatdir = FileSession.deal_path(dirpath)
             opts = {'OPERATION': 'list', 'SESSION': sessionid, 'SESSION_DIR': formatdir}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False, timeout=12)
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -75,7 +76,8 @@ class FileSession(object):
                 return context
         elif operation == 'pwd' and sessionid is not None:  # 列当前目录
             opts = {'OPERATION': 'pwd', 'SESSION': sessionid}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False, timeout=12)
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -114,7 +116,8 @@ class FileSession(object):
                 return context
         elif operation == 'download' and sessionid is not None and filepath is not None:  # 下载文件
             opts = {'OPERATION': 'download', 'SESSION': sessionid, 'SESSION_FILE': filepath}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True)  # 后台运行
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
+                                   timeout=RPC_JOB_API_REQ)  # 后台运行
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -123,7 +126,8 @@ class FileSession(object):
                 return context
         elif operation == "run":  # 执行文件
             opts = {'OPERATION': 'execute', 'SESSION': sessionid, 'SESSION_FILE': filepath, 'ARGS': arg}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True)  # 后台运行
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
+                                   timeout=RPC_JOB_API_REQ)  # 后台运行
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -133,7 +137,7 @@ class FileSession(object):
         elif operation == "cat":  # 查看文件
             opts = {'OPERATION': 'cat', 'SESSION': sessionid, 'SESSION_FILE': filepath}
             moduleresult = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
-                                         timeout=12)  # 后台运行
+                                         timeout=RPC_SESSION_OPERTION_API_REQ)  # 后台运行
             if moduleresult is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -159,7 +163,7 @@ class FileSession(object):
             formatdir = FileSession.deal_path(dirpath)
             opts = {'OPERATION': 'cd', 'SESSION': sessionid, 'SESSION_DIR': formatdir}
             moduleresult = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
-                                         timeout=12)  # 后台运行
+                                         timeout=RPC_SESSION_OPERTION_API_REQ)  # 后台运行
             if moduleresult is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -188,7 +192,8 @@ class FileSession(object):
         if operation == 'create_dir' and sessionid is not None and dirpath is not None:  # 新建文件夹
             formatdir = FileSession.deal_path(dirpath)
             opts = {'OPERATION': 'create_dir', 'SESSION': sessionid, 'SESSION_DIR': formatdir}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False, timeout=12)
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), [])
                 return context
@@ -209,7 +214,8 @@ class FileSession(object):
         elif operation == 'upload_file' and sessionid is not None and filename is not None and dirpath is not None:
             formatdir = FileSession.deal_path(dirpath)
             opts = {'OPERATION': 'upload', 'SESSION': sessionid, 'SESSION_DIR': formatdir, 'MSF_FILE': filename}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True, timeout=12)
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), {})
                 return context
@@ -223,7 +229,8 @@ class FileSession(object):
     @staticmethod
     def update(sessionid, filepath, filedata):
         opts = {'OPERATION': 'update_file', 'SESSION': sessionid, 'SESSION_FILE': filepath, 'FILE_DATA': filedata}
-        result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True, timeout=12)
+        result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
+                               timeout=RPC_SESSION_OPERTION_API_REQ)
         if result is None:
             context = data_return(301, FileSession_MSG.get(301), {})
             return context
@@ -235,7 +242,8 @@ class FileSession(object):
     def destory(sessionid=None, filepath=None, dirpath=None, operation=None):
         if operation == 'destory_file' and sessionid is not None and filepath is not None:
             opts = {'OPERATION': 'destory_file', 'SESSION': sessionid, 'SESSION_FILE': filepath}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False, timeout=12)
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), [])
                 return context
@@ -254,7 +262,8 @@ class FileSession(object):
         elif operation == 'destory_dir':
             formatdir = FileSession.deal_path(dirpath)
             opts = {'OPERATION': 'destory_dir', 'SESSION': sessionid, 'SESSION_DIR': formatdir}
-            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False, timeout=12)
+            result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(301, FileSession_MSG.get(301), [])
                 return context

@@ -5,7 +5,7 @@
 import json
 
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, PORTFWD_MSG
+from Lib.configs import CODE_MSG, PORTFWD_MSG, RPC_SESSION_OPERTION_API_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.msfmodule import MSFModule
@@ -35,7 +35,7 @@ class PortFwd(object):
 
     @staticmethod
     def list_portfwd():
-        result_list = RpcClient.call(Method.SessionMeterpreterPortFwdList)
+        result_list = RpcClient.call(Method.SessionMeterpreterPortFwdList, timeout=RPC_SESSION_OPERTION_API_REQ)
         if result_list is None:
             return []
         else:
@@ -58,7 +58,8 @@ class PortFwd(object):
                 'LHOST': lhost, 'LPORT': lport, 'RHOST': rhost, 'RPORT': rport,
                 'SESSION': sessionid, 'CMD': 'add'}
 
-        result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts)
+        result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
+                               timeout=RPC_SESSION_OPERTION_API_REQ)
         if result is None:
             context = data_return(308, PORTFWD_MSG.get(308), {})
             return context
@@ -81,7 +82,8 @@ class PortFwd(object):
         if sessionid is not None or sessionid == -1:
             opts = {'TYPE': portfwdtype, 'LHOST': lhost, 'LPORT': lport, 'RHOST': rhost, 'RPORT': rport,
                     'SESSION': sessionid, 'CMD': 'delete'}
-            result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts)
+            result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
+                                   timeout=RPC_SESSION_OPERTION_API_REQ)
             if result is None:
                 context = data_return(308, PORTFWD_MSG.get(308), {})
                 return context

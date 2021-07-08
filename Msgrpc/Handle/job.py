@@ -8,7 +8,7 @@ import time
 from Lib.Module.configs import HANDLER_OPTION, BROKER
 from Lib.api import data_return
 from Lib.apsmodule import aps_module
-from Lib.configs import Job_MSG, CODE_MSG
+from Lib.configs import Job_MSG, CODE_MSG, RPC_FRAMEWORK_API_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -129,7 +129,7 @@ class Job(object):
     def list_msfrpc_jobs_no_cache():
         infos = {}
         try:
-            result = RpcClient.call(Method.JobList)
+            result = RpcClient.call(Method.JobList, timeout=RPC_FRAMEWORK_API_REQ)
             Xcache.set_msf_job_cache(result)
             if result is None:
                 infos = {}
@@ -148,7 +148,7 @@ class Job(object):
     def is_msf_job_alive(job_id):
         time.sleep(0.5)
         try:
-            result = RpcClient.call(Method.JobList)
+            result = RpcClient.call(Method.JobList, timeout=RPC_FRAMEWORK_API_REQ)
             Xcache.set_msf_job_cache(result)
             if result is None:
                 return False
@@ -178,7 +178,7 @@ class Job(object):
                 common_module_instance = req.get("module")
                 Xcache.del_module_task_by_uuid(task_uuid)
                 params = [job_id]
-                result = RpcClient.call(Method.JobStop, params)
+                result = RpcClient.call(Method.JobStop, params, timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
                     context = data_return(305, Job_MSG.get(305), {})
                     return context
@@ -212,7 +212,7 @@ class Job(object):
     def destroy(id=None):
         try:
             params = [id]
-            result = RpcClient.call(Method.JobStop, params)
+            result = RpcClient.call(Method.JobStop, params, timeout=RPC_FRAMEWORK_API_REQ)
             if result is None:
                 return False
             if result.get('result') == 'success':

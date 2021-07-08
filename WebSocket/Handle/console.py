@@ -2,6 +2,7 @@
 # @File  : console.py
 # @Date  : 2021/2/26
 # @Desc  :
+from Lib.configs import RPC_FRAMEWORK_API_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.rpcclient import RpcClient
@@ -14,7 +15,7 @@ class Console(object):
 
     @staticmethod
     def get_active_console():
-        result = RpcClient.call(Method.ConsoleList, [])
+        result = RpcClient.call(Method.ConsoleList, [], timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             Xcache.set_console_id(None)
             return False
@@ -22,7 +23,7 @@ class Console(object):
             consoles = result.get("consoles")
             if len(consoles) == 0:
                 consoles_create_opt = {"SkipDatabaseInit": True, 'AllowCommandPassthru': False}
-                result = RpcClient.call(Method.ConsoleCreate, [consoles_create_opt])
+                result = RpcClient.call(Method.ConsoleCreate, [consoles_create_opt], timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
                     Xcache.set_console_id(None)
                     return False
@@ -37,7 +38,7 @@ class Console(object):
 
     @staticmethod
     def reset_active_console():
-        result = RpcClient.call(Method.ConsoleList, [])
+        result = RpcClient.call(Method.ConsoleList, [], timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             Xcache.set_console_id(None)
         else:
@@ -48,8 +49,8 @@ class Console(object):
                 for console in consoles:  # 删除已知命令行
                     cid = int(console.get("id"))
                     params = [cid]
-                    RpcClient.call(Method.ConsoleDestroy, params)
-            result = RpcClient.call(Method.ConsoleCreate)
+                    RpcClient.call(Method.ConsoleDestroy, params, timeout=RPC_FRAMEWORK_API_REQ)
+            result = RpcClient.call(Method.ConsoleCreate, timeout=RPC_FRAMEWORK_API_REQ)
             if result is None:
                 Xcache.set_console_id(None)
             else:
@@ -68,13 +69,13 @@ class Console(object):
                 return False, None
 
         params = [cid, data + "\r\n"]
-        result = RpcClient.call(Method.ConsoleWrite, params)
+        result = RpcClient.call(Method.ConsoleWrite, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None or result.get("result") == "failure":
             get_active_console_result = Console.get_active_console()
             if get_active_console_result:
                 cid = Xcache.get_console_id()
                 params = [cid, data + "\r\n"]
-                result = RpcClient.call(Method.ConsoleWrite, params)
+                result = RpcClient.call(Method.ConsoleWrite, params, timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None or result.get("result") == "failure":
                     return False, None
                 else:
@@ -90,7 +91,7 @@ class Console(object):
         if cid is None:
             return False, {}
         params = [cid]
-        result = RpcClient.call(Method.ConsoleRead, params)
+        result = RpcClient.call(Method.ConsoleRead, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             return False, {}
         elif result.get("result") == "failure":
@@ -105,7 +106,7 @@ class Console(object):
         if cid is None:
             return False, {}
         params = [cid, line]
-        result = RpcClient.call(Method.ConsoleTabs, params)
+        result = RpcClient.call(Method.ConsoleTabs, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None or result.get("result") == "failure":
             logger.warning("Cid: {}错误".format(cid))
             return False, {}
@@ -118,7 +119,7 @@ class Console(object):
         if cid is None:
             return False, {}
         params = [cid]
-        result = RpcClient.call(Method.ConsoleSessionDetach, params)
+        result = RpcClient.call(Method.ConsoleSessionDetach, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             return False, {}
         elif result.get("result") == "failure":
@@ -133,7 +134,7 @@ class Console(object):
         if cid is None:
             return False, {}
         params = [cid]
-        result = RpcClient.call(Method.ConsoleSessionKill, params)
+        result = RpcClient.call(Method.ConsoleSessionKill, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             return False, {}
         elif result.get("result") == "failure":

@@ -5,7 +5,7 @@
 from Core.Handle.host import Host
 from Core.Handle.setting import Settings
 from Lib.api import data_return, is_empty_ports
-from Lib.configs import CODE_MSG, Socks_MSG
+from Lib.configs import CODE_MSG, Socks_MSG, RPC_JOB_API_REQ
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
@@ -91,7 +91,8 @@ class Socks(object):
                 context = data_return(408, CODE_MSG.get(408), {})
                 return context
 
-            result = MSFModule.run(module_type="auxiliary", mname="server/socks4a_api", opts=opts, runasjob=True)
+            result = MSFModule.run(module_type="auxiliary", mname="server/socks4a_api", opts=opts, runasjob=True,
+                                   timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
                 context = data_return(303, Socks_MSG.get(303), opts)
@@ -113,7 +114,8 @@ class Socks(object):
                 context = data_return(408, CODE_MSG.get(408), {})
                 return context
 
-            result = MSFModule.run(module_type="auxiliary", mname="server/socks5_api", opts=opts, runasjob=True)
+            result = MSFModule.run(module_type="auxiliary", mname="server/socks5_api", opts=opts, runasjob=True,
+                                   timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
                 context = data_return(303, Socks_MSG.get(303), opts)

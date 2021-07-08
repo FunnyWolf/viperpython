@@ -9,6 +9,7 @@ import time
 
 from Core.Handle.host import Host
 from Lib.External.geoip import Geoip
+from Lib.configs import RPC_FRAMEWORK_API_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -357,7 +358,7 @@ class HeartBeat(object):
 
         sessions_available_count = 0
         sessions = []
-        session_info_dict = RpcClient.call(Method.SessionList, timeout=3)
+        session_info_dict = RpcClient.call(Method.SessionList, timeout=RPC_FRAMEWORK_API_REQ)
         if session_info_dict is None:
             return []
 
