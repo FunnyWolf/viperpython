@@ -7,7 +7,7 @@ import json
 import time
 
 from Lib.api import data_return
-from Lib.configs import TRANSPORT_MSG, CODE_MSG, RPC_SESSION_OPERTION_API_REQ
+from Lib.configs import TRANSPORT_MSG, CODE_MSG, RPC_SESSION_OPER_SHORT_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -32,7 +32,7 @@ class Transport(object):
     def list_transport(sessionid):
         tmp_enum_list = Handler.list_handler_config()
         result_list = RpcClient.call(Method.SessionMeterpreterTransportList, [sessionid],
-                                     timeout=RPC_SESSION_OPERTION_API_REQ)
+                                     timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_list is None:
             transports = []
             return {'session_exp': 0, 'transports': transports, "handlers": tmp_enum_list}
@@ -121,7 +121,7 @@ class Transport(object):
 
         opts["luri"] = handleropts.get("LURI")
         result_flag = RpcClient.call(Method.SessionMeterpreterTransportAdd, [sessionid, opts],
-                                     timeout=RPC_SESSION_OPERTION_API_REQ)
+                                     timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_flag:
             Notice.send_success(f"新增传输 SID:{sessionid}")
 
@@ -138,13 +138,13 @@ class Transport(object):
             return context
         if action == "next":
             result_flag = RpcClient.call(Method.SessionMeterpreterTransportNext, [sessionid],
-                                         timeout=RPC_SESSION_OPERTION_API_REQ)
+                                         timeout=RPC_SESSION_OPER_SHORT_REQ)
         elif action == "prev":
             result_flag = RpcClient.call(Method.SessionMeterpreterTransportPrev, [sessionid],
-                                         timeout=RPC_SESSION_OPERTION_API_REQ)
+                                         timeout=RPC_SESSION_OPER_SHORT_REQ)
         elif action == "sleep":
             result_flag = RpcClient.call(Method.SessionMeterpreterTransportSleep, [sessionid, sleep],
-                                         timeout=RPC_SESSION_OPERTION_API_REQ)
+                                         timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result_flag:
                 reconnect_time = time.time() + sleep
                 Notice.send_warn(
@@ -192,7 +192,7 @@ class Transport(object):
         opts["url"] = query_params.get("url")
 
         result_flag = RpcClient.call(Method.SessionMeterpreterTransportRemove, [sessionid, opts],
-                                     timeout=RPC_SESSION_OPERTION_API_REQ)
+                                     timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_flag:
             Notice.send_info(f"删除传输 SID:{sessionid}")
             context = data_return(204, TRANSPORT_MSG.get(204), {})

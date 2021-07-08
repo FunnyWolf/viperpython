@@ -8,7 +8,7 @@ import requests
 
 # 单例模式
 from CONFIG import RPC_TOKEN, JSON_RPC_URL
-from Lib.configs import RPC_SESSION_OPERTION_API_REQ
+from Lib.configs import RPC_SESSION_OPER_SHORT_REQ
 from Lib.log import logger
 from Lib.notice import Notice
 
@@ -20,7 +20,7 @@ class RpcClient(object):
         pass
 
     @staticmethod
-    def call(method=None, params=None, timeout=RPC_SESSION_OPERTION_API_REQ):
+    def call(method=None, params=None, timeout=RPC_SESSION_OPER_SHORT_REQ):
         _headers = {
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',

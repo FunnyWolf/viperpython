@@ -5,7 +5,7 @@
 import json
 import time
 
-from Lib.configs import RPC_JOB_API_REQ, RPC_SESSION_OPERTION_API_REQ
+from Lib.configs import RPC_JOB_API_REQ, RPC_SESSION_OPER_SHORT_REQ, RPC_RUN_MODULE_LONG
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -20,7 +20,7 @@ class MSFModule(object):
         pass
 
     @staticmethod
-    def run(module_type=None, mname=None, opts=None, runasjob=False, timeout=RPC_SESSION_OPERTION_API_REQ):
+    def run(module_type=None, mname=None, opts=None, runasjob=False, timeout=RPC_SESSION_OPER_SHORT_REQ):
         """实时运行MSF模块"""
         params = [module_type,
                   mname,
@@ -79,7 +79,7 @@ class MSFModule(object):
                   msf_module.timeout  # 超时时间
                   ]
 
-        result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_SESSION_OPERTION_API_REQ)
+        result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_RUN_MODULE_LONG)
         if result is None:
             Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}")
             return False

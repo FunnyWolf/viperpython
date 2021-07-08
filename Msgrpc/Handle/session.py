@@ -4,7 +4,7 @@
 # @Desc  :
 
 from Lib.api import data_return
-from Lib.configs import Session_MSG, CODE_MSG, RPC_SESSION_OPERTION_API_REQ
+from Lib.configs import Session_MSG, CODE_MSG, RPC_SESSION_OPER_SHORT_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -46,7 +46,7 @@ class Session(object):
         else:
             params = [sessionid]
             try:
-                result = RpcClient.call(Method.SessionStop, params, timeout=RPC_SESSION_OPERTION_API_REQ)
+                result = RpcClient.call(Method.SessionStop, params, timeout=RPC_SESSION_OPER_SHORT_REQ)
                 if result is None:  # 删除超时
                     Notice.send_success(f"{Session_MSG.get(202)} SID: {sessionid}")
                     context = data_return(202, Session_MSG.get(202), {})

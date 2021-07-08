@@ -6,7 +6,7 @@
 
 import json
 
-from Lib.configs import RPC_JOB_API_REQ, RPC_SESSION_OPERTION_API_REQ
+from Lib.configs import RPC_JOB_API_REQ, RPC_RUN_MODULE_LONG
 from Lib.log import logger
 from Lib.method import Method
 from Lib.rpcclient import RpcClient
@@ -19,7 +19,7 @@ class MsfModule(object):
         pass
 
     @staticmethod
-    def run_with_output(module_type, mname, opts, timeout=RPC_SESSION_OPERTION_API_REQ):
+    def run_with_output(module_type, mname, opts, timeout=RPC_RUN_MODULE_LONG):
         """实时运行,获取输出"""
         params = [module_type,
                   mname,

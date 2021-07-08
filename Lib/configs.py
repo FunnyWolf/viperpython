@@ -457,4 +457,6 @@ MSFLOOT = MSFDIR + "loot"
 # timeout
 RPC_FRAMEWORK_API_REQ = 15  # 框架类请求
 RPC_JOB_API_REQ = 3  # 后台任务类请求
-RPC_SESSION_OPERTION_API_REQ = 1800  # 涉及Session操作类请求
+RPC_SESSION_OPER_SHORT_REQ = 15  # 涉及Session操作类请求
+RPC_SESSION_OPER_LONG_REQ = 120  # 涉及Session操作类请求
+RPC_RUN_MODULE_LONG = 120  # 涉及Session操作类请求
