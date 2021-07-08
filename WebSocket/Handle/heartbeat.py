@@ -2,7 +2,7 @@
 # @File  : heartbeat.py
 # @Date  : 2021/2/27
 # @Desc  :
-import copy
+import functools
 import ipaddress as ipaddr
 import json
 import time
@@ -161,9 +161,7 @@ class HeartBeat(object):
 
         # 初始化session列表
         for host in hosts:
-            host['session'] = None
-
-        hosts_with_session = []
+            host['session'] = []
 
         # 聚合Session和host
         for session in sessions:
@@ -171,7 +169,8 @@ class HeartBeat(object):
             if session_host is None or session_host == "":
                 continue
 
-            if session.get("available"):  # 确保每个session成功后都会添加edge
+            # 确保每个session成功后都会添加edge
+            if session.get("available"):
                 Edge.create_edge(source="255.255.255.255",
                                  target=session_host,
                                  type="online",
@@ -179,35 +178,51 @@ class HeartBeat(object):
 
             for host in hosts:
                 if session_host == host.get('ipaddress'):
-                    temp_host = copy.deepcopy(host)
-                    temp_host['session'] = session
-                    hosts_with_session.append(temp_host)
+                    host['session'].append(session)
                     break
-            else:  # 未找到对应的host
+            else:
+                # 未找到对应的host
                 # 减少新建无效的host
                 if session.get("available"):
                     host_create = Host.create_host(session_host)
                 else:
                     host_create = Host.create_host("255.255.255.255")
-                host_create['session'] = session
-                hosts_with_session.append(host_create)
-
-        # 处理没有session的host
-        for host in hosts:
-            for temp_host in hosts_with_session:
-                if temp_host.get("ipaddress") == host.get("ipaddress"):
-                    break
-            else:
-                hosts_with_session.append(host)
+                host_create['session'] = [session]
+                hosts.append(host_create)
 
         # 设置host的proxy信息
         # 收集所有hostip
         ipaddress_list = []
-        for host in hosts_with_session:
+        for host in hosts:
             ipaddress_list.append(host.get('ipaddress'))
 
+        def sort_host(a, b):
+            if len(a['session']) < len(b['session']):
+                return 1
+            elif len(a['session']) > len(b['session']):
+                return -1
+            else:
+                ch3 = lambda x: sum([256 ** j * int(i) for j, i in enumerate(x.split('.')[::-1])])
+                try:
+                    aipn = ch3(a["ipaddress"])
+                except Exception as _:
+                    aipn = 0
+                try:
+                    bipn = ch3(b["ipaddress"])
+                except Exception as _:
+                    bipn = 0
+
+                if aipn > bipn:
+                    return 1
+                elif aipn < bipn:
+                    return -1
+            return 0
+
+        # 根据时间排序
+        hosts = sorted(hosts, key=functools.cmp_to_key(sort_host))
+
         i = 0
-        for one in hosts_with_session:
+        for one in hosts:
             one["order_id"] = i
             i += 1
 
@@ -339,7 +354,7 @@ class HeartBeat(object):
                     if edge_data not in edges:
                         edges.append(edge_data)
         network_data = {"nodes": nodes, "edges": edges}
-        return hosts_with_session, network_data
+        return hosts, network_data
 
     @staticmethod
     def list_sessions():
