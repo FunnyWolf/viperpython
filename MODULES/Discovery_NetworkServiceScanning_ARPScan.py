@@ -18,7 +18,7 @@ class PostModule(PostMSFRawModule):
     README = ["https://www.yuque.com/vipersec/module/pf9z8a"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1046/"]
     AUTHOR = "Viper"
-
+    REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionIPAddressRange(name='address_range', name_tag="IP列表", desc="IP列表(支持1.1.1.1,2.2.2.2,3.3.3.3-3.3.3.10格式输入)",
                              required=True),
