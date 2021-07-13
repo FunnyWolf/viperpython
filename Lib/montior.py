@@ -4,7 +4,9 @@
 # @Desc  :
 import datetime
 import logging
+import random
 import socket
+import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from asgiref.sync import async_to_sync
@@ -30,6 +32,7 @@ class MainMonitor(object):
 
     def start(self):
         try:
+            time.sleep(random.random())
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.bind(("127.0.0.1", 47200))
         except socket.error:
