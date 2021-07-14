@@ -12,6 +12,7 @@ class PostModule(PostMSFRawModule):
            "模块会调用主机的wmic.exe和对方主机的powershell.exe,AV主动防御会提示风险.\n" \
            "(如模块提示powershell命令超长,请使用stager类型监听)\n(模块无需内网路由)"
     MODULETYPE = TAG2CH.Lateral_Movement
+    AUTHOR = ["Viper"]  # 作者
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1097"]  # ATTCK向量
