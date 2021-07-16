@@ -11,7 +11,6 @@ from Core.Handle.currentuser import CurrentUser
 from Core.Handle.host import Host
 from Core.Handle.hostinfo import HostInfo
 from Core.Handle.networksearch import NetworkSearch
-from Core.Handle.networktopology import NetworkTopology
 from Core.Handle.setting import Settings
 from Lib.api import data_return
 from Lib.baseview import BaseView
@@ -112,23 +111,6 @@ class NetworkSearchView(BaseView):
                 context = data_return(500, CODE_MSG.get(500), {})
         else:
             context = NetworkSearch.list_engine()
-        return Response(context)
-
-
-class NetworkTopologyView(BaseView):
-    def list(self, request, **kwargs):
-        context = NetworkTopology.load_cache()
-        return Response(context)
-
-    def update(self, request, pk=None, **kwargs):
-        try:
-            data = request.data.get('data', None)
-            context = NetworkTopology.set_cache(data)
-            return Response(context)
-        except Exception as E:
-            logger.error(E)
-
-            context = data_return(500, CODE_MSG.get(500), {})
         return Response(context)
 
 
