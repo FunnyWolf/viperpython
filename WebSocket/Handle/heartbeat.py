@@ -156,6 +156,11 @@ class HeartBeat(object):
 
             return result
 
+        def add_session_to_255(hosts, session):
+            for host in hosts:
+                if host.get('ipaddress') == "255.255.255.255":
+                    host["session"].append(session)
+
         hosts = Host.list_hosts()
         sessions = HeartBeat.list_sessions()
 
@@ -185,10 +190,10 @@ class HeartBeat(object):
                 # 减少新建无效的host
                 if session.get("available"):
                     host_create = Host.create_host(session_host)
+                    host_create['session'] = [session]
+                    hosts.append(host_create)
                 else:
-                    host_create = Host.create_host("255.255.255.255")
-                host_create['session'] = [session]
-                hosts.append(host_create)
+                    add_session_to_255(hosts, session)
 
         # 设置host的proxy信息
         # 收集所有hostip
