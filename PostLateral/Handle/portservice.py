@@ -71,22 +71,30 @@ class PortService(object):
             output_str = ""
             if port_service.get('banner').get('vendorproductname'):
                 output_str += "软件: {}\t".format(",".join(port_service.get('banner').get('vendorproductname')))
+
             if port_service.get('banner').get('version'):
                 output_str += "版本: {}\t".format(",".join(port_service.get('banner').get('version')))
+
             if port_service.get('banner').get('info'):
                 info = ",".join(port_service.get('banner').get('info'))
                 info = info.replace('\x00', '').replace('\0', '')
                 output_str += "信息: {}\t".format(info)
+
             if port_service.get('banner').get('hostname'):
                 hostname = ",".join(port_service.get('banner').get('hostname'))
                 hostname = hostname.replace('\x00', '').replace('\0', '')
                 output_str += "主机名: {}\t".format(hostname)
+
             if port_service.get('banner').get('operatingsystem'):
                 output_str += "操作系统: {}\t".format(",".join(port_service.get('banner').get('operatingsystem')))
+
             if port_service.get('banner').get('devicetype'):
                 output_str += "设备类型: {}\t".format(",".join(port_service.get('banner').get('devicetype')))
 
             if port_service.get('banner').get('mac'):
                 output_str += "MAC地址: {}\t".format(port_service.get('banner').get('mac'))
+
+            if port_service.get('banner').get('other'):
+                output_str += "原始: {}\t".format(port_service.get('banner').get('other'))
             port_service['banner'] = output_str
         return port_service_list
