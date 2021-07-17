@@ -413,8 +413,10 @@ if __name__ == '__main__':
         from Lib.xcache import Xcache
 
         Token.objects.all().delete()
-
-        Xcache.clean_all_token()
+        try:
+            Xcache.clean_all_token()
+        except Exception as E:
+            print("[-] Redis 启动失败,缓存的Token未清理")
         print("[+] 修改密码完成,新密码为: {}".format(newpassword))
 
     if action is not None:

@@ -8,6 +8,7 @@ import uuid
 
 from django.core.cache import cache
 
+from CONFIG import DEBUG
 from Lib.configs import EXPIRE_MINUTES
 from Lib.log import logger
 
@@ -154,7 +155,8 @@ class Xcache(object):
                 cache.delete(key)
             except Exception as _:
                 continue
-
+        if DEBUG is not True:
+            Xcache.clean_all_token()
         return True
 
     @staticmethod
