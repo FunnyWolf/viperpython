@@ -4,20 +4,21 @@
 # @Desc  :
 import datetime
 
-from django.core.cache import cache
 from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication
 
 from Lib.configs import EXPIRE_MINUTES
+from Lib.xcache import Xcache
 
 
 class BaseAuth(TokenAuthentication):
     def authenticate_credentials(self, key=None):
         # 搜索缓存的user
-        cache_user = cache.get(key)
+        cache_user = Xcache.alive_token(key)
         if cache_user:
             return cache_user, key
 
+        # 数据库中校验token
         model = self.get_model()
         try:
             token = model.objects.select_related('user').get(key=key)
@@ -33,8 +34,7 @@ class BaseAuth(TokenAuthentication):
             token.delete()
             raise exceptions.AuthenticationFailed()
 
+        # 缓存token
         if token:
-            # 缓存token
-            cache.set(key, token.user, EXPIRE_MINUTES * 60)
-
+            Xcache.set_token_user(key, token.user)
         return token.user, token

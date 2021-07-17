@@ -397,28 +397,25 @@ if __name__ == '__main__':
     init_copy_file()
 
     if newpassword is not None:
-        if len(newpassword) < 8:
-            print("[x] 新密码必须大于等于8位")
-            exit(0)
-        else:
+        # 启动django项目
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Viper.settings")
+        import django
 
-            # 启动django项目
-            os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Viper.settings")
-            import django
+        django.setup()
+        # 设置密码
+        from django.contrib.auth.models import User
 
-            django.setup()
-            # 设置密码
-            from django.contrib.auth.models import User
+        user = User.objects.get(username='root')
+        user.set_password(newpassword)
+        user.save()
+        # 清理已有token
+        from rest_framework.authtoken.models import Token
+        from Lib.xcache import Xcache
 
-            user = User.objects.get(username='root')
-            user.set_password(newpassword)
-            user.save()
-            # 清理已有token
-            from rest_framework.authtoken.models import Token
+        Token.objects.all().delete()
 
-            Token.objects.all().delete()
-
-            print("[+] 修改密码完成,新密码为: {}".format(newpassword))
+        Xcache.clean_all_token()
+        print("[+] 修改密码完成,新密码为: {}".format(newpassword))
 
     if action is not None:
         if action.lower() == "init":  # 初始化处理

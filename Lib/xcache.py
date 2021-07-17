@@ -8,6 +8,7 @@ import uuid
 
 from django.core.cache import cache
 
+from Lib.configs import EXPIRE_MINUTES
 from Lib.log import logger
 
 
@@ -72,6 +73,8 @@ class Xcache(object):
     XCACHE_POSTMODULE_AUTO_LIST = "XCACHE_POSTMODULE_AUTO_LIST"
 
     XCACHE_POSTMODULE_AUTO_CONF = "XCACHE_POSTMODULE_AUTO_CONF"
+
+    XCACHE_TOKEN = "XCACHE_TOKEN"
 
     def __init__(self):
         pass
@@ -633,8 +636,21 @@ class Xcache(object):
 
     @staticmethod
     def alive_token(token):
-        cache_user = cache.get(token)
+        key = f"{Xcache.XCACHE_TOKEN}-{token}"
+        cache_user = cache.get(key)
         return cache_user
+
+    @staticmethod
+    def set_token_user(token, user):
+        key = f"{Xcache.XCACHE_TOKEN}-{token}"
+        cache.set(key, user, EXPIRE_MINUTES)
+
+    @staticmethod
+    def clean_all_token():
+        re_key = "{}-*".format(Xcache.XCACHE_TOKEN)
+        keys = cache.keys(re_key)
+        for key in keys:
+            req = cache.delete(key)
 
     @staticmethod
     def set_telegram_conf(conf):
