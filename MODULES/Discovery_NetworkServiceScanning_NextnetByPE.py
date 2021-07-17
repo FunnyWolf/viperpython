@@ -18,7 +18,7 @@ class PostModule(PostMSFRawModule):
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
     ATTCK = ["T1560"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1560/003/", "https://github.com/hdm/nextnet"]
-    README = ["https://github.com/hdm/nextnet"]
+    README = ["https://www.yuque.com/vipersec/module/dtmof0"]
     AUTHOR = "Viper"
     REQUIRE_SESSION = True
     OPTIONS = register_options([
