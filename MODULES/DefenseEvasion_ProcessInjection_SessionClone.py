@@ -12,7 +12,7 @@ class PostModule(PostMSFRawModule):
     DESC = "模块在目标主机新建进程,将选择的Handler对应的shellcode注入到新进程中."
     MODULETYPE = TAG2CH.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
-    PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
+    PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/pg4edl"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
