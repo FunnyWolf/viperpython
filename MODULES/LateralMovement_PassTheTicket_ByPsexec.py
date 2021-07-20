@@ -25,7 +25,7 @@ class PostModule(PostMSFRawModule):
         OptionStr(name='RHOST', name_tag="目标IP", desc="目标的IP地址"),
         OptionEnum(name='TARGET', name_tag="执行方式", desc="选择载荷的加载方式",
                    required=True,
-                   default=2,
+                   default=0,
                    enum_list=[
                        {'name': '自动选择', 'value': 0},
                        {'name': 'Powershell', 'value': 1},
@@ -35,7 +35,7 @@ class PostModule(PostMSFRawModule):
                    ],
                    ),
 
-        OptionStr(name='SHARE', name_tag="共享目录", required=True, default="ADMIN$",
+        OptionStr(name='SHARE', name_tag="共享目录", default="ADMIN$",
                   desc="目标主机的共享目录,可以是ADMIN$或C$等管理员目录或其他可读写的共享目录"),
         OptionStr(name='SMBDomain', name_tag="域", desc="目标主机的域信息 . 表示本地域"),
         OptionStr(name='SMBUser', name_tag="用户名", desc="smb用户名"),
