@@ -38,8 +38,10 @@ class PostModule(PostMSFRawModule):
 
         if session.is_windows:
             self.set_msf_option("LPATH", "nextnet.exe")
+            self.set_msf_option("RPATH", "nextnet_viper.exe")
         elif session.is_linux:
             self.set_msf_option("LPATH", "nextnet")
+            self.set_msf_option("RPATH", "nextnet_viper")
         else:
             return False, "模块只支持Windows及Linux原生Session"
 
