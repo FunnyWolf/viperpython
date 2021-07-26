@@ -7,7 +7,7 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows 增加本地账户/域账户"
+    NAME = "Windows增加本地账户/域账户"
     DESC = "通过Windows api增加本地用户/域用户.\n" \
            "可以选择steal_token功能窃取本地进程权限来执行创建用户操作."
     MODULETYPE = TAG2CH.Persistence
