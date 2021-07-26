@@ -8,7 +8,7 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellModule):
-    NAME = "执行自定义Powershell脚本"
+    NAME = "内存执行Powershell脚本"
     DESC = "内存中执行自定义Powershell脚本,\n" \
            "Powershell脚本只支持Powershell2.0的API.\n" \
            "执行的脚本可以通过<文件列表>上传到服务器"

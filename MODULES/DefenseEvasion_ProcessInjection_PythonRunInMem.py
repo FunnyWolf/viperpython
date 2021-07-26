@@ -7,7 +7,7 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonModule):
-    NAME = "执行自定义Python脚本"
+    NAME = "内存执行Python脚本"
     DESC = "主机内存中(Windows)或者系统Python解释器(Linux)执行自定义的Python脚本.\n" \
            "Python脚本只支持Python2.7及其自带的库.\n" \
            "执行的脚本可以通过文件列表 上传到服务器."
