@@ -317,6 +317,12 @@ class _CommonModule(object):
                             })
                     except Exception as E:
                         logger.exception(E)
+                    # 处理text类型参数
+                    try:
+                        if option.get("type") == "text":
+                            opts[option.get("name_tag")] = self._custom_param.get(key)[0:30]
+                    except Exception as E:
+                        logger.exception(E)
         module_result = Xcache.get_module_result(ipaddress=self.host_ipaddress,
                                                  loadpath=self.__module__)
 

@@ -10,8 +10,12 @@ from Lib.log import logger
 option_type_list = ['str', 'bool', 'address', 'address_range', 'float', 'integer', 'enum']
 result_type_list = ['str', 'list', 'dict', 'table']
 option_type_default_length = {
-    'float': 6, 'integer': 6, 'bool': 6, 'enum': 6,
-    'str': 12, 'address': 12,
+    'float': 6,
+    'integer': 6,
+    'bool': 6,
+    'enum': 6,
+    'str': 12,
+    'address': 12,
     'address_range': 18,
 }
 
@@ -94,7 +98,17 @@ class OptionStr(_Option):
                          option_length=option_length)
 
 
-#
+class OptionText(_Option):
+    """text类型参数"""
+
+    def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
+                 option_length=24):
+        super().__init__(option_type='text',
+                         name=name, name_tag=name_tag, desc=desc, required=required,
+                         default=default,
+                         option_length=option_length)
+
+
 class OptionInt(_Option):
     """数字类型参数"""
 

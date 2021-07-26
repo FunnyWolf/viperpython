@@ -25,6 +25,7 @@ from Lib.Module.msfmodule import (
 from Lib.Module.option import (
     register_options,
     OptionStr,
+    OptionText,
     OptionInt,
     OptionBool,
     OptionEnum,
@@ -56,6 +57,7 @@ __all__ = [
     "OptionHander",
     "OptionIPAddressRange",
     "OptionStr",
+    "OptionText",
     "OptionInt",
     "OptionBool",
     "OptionEnum",
