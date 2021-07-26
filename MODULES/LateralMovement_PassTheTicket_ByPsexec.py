@@ -88,10 +88,10 @@ class PostModule(PostMSFRawModule):
                 self.set_msf_option(key='SMBPass', value=password)
 
         # 自定义exe
-        pe_file_path = self.get_option_filepath(msf=True)  # msf=True是为了调试
+        pe_file_path = self.get_fileoption_filepath(msf=True)  # msf=True是为了调试
 
         if pe_file_path is not None:
-            pe_file_path = self.get_option_filepath(msf=True)
+            pe_file_path = self.get_fileoption_filepath(msf=True)
             self.set_msf_option(key='TARGET', value=2)
             self.set_msf_option(key='PAYLOAD', value="generic/custom")
             self.set_msf_option(key='PAYLOADFILE', value=pe_file_path)

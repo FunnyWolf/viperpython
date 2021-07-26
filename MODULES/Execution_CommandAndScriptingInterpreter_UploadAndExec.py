@@ -66,7 +66,7 @@ class PostModule(PostMSFRawModule):
         else:
             return False, "模块arch参数与session的arch不一致"
 
-        filename = self.get_fileenum_option()
+        filename = self.get_fileoption_filename()
         self.set_msf_option("LPATH", filename)
         self.set_msf_option("CLEANUP", self.param("CLEANUP"))
         self.set_msf_option("TIMEOUT", self.param("TIMEOUT"))

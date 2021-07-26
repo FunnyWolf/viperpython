@@ -36,7 +36,7 @@ class PostModule(PostPythonModule):
 
     def run(self):
         # 将msf服务器的exe写入viper本地
-        old_exe = self.get_fileenum_option()
+        old_exe = self.get_fileoption_filename()
         self.log_info("将 {} 写入临时目录".format(old_exe))
         old_exe_binary_data = self.read_from_loot(old_exe)
         if old_exe_binary_data is None:

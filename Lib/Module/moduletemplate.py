@@ -112,7 +112,7 @@ class _CommonModule(object):
         fileinfo = self.param(FILE_OPTION.get('name'))
         return fileinfo
 
-    def get_option_filepath(self, msf=False):
+    def get_fileoption_filepath(self, msf=False):
         """获取选项中的文件绝对路径"""
         file = self.param(FILE_OPTION.get('name'))
         if file is None:
@@ -126,7 +126,7 @@ class _CommonModule(object):
             filepath = File.safe_os_path_join(MSFLOOT, filename)
         return filepath
 
-    def get_fileenum_option(self):
+    def get_fileoption_filename(self):
         """获取选项中的文件名"""
         fileinfo = self._get_option_fileinfo()
         if fileinfo is None:

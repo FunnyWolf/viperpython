@@ -52,7 +52,7 @@ class PostModule(PostMSFRawModule):
         if not session.is_windows:
             return False, "此模块只支持Windows的Meterpreter"
 
-        exe_file = self.get_fileenum_option()
+        exe_file = self.get_fileoption_filename()
         if exe_file is None:
             return False, "请选择执行exe文件,文件后缀必须为exe"
         else:

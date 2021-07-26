@@ -16,7 +16,7 @@ HANDLER_OPTION = {'name': '_msgrpc_handler', 'name_tag': '监听', 'type': 'enum
                   'option_length': 24}
 
 CACHE_HANDLER_OPTION = {'name': 'cacheHandler', 'name_tag': "缓存监听", 'type': 'bool', 'desc': "模块执行成功后,缓存对应监听配置",
-                        'default': True, "required": True, }
+                        'default': False, "required": True, }
 
 CREDENTIAL_OPTION = {'name': '_postmodule_credential', 'name_tag': '凭证', 'type': 'enum', 'desc': '模块需要的凭证参数',
                      'option_length': 24}

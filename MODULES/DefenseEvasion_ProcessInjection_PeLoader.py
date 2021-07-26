@@ -37,7 +37,7 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        pe = self.get_option_filepath(msf=True)
+        pe = self.get_fileoption_filepath(msf=True)
         if pe is None:
             return False, "请选择执行PE文件,文件后缀必须为exe"
         else:

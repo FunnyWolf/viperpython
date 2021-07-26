@@ -29,7 +29,7 @@ class PostModule(PostMSFPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-        script = self.get_fileenum_option()
+        script = self.get_fileoption_filename()
         if script is None:
             return False, "请选择执行的脚本,脚本后缀必须为py或pyc"
         self.set_script(script)

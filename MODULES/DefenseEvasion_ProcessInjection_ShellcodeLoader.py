@@ -45,7 +45,7 @@ class PostModule(PostMSFRawModule):
 
     def check(self):
         """执行前的检查函数"""
-        script = self.get_fileenum_option()
+        script = self.get_fileoption_filename()
         if script is None:
             return False, "请选择执行shellcode文件,文件后缀必须为bin"
         else:
