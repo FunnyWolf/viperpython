@@ -212,7 +212,7 @@ class MSFModule(object):
         body = message.get('data')
         try:
             msf_module_logs_dict = json.loads(body)
-            Notice.send(f"MSF> {msf_module_logs_dict.get('content')}", level=msf_module_logs_dict.get("level"))
+            Notice.send(f"MSF >> {msf_module_logs_dict.get('content')}", level=msf_module_logs_dict.get("level"))
         except Exception as E:
             logger.error(E)
             return False

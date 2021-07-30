@@ -112,7 +112,7 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
 
         if status:
-            result_format = "模块执行完成,请查看是否已生成新的Session"
+            result_format = "模块执行完成,稍等片刻后查看是否生成新的Session"
             self.log_good(result_format)
         else:
             result_format = "模块执行失败,无法使用提供的参数连接远程SMB服务.请检查是否添加内网路由或主机是否可以连接"
