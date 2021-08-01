@@ -224,10 +224,9 @@ class PostModuleConfig(object):
                         type_list = option.get('extra_data').get('password_type')
                         for credential in credentials:
                             if credential.get('password_type') in type_list:
-                                name = "用户名:{} | 密码:{} | 标签:{} | 主机:{}".format(credential.get('username'),
-                                                                               credential.get('password'),
-                                                                               credential.get('tag'),
-                                                                               credential.get('host_ipaddress'))
+                                name = "用户:{} | 密码:{} | 标签:{}".format(credential.get('username'),
+                                                                      credential.get('password'), credential.get('tag'),
+                                                                      )
                                 import json
                                 value = json.dumps(credential)
                                 tmp_enum_list.append({'name': name, 'value': value})
