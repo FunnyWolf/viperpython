@@ -61,7 +61,6 @@ __all__ = [
     "OptionInt",
     "OptionBool",
     "OptionEnum",
-    "OptionIPAddressRange",
     "OptionFileEnum",
     "OptionCredentialEnum",
     "OptionCacheHanderConfig",

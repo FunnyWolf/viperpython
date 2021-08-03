@@ -380,6 +380,15 @@ class _CommonModule(object):
         shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
         return shellcode
 
+    def generate_payload(self, format):
+        """通过监听配置生成指定格式的payload"""
+        handler_config = self.param(HANDLER_OPTION.get('name'))
+        if handler_config is None:
+            return None
+        handler_config["Format"] = format
+        payload_data = Payload.generate_payload(mname=handler_config.get("PAYLOAD"), opts=handler_config)
+        return payload_data
+
     def generate_bypass_exe_data(self, template):
         """通过监听配置生成exe,返回exe内容"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
@@ -400,6 +409,12 @@ class _CommonModule(object):
         filename = f"tmp_{int(time.time())}.exe"
         filepath = self.write_to_loot(filename, bytedata, msf=msf)
         return filepath
+
+    # 凭证相关接口
+    def get_credential_config(self):
+        """货物handler详细配置信息"""
+        credential_record = self.param(CREDENTIAL_OPTION.get('name'))
+        return credential_record
 
     # 功能函数集
     @staticmethod

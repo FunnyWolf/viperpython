@@ -253,6 +253,40 @@ class Payload(object):
         return response
 
     @staticmethod
+    def generate_payload(mname=None, opts=None):
+        """根据配置生成shellcode"""
+        # 处理RHOST及LHOST参数
+        if mname.find("reverse") > 0:
+            try:
+                opts.pop('RHOST')
+            except Exception as _:
+                pass
+        elif mname.find("bind") > 0:
+            try:
+                opts.pop('LHOST')
+            except Exception as _:
+                pass
+
+        # 处理OverrideRequestHost参数
+        if opts.get('OverrideRequestHost') is True:
+            opts["LHOST"] = opts['OverrideLHOST']
+            opts["LPORT"] = opts['OverrideLPORT']
+            opts['OverrideRequestHost'] = False
+            Notice.send_warn("Payload包含OverrideRequestHost参数")
+            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+
+        # EXTENSIONS参数
+        if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
+            opts['EXTENSIONS'] = 'stdapi'
+
+        result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+        if result is None:
+            return result
+        byteresult = base64.b64decode(result.get('payload'))
+        return byteresult
+
+    @staticmethod
     def generate_shellcode(mname=None, opts=None):
         """根据配置生成shellcode"""
         # 处理RHOST及LHOST参数
