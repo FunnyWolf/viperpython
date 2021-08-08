@@ -22,8 +22,8 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='startip', name_tag="起始IP", required=True, desc="扫描的起始IP"),
-        OptionStr(name='stopip', name_tag="结束IP", required=True, desc="扫描的结束IP"),
+        OptionText(name='ipstr', name_tag="IP地址", required=True,
+                   desc="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
         OptionStr(name='port_list', name_tag="端口列表", required=True, desc="扫描的端口,以逗号分隔(例如22,80,445)",
                   default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443", option_length=24),
         OptionInt(name='timeout', name_tag="模块超时时间(秒)", desc="模块执行的超时时间", required=True, default=3600),
@@ -43,24 +43,22 @@ class PostModule(PostMSFPythonWithParamsModule):
         if self.session.is_alive is not True:
             return False, "此session不可用"
 
-        startip = self.param('startip')
-        stopip = self.param('stopip')
+        ipstr = self.param('ipstr')
         port_list = self.param('port_list')
         timeout = self.param('timeout')
         connect_time_out = self.param('connect_time_out')
         max_threads = self.param('max_threads')
 
-        # 检查ip地址
         try:
-            ipnum = self.dqtoi(stopip) - self.dqtoi(startip)
-            if ipnum > 256:
-                return False, "扫描IP范围过大(超过256),请缩小范围"
-            elif ipnum < 0:
-                return False, "输入的起始IP与结束IP有误,请重新输入"
-            self.set_script_param('startip', startip)
-            self.set_script_param('stopip', stopip)
+            iplist = self.str_to_ips(ipstr)
+            if len(iplist) > 510:
+                return False, "扫描IP范围过大(超过510),请缩小范围"
+            elif len(iplist) < 0:
+                return False, "输入的IP地址格式有误,未识别到有效IP地址,请重新输入"
+            self.set_script_param('ipstr', ipstr)
         except Exception as E:
             return False, "输入的IP格式有误,请重新输入"
+
         # 检查port_list
         try:
             list_str = "[{}]".format(port_list)
@@ -87,7 +85,8 @@ class PostModule(PostMSFPythonWithParamsModule):
         if max_threads <= 0 or max_threads > 20:
             return False, "输入的扫描线程数有误(最大值20),请重新输入"
 
-        bad_cost = ipnum * len(port_list_net) * connect_time_out / 1000 / 20
+        bad_cost = len(iplist) * len(port_list_net) * connect_time_out / 1000 / 20
+
         if bad_cost + 30 > timeout:  # 模块编译re需要时间,上传脚本需要时间
             return False, "输入的模块超时时间过短,请设置为大于 {} 的值".format(int(bad_cost) + 30)
         self.set_script_param('time_out', connect_time_out / 1000)

@@ -24,11 +24,11 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='startip', name_tag="起始IP", required=True, desc="扫描的起始IP"),
-        OptionStr(name='stopip', name_tag="结束IP", required=True, desc="扫描的结束IP"),
+        OptionText(name='ipstr', name_tag="IP地址", required=True,
+                   desc="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
         OptionStr(name='port_list', name_tag="端口列表", required=True, desc="扫描的端口,以逗号分隔(例如22,80,445)", option_length=24,
                   default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443"),
-        OptionInt(name='timeout', name_tag="模块执行超时时间(秒)", desc="模块执行的超时时间", required=True, default=600),
+        OptionInt(name='timeout', name_tag="模块超时时间(秒)", desc="模块执行的超时时间", required=True, default=600),
         OptionInt(name='connect_time_out', name_tag="连接超时时间(毫秒)", desc="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
                   default=50),
         OptionInt(name='max_threads', name_tag="扫描线程数", desc="扫描线程数(最大值20)", default=10),
@@ -47,23 +47,23 @@ class PostModule(PostMSFPythonWithParamsModule):
             return False, "当前session不可用"
 
         # 参数检查
-        startip = self.param('startip')
-        stopip = self.param('stopip')
+        ipstr = self.param('ipstr')
         port_list = self.param('port_list')
         timeout = self.param('timeout')
         connect_time_out = self.param('connect_time_out')
         max_threads = self.param('max_threads')
         # 检查ip地址
+
         try:
-            ipnum = self.dqtoi(stopip) - self.dqtoi(startip)
-            if ipnum > 256:
-                return False, "扫描IP范围过大(超过256),请缩小范围"
-            elif ipnum < 0:
-                return False, "输入的起始IP与结束IP有误,请重新输入"
-            self.set_script_param('startip', startip)
-            self.set_script_param('stopip', stopip)
+            iplist = self.str_to_ips(ipstr)
+            if len(iplist) > 510:
+                return False, "扫描IP范围过大(超过510),请缩小范围"
+            elif len(iplist) < 0:
+                return False, "输入的IP地址格式有误,未识别到有效IP地址,请重新输入"
+            self.set_script_param('ipstr', ipstr)
         except Exception as E:
             return False, "输入的IP格式有误,请重新输入"
+
         # 检查port_list
         try:
             list_str = "[{}]".format(port_list)
