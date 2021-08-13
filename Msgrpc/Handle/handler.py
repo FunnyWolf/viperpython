@@ -18,10 +18,7 @@ class Handler(object):
     """监听类"""
 
     def __init__(self):
-        self.payload = None
-        self.RHOST = None
-        self.LHOST = None
-        self.LPORT = None
+        pass
 
     @staticmethod
     def list():
