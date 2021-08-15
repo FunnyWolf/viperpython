@@ -16,6 +16,7 @@ from Lib.log import logger
 from Lib.notice import Notice
 from Lib.xcache import Xcache
 from Msgrpc.Handle.filemsf import FileMsf
+from Msgrpc.Handle.handler import Handler
 
 
 class Settings(object):
@@ -65,6 +66,8 @@ class Settings(object):
             conf = Xcache.get_sessionmonitor_conf()
         elif kind == "postmoduleautoconf":
             conf = Xcache.get_postmodule_auto_conf()
+        elif kind == "handlerconf":
+            conf = Handler.list_handler_config()
         else:
             context = data_return(301, Setting_MSG.get(301), {})
             return context

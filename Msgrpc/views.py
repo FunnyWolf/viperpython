@@ -25,6 +25,7 @@ from Msgrpc.Handle.session import Session
 from Msgrpc.Handle.sessionio import SessionIO
 from Msgrpc.Handle.socks import Socks
 from Msgrpc.Handle.transport import Transport
+from Msgrpc.Handle.webdelivery import WebDelivery
 
 
 class PayloadView(BaseView):
@@ -85,6 +86,35 @@ class HandlerView(BaseView):
         try:
             jobid = int(request.query_params.get('jobid', None))
             context = Handler.destroy(jobid)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, CODE_MSG.get(500), {})
+        return Response(context)
+
+
+class WebDeliveryView(BaseView):
+    def list(self, request, **kwargs):
+        data = WebDelivery.list()
+        return Response(data)
+
+    def create(self, request, **kwargs):
+        try:
+            data = request.data
+            handlerconf = json.loads(data.get('handlerconf', None))
+            handlerconf.pop("TARGET")
+            data.update(handlerconf)
+            data.pop('handlerconf')
+            data["disablepayloadhandler"] = True
+            context = WebDelivery.create(data)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, CODE_MSG.get(500), {})
+        return Response(context)
+
+    def destroy(self, request, pk=None, **kwargs):
+        try:
+            jobid = int(request.query_params.get('jobid', None))
+            context = WebDelivery.destroy(jobid)
         except Exception as E:
             logger.error(E)
             context = data_return(500, CODE_MSG.get(500), {})

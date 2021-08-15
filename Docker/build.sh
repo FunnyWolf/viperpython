@@ -40,10 +40,6 @@ rm -rf /root/metasploit-framework/docker/*
 rm -rf /root/metasploit-framework/test/*
 rm -rf /usr/local/share/*
 
-# clean gem
-# cd /root/metasploit-framework/
-# bundle update
-gem cleanup
 
 # mkdir
 
