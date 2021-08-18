@@ -18,7 +18,7 @@ class SessionIO(object):
             user_input = user_input.strip()
 
             if user_input.startswith('shell'):
-                command = user_input[len('shell'):]
+                command = user_input[len('shell'):].strip()
                 if len(command) == 0:
                     new_bufer = "\n{}\n".format(
                         "Not support switch to Dos/Bash,input like\"shell whoami\" to run os cmd.")
