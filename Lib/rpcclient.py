@@ -4,6 +4,7 @@
 # @Desc  :
 import json
 
+import chardet
 import requests
 
 # 单例模式
@@ -42,7 +43,14 @@ class RpcClient(object):
             logger.warning('msf连接失败,检查 {} 是否可用'.format(JSON_RPC_URL))
             return None
         if r.status_code == 200:
-            content = json.loads(r.content.decode('utf-8', 'ignore'))
+            data_bytes = r.content
+            chardet_result = chardet.detect(data_bytes)
+            try:
+                data = data_bytes.decode(chardet_result['encoding'] or 'utf-8', 'ignore')
+            except UnicodeDecodeError as e:
+                data = data_bytes.decode('utf-8', 'ignore')
+
+            content = json.loads(data)
             if content.get('error') is not None:
                 logger.warning(
                     "错误码:{} 信息:{}".format(content.get('error').get('code'), content.get('error').get('message')))
