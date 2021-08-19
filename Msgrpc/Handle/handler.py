@@ -124,9 +124,9 @@ class Handler(object):
             if code == 201:
                 Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 加载成功")
             elif code in [301]:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,可能端口已被占用")
+                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,端口已占用")
             else:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,未知的返回值：f{code}")
+                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,返回值：f{code}")
             time.sleep(1)
         Notice.send_info("所有历史监听加载完成")
 
