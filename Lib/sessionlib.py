@@ -6,7 +6,7 @@ import json
 import os
 import time
 
-from Lib.External.geoip import Geoip
+from Lib.External.qqwry import qqwry
 from Lib.configs import RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ, RPC_SESSION_OPER_LONG_REQ, \
     RPC_RUN_MODULE_LONG
 from Lib.log import logger
@@ -137,7 +137,8 @@ class SessionLib(object):
         self.last_checkin = info.get('last_checkin') // 10 * 10
         self.fromnow = (int(time.time()) - info.get('last_checkin')) // 10 * 10
         self.tunnel_peer_ip = info.get('tunnel_peer').split(":")[0]
-        self.tunnel_peer_locate = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
+        self.tunnel_peer_locate = qqwry.get_location(info.get('tunnel_peer').split(":")[0])
+
         self.load_powershell = info.get('load_powershell')
         self.load_python = info.get('load_python')
 
