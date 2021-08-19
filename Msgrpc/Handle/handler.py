@@ -12,6 +12,7 @@ from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
+from Msgrpc.Handle.servicestatus import ServiceStatus
 
 
 class Handler(object):
@@ -105,6 +106,15 @@ class Handler(object):
 
     @staticmethod
     def recovery_cache_last_handler(cache_handlers):
+        # 检测msfrpc是不是可用了
+        while True:
+            rpcstatus = ServiceStatus.update_service_status()
+            if rpcstatus.get('json_rpc').get("status"):
+                break
+            else:
+                Notice.send_warning(f"msfrpc服务尚未启动,等待10秒")
+                time.sleep(10)
+
         for one_handler in cache_handlers:
             opts = one_handler
             connext = Handler.create(opts)
@@ -114,7 +124,7 @@ class Handler(object):
             if code == 201:
                 Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 加载成功")
             elif code in [301]:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败")
+                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,可能端口已被占用")
             else:
                 Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,未知的返回值：f{code}")
             time.sleep(1)

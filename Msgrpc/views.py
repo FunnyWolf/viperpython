@@ -472,7 +472,7 @@ class FileSessionView(BaseView):
 
 class ServiceStatusView(BaseView):
     def list(self, request, **kwargs):
-        """查询数据库中的信息"""
+        """查询msfrpc服务状态"""
         context = ServiceStatus.list()
         return Response(context)
 
