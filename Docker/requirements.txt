@@ -18,3 +18,5 @@ geoip2
 jinja2
 unicorn
 pyyaml
+qqwry-py3
+chardet
