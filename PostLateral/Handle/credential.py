@@ -81,7 +81,7 @@ class Credential(object):
         if isinstance(tag, dict) is not True:
             logger.warning('数据类型检查错误,数据 {}'.format(tag))
             tag = {}
-        if password is '' or password.find('n.a.(') > 0 or len(password) > 100:
+        if password == '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
 
         # 没有此主机数据时新建
