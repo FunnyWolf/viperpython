@@ -2,6 +2,8 @@
 # @File  : hostinfo.py
 # @Date  : 2021/2/25
 # @Desc  :
+import ipaddress as ipaddr
+
 from django.db import transaction
 
 from Core.models import HostModel
@@ -10,6 +12,9 @@ from Lib.api import data_return
 from Lib.configs import CODE_MSG, Host_MSG
 from Lib.log import logger
 from Lib.xcache import Xcache
+from Msgrpc.Handle.portfwd import PortFwd
+from Msgrpc.Handle.route import Route
+from Msgrpc.Handle.socks import Socks
 from PostLateral.Handle.edge import Edge
 from PostLateral.Handle.portservice import PortService
 from PostLateral.models import PortServiceModel, VulnerabilityModel, EdgeModel
@@ -24,11 +29,25 @@ class Host(object):
     @staticmethod
     def list():
         hosts = Host.list_hosts()
+        route_list = Route.list_route()
+        socks_list = Socks.list_msf_socks()
+        portfwds = PortFwd.list_portfwd()
         for host in hosts:
             ipaddress = host.get('ipaddress')
+            # 端口信息
             host['portService'] = PortService.list_by_ipaddress(ipaddress)
+            # 路由信息
+            for route in route_list:
+                ipnetwork = ipaddr.ip_network(f"{route.get('subnet')}/{route.get('netmask')}", strict=False)
+                if ipaddr.ip_address(ipaddress) in ipnetwork:
+                    host['route'] = {'type': 'ROUTE', 'data': route.get("session")}
+                    break
+            else:
+                host['route'] = {'type': 'DIRECT', 'data': None}
 
-        context = data_return(200, CODE_MSG.get(200), hosts)
+        result = {'hosts': hosts, 'routes': route_list, 'socks': socks_list, 'portfwds': portfwds, }
+
+        context = data_return(200, CODE_MSG.get(200), result)
         return context
 
     @staticmethod

@@ -2,7 +2,7 @@
 # @File  : socks.py
 # @Date  : 2021/2/25
 # @Desc  :
-from Core.Handle.host import Host
+
 from Core.Handle.setting import Settings
 from Lib.api import data_return, is_empty_ports
 from Lib.configs import CODE_MSG, Socks_MSG, RPC_JOB_API_REQ
@@ -24,7 +24,7 @@ class Socks(object):
         portfwds = PortFwd.list_portfwd()
         # 检查host对应的路由信息
         ipaddresses = []
-
+        from Core.Handle.host import Host
         hosts = Host.list_hosts()
         for onehost in hosts:
             ipaddresses.append(onehost.get("ipaddress"))
@@ -51,7 +51,6 @@ class Socks(object):
 
     @staticmethod
     def list_msf_socks():
-
         lhost = Settings.get_lhost()
         socks_list = []
         infos = Job.list_msfrpc_jobs()
