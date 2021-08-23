@@ -8,7 +8,7 @@ def get_token():
         with open('/root/.msf4/token.yml', 'r', encoding='utf-8') as f:
             token = yaml.load(f.read(), Loader=yaml.Loader).get("token")
     except Exception as E:
-        print("read token.yml error")
+        pass
     return token
 
 
