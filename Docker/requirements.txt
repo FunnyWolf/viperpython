@@ -13,8 +13,10 @@ python-telegram-bot
 ipaddr
 pycryptodome
 cryptography
-donut-shellcode
-geoip2
+#donut-shellcode
+#geoip2
 jinja2
 unicorn
 pyyaml
+qqwry-py3
+chardet
