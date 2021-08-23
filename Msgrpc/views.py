@@ -219,9 +219,6 @@ class RouteView(BaseView):
 
 
 class SocksView(BaseView):
-    def list(self, request, **kwargs):
-        context = Socks.list()
-        return Response(context)
 
     def create(self, request, **kwargs):
         try:
