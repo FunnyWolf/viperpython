@@ -12,6 +12,7 @@ from CONFIG import RPC_TOKEN, JSON_RPC_URL
 from Lib.configs import RPC_SESSION_OPER_SHORT_REQ
 from Lib.log import logger
 from Lib.notice import Notice
+from Lib.xcache import Xcache
 
 req_session = requests.session()
 
@@ -40,6 +41,8 @@ class RpcClient(object):
         try:
             r = req_session.post(JSON_RPC_URL, headers=_headers, data=json_data, timeout=(1.05, timeout))
         except Exception as _:
+            if Xcache.msfrpc_error_send():
+                Notice.send_warning(f"渗透服务连接失败,请检查MSFRPC状态")
             logger.warning('msf连接失败,检查 {} 是否可用'.format(JSON_RPC_URL))
             return None
         if r.status_code == 200:

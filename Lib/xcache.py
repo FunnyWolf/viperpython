@@ -77,6 +77,8 @@ class Xcache(object):
 
     XCACHE_TOKEN = "XCACHE_TOKEN"
 
+    XCACHE_MSFRPC_ERROR_LOG = "XCACHE_MSFRPC_ERROR_LOG"
+
     def __init__(self):
         pass
 
@@ -406,7 +408,7 @@ class Xcache(object):
             return []
         else:
             notices.reverse()
-            return notices
+            return notices[0:200]
 
     @staticmethod
     def clean_notices():
@@ -781,8 +783,6 @@ class Xcache(object):
         cache_data = cache.get(Xcache.XCACHE_NETWORK_TOPOLOGY)
         return cache_data
 
-
-
     @staticmethod
     def get_sessionio_cache(ipaddress):
         cache_dict = cache.get(Xcache.XCACHE_SESSIONIO_CACHE)
@@ -869,3 +869,12 @@ class Xcache(object):
             count += 1
             cache.set(key, count, 60 * 10)  # 10分钟计时周期
             return False
+
+    @staticmethod
+    def msfrpc_error_send():
+        flag = cache.get(Xcache.XCACHE_MSFRPC_ERROR_LOG)
+        if flag:
+            return False
+        else:
+            cache.set(Xcache.XCACHE_MSFRPC_ERROR_LOG, True, 10)  # 10秒计时周期
+            return True
