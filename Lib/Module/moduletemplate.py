@@ -15,8 +15,8 @@ import string
 import threading
 import time
 import zipfile
+from ipaddress import summarize_address_range, IPv4Network, IPv4Address
 
-from ipaddr import summarize_address_range, IPv4Network, IPv4Address
 from jinja2 import Environment, FileSystemLoader
 
 from CONFIG import MSFLOOTTRUE

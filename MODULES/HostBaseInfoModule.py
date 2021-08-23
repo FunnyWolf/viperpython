@@ -4,10 +4,9 @@
 # @Desc  :
 
 
+import ipaddress as ipaddr
 import json
 import re
-
-import ipaddr
 
 from Lib.ModuleAPI import *
 from MODULES_DATA.HostBaseInfoModule.avjson import av_dict
