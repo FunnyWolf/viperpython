@@ -38,7 +38,7 @@ class WebDelivery(object):
                         title = "https"
                     else:
                         title = "http"
-                    url = f"{title}://{datastore.get('SRVHOST')}:{datastore.get('SRVPORT')}{info.get('uripath')}"
+                    url = f"{title}://{datastore.get('URIHOST')}:{datastore.get('URIPORT')}{info.get('uripath')}"
                     one_delivery = {'ID': jobid, 'PAYLOAD': None, 'URL': url}
 
                     if datastore.get('PAYLOAD') is not None:
@@ -57,6 +57,9 @@ class WebDelivery(object):
 
     @staticmethod
     def create(opts=None):
+        opts["SRVHOST"] = "0.0.0.0"
+        opts["SRVPORT"] = opts["URIPORT"]
+
         result = MSFModule.run(module_type="exploit", mname="multi/script/web_delivery_api", opts=opts, runasjob=True,
                                timeout=RPC_JOB_API_REQ)
         if isinstance(result, dict) is not True or result.get('job_id') is None:
