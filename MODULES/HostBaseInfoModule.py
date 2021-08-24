@@ -9,7 +9,7 @@ import json
 import re
 
 from Lib.ModuleAPI import *
-from MODULES_DATA.HostBaseInfoModule.avjson import av_dict
+from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist import avList
 
 
 class PostModule(PostMSFRawModule):
@@ -50,10 +50,10 @@ class PostModule(PostMSFRawModule):
                     remote_addr = one.get("remote_addr")
                     try:
                         ip = remote_addr.split(":")[0]
-                        if ipaddr.IPAddress(ip).is_private:
+                        if ipaddr.ip_address(ip).is_private:
                             private_ipaddress.append(one)
                         else:
-                            if ipaddr.IPAddress(ip).is_loopback or ipaddr.IPAddress(ip).is_unspecified:
+                            if ipaddr.ip_address(ip).is_loopback or ipaddr.ip_address(ip).is_unspecified:
                                 pass
                             else:
                                 public_ipaddress.append(one)
@@ -66,12 +66,18 @@ class PostModule(PostMSFRawModule):
             arp = data.get("ARP")
             for one in arp:
                 ip_addr = one.get("ip_addr")
-                if ipaddr.IPAddress(ip_addr).is_reserved or ipaddr.IPAddress(ip_addr).is_multicast or ipaddr.IPAddress(
-                        ip_addr).is_loopback or ipaddr.IPAddress(ip_addr).is_link_local or ipaddr.IPAddress(
-                    ip_addr).is_unspecified:
-                    continue
-                else:
-                    arp_ipaddress.append(one)
+                try:
+                    if ipaddr.ip_address(ip_addr).is_reserved or \
+                            ipaddr.ip_address(ip_addr).is_multicast or \
+                            ipaddr.ip_address(ip_addr).is_loopback or \
+                            ipaddr.ip_address(ip_addr).is_link_local or \
+                            ipaddr.ip_address(ip_addr).is_unspecified:
+                        continue
+                    else:
+                        arp_ipaddress.append(one)
+                except Exception as E:
+                    print(E)
+
             # 分析可用的网卡信息
             interface = data.get("INTERFACE")
             for one in interface:
@@ -87,8 +93,8 @@ class PostModule(PostMSFRawModule):
                 {"re": "tv_*", "tag": "CC", "desc": "TeamViewer远程控制工具"},
 
             ]
-            for key in av_dict:
-                key_list.append({"re": key, "tag": "AV", "desc": av_dict.get(key)})
+            for key in avList:
+                key_list.append({"re": key, "tag": "AV", "desc": avList.get(key)})
 
             processes = data.get("PROCESSES")
             for process in processes:

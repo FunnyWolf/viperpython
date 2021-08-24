@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File  : avlist.py
+# @File  : avList.py
 # @Date  : 2021/7/26
 # @Desc  :
 avList = {
