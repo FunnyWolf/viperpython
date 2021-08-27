@@ -68,13 +68,13 @@ class Console(object):
             else:
                 return False, None
 
-        params = [cid, data + "\r\n"]
+        params = [cid, data.replace("\r\n", "\n")]
         result = RpcClient.call(Method.ConsoleWrite, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None or result.get("result") == "failure":
             get_active_console_result = Console.get_active_console()
             if get_active_console_result:
                 cid = Xcache.get_console_id()
-                params = [cid, data + "\r\n"]
+                params = [cid, data.replace("\r\n", "\n")]
                 result = RpcClient.call(Method.ConsoleWrite, params, timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None or result.get("result") == "failure":
                     return False, None

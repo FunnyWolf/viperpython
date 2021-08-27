@@ -67,10 +67,7 @@ class MsfConsoleView(WebsocketConsumer):
         # 输入处理
         if input_data == "\r" or input_data == "\r\n":
             Xcache.add_to_msfconsole_history_cache(cache_str)
-            if cache_str.lower() == "exit -f":
-                cache_str = "exit"
-
-            Console.write(cache_str + "\r\n")
+            Console.write(cache_str + "\n")
             Xcache.clean_msfconsoleinputcache()
             self.send_input_feedback("\r\n")
             Thread(target=self.send_msfrpc_read).start()
@@ -126,13 +123,13 @@ class MsfConsoleView(WebsocketConsumer):
         elif input_data == '\x03':  # ctrl+c
             Console.session_kill()
             Xcache.clean_msfconsoleinputcache()
-            Console.write("\r\n")
+            Console.write("\n")
             self.send_input_feedback("\r\n")
             Thread(target=self.send_msfrpc_read).start()
         elif input_data == '\x1a':  # ctrl+z
             Console.session_detach()
             Xcache.clean_msfconsoleinputcache()
-            Console.write("\r\n")
+            Console.write("\n")
             self.send_input_feedback("\r\n")
             Thread(target=self.send_msfrpc_read).start()
         elif isinstance(input_data, str):
@@ -172,7 +169,7 @@ class MsfConsoleView(WebsocketConsumer):
                 else:
                     continue
             else:
-                self.send_input_feedback(result.get("data").replace("\n", "\r\n"))
+                self.send_input_feedback(data)
 
             if len(Xcache.get_msfconsoleinputcache()) == 0:
                 time.sleep(1)
@@ -191,7 +188,7 @@ class MsfConsoleView(WebsocketConsumer):
                 self.send_input_feedback(result.get("prompt"))
                 return
             else:
-                self.send_input_feedback(result.get("data").replace("\n", "\r\n"))
+                self.send_input_feedback(data)
 
     def deal_tabs_options(self, input, tabs):
         if len(tabs) == 0:
