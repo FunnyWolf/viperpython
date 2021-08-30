@@ -876,5 +876,5 @@ class Xcache(object):
         if flag:
             return False
         else:
-            cache.set(Xcache.XCACHE_MSFRPC_ERROR_LOG, True, 10)  # 10秒计时周期
+            cache.set(Xcache.XCACHE_MSFRPC_ERROR_LOG, True, 30)  # 10秒计时周期
             return True
