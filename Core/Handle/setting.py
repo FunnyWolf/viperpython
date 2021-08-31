@@ -60,8 +60,6 @@ class Settings(object):
                 conf = {"email": None, "key": None, "alive": False}
         elif kind == "Quake":
             conf = Xcache.get_quake_conf()
-            if conf is None:
-                conf = {"key": None, "alive": False}
         elif kind == "sessionmonitor":
             conf = Xcache.get_sessionmonitor_conf()
         elif kind == "postmoduleautoconf":

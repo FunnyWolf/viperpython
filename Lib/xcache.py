@@ -706,7 +706,6 @@ class Xcache(object):
     @staticmethod
     def get_quake_conf():
         conf = cache.get(Xcache.XCACHE_QUAKE_CONFIG)
-
         if conf is None:
             return {"key": None, "alive": True}
         return conf
