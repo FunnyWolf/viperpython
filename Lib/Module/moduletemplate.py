@@ -363,11 +363,11 @@ class _CommonModule(object):
         connext = Handler.create(opts)
         code = connext.get("code")
         if code == 201:
-            return True
+            return True, connext
         elif code in [301]:
-            return False
+            return False, connext
         else:
-            return False
+            return False, connext
 
     def get_handler_payload(self):
         """通过handler参数获取msf模块的payload"""

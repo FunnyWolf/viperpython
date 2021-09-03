@@ -140,12 +140,8 @@ class Handler(object):
 
         if opts.get('VIRTUALHANDLER') is True:  # 虚拟监听
             opts.pop('VIRTUALHANDLER')
-            result = Handler.create_virtual_handler(opts)
-            if result is None:
-                opts['ID'] = None
-                context = data_return(301, Handler_MSG.get(301), opts)
-            else:
-                context = data_return(201, Handler_MSG.get(201), {})
+            opts = Handler.create_virtual_handler(opts)
+            context = data_return(201, Handler_MSG.get(201), opts)
         else:
             # 真正的监听
             # 处理代理相关参数
