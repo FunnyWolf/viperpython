@@ -358,6 +358,17 @@ class _CommonModule(object):
         else:
             return False
 
+    def create_handler(self, opts):
+        """新增监听"""
+        connext = Handler.create(opts)
+        code = connext.get("code")
+        if code == 201:
+            return True
+        elif code in [301]:
+            return False
+        else:
+            return False
+
     def get_handler_payload(self):
         """通过handler参数获取msf模块的payload"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
