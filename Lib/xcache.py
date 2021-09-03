@@ -517,10 +517,9 @@ class Xcache(object):
         for handler in handler_list:
             tmphandler = copy.copy(handler)
             tmpid = tmphandler.pop('ID')
-            tmphandler.pop('timestamp')
 
             tmphandler1 = copy.copy(onehandler)
-            tmphandler1.pop('timestamp')
+
             if tmphandler == tmphandler1:
                 return tmpid
             if tmpid <= minid:
