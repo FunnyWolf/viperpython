@@ -164,7 +164,6 @@ class Job(object):
     @staticmethod
     def destroy_adv_job(task_uuid=None, job_id=None, broker=None):
         try:
-
             if broker == BROKER.post_python_job:
                 flag = aps_module.delete_job_by_uuid(task_uuid)
                 if flag is not True:

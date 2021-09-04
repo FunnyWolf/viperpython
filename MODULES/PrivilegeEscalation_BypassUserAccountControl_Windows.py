@@ -3,6 +3,8 @@
 # @Date  : 2019/3/15
 # @Desc  :
 
+import time
+
 from Lib.ModuleAPI import *
 
 
@@ -195,6 +197,7 @@ class PostModule(PostPythonModule):
             for one in self.module_path_list:
                 self.log_info("正在执行 {}".format(one.get('mname')))
                 MsfModule.run_with_output(module_type=one.get('type'), mname=one.get('mname'), opts=self.opts)
-
+                self.log_info("等待30秒")
+                time.sleep(30)
             # 调用父类函数存储结果(必须调用)
             self.log_info("执行完成,请查看新生成Session的权限")

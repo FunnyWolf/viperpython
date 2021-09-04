@@ -52,10 +52,10 @@ class PayloadView(BaseView):
 class JobView(BaseView):
     def destroy(self, request, pk=None, **kwargs):
         try:
-            job_id = request.query_params.get('job_id', None)
-            if job_id is not None:
-                job_id = int(job_id)
-
+            try:
+                job_id = int(request.query_params.get('job_id', None))
+            except Exception as _:
+                job_id = None
             task_uuid = request.query_params.get('uuid', None)
             broker = request.query_params.get('broker', None)
             context = Job.destroy_adv_job(task_uuid=task_uuid, job_id=job_id, broker=broker)
