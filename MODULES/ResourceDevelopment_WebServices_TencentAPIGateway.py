@@ -57,6 +57,7 @@ class PostModule(PostPythonModule):
         else:
             handler_config["LHOST"] = apiserver
             handler_config["HttpHostHeader"] = apiserver
+        handler_config["LPORT"] = 443
         handler_config["VIRTUALHANDLER"] = True  # 添加虚拟监听
         _, handler_config = self.create_handler(handler_config)
         self.log_good(f"虚拟监听ID: {-handler_config.get('data').get('ID')}")
