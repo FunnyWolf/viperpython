@@ -57,8 +57,10 @@ class MsfModuleAsFunction(object):
         """通过handler参数设置msf模块的payload,必须输入一个dict类型变量"""
         z = opts.copy()
         z.update(handler)
-
-        z['disablepayloadhandler'] = True
+        if "bind" in z.get("PAYLOAD"):
+            z['disablepayloadhandler'] = False
+        else:
+            z['disablepayloadhandler'] = True
         return z
 
     @staticmethod

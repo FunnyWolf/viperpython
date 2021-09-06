@@ -341,7 +341,10 @@ class _CommonModule(object):
             return False
         z = self.opts.copy()
         z.update(handler_config)
-        z['disablepayloadhandler'] = True
+        if "bind" in z.get("PAYLOAD"):
+            z['disablepayloadhandler'] = False
+        else:
+            z['disablepayloadhandler'] = True
         self.opts = z
         return True
 
