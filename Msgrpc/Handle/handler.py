@@ -195,14 +195,12 @@ class Handler(object):
                         pass
 
                 # 反向http(s)服务常驻问题特殊处理
-                if opts.get('PAYLOAD').find("reverse_http") or opts.get('PAYLOAD').find("reverse_winhttp"):
-                    opts['EXITONSESSION'] = False
+                if "reverse_http" in opts.get('PAYLOAD') or "reverse_winhttp" in opts.get('PAYLOAD'):
+                    opts['ExitOnSession'] = False
                     opts['KillHandlerFouce'] = True
                 else:
-                    if opts.get('EXITONSESSION'):
-                        opts['EXITONSESSION'] = True
-                    else:
-                        opts['EXITONSESSION'] = False
+                    if opts.get('ExitOnSession') is None:
+                        opts['ExitOnSession'] = False
                 opts['PayloadUUIDSeed'] = str(uuid.uuid1())
             except Exception as E:
                 logger.error(E)
