@@ -46,7 +46,6 @@ class SessionLibSerializer(Serializer):
     tunnel_peer = CharField(max_length=100)
     tunnel_peer_ip = CharField(max_length=100)
     tunnel_peer_locate = CharField(max_length=100)
-    tunnel_peer_asn = CharField(max_length=100)
     via_exploit = CharField(max_length=100)
     via_payload = CharField(max_length=100)
     os = CharField(max_length=100)

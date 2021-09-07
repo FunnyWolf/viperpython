@@ -73,7 +73,6 @@ class SessionLib(object):
         self.tunnel_peer = None
         self.tunnel_peer_ip = None
         self.tunnel_peer_locate = None
-        self.tunnel_peer_asn = None
         self.via_exploit = None
         self.via_payload = None
         self.route = []
