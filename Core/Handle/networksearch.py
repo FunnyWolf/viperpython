@@ -62,28 +62,28 @@ class NetworkSearch(object):
                 "port": 2222,
                 "protocol": "ssh",
                 "country_name": "viper",
-                "as_organization": "viper测试",
+                "as_organization": "viper test",
             },
             {
                 "ip": "127.0.0.1",
                 "port": 8888,
                 "protocol": "ssh",
                 "country_name": "viper",
-                "as_organization": "viper测试",
+                "as_organization": "viper test",
             },
             {
                 "ip": "192.168.146.130",
                 "port": 2222,
                 "protocol": "ssh",
                 "country_name": "viper",
-                "as_organization": "viper测试",
+                "as_organization": "viper test",
             },
             {
                 "ip": "192.168.146.130",
                 "port": 8888,
                 "protocol": "ssh",
                 "country_name": "viper",
-                "as_organization": "viper测试",
+                "as_organization": "viper test",
             },
         ]
         return data
