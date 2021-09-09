@@ -8,9 +8,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "压缩目录并回传"
-    DESC = "zip压缩目标指定目录,并将压缩后的文件回传到Viper.\n"
-    MODULETYPE = TAG2CH.Collection
+    NAME_ZH = "压缩目录并回传"
+    DESC_ZH = "zip压缩目标指定目录,并将压缩后的文件回传到Viper.\n"
+    MODULETYPE = TAG2TYPE.Collection
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
     ATTCK = ["T1560"]  # ATTCK向量

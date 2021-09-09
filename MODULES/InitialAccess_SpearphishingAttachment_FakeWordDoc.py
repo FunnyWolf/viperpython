@@ -9,9 +9,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "伪造成Word文档的exe文件"
-    DESC = "带有Word图标的exe文件,exe运行后自动释放内置的word文档,自拷贝到%User%\Documents目录并启动,然后删除自身"
-    MODULETYPE = TAG2CH.Initial_Access
+    NAME_ZH = "伪造成Word文档的exe文件"
+    DESC_ZH = "带有Word图标的exe文件,exe运行后自动释放内置的word文档,自拷贝到%User%\Documents目录并启动,然后删除自身"
+    MODULETYPE = TAG2TYPE.Initial_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量

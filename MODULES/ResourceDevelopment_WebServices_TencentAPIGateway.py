@@ -8,9 +8,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "利用云函数上线(腾讯API网关)"
-    DESC = "模块会根据现有的监听配置及用户输入的API网关自动生成一个虚拟监听,用户可以使用该虚拟监听直接生成exe来进行上线"
-    MODULETYPE = TAG2CH.Resource_Development
+    NAME_ZH = "利用云函数上线(腾讯API网关)"
+    DESC_ZH = "模块会根据现有的监听配置及用户输入的API网关自动生成一个虚拟监听,用户可以使用该虚拟监听直接生成exe来进行上线"
+    MODULETYPE = TAG2TYPE.Resource_Development
 
     ATTCK = ["T1583.006"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/lekesi"]

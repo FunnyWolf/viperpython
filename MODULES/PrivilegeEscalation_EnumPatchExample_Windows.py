@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "获取Windows补丁列表"
-    DESC = "获取Windows主机的补丁列表.\n" \
-           "模块用于演示如何在不修改MSF模块的情况下编写Viper模块."
+    NAME_ZH = "获取Windows补丁列表"
+    DESC_ZH = "获取Windows主机的补丁列表.\n" \
+              "模块用于演示如何在不修改MSF模块的情况下编写Viper模块."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Privilege_Escalation
+    MODULETYPE = TAG2TYPE.Privilege_Escalation
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator"]  # 所需权限
     ATTCK = ["T1088"]  # ATTCK向量

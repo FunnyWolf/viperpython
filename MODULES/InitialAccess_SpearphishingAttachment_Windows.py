@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Office宏钓鱼文档"
-    DESC = "模块生成绑定指定监听的宏Payload,并将payload注入到样例word文档中.\n" \
-           "宏钓鱼文档的随着时间的推移免杀效果会大幅下降,建议及时更新到最新版本."
+    NAME_ZH = "Office宏钓鱼文档"
+    DESC_ZH = "模块生成绑定指定监听的宏Payload,并将payload注入到样例word文档中.\n" \
+              "宏钓鱼文档的随着时间的推移免杀效果会大幅下降,建议及时更新到最新版本."
     REQUIRE_SESSION = False
-    MODULETYPE = TAG2CH.Initial_Access
+    MODULETYPE = TAG2TYPE.Initial_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1193"]  # ATTCK向量

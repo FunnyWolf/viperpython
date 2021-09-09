@@ -8,11 +8,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellModule):
-    NAME = "内存执行Powershell脚本"
-    DESC = "内存中执行自定义Powershell脚本,\n" \
-           "Powershell脚本只支持Powershell2.0的API.\n" \
-           "执行的脚本可以通过<文件列表>上传到服务器"
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME_ZH = "内存执行Powershell脚本"
+    DESC_ZH = "内存中执行自定义Powershell脚本,\n" \
+              "Powershell脚本只支持Powershell2.0的API.\n" \
+              "执行的脚本可以通过<文件列表>上传到服务器"
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量

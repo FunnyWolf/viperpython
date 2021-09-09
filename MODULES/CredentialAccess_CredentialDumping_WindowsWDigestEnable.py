@@ -8,12 +8,12 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows WDigest开关"
-    DESC = "用于打开WDigest凭证存储开关,Windows 8/2012以上版本默认关闭Wdigest开关.\n" \
-           "通过修改注册表UseLogonCredential值打开开关.\n" \
-           "当用户注销重新登录后即可使用mimikatz抓取密码."
+    NAME_ZH = "Windows WDigest开关"
+    DESC_ZH = "用于打开WDigest凭证存储开关,Windows 8/2012以上版本默认关闭Wdigest开关.\n" \
+              "通过修改注册表UseLogonCredential值打开开关.\n" \
+              "当用户注销重新登录后即可使用mimikatz抓取密码."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Credential_Access
+    MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量

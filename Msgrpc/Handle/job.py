@@ -58,7 +58,7 @@ class Job(object):
             else:
                 # 清除失效的任务
                 if int(time.time()) - req.get("time") >= 30:
-                    logger.error(f"清除失效的任务: {req.get('module').NAME}")
+                    logger.error(f"清除失效的任务: {req.get('module').NAME_ZH}")
                     logger.error(req)
                     Xcache.del_module_task_by_uuid(req.get("uuid"))
                 else:
@@ -185,7 +185,8 @@ class Job(object):
                     # 发送通知
                     # TODO
                     Notice.send_info(
-                        "模块: {} {} 手动删除完成".format(common_module_instance.NAME, common_module_instance._target_str), "")
+                        f"模块: {common_module_instance.NAME_ZH} {common_module_instance._target_str} 手动删除完成",
+                        f"Module: <{common_module_instance.NAME_EN}> {common_module_instance._target_str} manually delete")
                     context = data_return(204, Job_MSG.get(204), {"uuid": task_uuid, "job_id": job_id})
                     return context
                 else:

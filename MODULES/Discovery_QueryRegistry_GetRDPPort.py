@@ -8,10 +8,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "获取Windows RDP服务端口"
-    DESC = "模块查看主机的RDP服务是否开启,RDP服务的端口号.\n"
+    NAME_ZH = "获取Windows RDP服务端口"
+    DESC_ZH = "模块查看主机的RDP服务是否开启,RDP服务的端口号.\n"
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Discovery
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1012"]  # ATTCK向量

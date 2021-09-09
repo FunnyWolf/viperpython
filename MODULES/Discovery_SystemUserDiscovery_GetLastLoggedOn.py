@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
-    NAME = "获取域主机最后登录用户"
-    DESC = "模块获取域内远程主机最后登录的用户信息.\n" \
-           "模块需要普通的域用户权限,但是需要远程主机开启远程注册功能.\n" \
-           "主机名可以使用<<获取所有域主机的信息>>模块进行获取"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "获取域主机最后登录用户"
+    DESC_ZH = "模块获取域内远程主机最后登录的用户信息.\n" \
+              "模块需要普通的域用户权限,但是需要远程主机开启远程注册功能.\n" \
+              "主机名可以使用<<获取所有域主机的信息>>模块进行获取"
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1033"]  # ATTCK向量

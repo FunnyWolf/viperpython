@@ -7,9 +7,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
-    NAME = "获取域主机的IP信息"
-    DESC = "默认收集所控主机的IP地址.\n如果需要收集域内其他主机,如域控或其他域用户ip,请输入主机名作为参数"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "获取域主机的IP信息"
+    DESC_ZH = "默认收集所控主机的IP地址.\n如果需要收集域内其他主机,如域控或其他域用户ip,请输入主机名作为参数"
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1018"]  # ATTCK向量

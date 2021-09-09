@@ -9,14 +9,14 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "内存执行C#可执行文件(Bypass)"
-    DESC = "模块将C#编写的exe文件加载到内存中,然后使用CLR执行.\n" \
-           "需要已控主机安装.net2.0（win2008默认安装）或.net4.0（win2012默认安装）.\n" \
-           "可执行文件需要与已控主机.net版本相同.\n" \
-           "功能类似CS的execute-assembly,当C#需要输入参数时需要确保填写参数.\n" \
-           "本模块新增了BypassETW及BypassAmsi功能,但模块只适用于x64位系统"
+    NAME_ZH = "内存执行C#可执行文件(Bypass)"
+    DESC_ZH = "模块将C#编写的exe文件加载到内存中,然后使用CLR执行.\n" \
+              "需要已控主机安装.net2.0（win2008默认安装）或.net4.0（win2012默认安装）.\n" \
+              "可执行文件需要与已控主机.net版本相同.\n" \
+              "功能类似CS的execute-assembly,当C#需要输入参数时需要确保填写参数.\n" \
+              "本模块新增了BypassETW及BypassAmsi功能,但模块只适用于x64位系统"
 
-    MODULETYPE = TAG2CH.Defense_Evasion
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量

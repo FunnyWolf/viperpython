@@ -11,11 +11,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonWithParamsModule):
-    NAME = "内网Netbios&SMB扫描"
-    DESC = "通过 NBNS 协议获取 NetBIOS Name.\n" \
-           "通过 139（默认）或者 445 探测系统相关信息.\n"
+    NAME_ZH = "内网Netbios&SMB扫描"
+    DESC_ZH = "通过 NBNS 协议获取 NetBIOS Name.\n" \
+              "通过 139（默认）或者 445 探测系统相关信息.\n"
 
-    MODULETYPE = TAG2CH.Discovery
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
     ATTCK = ["T1046"]  # ATTCK向量

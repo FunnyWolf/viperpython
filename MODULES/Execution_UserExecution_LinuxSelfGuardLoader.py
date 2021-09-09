@@ -10,13 +10,13 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "自守护免杀ShellcodeLoader(Linux)"
-    DESC = "模块通过编码shellcode与基础的shellcodeloader结合的方式实现免杀.\n" \
-           "Loader的父进程会监控子进程状态(实际的回连进程),如果子进程关闭,父进程会在3秒后重新启动子进程.\n" \
-           "模块适配以下类型载荷:\n" \
-           "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
-           "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "自守护免杀ShellcodeLoader(Linux)"
+    DESC_ZH = "模块通过编码shellcode与基础的shellcodeloader结合的方式实现免杀.\n" \
+              "Loader的父进程会监控子进程状态(实际的回连进程),如果子进程关闭,父进程会在3秒后重新启动子进程.\n" \
+              "模块适配以下类型载荷:\n" \
+              "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
+              "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Linux"]  # 平台
     PERMISSIONS = ["User", "Root"]  # 所需权限
     ATTCK = []  # ATTCK向量

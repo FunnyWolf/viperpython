@@ -10,10 +10,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonWithParamsModule):
-    NAME = "内网端口扫描与服务识别"
-    DESC = "扫描内网中开放的TCP端口,识别已发现端口的服务,软件,版本等\n" \
-           "所有扫描的网络流量在目标内网,\n如其他模块需要连接发现的服务,请添加对应路由及Socks代理"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "内网端口扫描与服务识别"
+    DESC_ZH = "扫描内网中开放的TCP端口,识别已发现端口的服务,软件,版本等\n" \
+              "所有扫描的网络流量在目标内网,\n如其他模块需要连接发现的服务,请添加对应路由及Socks代理"
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1046"]  # ATTCK向量

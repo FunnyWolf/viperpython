@@ -10,9 +10,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "Callback免杀(CreateThreadpoolWait)"
-    DESC = "模块通过编码shellcode与CreateThreadpoolWait Callback结合的方式实现免杀"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "Callback免杀(CreateThreadpoolWait)"
+    DESC_ZH = "模块通过编码shellcode与CreateThreadpoolWait Callback结合的方式实现免杀"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量

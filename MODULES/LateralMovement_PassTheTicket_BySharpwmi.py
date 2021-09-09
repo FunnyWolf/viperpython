@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFCSharpModule):
-    NAME = "Sharpwmi横向移动"
-    DESC = "模块内存执行定制版的Sharpwmi.exe.\n" \
-           "通过指定的用户名密码或使用当前用户内存中的Hash进行横向移动,通过调用目标主机的powershell加载载荷上线.\n" \
-           "与<WMI明文传递>模块相比,该模块不会调用本机的wmi.exe文件"
-    MODULETYPE = TAG2CH.Lateral_Movement
+    NAME_ZH = "Sharpwmi横向移动"
+    DESC_ZH = "模块内存执行定制版的Sharpwmi.exe.\n" \
+              "通过指定的用户名密码或使用当前用户内存中的Hash进行横向移动,通过调用目标主机的powershell加载载荷上线.\n" \
+              "与<WMI明文传递>模块相比,该模块不会调用本机的wmi.exe文件"
+    MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = []  # ATTCK向量

@@ -3,7 +3,7 @@
 # @Date  : 2020/11/4
 # @Desc  :
 from Lib.Module.configs import (
-    TAG2CH, UACLevel, RegType,
+    TAG2TYPE, UACLevel, RegType,
 )
 from Lib.Module.hostinfo import (
     HostInfo
@@ -70,7 +70,7 @@ __all__ = [
     "Mingw",
     "Gcc",
     "File",
-    "TAG2CH",
+    "TAG2TYPE",
     "UACLevel",
     "RegType",
     "HostInfo",

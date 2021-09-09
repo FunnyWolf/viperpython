@@ -44,21 +44,22 @@ class MSFModule(object):
         result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_JOB_API_REQ)
         if result is None:
             # TODO
-            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}",
-                                f"MSFRPC connection failed and the module could not be executed :{msf_module.NAME}")
+            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME_ZH}",
+                                f"MSFRPC connection failed and the module could not be executed :<{msf_module.NAME_EN}>")
             return False
 
         # result 数据格式
         # {'job_id': 3, 'uuid': 'dbcb2530-95b1-0137-5100-000c2966078a', 'module': b'\x80\ub.'}
 
         if result.get("job_id") is None:
-            logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME, result.get("uuid")))
+            logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME_ZH, result.get("uuid")))
             # TODO
-            Notice.send_warning("模块: {} {} 创建后台任务失败,请检查输入参数".format(msf_module.NAME, msf_module._target_str), "")
+            Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败,请检查输入参数",
+                                f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task, please check input parameters")
             return False
         else:
             logger.warning(
-                "模块实例放入列表:{} job_id: {} uuid: {}".format(msf_module.NAME, result.get("job_id"), result.get("uuid")))
+                "模块实例放入列表:{} job_id: {} uuid: {}".format(msf_module.NAME_ZH, result.get("job_id"), result.get("uuid")))
             # 放入请求队列
             req = {
                 'broker': msf_module.MODULE_BROKER,
@@ -69,7 +70,8 @@ class MSFModule(object):
             }
             Xcache.create_module_task(req)
             # TODO
-            Notice.send_info("模块: {} {} 开始执行".format(msf_module.NAME, msf_module._target_str), "")
+            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 开始执行",
+                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} start running")
             return True
 
     @staticmethod
@@ -86,12 +88,13 @@ class MSFModule(object):
         result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_RUN_MODULE_LONG)
         if result is None:
             # TODO
-            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}", "")
+            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME_ZH}",
+                                f"MSFRPC connect failed and the module could not be executed :<{msf_module.NAME_EN}>")
             return False
 
         # 清理历史结果
         try:
-            logger.warning(f"模块回调:{msf_module.NAME}")
+            logger.warning(f"模块回调:{msf_module.NAME_ZH}")
             msf_module._clean_log()  # 清理历史结果
         except Exception as E:
             logger.error(E)
@@ -103,7 +106,8 @@ class MSFModule(object):
             flag = msf_module.callback(module_output=result)
         except Exception as E:
             # TODO
-            Notice.send_exception("模块 {} 的回调函数callhack运行异常".format(msf_module.NAME))
+            Notice.send_exception(f"模块 {msf_module.NAME_ZH} 的回调函数callback运行异常",
+                                  f"Module <{msf_module.NAME_EN}> callback running error")
             logger.error(E)
 
         # 如果是积极结果,存储
@@ -113,7 +117,8 @@ class MSFModule(object):
             except Exception as E:
                 logger.error(E)
         # TODO
-        Notice.send_success("模块: {} {} 执行完成".format(msf_module.NAME, msf_module._target_str), "")
+        Notice.send_success(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 执行完成",
+                            f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} run finish")
 
     @staticmethod
     def store_result_from_sub(message=None):
@@ -152,7 +157,7 @@ class MSFModule(object):
 
         # 调用回调函数
         try:
-            logger.warning(f"模块回调:{module_intent.NAME} "
+            logger.warning(f"模块回调:{module_intent.NAME_ZH} "
                            f"job_id: {msf_module_return_dict.get('job_id')} "
                            f"uuid: {msf_module_return_dict.get('uuid')}")
             module_intent._clean_log()  # 清理历史结果
@@ -166,7 +171,8 @@ class MSFModule(object):
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
             # TODO
-            Notice.send_exception("模块 {} 的回调函数callhack运行异常".format(module_intent.NAME))
+            Notice.send_exception(f"模块 {module_intent.NAME_ZH} 的回调函数callhack运行异常",
+                                  f"Module <{module_intent.NAME_EN}> Tcallback function run exception")
             logger.error(E)
         try:
             module_intent._store_result_in_history()  # 存储到历史记录
@@ -175,7 +181,8 @@ class MSFModule(object):
 
         Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
         # TODO
-        Notice.send_success("模块: {} {} 执行完成".format(module_intent.NAME, module_intent._target_str), "")
+        Notice.send_success(f"模块: {module_intent.NAME_ZH} {module_intent._target_str} 执行完成",
+                            f"Module: <{module_intent.NAME_EN}> {module_intent._target_str} run finish")
 
     @staticmethod
     def store_monitor_from_sub(message=None):
@@ -195,11 +202,10 @@ class MSFModule(object):
         try:
             module_intent = req.get('module')
             if module_intent is None:
-                logger.error("获取模块失败,body: {}".format(msf_module_return_dict))
+                logger.error(f"获取模块失败,body: {msf_module_return_dict}")
                 return False
             logger.warning(
-                "模块回调:{} job_id: {} uuid: {}".format(module_intent.NAME, msf_module_return_dict.get("job_id"),
-                                                     msf_module_return_dict.get("uuid")))
+                f"模块回调:{module_intent.NAME_ZH} job_id: {msf_module_return_dict.get('job_id')} uuid: {msf_module_return_dict.get('uuid')}")
             module_intent._clean_log()  # 清理结果
         except Exception as E:
             logger.error(E)
@@ -211,10 +217,12 @@ class MSFModule(object):
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
             # TODO
-            Notice.send_exception("模块 {} 的回调函数callhack运行异常".format(module_intent.NAME))
+            Notice.send_exception(f"模块 {module_intent.NAME_ZH} 的回调函数callback运行异常",
+                                  f"Module {module_intent.NAME_ZH} callback run error")
             logger.error(E)
         # TODO
-        Notice.send_info("模块: {} 回调执行完成".format(module_intent.NAME), "")
+        Notice.send_info(f"模块: {module_intent.NAME_ZH} 回调执行完成",
+                         f"Module: <{module_intent.NAME_EN}> callback run finish")
         module_intent._store_result_in_history()  # 存储到历史记录
 
     @staticmethod

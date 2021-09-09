@@ -9,10 +9,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "获取Windows内存密码"
-    DESC = "Kiwi抓取内存中的windows用户明文密码,并保存到凭证列表.\n"
+    NAME_ZH = "获取Windows内存密码"
+    DESC_ZH = "Kiwi抓取内存中的windows用户明文密码,并保存到凭证列表.\n"
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Credential_Access
+    MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量

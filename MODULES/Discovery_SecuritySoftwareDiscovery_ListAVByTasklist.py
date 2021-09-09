@@ -11,10 +11,10 @@ from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist im
 
 
 class PostModule(PostPythonModule):
-    NAME = "查找杀毒软件进程"
-    DESC = "模块通过将 tasklist /svc 与已知数据对比,获取系统已安装杀毒软件信息.\n" \
-           "通过webshell命令执行功能执行 tasklist /svc ,然后将结果拷贝到输入框运行即可"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "查找杀毒软件进程"
+    DESC_ZH = "模块通过将 tasklist /svc 与已知数据对比,获取系统已安装杀毒软件信息.\n" \
+              "通过webshell命令执行功能执行 tasklist /svc ,然后将结果拷贝到输入框运行即可"
+    MODULETYPE = TAG2TYPE.Discovery
 
     ATTCK = ["T1585"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/nhzbv6"]

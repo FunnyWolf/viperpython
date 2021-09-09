@@ -8,12 +8,12 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "WMI哈希传递"
-    DESC = "使用Session的Token或已知的用户名及密码,通过wmi方式在目标主机执行载荷.\n" \
-           "模块将dswmiexec.exe上传到当前主机,通过dswmiexec.exe调用对方主机的powershell.exe,AV主动防御可能会提示风险.\n" \
-           "(如模块提示powershell命令超长,请使用stager类型监听)\n" \
-           "(模块无需内网路由)"
-    MODULETYPE = TAG2CH.Lateral_Movement
+    NAME_ZH = "WMI哈希传递"
+    DESC_ZH = "使用Session的Token或已知的用户名及密码,通过wmi方式在目标主机执行载荷.\n" \
+              "模块将dswmiexec.exe上传到当前主机,通过dswmiexec.exe调用对方主机的powershell.exe,AV主动防御可能会提示风险.\n" \
+              "(如模块提示powershell命令超长,请使用stager类型监听)\n" \
+              "(模块无需内网路由)"
+    MODULETYPE = TAG2TYPE.Lateral_Movement
     AUTHOR = ["Viper"]  # 作者
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

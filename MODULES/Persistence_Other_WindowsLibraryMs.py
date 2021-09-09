@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows Library-ms持久化"
-    DESC = "木马dll文件写入到Documents.library-ms配置文件中并新建Junction Folders\n" \
-           "当用户登录或浏览桌面时生效.\n" \
-           "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
-    MODULETYPE = TAG2CH.Persistence
+    NAME_ZH = "Windows Library-ms持久化"
+    DESC_ZH = "木马dll文件写入到Documents.library-ms配置文件中并新建Junction Folders\n" \
+              "当用户登录或浏览桌面时生效.\n" \
+              "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = [""]  # ATTCK向量

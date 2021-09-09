@@ -3,7 +3,6 @@
 # @Date  : 2019/1/11
 # @Desc  :
 
-
 import base64
 import ctypes
 import inspect
@@ -21,7 +20,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from CONFIG import MSFLOOTTRUE
 from Core.Handle.host import Host
-from Lib.Module.configs import BROKER, TAG2CH, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
+from Lib.Module.configs import BROKER, TAG2TYPE, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
 from Lib.Module.configs import MODULE_DATA_DIR
 from Lib.configs import MSFLOOT
 from Lib.file import File
@@ -37,15 +36,19 @@ from PostLateral.Handle.vulnerability import Vulnerability
 
 class _CommonModule(object):
     MODULE_BROKER = BROKER.empty
-    NAME = "基础模块"  # 模块名
-    DESC = "基础描述"  # 描述
+
+    NAME_ZH = "基础模块"  # 模块名
+    DESC_ZH = "基础描述"  # 描述
+    NAME_EN = "Base module"  # 模块名
+    DESC_EN = "Base desc"  # 描述
+    WARN_ZH = None  # 警告信息
+    WARN_EN = None  # 警告信息
+
     AUTHOR = ["NoOne"]  # 作者
     REFERENCES = []  # 参考链接
     README = []  # 官方使用文档
-    WARN = None  # 警告信息
 
-    MODULETYPE = TAG2CH.example  # 模块类型
-
+    MODULETYPE = TAG2TYPE.example  # 模块类型
     OPTIONS = []  # 注册参数
 
     # post类模块描述
@@ -213,8 +216,9 @@ class _CommonModule(object):
             tag = {}
         if password == '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
-
-        result = Credential.add_or_update(username, password, password_type, tag, self.NAME, self.host_ipaddress, desc)
+        # TODO
+        result = Credential.add_or_update(username, password, password_type, tag, self.NAME_ZH, self.host_ipaddress,
+                                          desc)
         return result
 
     def add_vulnerability(self, ipaddress=None, extra_data=None, desc=''):
@@ -278,7 +282,7 @@ class _CommonModule(object):
 
     def _store_result_in_history(self):
         """存储模块运行结果到历史记录"""
-        if self.MODULETYPE in [TAG2CH.internal]:
+        if self.MODULETYPE in [TAG2TYPE.internal]:
             return None
         opts = {}
         for key in self._custom_param:
@@ -354,7 +358,8 @@ class _CommonModule(object):
             handler_config = self.param(HANDLER_OPTION.get('name'))
             if handler_config is None:
                 return False
-            handler_config["HandlerName"] = f"用于: {self.NAME} IP: {self.host_ipaddress}"
+            # TODO
+            handler_config["HandlerName"] = f"{self.NAME_ZH} IP: {self.host_ipaddress}"
             Handler.create_virtual_handler(handler_config)
             self.log_good("监听配置已缓存")
             return True

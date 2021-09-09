@@ -8,9 +8,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "上传并执行可执行文件"
-    DESC = "模块将用户指定文件上传到目标机并执行.\n"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "上传并执行可执行文件"
+    DESC_ZH = "模块将用户指定文件上传到目标机并执行.\n"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
     ATTCK = ["T1081"]  # ATTCK向量

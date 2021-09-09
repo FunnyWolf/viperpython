@@ -7,9 +7,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFCSharpModule):
-    NAME = "PostMSFCSharpModule演示模块"
-    DESC = "模块用于演示PostMSFCSharpModule模块的基本编写方法\n"
-    MODULETYPE = TAG2CH.Defense_Evasion  # '防御绕过'模块,可以自行更改
+    NAME_ZH = "PostMSFCSharpModule演示模块"
+    DESC_ZH = "模块用于演示PostMSFCSharpModule模块的基本编写方法\n"
+    MODULETYPE = TAG2TYPE.Defense_Evasion  # '防御绕过'模块,可以自行更改
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/hrg50h"]

@@ -7,13 +7,13 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Winlogon Helper DLL持久化"
-    DESC = "通过在注册表\nHKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\n" \
-           "写入木马文件路径实现持久化.\n" \
-           "模块需要管理员或SYSTEM权限.\n" \
-           "持久化会对所有登录主机的用户生效（本地用户，域用户）\n" \
-           "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
-    MODULETYPE = TAG2CH.Persistence
+    NAME_ZH = "Winlogon Helper DLL持久化"
+    DESC_ZH = "通过在注册表\nHKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\n" \
+              "写入木马文件路径实现持久化.\n" \
+              "模块需要管理员或SYSTEM权限.\n" \
+              "持久化会对所有登录主机的用户生效（本地用户，域用户）\n" \
+              "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1004"]  # ATTCK向量

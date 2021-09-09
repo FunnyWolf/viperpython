@@ -7,10 +7,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
-    NAME = "Invoke-WMIExec哈希传递"
-    DESC = "使用已知的用户名及NTLM哈希,通过wmi方式在目标主机执行载荷.\n" \
-           "模块使用内存执行Invoke-WMIExec方式执行wmi,相较于<WMI哈希传递>无需上传文件"
-    MODULETYPE = TAG2CH.Lateral_Movement
+    NAME_ZH = "Invoke-WMIExec哈希传递"
+    DESC_ZH = "使用已知的用户名及NTLM哈希,通过wmi方式在目标主机执行载荷.\n" \
+              "模块使用内存执行Invoke-WMIExec方式执行wmi,相较于<WMI哈希传递>无需上传文件"
+    MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1135"]  # ATTCK向量

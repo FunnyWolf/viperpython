@@ -8,9 +8,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "进程操作"
-    DESC = "根据PID操作进程,包括注入/关闭,窃取token,还原token."
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME_ZH = "进程操作"
+    DESC_ZH = "根据PID操作进程,包括注入/关闭,窃取token,还原token."
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量

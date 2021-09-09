@@ -11,10 +11,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "上传文件"
-    DESC = "模块用于上传服务器文件到Session所在主机.\n"
+    NAME_ZH = "上传文件"
+    DESC_ZH = "模块用于上传服务器文件到Session所在主机.\n"
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.internal
+    MODULETYPE = TAG2TYPE.internal
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

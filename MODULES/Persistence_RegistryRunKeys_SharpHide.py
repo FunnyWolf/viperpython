@@ -7,10 +7,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFCSharpModule):
-    NAME = "Windows注册表Run键值持久化(C#)"
-    DESC = "模块通过调用SharpHide写入隐藏的注册表键值,实现持久化.\n" \
-           "SharpHide会将目标exe路径写入到注册表Run键值中.\n"
-    MODULETYPE = TAG2CH.Persistence
+    NAME_ZH = "Windows注册表Run键值持久化(C#)"
+    DESC_ZH = "模块通过调用SharpHide写入隐藏的注册表键值,实现持久化.\n" \
+              "SharpHide会将目标exe路径写入到注册表Run键值中.\n"
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1037"]  # ATTCK向量

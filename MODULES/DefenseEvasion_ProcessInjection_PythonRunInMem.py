@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonModule):
-    NAME = "内存执行Python脚本"
-    DESC = "主机内存中(Windows)或者系统Python解释器(Linux)执行自定义的Python脚本.\n" \
-           "Python脚本只支持Python2.7及其自带的库.\n" \
-           "执行的脚本可以通过文件列表 上传到服务器."
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME_ZH = "内存执行Python脚本"
+    DESC_ZH = "主机内存中(Windows)或者系统Python解释器(Linux)执行自定义的Python脚本.\n" \
+              "Python脚本只支持Python2.7及其自带的库.\n" \
+              "执行的脚本可以通过文件列表 上传到服务器."
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量

@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "内网ARP扫描"
-    DESC = "目标内网的ARP扫描,所有ARP请求与回复目标内网.\n" \
-           "ARP消息只证明此主机存活,不会探测端口.\n" \
-           "如其他模块需要连接发现的主机,请使用Session添加对应路由或Socks代理"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "内网ARP扫描"
+    DESC_ZH = "目标内网的ARP扫描,所有ARP请求与回复目标内网.\n" \
+              "ARP消息只证明此主机存活,不会探测端口.\n" \
+              "如其他模块需要连接发现的主机,请使用Session添加对应路由或Socks代理"
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1046"]  # ATTCK向量

@@ -9,9 +9,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "父进程PID伪装规避检测"
-    DESC = "使用CreateProcessA及远程线程注入技术伪装PPID,将shellcode注入到ie进程中"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "父进程PID伪装规避检测"
+    DESC_ZH = "使用CreateProcessA及远程线程注入技术伪装PPID,将shellcode注入到ie进程中"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量

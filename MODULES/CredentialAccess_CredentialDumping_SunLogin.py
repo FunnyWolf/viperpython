@@ -610,11 +610,11 @@ class Decrypt(Base):
 
 
 class PostModule(PostMSFPythonWithParamsModule):
-    NAME = "获取向日葵密码"
-    DESC = "读取绿色版及安装版向日葵默认的配置文件config.ini,解密后获取向日葵连接密码\n" \
-           "绿色版:C:\ProgramData\Oray\SunloginClient\config.ini\n" \
-           "安装版:C:\Program Files\Oray\SunLogin\SunloginClient\config.ini"
-    MODULETYPE = TAG2CH.Credential_Access
+    NAME_ZH = "获取向日葵密码"
+    DESC_ZH = "读取绿色版及安装版向日葵默认的配置文件config.ini,解密后获取向日葵连接密码\n" \
+              "绿色版:C:\ProgramData\Oray\SunloginClient\config.ini\n" \
+              "安装版:C:\Program Files\Oray\SunLogin\SunloginClient\config.ini"
+    MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1003"]  # ATTCK向量

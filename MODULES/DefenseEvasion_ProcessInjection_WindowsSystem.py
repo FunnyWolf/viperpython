@@ -8,20 +8,20 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "注入Windows系统进程"
-    DESC = "尝试将Session所在的进程注入到系统原生的进程中.\n" \
-           "模块会尝试注入到services,wininit,svchost,lsm,lsass,winlogon等进程.\n" \
-           "注入系统进程是提权或绕过防守人员排查的很好的手段.\n" \
-           "模块需要管理员权限,退出Session时可能会引发系统异常,请不要手工退出Session.\n" \
-           ""
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME_ZH = "注入Windows系统进程"
+    DESC_ZH = "尝试将Session所在的进程注入到系统原生的进程中.\n" \
+              "模块会尝试注入到services,wininit,svchost,lsm,lsass,winlogon等进程.\n" \
+              "注入系统进程是提权或绕过防守人员排查的很好的手段.\n" \
+              "模块需要管理员权限,退出Session时可能会引发系统异常,请不要手工退出Session.\n" \
+              ""
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/ud0pd6"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     AUTHOR = "Viper"
-    WARN = "成功注入系统进程后请勿关闭Session"
+    WARN_ZH = "成功注入系统进程后请勿关闭Session"
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionHander(),

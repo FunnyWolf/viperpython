@@ -7,9 +7,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
-    NAME = "获取域控信息"
-    DESC = "模块使用powershell脚本获取主机所在域的域控信息,如果主机不在域中,脚本可能报错"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "获取域控信息"
+    DESC_ZH = "模块使用powershell脚本获取主机所在域的域控信息,如果主机不在域中,脚本可能报错"
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1018"]  # ATTCK向量

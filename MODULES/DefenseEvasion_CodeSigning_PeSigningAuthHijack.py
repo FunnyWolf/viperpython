@@ -8,10 +8,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "劫持Windows数字签名认证"
-    DESC = "修改Windows默认数字证书认证文件,使系统默认认证所有数字签名有效.\n" \
-           "模块会影响系统所有exe的运行签名认证,请谨慎使用."
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME_ZH = "劫持Windows数字签名认证"
+    DESC_ZH = "修改Windows默认数字证书认证文件,使系统默认认证所有数字签名有效.\n" \
+              "模块会影响系统所有exe的运行签名认证,请谨慎使用."
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1116"]  # ATTCK向量

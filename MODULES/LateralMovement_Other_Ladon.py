@@ -7,19 +7,19 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFCSharpModule):
-    NAME = "Ladon7.0 C#插件"
-    DESC = "模块内存执行Ladon的C#版本exe.模块所需的exe下载于如下链接:(解压密码k8gege.org)\n" \
-           "https://github.com/k8gege/Ladon/releases/download/v7.0/Ladon7.0.rar\n" \
-           "因Ladon不完全开源,Viper不保证内置Ladon-N20.exe及Ladon-N40.exe的安全性,\n" \
-           "建议自行上传对应exe到<文件列表>"
-    MODULETYPE = TAG2CH.Lateral_Movement
+    NAME_ZH = "Ladon7.0 C#插件"
+    DESC_ZH = "模块内存执行Ladon的C#版本exe.模块所需的exe下载于如下链接:(解压密码k8gege.org)\n" \
+              "https://github.com/k8gege/Ladon/releases/download/v7.0/Ladon7.0.rar\n" \
+              "因Ladon不完全开源,Viper不保证内置Ladon-N20.exe及Ladon-N40.exe的安全性,\n" \
+              "建议自行上传对应exe到<文件列表>"
+    MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/dkneiv"]
     REFERENCES = ["https://k8gege.org/Ladon/", "https://github.com/k8gege/Ladon"]
     AUTHOR = "Viper"
-    WARN = "模块可能存在安全风险,请参考说明"
+    WARN_ZH = "模块可能存在安全风险,请参考说明"
     OPTIONS = register_options([
         OptionStr(name='args', name_tag="命令行参数", required=True,
                   desc="输入执行Ladon.exe时的命令行参数.可参考:https://k8gege.org/Ladon/",

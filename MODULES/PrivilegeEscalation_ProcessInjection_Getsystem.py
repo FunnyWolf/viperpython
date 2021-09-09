@@ -8,10 +8,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows System提权"
-    DESC = "模块尝试使用多种技术获取system权限,模块要求Session为绕过UAC的管理员权限"
+    NAME_ZH = "Windows System提权"
+    DESC_ZH = "模块尝试使用多种技术获取system权限,模块要求Session为绕过UAC的管理员权限"
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Privilege_Escalation
+    MODULETYPE = TAG2TYPE.Privilege_Escalation
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量

@@ -8,7 +8,7 @@ import time
 
 from django.conf import settings
 
-from Lib.Module.configs import TAG2CH, HANDLER_OPTION, CREDENTIAL_OPTION, FILE_OPTION
+from Lib.Module.configs import TAG2TYPE, HANDLER_OPTION, CREDENTIAL_OPTION, FILE_OPTION
 from Lib.api import data_return
 from Lib.configs import CODE_MSG, PostModuleConfig_MSG
 from Lib.log import logger
@@ -33,7 +33,7 @@ class PostModuleConfig(object):
 
         # 删除内部模块
         for one in all_modules_config[:]:
-            if one.get('MODULETYPE') == TAG2CH.internal:
+            if one.get('MODULETYPE') == TAG2TYPE.internal:
                 all_modules_config.remove(one)
 
         if loadpath is None:
@@ -58,7 +58,7 @@ class PostModuleConfig(object):
         all_modules_config = Xcache.list_moduleconfigs()
         # 删除内部模块
         for one in all_modules_config[:]:
-            if one.get('MODULETYPE') == TAG2CH.internal:
+            if one.get('MODULETYPE') == TAG2TYPE.internal:
                 all_modules_config.remove(one)
         for one in all_modules_config:
             one['OPTIONS'] = []
@@ -103,9 +103,12 @@ class PostModuleConfig(object):
 
                     "BROKER": module_intent.MODULE_BROKER,  # 处理器
 
-                    "NAME": module_intent.NAME,
-                    "DESC": module_intent.DESC,
-                    "WARN": module_intent.WARN,
+                    "NAME_ZH": module_intent.NAME_ZH,
+                    "DESC_ZH": module_intent.DESC_ZH,
+                    "NAME_EN": module_intent.NAME_EN,
+                    "DESC_EN": module_intent.DESC_EN,
+                    "WARN_ZH": module_intent.WARN_ZH,
+                    "WARN_EN": module_intent.WARN_EN,
                     "AUTHOR": author,
                     "REFERENCES": module_intent.REFERENCES,
                     "README": module_intent.README,
@@ -167,9 +170,12 @@ class PostModuleConfig(object):
 
                     "BROKER": module_intent.MODULE_BROKER,  # 处理器
 
-                    "NAME": module_intent.NAME,
-                    "DESC": module_intent.DESC,
-                    "WARN": module_intent.WARN,
+                    "NAME_ZH": module_intent.NAME_ZH,
+                    "DESC_ZH": module_intent.DESC_ZH,
+                    "NAME_EN": module_intent.NAME_EN,
+                    "DESC_EN": module_intent.DESC_EN,
+                    "WARN_ZH": module_intent.WARN_ZH,
+                    "WARN_EN": module_intent.WARN_EN,
                     "AUTHOR": author,
                     "REFERENCES": module_intent.REFERENCES,
                     "README": module_intent.README,
@@ -198,7 +204,7 @@ class PostModuleConfig(object):
         Notice.send_success(f"自定义模块加载完成,加载{diy_module_count}个模块",
                             f"The customize modules is loaded,{diy_module_count} modules has loaded")
 
-        all_modules_config.sort(key=lambda s: (TAG2CH.get_moduletype_order(s.get('MODULETYPE')), s.get('loadpath')))
+        all_modules_config.sort(key=lambda s: (TAG2TYPE.get_moduletype_order(s.get('MODULETYPE')), s.get('loadpath')))
         if Xcache.update_moduleconfigs(all_modules_config):
             return len(all_modules_config)
         else:

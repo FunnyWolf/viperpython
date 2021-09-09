@@ -33,7 +33,61 @@ class BROKER(object):
     bot_msf_module = 'bot_msf_module'  # 后台运行的模块
 
 
-class TAG2CH(object):
+class TAG2TYPE(object):
+    """
+    模块分类标识
+    """
+    example = 'example'  # '样例模块',
+    internal = 'internal'  # 内部模块(不提供可视化输出,用于内部的模块)
+
+    # 全网扫描类型模块
+    Bot_MSF_Scan = "Bot_MSF_Scan"  # 基于msf的扫描模块
+    Bot_MSF_Exp = "Bot_MSF_Exp"  # 基于msf的攻击模块
+    Bot_PY_Scan = "Bot_PY_Scan"  # python原生扫描模块
+    Bot_PY_Exp = "Bot_PY_Exp"  # python原生攻击模块
+
+    # 内网渗透类模块
+    Reconnaissance = 'Reconnaissance'  # '前期侦查'
+    Resource_Development = 'Resource_Development'  # '资源部署'
+    Initial_Access = 'Initial_Access'  # '初始访问'
+    Execution = 'Execution'  # '执行'
+    Persistence = 'Persistence'  # '持久化',
+    Privilege_Escalation = 'Privilege_Escalation'  # '权限提升'
+    Defense_Evasion = 'Defense_Evasion'  # '防御绕过'
+    Credential_Access = 'Credential_Access'  # '凭证访问'
+    Discovery = 'Discovery'  # '信息收集'
+    Lateral_Movement = 'Lateral_Movement'  # '横向移动'
+    Collection = 'Collection'  # '数据采集'
+    Command_and_Control = 'Command_and_Control'  # '命令控制'
+    Exfiltration = 'Exfiltration'  # '数据窃取'
+    Impact = 'Impact'  # '影响破坏'
+
+    @staticmethod
+    def get_moduletype_order(module_type):
+        order_dict = {
+            "example": 0,
+            "internal": 1,
+            "Initial_Access": 10,
+            "Execution": 11,
+            "Persistence": 12,
+            "Privilege_Escalation": 13,
+            "Defense_Evasion": 14,
+            "Credential_Access": 15,
+            "Discovery": 16,
+            "Lateral_Movement": 17,
+            "Collection": 18,
+            "Command_and_Control": 19,
+            "Exfiltration": 20,
+            "Impact": 21,
+        }
+        order = order_dict.get(module_type)
+        if order is not None:
+            return order
+        else:
+            return 100
+
+
+class TAG2EN(object):
     """
     模块分类标识
     """

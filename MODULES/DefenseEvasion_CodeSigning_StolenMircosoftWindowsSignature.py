@@ -9,11 +9,11 @@ from MODULES_DATA.DefenseEvasion_CodeSigning_StolenMircosoftWindowsSignature imp
 
 
 class PostModule(PostPythonModule):
-    NAME = "伪造Microsoft Windows签名"
-    DESC = "在未签名的EXE文件中添加Microsoft Windows签名\n" \
-           "签名无法通过操作系统签名认证."
+    NAME_ZH = "伪造Microsoft Windows签名"
+    DESC_ZH = "在未签名的EXE文件中添加Microsoft Windows签名\n" \
+              "签名无法通过操作系统签名认证."
 
-    MODULETYPE = TAG2CH.Defense_Evasion
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1116"]  # ATTCK向量

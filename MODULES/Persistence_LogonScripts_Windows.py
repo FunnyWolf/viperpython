@@ -7,13 +7,13 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows登录脚本持久化"
-    DESC = "通过在注册表\n" \
-           "HKCU\\Environment\\UserInitMprLogonScript\n" \
-           "中写入木马文件路径实现持久化.\n" \
-           "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+    NAME_ZH = "Windows登录脚本持久化"
+    DESC_ZH = "通过在注册表\n" \
+              "HKCU\\Environment\\UserInitMprLogonScript\n" \
+              "中写入木马文件路径实现持久化.\n" \
+              "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Persistence
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1037"]  # ATTCK向量

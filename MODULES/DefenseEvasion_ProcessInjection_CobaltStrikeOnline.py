@@ -8,9 +8,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "迁移权限到CobaltStrike"
-    DESC = "将CobaltStrike的shellcode注入到新的进程,便于CobaltStrike上线"
-    MODULETYPE = TAG2CH.Defense_Evasion
+    NAME_ZH = "迁移权限到CobaltStrike"
+    DESC_ZH = "将CobaltStrike的shellcode注入到新的进程,便于CobaltStrike上线"
+    MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1055"]  # ATTCK向量

@@ -42,7 +42,7 @@ class APSModule(object):
             # 清空历史记录
             post_module_intent._clean_log()
 
-            logger.warning("模块放入列表:{} job_id: {} uuid: {}".format(post_module_intent.NAME, None, tmp_self_uuid))
+            logger.warning("模块放入列表:{} job_id: {} uuid: {}".format(post_module_intent.NAME_ZH, None, tmp_self_uuid))
             post_module_intent.module_self_uuid = tmp_self_uuid
             self.ModuleJobsScheduler.add_job(func=post_module_intent._thread_run, max_instances=1, id=tmp_self_uuid)
 
@@ -56,8 +56,8 @@ class APSModule(object):
             }
             Xcache.create_module_task(req)
             # TODO
-            Notice.send_info(
-                "模块: {} {} 开始执行".format(post_module_intent.NAME, post_module_intent._target_str), "")
+            Notice.send_info(f"模块: {post_module_intent.NAME_ZH} {post_module_intent._target_str} 开始执行",
+                             f"Module: <{post_module_intent.NAME_EN}> {post_module_intent._target_str} running")
             return True
         except Exception as E:
             logger.error(E)
@@ -104,14 +104,14 @@ class APSModule(object):
         try:
             module_common_instance._store_result_in_history()
             # TODO
-            Notice.send_success(
-                "模块: {} {} 执行完成".format(module_common_instance.NAME, module_common_instance._target_str), "")
-            logger.warning("多模块实例执行完成:{}".format(module_common_instance.NAME))
+            Notice.send_success(f"模块: {module_common_instance.NAME_ZH} {module_common_instance._target_str} 执行完成",
+                                f"Module: <{module_common_instance.NAME_EN}> {module_common_instance._target_str} start running")
+            logger.warning("多模块实例执行完成:{}".format(module_common_instance.NAME_ZH))
             Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
             return True
         except Exception as E:
             Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
-            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
+            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME_ZH, E))
             logger.error(E)
             return False
 
@@ -125,10 +125,10 @@ class APSModule(object):
         try:
             module_common_instance.log_except(exception)
             module_common_instance._store_result_in_history()
-            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, exception))
+            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME_ZH, exception))
             return True
         except Exception as E:
-            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
+            logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME_ZH, E))
             logger.error(E)
             return False
 
@@ -153,15 +153,15 @@ class APSModule(object):
             module_common_instance.log_info("用户手动删除任务")
             module_common_instance._store_result_in_history()
         except Exception as E:
-            logger.error("删除多模块实例异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
+            logger.error("删除多模块实例异常:{} 异常信息: {}".format(module_common_instance.NAME_ZH, E))
             logger.error(E)
             return False
 
         # 发送通知
         # TODO
-        Notice.send_info(
-            "模块: {} {} 手动删除".format(module_common_instance.NAME, module_common_instance._target_str), "")
-        logger.warning("多模块实例手动删除:{}".format(module_common_instance.NAME))
+        Notice.send_info(f"模块: {module_common_instance.NAME_ZH} {module_common_instance._target_str} 手动删除",
+                         f"Module:<{module_common_instance.NAME_EN}> {module_common_instance._target_str} manually delete")
+        logger.warning("多模块实例手动删除:{}".format(module_common_instance.NAME_ZH))
         return True
 
 

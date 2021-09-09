@@ -10,12 +10,12 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "基础ShellcodeLoader免杀(Linux)"
-    DESC = "模块通过编码shellcode与基础的shellcodeloader结合的方式实现免杀.\n" \
-           "模块适配以下类型载荷:\n" \
-           "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
-           "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "基础ShellcodeLoader免杀(Linux)"
+    DESC_ZH = "模块通过编码shellcode与基础的shellcodeloader结合的方式实现免杀.\n" \
+              "模块适配以下类型载荷:\n" \
+              "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
+              "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Linux"]  # 平台
     PERMISSIONS = ["User", "Root"]  # 所需权限
     ATTCK = []  # ATTCK向量

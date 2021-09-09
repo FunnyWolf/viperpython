@@ -13,11 +13,11 @@ from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist im
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "主机基础信息"
-    DESC = "此模块可一次性收集主机的<主机名><操作系统><域名称><进程信息><网络连接><ARP信息><网卡信息>等.\n" \
-           "请注意,此模块不提供格式化输出."
+    NAME_ZH = "主机基础信息"
+    DESC_ZH = "此模块可一次性收集主机的<主机名><操作系统><域名称><进程信息><网络连接><ARP信息><网卡信息>等.\n" \
+              "请注意,此模块不提供格式化输出."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.internal
+    MODULETYPE = TAG2TYPE.internal
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

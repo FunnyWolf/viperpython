@@ -8,10 +8,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(BotMSFModule):
-    NAME = "vbulletin widget模板命令执行"
-    DESC = "模块使用CVE-2020-17496攻击选择的vbulletin网站.\n" \
-           "建议选择php类型的payload"
-    MODULETYPE = TAG2CH.Bot_MSF_Exp
+    NAME_ZH = "vbulletin widget模板命令执行"
+    DESC_ZH = "模块使用CVE-2020-17496攻击选择的vbulletin网站.\n" \
+              "建议选择php类型的payload"
+    MODULETYPE = TAG2TYPE.Bot_MSF_Exp
     README = ["https://www.yuque.com/vipersec/module/qp8b51"]
     REFERENCES = ["https://blog.exploitee.rs/2020/exploiting-vbulletin-a-tale-of-patch-fail/"]
     AUTHOR = "Viper"

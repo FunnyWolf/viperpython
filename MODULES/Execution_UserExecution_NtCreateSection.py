@@ -9,9 +9,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "NtCreateSection进程注入"
-    DESC = "使用NtCreateSection及NtMapViewOfSection远程线程注入技术打开共享内存,将shellcode注入到其他进程中"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "NtCreateSection进程注入"
+    DESC_ZH = "使用NtCreateSection及NtMapViewOfSection远程线程注入技术打开共享内存,将shellcode注入到其他进程中"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量

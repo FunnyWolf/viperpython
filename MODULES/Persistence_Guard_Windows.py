@@ -4,14 +4,14 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows自守护Session"
-    DESC = "模块上传带有守护自身功能的加载器到主机指定目录(C:\ProgramData\XXX).\n" \
-           "当前生成的Session进程崩溃或退出时会在10s后自动重新启动.\n" \
-           "主要用于生成备用Session,防止初始权限丢失.\n" \
-           "建议在取得第一个Session后马上运行此模块,确保权限不丢失\n" \
-           "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+    NAME_ZH = "Windows自守护Session"
+    DESC_ZH = "模块上传带有守护自身功能的加载器到主机指定目录(C:\ProgramData\XXX).\n" \
+              "当前生成的Session进程崩溃或退出时会在10s后自动重新启动.\n" \
+              "主要用于生成备用Session,防止初始权限丢失.\n" \
+              "建议在取得第一个Session后马上运行此模块,确保权限不丢失\n" \
+              "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Persistence
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1050"]  # ATTCK向量

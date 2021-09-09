@@ -10,9 +10,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "Reverse_TCP_RC4直连免杀"
-    DESC = "模块采用直连监听,读取stager2的方式进行免杀"
-    MODULETYPE = TAG2CH.Execution
+    NAME_ZH = "Reverse_TCP_RC4直连免杀"
+    DESC_ZH = "模块采用直连监听,读取stager2的方式进行免杀"
+    MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = []  # ATTCK向量

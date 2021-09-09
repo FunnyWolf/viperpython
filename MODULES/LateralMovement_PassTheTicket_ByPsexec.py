@@ -8,11 +8,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "PSEXEC明文/哈希传递"
-    DESC = "模块使用已知的用户名及密码(哈希),通过psexec方式在目标主机执行载荷.\n" \
-           "如果没有填写IP地址参数则模块默认测试当前主机.\n" \
-           "如使用自定义的EXE,请确认exe为service类型的exe"
-    MODULETYPE = TAG2CH.Lateral_Movement
+    NAME_ZH = "PSEXEC明文/哈希传递"
+    DESC_ZH = "模块使用已知的用户名及密码(哈希),通过psexec方式在目标主机执行载荷.\n" \
+              "如果没有填写IP地址参数则模块默认测试当前主机.\n" \
+              "如使用自定义的EXE,请确认exe为service类型的exe"
+    MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1097"]  # ATTCK向量

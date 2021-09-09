@@ -7,14 +7,14 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows系统服务持久化"
-    DESC = "模块通过将上传的Payload文件注册为系统服务的方式进行持久化控制.\n" \
-           "此模块需要Session系统权限或管理员权限.\n" \
-           "服务持久化虽然在写入时无法免杀,但是成功写入口由于排查困难,隐蔽效果好.\n" \
-           "当使用自定义loader时,需要为服务类型的exe.\n" \
-           "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+    NAME_ZH = "Windows系统服务持久化"
+    DESC_ZH = "模块通过将上传的Payload文件注册为系统服务的方式进行持久化控制.\n" \
+              "此模块需要Session系统权限或管理员权限.\n" \
+              "服务持久化虽然在写入时无法免杀,但是成功写入口由于排查困难,隐蔽效果好.\n" \
+              "当使用自定义loader时,需要为服务类型的exe.\n" \
+              "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Persistence
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1050"]  # ATTCK向量

@@ -8,9 +8,9 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
-    NAME = "获取Windows权限组"
-    DESC = "模块获取主机本地用户组及域用户组"
-    MODULETYPE = TAG2CH.Discovery
+    NAME_ZH = "获取Windows权限组"
+    DESC_ZH = "模块获取主机本地用户组及域用户组"
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", ]  # 所需权限
     ATTCK = ["T1069"]  # ATTCK向量

@@ -8,11 +8,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME = "Windows计划任务持久化"
-    DESC = "模块注册计划任务实现持久化,当前Session所在用户登录系统时执行载荷\n" \
-           "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+    NAME_ZH = "Windows计划任务持久化"
+    DESC_ZH = "模块注册计划任务实现持久化,当前Session所在用户登录系统时执行载荷\n" \
+              "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Persistence
+    MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
     ATTCK = ["T1053"]  # ATTCK向量

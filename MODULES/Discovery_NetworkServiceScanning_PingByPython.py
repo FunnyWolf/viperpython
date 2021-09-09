@@ -11,10 +11,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPythonWithParamsModule):
-    NAME = "内网Ping扫描"
-    DESC = "通过 ICMP 协议(Ping)获取内网存活主机信息.\n"
+    NAME_ZH = "内网Ping扫描"
+    DESC_ZH = "通过 ICMP 协议(Ping)获取内网存活主机信息.\n"
 
-    MODULETYPE = TAG2CH.Discovery
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
     ATTCK = ["T1046"]  # ATTCK向量

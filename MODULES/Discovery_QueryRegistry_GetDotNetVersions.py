@@ -7,10 +7,10 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME = "获取.Net framework版本列表"
-    DESC = "模块查看主机已安装的.Net framework版本.\n"
+    NAME_ZH = "获取.Net framework版本列表"
+    DESC_ZH = "模块查看主机已安装的.Net framework版本.\n"
     REQUIRE_SESSION = True
-    MODULETYPE = TAG2CH.Discovery
+    MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1012"]  # ATTCK向量
