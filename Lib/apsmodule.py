@@ -55,7 +55,7 @@ class APSModule(object):
                 'job_id': None,
             }
             Xcache.create_module_task(req)
-            # TODO
+
             Notice.send_info(f"模块: {post_module_intent.NAME_ZH} {post_module_intent._target_str} 开始执行",
                              f"Module: <{post_module_intent.NAME_EN}> {post_module_intent._target_str} running")
             return True
@@ -103,7 +103,6 @@ class APSModule(object):
         # 存储运行结果
         try:
             module_common_instance._store_result_in_history()
-            # TODO
             Notice.send_success(f"模块: {module_common_instance.NAME_ZH} {module_common_instance._target_str} 执行完成",
                                 f"Module: <{module_common_instance.NAME_EN}> {module_common_instance._target_str} start running")
             logger.warning("多模块实例执行完成:{}".format(module_common_instance.NAME_ZH))
@@ -158,7 +157,6 @@ class APSModule(object):
             return False
 
         # 发送通知
-        # TODO
         Notice.send_info(f"模块: {module_common_instance.NAME_ZH} {module_common_instance._target_str} 手动删除",
                          f"Module:<{module_common_instance.NAME_EN}> {module_common_instance._target_str} manually delete")
         logger.warning("多模块实例手动删除:{}".format(module_common_instance.NAME_ZH))

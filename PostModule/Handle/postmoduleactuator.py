@@ -127,14 +127,12 @@ class PostModuleActuator(object):
                 flag, msg = post_module_intent.check()
                 if flag is not True:
                     # 如果检查未通过,返回未通过原因(msg)
-                    # TODO
                     Notice.send_warning(f"模块:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} 检查未通过,原因:{msg}",
                                         f"Module: <{post_module_intent.NAME_EN}> IP:{ipport.get('ip')} check failed, reason:{msg}")
                     continue
 
             except Exception as E:
                 logger.warning(E)
-                # TODO
                 Notice.send_warning(f"模块:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} 检查函数执行异常",
                                     f"Module:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} check function run exception")
                 continue

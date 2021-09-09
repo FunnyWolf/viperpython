@@ -43,7 +43,6 @@ class MSFModule(object):
 
         result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_JOB_API_REQ)
         if result is None:
-            # TODO
             Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME_ZH}",
                                 f"MSFRPC connection failed and the module could not be executed :<{msf_module.NAME_EN}>")
             return False
@@ -53,7 +52,6 @@ class MSFModule(object):
 
         if result.get("job_id") is None:
             logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME_ZH, result.get("uuid")))
-            # TODO
             Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败,请检查输入参数",
                                 f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task, please check input parameters")
             return False
@@ -69,7 +67,6 @@ class MSFModule(object):
                 'job_id': result.get("job_id"),
             }
             Xcache.create_module_task(req)
-            # TODO
             Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 开始执行",
                              f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} start running")
             return True
@@ -87,7 +84,6 @@ class MSFModule(object):
 
         result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_RUN_MODULE_LONG)
         if result is None:
-            # TODO
             Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME_ZH}",
                                 f"MSFRPC connect failed and the module could not be executed :<{msf_module.NAME_EN}>")
             return False
@@ -105,7 +101,6 @@ class MSFModule(object):
         try:
             flag = msf_module.callback(module_output=result)
         except Exception as E:
-            # TODO
             Notice.send_exception(f"模块 {msf_module.NAME_ZH} 的回调函数callback运行异常",
                                   f"Module <{msf_module.NAME_EN}> callback running error")
             logger.error(E)
@@ -116,7 +111,7 @@ class MSFModule(object):
                 msf_module._store_result_in_history()  # 存储到历史记录
             except Exception as E:
                 logger.error(E)
-        # TODO
+
         Notice.send_success(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 执行完成",
                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} run finish")
 
@@ -170,7 +165,6 @@ class MSFModule(object):
                                    message=msf_module_return_dict.get("message"),
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
-            # TODO
             Notice.send_exception(f"模块 {module_intent.NAME_ZH} 的回调函数callhack运行异常",
                                   f"Module <{module_intent.NAME_EN}> Tcallback function run exception")
             logger.error(E)
@@ -180,7 +174,6 @@ class MSFModule(object):
             logger.error(E)
 
         Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
-        # TODO
         Notice.send_success(f"模块: {module_intent.NAME_ZH} {module_intent._target_str} 执行完成",
                             f"Module: <{module_intent.NAME_EN}> {module_intent._target_str} run finish")
 
@@ -216,11 +209,10 @@ class MSFModule(object):
                                    message=msf_module_return_dict.get("message"),
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
-            # TODO
             Notice.send_exception(f"模块 {module_intent.NAME_ZH} 的回调函数callback运行异常",
                                   f"Module {module_intent.NAME_ZH} callback run error")
             logger.error(E)
-        # TODO
+
         Notice.send_info(f"模块: {module_intent.NAME_ZH} 回调执行完成",
                          f"Module: <{module_intent.NAME_EN}> callback run finish")
         module_intent._store_result_in_history()  # 存储到历史记录

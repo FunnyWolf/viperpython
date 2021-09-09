@@ -183,7 +183,6 @@ class Job(object):
                     return context
                 if result.get('result') == 'success':
                     # 发送通知
-                    # TODO
                     Notice.send_info(
                         f"模块: {common_module_instance.NAME_ZH} {common_module_instance._target_str} 手动删除完成",
                         f"Module: <{common_module_instance.NAME_EN}> {common_module_instance._target_str} manually delete")
