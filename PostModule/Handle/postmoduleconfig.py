@@ -279,6 +279,6 @@ class PostModuleConfig(object):
     def get_module_name_by_loadpath(loadpath=None):
         module_config = Xcache.get_moduleconfig(loadpath)
         if module_config is not None:
-            return module_config.get('NAME')
+            return f"{module_config.get('NAME_ZH')}|{module_config.get('NAME_EN')}"
         else:
             return None

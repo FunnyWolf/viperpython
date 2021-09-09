@@ -54,8 +54,12 @@ class SessionLibSerializer(Serializer):
 
 
 class PostModuleSerializer(Serializer):
-    NAME = CharField(max_length=100)
-    DESC = CharField(max_length=100)
+    NAME_ZH = CharField(max_length=100)
+    NAME_EN = CharField(max_length=100)
+
+    DESC_ZH = CharField(max_length=100)
+    DESC_EN = CharField(max_length=100)
+
     REQUIRE_SESSION = BooleanField()
     MODULETYPE = CharField(max_length=100)  # 模块类型
     AUTHOR = ListField()  # 模块作者
@@ -70,8 +74,10 @@ class PostModuleSerializer(Serializer):
 
 
 class BotModuleSerializer(Serializer):
-    NAME = CharField(max_length=100)
-    DESC = CharField(max_length=100)
+    NAME_ZH = CharField(max_length=100)
+    NAME_EN = CharField(max_length=100)
+    DESC_ZH = CharField(max_length=100)
+    DESC_EN = CharField(max_length=100)
     MODULETYPE = CharField(max_length=100)  # 模块类型
     AUTHOR = ListField()  # 模块作者
     REFERENCES = ListField()
