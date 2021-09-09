@@ -73,9 +73,11 @@ class Payload(object):
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
             opts['OverrideRequestHost'] = False
-            Notice.send_warn("Payload包含OverrideRequestHost参数")
-            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
-            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+            Notice.send_warning("Payload包含OverrideRequestHost参数", "Payload contains the OverrideRequestHost parameter")
+            Notice.send_warning(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}",
+                                f"Replace LHOST with OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warning(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}",
+                                f"Replace LPORT with OverrideLPORT:{opts['OverrideLPORT']}")
 
         # 处理SessionExpirationTimeout参数
         if opts.get("SessionExpirationTimeout") is None or opts.get("SessionExpirationTimeout") < 3600 * 24 * 365:
@@ -272,9 +274,11 @@ class Payload(object):
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
             opts['OverrideRequestHost'] = False
-            Notice.send_warn("Payload包含OverrideRequestHost参数")
-            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
-            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+            Notice.send_warning("Payload包含OverrideRequestHost参数", "Payload contains the OverrideRequestHost parameter")
+            Notice.send_warning(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}",
+                                f"Replace LHOST with OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warning(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}",
+                                f"Replace LPORT with OverrideLPORT:{opts['OverrideLPORT']}")
 
         # EXTENSIONS参数
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
@@ -306,9 +310,11 @@ class Payload(object):
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
             opts['OverrideRequestHost'] = False
-            Notice.send_warn("Payload包含OverrideRequestHost参数")
-            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
-            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+            Notice.send_warning("Payload包含OverrideRequestHost参数", "Payload contains the OverrideRequestHost parameter")
+            Notice.send_warning(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}",
+                                f"Replace LHOST with OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warning(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}",
+                                f"Replace LPORT with OverrideLPORT:{opts['OverrideLPORT']}")
 
         # EXTENSIONS参数
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
@@ -352,9 +358,11 @@ class Payload(object):
             opts["LHOST"] = opts['OverrideLHOST']
             opts["LPORT"] = opts['OverrideLPORT']
             opts['OverrideRequestHost'] = False
-            Notice.send_warn("Payload包含OverrideRequestHost参数")
-            Notice.send_warn(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}")
-            Notice.send_warn(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}")
+            Notice.send_warning("Payload包含OverrideRequestHost参数", "Payload contains the OverrideRequestHost parameter")
+            Notice.send_warning(f"将LHOST 替换为 OverrideLHOST:{opts['OverrideLHOST']}",
+                                f"Replace LHOST with OverrideLHOST:{opts['OverrideLHOST']}")
+            Notice.send_warning(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}",
+                                f"Replace LPORT with OverrideLPORT:{opts['OverrideLPORT']}")
 
         # EXTENSIONS参数
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:

@@ -55,8 +55,9 @@ class APSModule(object):
                 'job_id': None,
             }
             Xcache.create_module_task(req)
+            # TODO
             Notice.send_info(
-                "模块: {} {} 开始执行".format(post_module_intent.NAME, post_module_intent._target_str))
+                "模块: {} {} 开始执行".format(post_module_intent.NAME, post_module_intent._target_str), "")
             return True
         except Exception as E:
             logger.error(E)
@@ -102,15 +103,15 @@ class APSModule(object):
         # 存储运行结果
         try:
             module_common_instance._store_result_in_history()
+            # TODO
             Notice.send_success(
-                "模块: {} {} 执行完成".format(module_common_instance.NAME, module_common_instance._target_str))
+                "模块: {} {} 执行完成".format(module_common_instance.NAME, module_common_instance._target_str), "")
             logger.warning("多模块实例执行完成:{}".format(module_common_instance.NAME))
             Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
             return True
         except Exception as E:
             Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
             logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
-            Notice.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, E))
             logger.error(E)
             return False
 
@@ -125,11 +126,9 @@ class APSModule(object):
             module_common_instance.log_except(exception)
             module_common_instance._store_result_in_history()
             logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, exception))
-            Notice.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, exception))
             return True
         except Exception as E:
             logger.error("多模块实例执行异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
-            Notice.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, E))
             logger.error(E)
             return False
 
@@ -155,13 +154,13 @@ class APSModule(object):
             module_common_instance._store_result_in_history()
         except Exception as E:
             logger.error("删除多模块实例异常:{} 异常信息: {}".format(module_common_instance.NAME, E))
-            Notice.send_exception("模块: {} 执行异常,异常信息: {}".format(module_common_instance.NAME, E))
             logger.error(E)
             return False
 
         # 发送通知
+        # TODO
         Notice.send_info(
-            "模块: {} {} 手动删除".format(module_common_instance.NAME, module_common_instance._target_str))
+            "模块: {} {} 手动删除".format(module_common_instance.NAME, module_common_instance._target_str), "")
         logger.warning("多模块实例手动删除:{}".format(module_common_instance.NAME))
         return True
 

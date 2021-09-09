@@ -104,7 +104,8 @@ class MainMonitor(object):
         self.MainScheduler.start()
 
         logger.warning("后台服务启动成功")
-        Notice.send_success(f"后台服务启动成功,10秒后开始加载历史监听.")
+        Notice.send_success(f"后台服务启动成功,10秒后开始加载历史监听.",
+                            "The background service is started successfully, and the history handler starts to load after 10 seconds.")
 
     @staticmethod
     def run_bot_wait_list():

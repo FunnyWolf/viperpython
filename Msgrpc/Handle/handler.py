@@ -112,7 +112,7 @@ class Handler(object):
             if rpcstatus.get('json_rpc').get("status"):
                 break
             else:
-                Notice.send_warning(f"msfrpc服务尚未启动,等待10秒")
+                Notice.send_warning(f"MSFRPC服务尚未启动,等待10秒", "MSFRPC service has not been started yet, wait 10 seconds")
                 time.sleep(10)
 
         for one_handler in cache_handlers:
@@ -122,13 +122,16 @@ class Handler(object):
             payload = opts.get('PAYLOAD')
             port = opts.get('LPORT')
             if code == 201:
-                Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 加载成功")
+                Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 加载成功",
+                                 f"History handler Payload:{payload} Port:{port} load success")
             elif code in [301]:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,端口已占用")
+                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,端口已占用",
+                                    f"History handler Payload:{payload} Port:{port} load failed,Port is using")
             else:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,返回值：f{code}")
+                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,返回值：{code}",
+                                    f"History handler Payload:{payload} Port:{port} load failed,Return code：{code}")
             time.sleep(1)
-        Notice.send_info("所有历史监听加载完成")
+        Notice.send_info("所有历史监听加载完成", "All history handlers has loaded")
 
     @staticmethod
     def create(opts=None):
@@ -217,7 +220,10 @@ class Handler(object):
                 if Job.is_msf_job_alive(job_id):
                     opts['ID'] = int(result.get('job_id'))
                     Notice.send_success("新建监听成功:{} {} JobID:{}".format(opts.get('PAYLOAD'), opts.get('LPORT'),
-                                                                       result.get('job_id')))
+                                                                       result.get('job_id')),
+                                        "Create handler success:{} {} JobID:{}".format(opts.get('PAYLOAD'),
+                                                                                       opts.get('LPORT'),
+                                                                                       result.get('job_id')))
                     context = data_return(201, Handler_MSG.get(201), opts)
                 else:
                     context = data_return(301, Handler_MSG.get(301), opts)

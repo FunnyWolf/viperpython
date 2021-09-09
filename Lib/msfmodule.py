@@ -43,7 +43,9 @@ class MSFModule(object):
 
         result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_JOB_API_REQ)
         if result is None:
-            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}")
+            # TODO
+            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}",
+                                f"MSFRPC connection failed and the module could not be executed :{msf_module.NAME}")
             return False
 
         # result 数据格式
@@ -51,7 +53,8 @@ class MSFModule(object):
 
         if result.get("job_id") is None:
             logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME, result.get("uuid")))
-            Notice.send_warning("模块: {} {} 创建后台任务失败,请检查输入参数".format(msf_module.NAME, msf_module._target_str))
+            # TODO
+            Notice.send_warning("模块: {} {} 创建后台任务失败,请检查输入参数".format(msf_module.NAME, msf_module._target_str), "")
             return False
         else:
             logger.warning(
@@ -65,7 +68,8 @@ class MSFModule(object):
                 'job_id': result.get("job_id"),
             }
             Xcache.create_module_task(req)
-            Notice.send_info("模块: {} {} 开始执行".format(msf_module.NAME, msf_module._target_str))
+            # TODO
+            Notice.send_info("模块: {} {} 开始执行".format(msf_module.NAME, msf_module._target_str), "")
             return True
 
     @staticmethod
@@ -81,7 +85,8 @@ class MSFModule(object):
 
         result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_RUN_MODULE_LONG)
         if result is None:
-            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}")
+            # TODO
+            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME}", "")
             return False
 
         # 清理历史结果
@@ -97,7 +102,8 @@ class MSFModule(object):
         try:
             flag = msf_module.callback(module_output=result)
         except Exception as E:
-            Notice.send_error("模块 {} 的回调函数callhack运行异常".format(msf_module.NAME))
+            # TODO
+            Notice.send_exception("模块 {} 的回调函数callhack运行异常".format(msf_module.NAME))
             logger.error(E)
 
         # 如果是积极结果,存储
@@ -106,8 +112,8 @@ class MSFModule(object):
                 msf_module._store_result_in_history()  # 存储到历史记录
             except Exception as E:
                 logger.error(E)
-
-        Notice.send_success("模块: {} {} 执行完成".format(msf_module.NAME, msf_module._target_str))
+        # TODO
+        Notice.send_success("模块: {} {} 执行完成".format(msf_module.NAME, msf_module._target_str), "")
 
     @staticmethod
     def store_result_from_sub(message=None):
@@ -159,7 +165,8 @@ class MSFModule(object):
                                    message=msf_module_return_dict.get("message"),
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
-            Notice.send_error("模块 {} 的回调函数callhack运行异常".format(module_intent.NAME))
+            # TODO
+            Notice.send_exception("模块 {} 的回调函数callhack运行异常".format(module_intent.NAME))
             logger.error(E)
         try:
             module_intent._store_result_in_history()  # 存储到历史记录
@@ -167,7 +174,8 @@ class MSFModule(object):
             logger.error(E)
 
         Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
-        Notice.send_success("模块: {} {} 执行完成".format(module_intent.NAME, module_intent._target_str))
+        # TODO
+        Notice.send_success("模块: {} {} 执行完成".format(module_intent.NAME, module_intent._target_str), "")
 
     @staticmethod
     def store_monitor_from_sub(message=None):
@@ -202,9 +210,11 @@ class MSFModule(object):
                                    message=msf_module_return_dict.get("message"),
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
-            Notice.send_error("模块 {} 的回调函数callhack运行异常".format(module_intent.NAME))
+            # TODO
+            Notice.send_exception("模块 {} 的回调函数callhack运行异常".format(module_intent.NAME))
             logger.error(E)
-        Notice.send_info("模块: {} 回调执行完成".format(module_intent.NAME))
+        # TODO
+        Notice.send_info("模块: {} 回调执行完成".format(module_intent.NAME), "")
         module_intent._store_result_in_history()  # 存储到历史记录
 
     @staticmethod

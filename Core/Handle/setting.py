@@ -102,7 +102,8 @@ class Settings(object):
             token = setting.get("token")
             chat_id = setting.get("chat_id")
             proxy = setting.get("proxy")
-            if tag == "check":  # 获取chat_id
+            if tag == "check":
+                # 获取chat_id
                 user_chat_id_list = Telegram.get_alive_chat_id(token, proxy)
                 context = data_return(201, Setting_MSG.get(201), user_chat_id_list)
                 return context
@@ -113,7 +114,7 @@ class Settings(object):
                     context = data_return(303, Setting_MSG.get(303), data)
                     return context
                 else:
-                    Notice.send_success("设置Telegram通知成功")
+                    Notice.send_success("设置Telegram通知成功", "Set Telegram notification success")
                     data = {"token": token, "chat_id": chat_id, "proxy": proxy, "alive": True}
                     Xcache.set_telegram_conf(data)
                     context = data_return(202, Setting_MSG.get(202), data)
@@ -129,7 +130,7 @@ class Settings(object):
                 context = data_return(304, Setting_MSG.get(304), data)
                 return context
             else:
-                Notice.send_success("设置DingDing通知成功")
+                Notice.send_success("设置DingDing通知成功", "Set DingDing notification success")
                 data = {"access_token": access_token, "keyword": keyword, "alive": True}
                 Xcache.set_dingding_conf(data)
 
@@ -143,7 +144,7 @@ class Settings(object):
                 context = data_return(305, Setting_MSG.get(305), data)
                 return context
             else:
-                Notice.send_success("设置Server酱通知成功")
+                Notice.send_success("设置Server酱通知成功", "Set ServerChan notification success")
                 data = {"sendkey": sendkey, "alive": True}
                 Xcache.set_serverchan_conf(data)
 
@@ -161,7 +162,7 @@ class Settings(object):
                 context = data_return(306, Setting_MSG.get(306), data)
                 return context
             else:
-                Notice.send_success("设置FOFA API 成功")
+                Notice.send_success("设置FOFA API成功", "Set FOFA API success")
                 data = {"email": email, "key": key, "alive": True}
                 Xcache.set_fofa_conf(data)
                 context = data_return(206, Setting_MSG.get(206), data)
@@ -177,7 +178,7 @@ class Settings(object):
                 context = data_return(307, Setting_MSG.get(307), data)
                 return context
             else:
-                Notice.send_success("设置360Quake API 成功")
+                Notice.send_success("设置360Quake API成功", "Set 360Quake API success")
                 data = {"key": key, "alive": True}
                 Xcache.set_quake_conf(data)
                 context = data_return(208, Setting_MSG.get(208), data)
@@ -189,24 +190,27 @@ class Settings(object):
 
             if flag:
                 msg = "Session监控功能已打开"
-                Notice.send_success(msg)
-                Notice.send_sms(msg)
+                msg_en = "Session monitor function is turned on"
+                Notice.send_success(msg, msg_en)
+                Notice.send_sms(msg, msg_en)
             else:
                 msg = "Session监控功能已关闭"
-                Notice.send_info(msg)
-                Notice.send_sms(msg)
+                msg_en = "Session monitor function is closed"
+                Notice.send_info(msg, msg_en)
+                Notice.send_sms(msg, msg_en)
 
             context = data_return(204, Setting_MSG.get(204), {"flag": flag})
             return context
 
         elif kind == "lhost":
             Xcache.set_lhost_config(setting)
-            Notice.send_success(f"设置回连地址成功,当前回连地址: {setting.get('lhost')}")
+            Notice.send_success(f"设置回连地址成功,当前回连地址: {setting.get('lhost')}",
+                                f"Set the lhost successfully, the current lhost: {setting.get('lhost')}")
             context = data_return(205, Setting_MSG.get(205), setting)
             return context
         elif kind == "postmoduleautoconf":
             new_conf = Xcache.set_postmodule_auto_conf(setting)
-            Notice.send_success(f"设置自动编排配置成功")
+            Notice.send_success(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")
             context = data_return(209, Setting_MSG.get(209), new_conf)
             return context
         else:

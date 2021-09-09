@@ -64,8 +64,8 @@ class Socks(object):
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
                     opts['job_id'] = int(result.get('job_id'))
-                    Notice.send_success(
-                        "新建msf_socks4a代理成功,Port: {}".format(opts.get('SRVPORT'), opts.get('job_id')))
+                    Notice.send_success(f"新建msf_socks4a代理成功,Port: {opts.get('SRVPORT')}",
+                                        f"Create msf_socks4a success,Port: {opts.get('SRVPORT')}")
                     context = data_return(201, Socks_MSG.get(201), opts)
                 else:
                     context = data_return(306, Socks_MSG.get(306), opts)
@@ -87,8 +87,8 @@ class Socks(object):
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
                     opts['job_id'] = int(result.get('job_id'))
-                    Notice.send_success(
-                        "新建msf_socks5代理成功,Port: {}".format(opts.get('SRVPORT'), opts.get('job_id')))
+                    Notice.send_success(f"新建msf_socks5代理成功,Port: {opts.get('SRVPORT')}",
+                                        f"Create msf_socks5 success,Port: {opts.get('SRVPORT')}")
                     context = data_return(201, Socks_MSG.get(201), opts)
                 else:
                     context = data_return(306, Socks_MSG.get(306), opts)
@@ -100,7 +100,7 @@ class Socks(object):
             flag = Job.destroy(jobid)
             if flag:
                 if Job.is_msf_job_alive(jobid) is not True:
-                    Notice.send_success("删除msf_socks4a代理 JobID:{}".format(jobid))
+                    Notice.send_success(f"删除msf_socks4a代理 JobID:{jobid}", f"Delete msf_socks4a JobID:{jobid}")
                     context = data_return(204, Socks_MSG.get(204), {})
                 else:
                     context = data_return(304, Socks_MSG.get(304), {})
@@ -111,7 +111,7 @@ class Socks(object):
             flag = Job.destroy(jobid)
             if flag:
                 if Job.is_msf_job_alive(jobid) is not True:
-                    Notice.send_success("删除msf_socks5代理 JobID:{}".format(jobid))
+                    Notice.send_success(f"删除msf_socks5代理 JobID:{jobid}", f"Delete msf_socks5 JobID:{jobid}")
                     context = data_return(204, Socks_MSG.get(204), {})
                 else:
                     context = data_return(304, Socks_MSG.get(304), {})

@@ -369,7 +369,7 @@ class HostFileView(BaseView):
             response['Message'] = quote(FileMsf_MSG.get(203))
             remote_client = request.META.get("HTTP_X_REAL_IP")
 
-            Notice.send_info(f"IP: {remote_client} 下载文件 : {filename}")
+            Notice.send_info(f"IP: {remote_client} 下载文件: {filename}", f"IP: {remote_client} Download: {filename}")
             return response
         except Exception as E:
             logger.error(E)

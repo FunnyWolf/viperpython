@@ -127,12 +127,14 @@ class PostModuleActuator(object):
                 flag, msg = post_module_intent.check()
                 if flag is not True:
                     # 如果检查未通过,返回未通过原因(msg)
-                    Notice.send_warning(f"模块:{post_module_intent.NAME} IP:{ipport.get('ip')} 检查未通过,原因:{msg}")
+                    # TODO
+                    Notice.send_warning(f"模块:{post_module_intent.NAME} IP:{ipport.get('ip')} 检查未通过,原因:{msg}", "")
                     continue
 
             except Exception as E:
                 logger.warning(E)
-                Notice.send_warning(f"模块:{post_module_intent.NAME} IP:{ipport.get('ip')} 检查函数执行异常")
+                # TODO
+                Notice.send_warning(f"模块:{post_module_intent.NAME} IP:{ipport.get('ip')} 检查函数执行异常", "")
                 continue
 
             tmp_self_uuid = str(uuid.uuid1())

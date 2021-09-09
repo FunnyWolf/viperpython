@@ -49,7 +49,7 @@ class PostModule(PostMSFRawModule):
         if filepath is None:  # 根据监听进行持久化
             exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_BASE")
         else:
-            Notice.send_info("使用自定义的loader进行持久化")
+            Notice.send_info("使用自定义的loader进行持久化", "Use custom loader for persistence")
             exe_filepath = filepath
 
         self.set_msf_option("EXE::Custom", exe_filepath)

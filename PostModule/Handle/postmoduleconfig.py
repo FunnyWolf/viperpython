@@ -81,7 +81,7 @@ class PostModuleConfig(object):
                 module_intent = class_intent.PostModule
             except Exception as E:
                 logger.exception(E)
-                Notice.send_alert(f"加载内置模块:{modulename} 失败")
+                Notice.send_warning(f"加载内置模块:{modulename} 失败", f"Load built-in module:{modulename} failed")
                 continue
 
             try:
@@ -131,7 +131,8 @@ class PostModuleConfig(object):
                 logger.error(E)
                 continue
         logger.warning("内置模块加载完成,加载{}个模块".format(viper_module_count))
-        Notice.send_success(f"内置模块加载完成,加载{viper_module_count}个模块")
+        Notice.send_success(f"内置模块加载完成,加载{viper_module_count}个模块",
+                            f"The built-in modules is loaded,{viper_module_count} modules has loaded")
         # 自定义模块
         diy_module_count = 0
         modulenames = os.listdir(os.path.join(settings.BASE_DIR, 'Docker', "module"))
@@ -145,7 +146,7 @@ class PostModuleConfig(object):
                 module_intent = class_intent.PostModule
             except Exception as E:
                 logger.exception(E)
-                Notice.send_alert(f"加载自定义模块:{modulename} 失败")
+                Notice.send_warning(f"加载自定义模块:{modulename} 失败", f"Load customize module:{modulename} failed")
                 continue
             try:
                 if isinstance(module_intent.ATTCK, str):
@@ -194,7 +195,8 @@ class PostModuleConfig(object):
                 logger.error(E)
                 continue
         logger.warning("自定义模块加载完成,加载{}个模块".format(diy_module_count))
-        Notice.send_success(f"自定义模块加载完成,加载{diy_module_count}个模块")
+        Notice.send_success(f"自定义模块加载完成,加载{diy_module_count}个模块",
+                            f"The customize modules is loaded,{diy_module_count} modules has loaded")
 
         all_modules_config.sort(key=lambda s: (TAG2CH.get_moduletype_order(s.get('MODULETYPE')), s.get('loadpath')))
         if Xcache.update_moduleconfigs(all_modules_config):

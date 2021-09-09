@@ -86,12 +86,13 @@ class Host(object):
 
     @staticmethod
     def update_host(ipaddress=None, tag=None, comment=None):
-
-        defaultdict = {'ipaddress': ipaddress, 'tag': tag, 'comment': comment}  # 没有此主机数据时新建
+        # 没有此主机数据时新建
+        defaultdict = {'ipaddress': ipaddress, 'tag': tag, 'comment': comment}
         model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
         if created is True:
             result = HostSerializer(model, many=False).data
-            return result  # 新建后直接返回
+            # 新建后直接返回
+            return result
         # 有历史数据
         with transaction.atomic():
             try:

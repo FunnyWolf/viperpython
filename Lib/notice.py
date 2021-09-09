@@ -4,7 +4,7 @@
 # @Desc  :
 import time
 
-from Lib.configs import VIPER_SEND_SMS_CHANNEL
+from Lib.configs import VIPER_SEND_SMS_CHANNEL, CN, EN
 from Lib.log import logger
 from Lib.redisclient import RedisClient
 from Lib.xcache import Xcache
@@ -16,50 +16,49 @@ class Notice(object):
         pass
 
     @staticmethod
-    def send(content, level=1):
-        notice = {"content": content, "level": level, "time": int(time.time())}
+    def send(content_cn=None, content_en=None, level=1):
+        # 无英文版的处理
+        if content_en is None:
+            content_en = content_cn
+
+        notice = {CN: content_cn, EN: content_en, "level": level, "time": int(time.time())}
         Xcache.add_one_notice(notice)
         return True
 
     @staticmethod
-    def send_success(content):
+    def send_success(content_cn=None, content_en=None):
         """成功消息"""
-        return Notice.send(content, 0)
+        return Notice.send(content_cn, content_en, 0)
 
     @staticmethod
-    def send_info(content):
+    def send_info(content_cn=None, content_en=None):
         """通知消息"""
-        return Notice.send(content)
+        return Notice.send(content_cn, content_en)
 
     @staticmethod
-    def send_warning(content):
+    def send_warning(content_cn=None, content_en=None):
         """警告消息"""
-        return Notice.send(content, 2)
+        return Notice.send(content_cn, content_en, 2)
 
     @staticmethod
-    def send_warn(content):
-        """警告消息"""
-        return Notice.send(content, 2)
-
-    @staticmethod
-    def send_error(content):
+    def send_error(content_cn=None, content_en=None):
         """错误消息"""
-        return Notice.send(content, 3)
+        return Notice.send(content_cn, content_en, 3)
 
     @staticmethod
-    def send_exception(content):
+    def send_exception(content_cn=None, content_en=None):
         """异常消息"""
-        return Notice.send(content, 4)
+        return Notice.send(content_cn, content_en, 4)
 
     @staticmethod
-    def send_alert(content):
+    def send_alert(content_cn=None, content_en=None):
         """提醒消息"""
-        return Notice.send(content, 5)
+        return Notice.send(content_cn, content_en, 5)
 
     @staticmethod
     def send_userinput(content, userkey="0"):
         """用户输入消息"""
-        notice = {"content": content, "level": 6, "time": int(time.time()), "userkey": userkey}
+        notice = {CN: content, EN: content, "level": 6, "time": int(time.time()), "userkey": userkey}
         Xcache.add_one_notice(notice)
         return notice
 
@@ -74,9 +73,9 @@ class Notice(object):
         return flag
 
     @staticmethod
-    def send_sms(content):
+    def send_sms(content_cn=None, content_en=None):
         rcon = RedisClient.get_result_connection()
         if rcon is None:
             return
-        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, content)
+        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, f"中文:{content_cn}\nEnglish:{content_en}")
         logger.info(f"send_sms: {result}")

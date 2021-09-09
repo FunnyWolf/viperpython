@@ -98,7 +98,8 @@ class SessionLib(object):
                 result = MSFModule.run(module_type=module_type, mname=mname, opts=opts,
                                        timeout=RPC_SESSION_OPER_LONG_REQ)
                 if result is None:
-                    Notice.send_warning("更新Session信息失败,请稍后重试")
+                    Notice.send_warning("更新Session信息失败,请稍后重试",
+                                        "Failed to update Session information, please try again later")
                     return
             try:
                 result_dict = json.loads(result)
@@ -109,7 +110,8 @@ class SessionLib(object):
             except Exception as E:
                 logger.warning(E)
                 logger.warning("更新Session信息失败,返回消息为{}".format(result))
-                Notice.send_warning("更新Session信息失败,请稍后重试")
+                Notice.send_warning("更新Session信息失败,请稍后重试",
+                                    "Failed to update Session information, please try again later")
 
     def _set_base_info(self):
         info = RpcClient.call(Method.SessionGet, [self.sessionid], timeout=RPC_FRAMEWORK_API_REQ)

@@ -513,7 +513,8 @@ class HeartBeat(object):
         # session监控功能
         if Xcache.get_sessionmonitor_conf().get("flag"):
             for session_uuid in add_session_dict:
-                Notice.send_sms(f"新增session: {json.dumps(add_session_dict.get(session_uuid))}")
+                Notice.send_sms(f"新增session: {json.dumps(add_session_dict.get(session_uuid))}",
+                                f"New session: {json.dumps(add_session_dict.get(session_uuid))}")
 
         # postmoduleauto功能
         if Xcache.get_postmodule_auto_conf().get("flag"):
@@ -528,6 +529,7 @@ class HeartBeat(object):
                     continue
 
                 PostModuleAuto.send_task(json.dumps(add_session_dict.get(session_uuid)))
-                Notice.send_info(f"发送自动编排任务: SID {add_session_dict.get(session_uuid).get('id')}")
+                Notice.send_info(f"发送自动编排任务: SID {add_session_dict.get(session_uuid).get('id')}",
+                                 f"Send automation tasks: SID {add_session_dict.get(session_uuid).get('id')}")
 
         return sessions

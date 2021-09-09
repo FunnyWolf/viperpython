@@ -123,7 +123,7 @@ class Transport(object):
         result_flag = RpcClient.call(Method.SessionMeterpreterTransportAdd, [sessionid, opts],
                                      timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_flag:
-            Notice.send_success(f"新增传输 SID:{sessionid}")
+            Notice.send_success(f"新增传输 SID:{sessionid}", f"Add transport:{sessionid}")
 
             context = data_return(201, TRANSPORT_MSG.get(201), {})
             return context
@@ -147,8 +147,9 @@ class Transport(object):
                                          timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result_flag:
                 reconnect_time = time.time() + sleep
-                Notice.send_warn(
-                    f'切换Session到休眠 SID:{sessionid} 重连时间: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(reconnect_time))}')
+                Notice.send_warning(
+                    f'切换Session到休眠 SID:{sessionid} 重连时间: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(reconnect_time))}',
+                    f'Switch session to sleep SID:{sessionid} Reconnect time: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(reconnect_time))}')
 
                 context = data_return(203, TRANSPORT_MSG.get(203), {})
                 return context
@@ -159,7 +160,7 @@ class Transport(object):
         else:
             result_flag = False
         if result_flag:
-            Notice.send_info(f"切换传输完成 SID:{sessionid}")
+            Notice.send_info(f"切换传输完成 SID:{sessionid}", f"Switch transport success SID:{sessionid}")
             context = data_return(202, TRANSPORT_MSG.get(202), {})
             return context
         else:
@@ -194,7 +195,7 @@ class Transport(object):
         result_flag = RpcClient.call(Method.SessionMeterpreterTransportRemove, [sessionid, opts],
                                      timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_flag:
-            Notice.send_info(f"删除传输 SID:{sessionid}")
+            Notice.send_info(f"删除传输 SID:{sessionid}", f"Delete transport:{sessionid}")
             context = data_return(204, TRANSPORT_MSG.get(204), {})
             return context
         else:

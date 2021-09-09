@@ -69,8 +69,9 @@ class WebDelivery(object):
             job_id = int(result.get('job_id'))
             if Job.is_msf_job_alive(job_id):
                 opts['ID'] = int(result.get('job_id'))
-                Notice.send_success("新建WebDelivery成功:{} {} JobID:{}".format(opts.get('PAYLOAD'), opts.get('LPORT'),
-                                                                            result.get('job_id')))
+                Notice.send_success(
+                    f"新建WebDelivery成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}",
+                    f"Create WebDelivery success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
                 context = data_return(201, WebDelivery_MSG.get(201), opts)
             else:
                 context = data_return(301, WebDelivery_MSG.get(301), opts)

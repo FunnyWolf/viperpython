@@ -183,8 +183,9 @@ class Job(object):
                     return context
                 if result.get('result') == 'success':
                     # 发送通知
+                    # TODO
                     Notice.send_info(
-                        "模块: {} {} 手动删除完成".format(common_module_instance.NAME, common_module_instance._target_str))
+                        "模块: {} {} 手动删除完成".format(common_module_instance.NAME, common_module_instance._target_str), "")
                     context = data_return(204, Job_MSG.get(204), {"uuid": task_uuid, "job_id": job_id})
                     return context
                 else:

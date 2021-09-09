@@ -145,12 +145,14 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                 null_response['currentAuthority'] = 'admin'  # 当前为单用户模式,默认为admin
                 null_response['token'] = token.key
                 # 成功登录通知
-                Notice.send_info(f"{serializer.validated_data['user']} 成功登录")
+                Notice.send_info(f"{serializer.validated_data['user']} 登录成功",
+                                 f"{serializer.validated_data['user']} login")
                 context = data_return(201, BASEAUTH_MSG.get(201), null_response)
                 return Response(context)
             else:
                 if Xcache.login_fail_count():
-                    Notice.send_alert("Viper遭到暴力破解,服务器地址可能已经暴露")
+                    Notice.send_alert("Viper被暴力破解，服务器地址可能已经暴露",
+                                      "Viper has been brute force, and the server address may have been exposed")
 
                 context = data_return(301, BASEAUTH_MSG.get(301), null_response)
                 return Response(context)

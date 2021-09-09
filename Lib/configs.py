@@ -476,3 +476,7 @@ RPC_JOB_API_REQ = 3  # 后台任务类请求
 RPC_SESSION_OPER_SHORT_REQ = 15  # 涉及Session操作类请求
 RPC_SESSION_OPER_LONG_REQ = 120  # 涉及Session操作类请求
 RPC_RUN_MODULE_LONG = 120  # 涉及Session操作类请求
+
+# lang
+CN = "zh-CN"
+EN = "en-US"

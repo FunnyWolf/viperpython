@@ -70,7 +70,8 @@ class PortFwd(object):
             context = data_return(301, PORTFWD_MSG.get(301), [])
             return context
         if result_dict.get('status') is True:
-            Notice.send_success(f"新增端口转发 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
+            Notice.send_success(f"新增端口转发成功 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}",
+                                f"Create portfwd success SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
             context = data_return(201, PORTFWD_MSG.get(201), result_dict.get('data'))
             return context
         else:
@@ -94,7 +95,8 @@ class PortFwd(object):
                 context = data_return(302, PORTFWD_MSG.get(302), [])
                 return context
             if result_dict.get('status') is True:
-                Notice.send_info(f"删除端口转发 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
+                Notice.send_info(f"删除端口转发 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}",
+                                 f"Delete portFwd SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
                 context = data_return(204, PORTFWD_MSG.get(204), result_dict.get('data'))
                 return context
             else:
