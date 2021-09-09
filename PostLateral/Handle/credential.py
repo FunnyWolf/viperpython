@@ -85,7 +85,10 @@ class Credential(object):
             return False
 
         # 没有此主机数据时新建
-        default_dict = {'username': username, 'password': password, 'password_type': password_type, 'tag': tag,
+        default_dict = {'username': username,
+                        'password': password,
+                        'password_type': password_type,
+                        'tag': tag,
                         'source_module': source_module,
                         'host_ipaddress': host_ipaddress,
                         'desc': desc}

@@ -216,8 +216,8 @@ class _CommonModule(object):
             tag = {}
         if password == '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
-        # TODO
-        result = Credential.add_or_update(username, password, password_type, tag, self.NAME_ZH, self.host_ipaddress,
+        result = Credential.add_or_update(username, password, password_type, tag, f"{self.NAME_ZH}|{self.NAME_EN}",
+                                          self.host_ipaddress,
                                           desc)
         return result
 
@@ -358,8 +358,8 @@ class _CommonModule(object):
             handler_config = self.param(HANDLER_OPTION.get('name'))
             if handler_config is None:
                 return False
-            # TODO
-            handler_config["HandlerName"] = f"{self.NAME_ZH} IP: {self.host_ipaddress}"
+
+            handler_config["HandlerName"] = f"{self.NAME_ZH}|{self.NAME_EN} IP: {self.host_ipaddress}"
             Handler.create_virtual_handler(handler_config)
             self.log_good("监听配置已缓存")
             return True
