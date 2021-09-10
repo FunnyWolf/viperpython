@@ -16,6 +16,12 @@ class PostModule(PostMSFRawModule):
               "功能类似CS的execute-assembly,当C#需要输入参数时需要确保填写参数.\n" \
               "本模块新增了BypassETW及BypassAmsi功能,但模块只适用于x64位系统"
 
+    NAME_EN = "Memory execution C# executable file (Bypass)"
+    DESC_EN = "The module loads the exe file written in C# into the memory and then executes it using CLR.\n" \
+              "Need to install .net2.0 (win2008 default installation) or .net4.0 (win2012 default installation) on the controlled host.\n" \
+              "The executable file needs to be the same as the version of the controlled host.net.\n" \
+              "The function is similar to the execute-assembly of CobaltStrike. When C# needs to input parameters, you need to make sure to fill in the parameters.\n" \
+              "This module adds BypassETW and BypassAmsi functions, but the module is only applicable to x64-bit systems"
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

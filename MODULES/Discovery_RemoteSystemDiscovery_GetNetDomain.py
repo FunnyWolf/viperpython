@@ -9,6 +9,11 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFPowershellFunctionModule):
     NAME_ZH = "获取域基本信息"
     DESC_ZH = "模块使用powershell脚本获取主机所在域的基本信息,如果主机不在域中,脚本可能报错"
+
+    NAME_EN = "Get basic domain information"
+    DESC_EN = "The module uses the powershell script to obtain the basic information of the domain where the host is located.\n" \
+              "If the host is not in the domain, the script may report an error"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限

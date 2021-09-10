@@ -11,6 +11,10 @@ from MODULES_DATA.Reconnaissance_Other_RGPerson.RGPerson import *
 class PostModule(PostPythonModule):
     NAME_ZH = "随机身份生成(中文)"
     DESC_ZH = "该脚本生成信息：中国黑客ID\姓名\年龄\性别\身份证\手机号\组织机构代码\统一社会信用代码."
+
+    NAME_EN = "Random Identity Generation (Chinese)"
+    DESC_EN = "The script generates information: Chinese hacker ID\\name\\age\\gender\\ID card\\phone number\\organization code\\unified social credit code."
+
     MODULETYPE = TAG2TYPE.Resource_Development
 
     ATTCK = ["T1585"]  # ATTCK向量

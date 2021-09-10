@@ -11,7 +11,11 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFRawModule):
     NAME_ZH = "下载文件"
-    DESC_ZH = "模块用于下载Session所在主机文件到服务器.\n"
+    DESC_ZH = "模块用于下载Session所在主机文件到服务器."
+
+    NAME_EN = "Download file"
+    DESC_EN = "The module is used to download the host file from session to the server."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.internal
 

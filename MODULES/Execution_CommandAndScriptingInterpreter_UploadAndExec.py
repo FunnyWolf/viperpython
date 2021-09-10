@@ -9,7 +9,11 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFRawModule):
     NAME_ZH = "上传并执行可执行文件"
-    DESC_ZH = "模块将用户指定文件上传到目标机并执行.\n"
+    DESC_ZH = "模块将用户指定文件上传到目标机并执行."
+
+    NAME_EN = "Upload and execute executable files"
+    DESC_EN = "The module uploads the user-specified file to the target machine and executes it."
+
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限

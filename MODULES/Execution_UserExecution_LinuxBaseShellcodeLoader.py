@@ -15,6 +15,13 @@ class PostModule(PostPythonModule):
               "模块适配以下类型载荷:\n" \
               "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
               "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
+
+    NAME_EN = "Basic ShellcodeLoader bypass AV(Linux)"
+    DESC_EN = "The module realizes bypass AV by combining the encoded shellcode with the basic shellcodeloader.\n" \
+              "The module adapts to the following types of payload:\n" \
+              "linux/x86/meterpreter/reverse_tcp  linux/x86/meterpreter/bind_tcp\n" \
+              "linux/x64/meterpreter/reverse_tcp  linux/x64/meterpreter/bind_tcp"
+
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Linux"]  # 平台
     PERMISSIONS = ["User", "Root"]  # 所需权限

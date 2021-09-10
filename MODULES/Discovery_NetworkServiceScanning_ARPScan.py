@@ -11,6 +11,12 @@ class PostModule(PostMSFRawModule):
     DESC_ZH = "目标内网的ARP扫描,所有ARP请求与回复目标内网.\n" \
               "ARP消息只证明此主机存活,不会探测端口.\n" \
               "如其他模块需要连接发现的主机,请使用Session添加对应路由或Socks代理"
+
+    NAME_EN = "Intranet ARP scan"
+    DESC_EN = "ARP scan of the target intranet, all ARP requests and replies to the target intranet.\n" \
+              "The ARP message only proves that the host is alive and will not detect the port.\n" \
+              "If other modules need to connect to the discovered host, please use Session to add the corresponding route or Socks proxy"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

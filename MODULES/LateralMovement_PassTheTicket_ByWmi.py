@@ -10,7 +10,15 @@ class PostModule(PostMSFRawModule):
     NAME_ZH = "WMI明文传递"
     DESC_ZH = "使用Session的Token或已知的用户名及密码,通过wmi方式在目标主机执行载荷.\n" \
               "模块会调用主机的wmic.exe和对方主机的powershell.exe,AV主动防御会提示风险.\n" \
-              "(如模块提示powershell命令超长,请使用stager类型监听)\n(模块无需内网路由)"
+              "(如模块提示powershell命令超长,请使用stager类型监听)\n" \
+              "(模块无需内网路由)"
+
+    NAME_EN = "WMI Pass the Password"
+    DESC_EN = "Use Session Token or a usename and password to execute the payload on the target host through wmi.\n" \
+              "The module will call the host's wmic.exe and the other host's powershell.exe, and the AV active defense will prompt the risk.\n" \
+              "(If the module prompts that the powershell command is too long, please use the stager type to handler)\n" \
+              "Module do not need msfroute"
+
     MODULETYPE = TAG2TYPE.Lateral_Movement
     AUTHOR = ["Viper"]  # 作者
     PLATFORM = ["Windows"]  # 平台

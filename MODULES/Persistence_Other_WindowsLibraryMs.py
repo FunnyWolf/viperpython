@@ -11,6 +11,12 @@ class PostModule(PostMSFRawModule):
     DESC_ZH = "木马dll文件写入到Documents.library-ms配置文件中并新建Junction Folders\n" \
               "当用户登录或浏览桌面时生效.\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows Library-ms persistence"
+    DESC_EN = "Write the Trojan dll file into the Documents.library-ms configuration file and create a new Junction Folders\n" \
+              "It takes effect when the user logs in or browses the desktop.\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
@@ -30,7 +36,6 @@ class PostModule(PostMSFRawModule):
         super().__init__(sessionid, ipaddress, custom_param)
         self.type = "exploit"
         self.mname = "windows/local/persistence_library_ms"
-
 
     def check(self):
         """执行前的检查函数"""

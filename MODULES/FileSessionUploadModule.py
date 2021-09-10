@@ -12,7 +12,11 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFRawModule):
     NAME_ZH = "上传文件"
-    DESC_ZH = "模块用于上传服务器文件到Session所在主机.\n"
+    DESC_ZH = "模块用于上传服务器文件到Session所在主机."
+
+    NAME_EN = "Upload file"
+    DESC_EN = "The module is used to upload server file to the host where the session is located."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.internal
 

@@ -13,6 +13,9 @@ class PostModule(PostPythonModule):
     DESC_ZH = "在未签名的EXE文件中添加Microsoft Windows签名\n" \
               "签名无法通过操作系统签名认证."
 
+    NAME_EN = "Forged Microsoft Windows signature"
+    DESC_EN = "Add Microsoft Windows signature to unsigned EXE files\n" \
+              "The signature cannot be verified by the operating system signature."
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

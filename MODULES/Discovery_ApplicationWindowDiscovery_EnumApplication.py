@@ -9,6 +9,11 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFRawModule):
     NAME_ZH = "Windows已安装软件"
     DESC_ZH = "获取当前Windows已安装软件列表.可以通过此信息查找可能的利用链或当前主机的用途."
+
+    NAME_EN = "Windows installed software"
+    DESC_EN = "Get the list of currently installed software in Windows.\n" \
+              " You can use this information to find possible exploit chains or the purpose of the current host."
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

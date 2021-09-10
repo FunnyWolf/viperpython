@@ -8,9 +8,12 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(BotMSFModule):
-    NAME_ZH = "SSH暴力破解模块(beta)"
-    DESC_ZH = "模块使用内置字典或用户自定义字典对指定地址进行暴力破解攻击.\n" \
-              "(模块主要用于测试全网扫描功能)"
+    NAME_ZH = "SSH暴力破解"
+    DESC_ZH = "模块使用内置字典或用户自定义字典对指定地址进行暴力破解攻击.\n(模块用于demo演示)"
+
+    NAME_EN = "SSH bruteforce cracking"
+    DESC_EN = "The module uses a built-in dictionary or a user-defined dictionary to bruteforce the specified address.\n" \
+              "(The module is used for demo demonstration)"
     MODULETYPE = TAG2TYPE.Bot_MSF_Exp
     README = ["https://www.yuque.com/vipersec/module/wgviok"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1193/"]

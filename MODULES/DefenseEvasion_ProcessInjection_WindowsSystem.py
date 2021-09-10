@@ -8,12 +8,20 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME_ZH = "注入Windows系统进程"
+    NAME_ZH = "注入到Windows系统进程"
     DESC_ZH = "尝试将Session所在的进程注入到系统原生的进程中.\n" \
               "模块会尝试注入到services,wininit,svchost,lsm,lsass,winlogon等进程.\n" \
               "注入系统进程是提权或绕过防守人员排查的很好的手段.\n" \
-              "模块需要管理员权限,退出Session时可能会引发系统异常,请不要手工退出Session.\n" \
-              ""
+              "模块需要管理员权限,退出Session时可能会引发系统异常,请不要手工退出Session.\n"
+    WARN_ZH = "成功注入系统进程后请勿关闭Session"
+
+    NAME_EN = "Inject into Windows system process"
+    DESC_EN = "Try to inject the process where the Session is located into the native process of the system.\n" \
+              "The module will try to inject into services, wininit, svchost, lsm, lsass, winlogon and other processes.\n" \
+              "Injecting system processes is a good way to raise authority or bypass the investigation of defenders.\n" \
+              "The module requires administrator permissions, and system exceptions may be caused when exiting the Session. Please do not exit the Session manually.\n"
+    WARN_EN = "Do not close the Session after successfully injecting into the system process"
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限
@@ -21,7 +29,7 @@ class PostModule(PostMSFRawModule):
     README = ["https://www.yuque.com/vipersec/module/ud0pd6"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     AUTHOR = "Viper"
-    WARN_ZH = "成功注入系统进程后请勿关闭Session"
+
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionHander(),

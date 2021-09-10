@@ -13,6 +13,13 @@ class PostModule(PostMSFRawModule):
               "模块将dswmiexec.exe上传到当前主机,通过dswmiexec.exe调用对方主机的powershell.exe,AV主动防御可能会提示风险.\n" \
               "(如模块提示powershell命令超长,请使用stager类型监听)\n" \
               "(模块无需内网路由)"
+
+    NAME_EN = "WMI PTH"
+    DESC_EN = "Use Session Token or a username and password to execute the payload on the target host through wmi.\n" \
+              "The module uploads dswmiexec.exe to the current host, and calls the other host's powershell.exe through dswmiexec.exe, AV active defense may prompt risks.\n" \
+              "(If the module prompts that the powershell command is too long, please use the stager type to handler)\n" \
+              "Module do not need msfroute"
+
     MODULETYPE = TAG2TYPE.Lateral_Movement
     AUTHOR = ["Viper"]  # 作者
     PLATFORM = ["Windows"]  # 平台

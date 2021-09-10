@@ -10,6 +10,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostPythonModule):
     NAME_ZH = "利用云函数上线(腾讯API网关)"
     DESC_ZH = "模块会根据现有的监听配置及用户输入的API网关自动生成一个虚拟监听,用户可以使用该虚拟监听直接生成exe来进行上线"
+
+    NAME_EN = "Session online by scf (Tencent API Gateway)"
+    DESC_EN = "The module will automatically generate a virtual handler based on the existing handler configuration and the API gateway weburl entered by the user.\n" \
+              "The user can use the virtual handler to directly generate an exe to online session."
     MODULETYPE = TAG2TYPE.Resource_Development
 
     ATTCK = ["T1583.006"]  # ATTCK向量

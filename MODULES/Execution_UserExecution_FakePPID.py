@@ -9,8 +9,12 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME_ZH = "父进程PID伪装规避检测"
+    NAME_ZH = "伪装PPID规避检测"
     DESC_ZH = "使用CreateProcessA及远程线程注入技术伪装PPID,将shellcode注入到ie进程中"
+
+    NAME_EN = "Disguise PPID to evade detection"
+    DESC_EN = "Use CreateProcessA and remote thread injection technology to disguise PPID and inject shellcode into the ie process"
+
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

@@ -10,6 +10,11 @@ class PostModule(PostPythonModule):
     NAME_ZH = "获取Windows补丁列表"
     DESC_ZH = "获取Windows主机的补丁列表.\n" \
               "模块用于演示如何在不修改MSF模块的情况下编写Viper模块."
+
+    NAME_EN = "Get Windows patches"
+    DESC_EN = "Get the patch list of the Windows host.\n" \
+              "The module is used to demonstrate how to write a Viper module without modifying the MSF module."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Privilege_Escalation
     PLATFORM = ["Windows"]  # 平台

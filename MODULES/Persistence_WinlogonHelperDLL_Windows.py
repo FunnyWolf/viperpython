@@ -13,6 +13,14 @@ class PostModule(PostMSFRawModule):
               "模块需要管理员或SYSTEM权限.\n" \
               "持久化会对所有登录主机的用户生效（本地用户，域用户）\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Winlogon Helper DLL persistence"
+    DESC_EN = "Through the registry HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\n" \
+              "Write the path of the Trojan file to achieve persistence.\n" \
+              "The module requires administrator or SYSTEM privileges.\n" \
+              "Persistence will take effect for all users who login to the host (local users, domain users)\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限

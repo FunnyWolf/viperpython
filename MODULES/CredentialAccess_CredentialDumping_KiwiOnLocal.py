@@ -10,7 +10,10 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFRawModule):
     NAME_ZH = "获取Windows内存密码"
-    DESC_ZH = "Kiwi抓取内存中的windows用户明文密码,并保存到凭证列表.\n"
+    DESC_ZH = "使用Kiwi抓取内存中的windows用户明文密码,并保存到凭证列表."
+
+    NAME_EN = "Get Windows password"
+    DESC_EN = "Use kiwi grabs the plaintext password of the windows user in the memory and saves it to the credential list."
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台

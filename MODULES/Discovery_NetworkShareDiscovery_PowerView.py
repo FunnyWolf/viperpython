@@ -9,6 +9,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFPowershellFunctionModule):
     NAME_ZH = "获取Windows网络共享"
     DESC_ZH = "模块获取主机本地共享信息或域内其他主机共享信息"
+
+    NAME_EN = "Get Windows network share"
+    DESC_EN = "The module obtains the local shared information of the host or the shared information of other hosts in the domain"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", ]  # 所需权限

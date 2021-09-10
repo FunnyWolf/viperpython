@@ -12,7 +12,13 @@ class PostModule(PostMSFRawModule):
     NAME_ZH = "异步Netbios扫描"
     DESC_ZH = "基于nextnet的内网异步netbios扫描.\n" \
               "模块扫描子网开放netbios协议(137端口)的主机,并获取主机的网卡地址.\n" \
-              "模块主要用于在拥有多个网段的内网中寻找目标."
+              "主要用于在拥有多个网段的内网中寻找目标."
+
+    NAME_EN = "Asynchronous Netbios scan"
+    DESC_EN = "Asynchronous netbios scanning of intranet based on nextnet.\n" \
+              "The module scans the host whose subnet opens the netbios protocol (port 137) and obtains the host's network card address.\n" \
+              "It is mainly used to find a target in an intranet with multiple network segments."
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限

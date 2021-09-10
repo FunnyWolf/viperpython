@@ -12,6 +12,15 @@ class PostModule(PostMSFCSharpModule):
               "https://github.com/k8gege/Ladon/releases/download/v7.0/Ladon7.0.rar\n" \
               "因Ladon不完全开源,Viper不保证内置Ladon-N20.exe及Ladon-N40.exe的安全性,\n" \
               "建议自行上传对应exe到<文件列表>"
+    WARN_ZH = "模块可能存在安全风险,请参考说明"
+
+    NAME_EN = "Ladon7.0 C# plugin"
+    DESC_EN = "The module memory executes Ladon's C# version exe. The exe required by the module is downloaded from the following link: (unzip password k8gege.org)\n" \
+              "https://github.com/k8gege/Ladon/releases/download/v7.0/Ladon7.0.rar\n" \
+              "Because Ladon is not completely open source, Viper does not guarantee the safety of the built-in Ladon-N20.exe and Ladon-N40.exe.\n" \
+              "It is recommended to upload the corresponding exe to <Files> by yourself"
+    WARN_EN = "The module may have security risks, please refer to the instructions"
+
     MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
@@ -19,7 +28,7 @@ class PostModule(PostMSFCSharpModule):
     README = ["https://www.yuque.com/vipersec/module/dkneiv"]
     REFERENCES = ["https://k8gege.org/Ladon/", "https://github.com/k8gege/Ladon"]
     AUTHOR = "Viper"
-    WARN_ZH = "模块可能存在安全风险,请参考说明"
+
     OPTIONS = register_options([
         OptionStr(name='args', name_tag="命令行参数", required=True,
                   desc="输入执行Ladon.exe时的命令行参数.可参考:https://k8gege.org/Ladon/",

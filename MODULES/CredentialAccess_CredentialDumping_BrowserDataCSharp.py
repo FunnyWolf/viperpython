@@ -9,7 +9,11 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFCSharpModule):
     NAME_ZH = "获取Windows浏览器密码(C#)"
     DESC_ZH = "模块使用BrowserGhost获取Windows系统浏览器密码/cookie/历史记录/书签.\n" \
-              "模块使用内存执行BrowserGhost可执行文件的方法获取信息,并将结果输出"
+              "模块内存执行BrowserGhost获取信息,并将结果输出"
+
+    NAME_EN = "Get Windows browser password (C#)"
+    DESC_EN = "The module uses BrowserGhost to obtain the Windows system browser password/cookie/history/bookmark.\n" \
+              "Module executes BrowserGhost in memory to obtain information and output the result"
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

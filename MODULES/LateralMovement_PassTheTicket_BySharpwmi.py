@@ -11,6 +11,12 @@ class PostModule(PostMSFCSharpModule):
     DESC_ZH = "模块内存执行定制版的Sharpwmi.exe.\n" \
               "通过指定的用户名密码或使用当前用户内存中的Hash进行横向移动,通过调用目标主机的powershell加载载荷上线.\n" \
               "与<WMI明文传递>模块相比,该模块不会调用本机的wmi.exe文件"
+
+    NAME_EN = "Sharpwmi lateral movement"
+    DESC_EN = "The module memory executes a customized version of Sharpwmi.exe.\n" \
+              "Use the username and password or use the Hash in the current user's memory to lateral movement, and call powershell of the target host to run payload.\n" \
+              "Compared with the <WMI Pass the Password> module, this module will not call the native wmi.exe file"
+
     MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

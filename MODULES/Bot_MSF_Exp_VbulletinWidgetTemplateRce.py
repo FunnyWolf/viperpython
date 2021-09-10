@@ -11,6 +11,10 @@ class PostModule(BotMSFModule):
     NAME_ZH = "vbulletin widget模板命令执行"
     DESC_ZH = "模块使用CVE-2020-17496攻击选择的vbulletin网站.\n" \
               "建议选择php类型的payload"
+
+    NAME_EN = "vbulletin widget template command execution"
+    DESC_EN = "The module uses CVE-2020-17496 to attack the selected vbulletin website.\n" \
+              "It is recommended to choose a php type of payload"
     MODULETYPE = TAG2TYPE.Bot_MSF_Exp
     README = ["https://www.yuque.com/vipersec/module/qp8b51"]
     REFERENCES = ["https://blog.exploitee.rs/2020/exploiting-vbulletin-a-tale-of-patch-fail/"]

@@ -10,6 +10,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFRawModule):
     NAME_ZH = "Session克隆"
     DESC_ZH = "模块在目标主机新建进程,将选择的Handler对应的shellcode注入到新进程中."
+
+    NAME_EN = "Session clone"
+    DESC_EN = "The module creates a new process on the target host and injects the shellcode corresponding to the selected handler into the new process."
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

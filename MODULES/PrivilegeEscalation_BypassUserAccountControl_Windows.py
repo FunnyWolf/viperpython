@@ -17,6 +17,16 @@ class PostModule(PostPythonModule):
               "模块需要Session完整性权限为中以上并处于管理员组.\n" \
               "自动模式会运行多个子模块尝试BypassUAC,杀软会拦截.\n" \
               "建议使用检测模式获取适用的子模块列表后,单独手工依次运行."
+
+    NAME_EN = "Windows UAC bypass"
+    DESC_EN = "There are many built-in ways to bypass  UAC to obtain administrator privileges.\n" \
+              "Automatic mode: automatically select bypass technology and execute\n" \
+              "Manual mode: manually select a certain bypass technique and execute it\n" \
+              "Detection mode: Automatically detect which bypass technologies Sesion applies (do not execute)\n" \
+              "The module needs the session integrity permission to be medium or higher and be in the administrator group.\n" \
+              "The automatic mode will run multiple sub-modules to try BypassUAC, and the anti-virus will intercept it.\n" \
+              "It is recommended to use the detection mode to obtain a list of applicable submodules, and then run them separately and manually."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Privilege_Escalation
     PLATFORM = ["Windows"]  # 平台

@@ -10,6 +10,11 @@ class PostModule(PostMSFRawModule):
     NAME_ZH = "Office宏钓鱼文档"
     DESC_ZH = "模块生成绑定指定监听的宏Payload,并将payload注入到样例word文档中.\n" \
               "宏钓鱼文档的随着时间的推移免杀效果会大幅下降,建议及时更新到最新版本."
+
+    NAME_EN = "Office Macro Phishing Document"
+    DESC_EN = "The module generates a macro payload that is bound to the specified monitoring, and injects the payload into the sample word document.\n" \
+              "The anti-virus effect of macro phishing documents will decrease significantly over time, and it is recommended to update to the latest version in time."
+
     REQUIRE_SESSION = False
     MODULETYPE = TAG2TYPE.Initial_Access
     PLATFORM = ["Windows"]  # 平台

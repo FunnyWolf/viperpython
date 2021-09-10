@@ -10,6 +10,12 @@ class PostModule(PostMSFPowershellFunctionModule):
     NAME_ZH = "Invoke-WMIExec哈希传递"
     DESC_ZH = "使用已知的用户名及NTLM哈希,通过wmi方式在目标主机执行载荷.\n" \
               "模块使用内存执行Invoke-WMIExec方式执行wmi,相较于<WMI哈希传递>无需上传文件"
+
+    NAME_EN = "Invoke-WMIExec PTH"
+    DESC_EN = "Use username and NTLM hash to execute the payload on the target host through wmi.\n" \
+              "The module uses the memory to execute Invoke-WMIExec to execute wmi,\n" \
+              " compared with <WMI Hash PTH>,this module do not need to upload files"
+
     MODULETYPE = TAG2TYPE.Lateral_Movement
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

@@ -12,6 +12,11 @@ class PostModule(PostMSFRawModule):
     DESC_ZH = "用于打开WDigest凭证存储开关,Windows 8/2012以上版本默认关闭Wdigest开关.\n" \
               "通过修改注册表UseLogonCredential值打开开关.\n" \
               "当用户注销重新登录后即可使用mimikatz抓取密码."
+
+    NAME_EN = "Windows WDigest switch"
+    DESC_EN = "Used to turn on the WDigest credential storage switch, Windows 8/2012 or later versions turn off the Wdigest switch by default.\n" \
+              "Turn on the switch by modifying the registry UseLogonCredential value.\n" \
+              "When the user logs out and logs in again, mimikatz can be used to grab the password."
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台

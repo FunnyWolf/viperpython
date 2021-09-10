@@ -12,6 +12,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostPythonModule):
     NAME_ZH = "Callback免杀(EnumChildWindows)"
     DESC_ZH = "模块通过编码shellcode与EnumChildWindows Callback结合的方式实现免杀"
+
+    NAME_EN = "Callback AV bypass(EnumChildWindows)"
+    DESC_EN = "The module realizes AV bypass by combining shellcode with EnumChildWindows Callback"
+
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

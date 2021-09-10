@@ -9,7 +9,11 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostPythonModule):
     NAME_ZH = "获取Windows RDP服务端口"
-    DESC_ZH = "模块查看主机的RDP服务是否开启,RDP服务的端口号.\n"
+    DESC_ZH = "模块查看主机的RDP服务是否开启,RDP服务的端口号."
+
+    NAME_EN = "Obtain the Windows RDP service port"
+    DESC_EN = "The module checks whether the RDP service of the host is enabled, and the port number of the RDP service."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台

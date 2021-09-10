@@ -13,7 +13,13 @@ class PostModule(PostMSFRawModule):
     DESC_ZH = "模块将C#编写的exe文件加载到内存中,然后使用CLR执行.\n" \
               "需要已控主机安装.net2.0（win2008默认安装）或.net4.0（win2012默认安装）.\n" \
               "可执行文件需要与已控主机.net版本相同.\n" \
-              "功能类似CS的execute-assembly,当C#需要输入参数时需要确保填写参数."
+              "功能类似CobaltStrike的execute-assembly,当exe需要输入参数时需要确保填写参数."
+
+    NAME_EN = "Memory execution C# executable file"
+    DESC_EN = "The module loads the exe file written in C# into the memory and then executes it using CLR.\n" \
+              "Need to install .net2.0 (win2008 default installation) or .net4.0 (win2012 default installation) on the controlled host.\n" \
+              "The executable file needs to be the same as the version of the controlled host.net.\n" \
+              "The function is similar to the execute-assembly of CobaltStrike. When exe needs to input parameters, you need to make sure to fill in the parameters."
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

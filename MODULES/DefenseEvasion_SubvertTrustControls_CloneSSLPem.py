@@ -12,6 +12,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFRawModule):
     NAME_ZH = "克隆Https证书"
     DESC_ZH = "模块读取目标网站证书中的配置信息,并使用此信息克隆一份自签名证书."
+
+    NAME_EN = "Clone Https certificate"
+    DESC_EN = "The module reads the configuration information in the target website certificate and uses this information to clone a self-signed certificate."
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
 
     ATTCK = ["T1553"]  # ATTCK向量

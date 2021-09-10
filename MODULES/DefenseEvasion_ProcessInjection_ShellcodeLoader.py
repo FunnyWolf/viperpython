@@ -7,13 +7,20 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFRawModule):
-    NAME_ZH = "内存执行Shellcode文件"
+    NAME_ZH = "内存执行Shellcode"
     DESC_ZH = "在主机内存中注入shellcode并执行,文件后缀必须为bin.\n" \
-              "与 PE文件转shellcode 模块配合可以内存执行任意pe文件\n" \
               "post/windows/manage/shellcode_inject模块可实现交互式执行\n" \
-              "Shellcode执行与cpu架构强相关,arch选项要填写准确.\n" \
+              "shellcode执行与cpu架构强相关,arch选项要填写准确.\n" \
               "如不需要shellcode输出(如payload上线),无需勾选获取输出.\n" \
               "如需要获取shellcode执行之后的输出(mimikatz),请勾选获取输出选项,并填写等待时间\n"
+
+    NAME_EN = "Memory execution shellcode"
+    DESC_EN = "Inject the shellcode into the host memory and execute it, the file suffix must be bin.\n" \
+              "The post/windows/manage/shellcode_inject module can realize interactive execution.\n" \
+              "Shellcode execution is strongly related to the cpu architecture, and the arch option must be filled in accurately.\n" \
+              "If you don't need shellcode output (such as the payload is online), you don't need to check to get the output.\n" \
+              "If you need to get the output (mimikatz) after the shellcode is executed, please check the get output option and fill in the waiting time\n"
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

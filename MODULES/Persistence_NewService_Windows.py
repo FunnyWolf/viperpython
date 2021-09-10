@@ -13,6 +13,13 @@ class PostModule(PostMSFRawModule):
               "服务持久化虽然在写入时无法免杀,但是成功写入口由于排查困难,隐蔽效果好.\n" \
               "当使用自定义loader时,需要为服务类型的exe.\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows service persistence"
+    DESC_EN = "The module performs persistence control by registering the uploaded Payload file as a system service.\n" \
+              "This module requires Session system permissions or administrator permissions.\n" \
+              "Although service persistence cannot bypass AV when writing, it has a good concealment effect due to difficulties in troubleshooting after successful writing.\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台

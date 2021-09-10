@@ -12,7 +12,10 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFPythonWithParamsModule):
     NAME_ZH = "内网Ping扫描"
-    DESC_ZH = "通过 ICMP 协议(Ping)获取内网存活主机信息.\n"
+    DESC_ZH = "通过ICMP协议(Ping)获取内网存活主机信息."
+
+    NAME_EN = "Intranet Ping Scan"
+    DESC_EN = "Obtain the information of the live hosts on the intranet through the ICMP protocol (Ping)."
 
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台

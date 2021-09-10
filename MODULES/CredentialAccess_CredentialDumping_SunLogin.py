@@ -614,6 +614,11 @@ class PostModule(PostMSFPythonWithParamsModule):
     DESC_ZH = "读取绿色版及安装版向日葵默认的配置文件config.ini,解密后获取向日葵连接密码\n" \
               "绿色版:C:\ProgramData\Oray\SunloginClient\config.ini\n" \
               "安装版:C:\Program Files\Oray\SunLogin\SunloginClient\config.ini"
+
+    NAME_EN = "Get SunLogin Password"
+    DESC_EN = "Read the default configuration file config.ini of the green version and the installed version of SunLogin, and get the Sunflower connection password after decryption\n" \
+              "Free installation: C:\ProgramData\Oray\SunloginClient\config.ini\n" \
+              "Installed version: C:\Program Files\Oray\SunLogin\SunloginClient\config.ini"
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

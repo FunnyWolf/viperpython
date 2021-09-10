@@ -11,6 +11,9 @@ from Lib.ModuleAPI import *
 class PostModule(PostPythonModule):
     NAME_ZH = "NtCreateSection进程注入"
     DESC_ZH = "使用NtCreateSection及NtMapViewOfSection远程线程注入技术打开共享内存,将shellcode注入到其他进程中"
+
+    NAME_EN = "NtCreateSection process injection"
+    DESC_EN = "Use NtCreateSection and NtMapViewOfSection remote thread injection technology to open shared memory and inject shellcode into other processes"
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

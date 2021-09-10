@@ -7,8 +7,13 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostMSFPowershellFunctionModule):
-    NAME_ZH = "获取域主机的IP信息"
-    DESC_ZH = "默认收集所控主机的IP地址.\n如果需要收集域内其他主机,如域控或其他域用户ip,请输入主机名作为参数"
+    NAME_ZH = "获取域主机的IP"
+    DESC_ZH = "默认收集当前主机的IP地址.\n如果需要收集域内其他主机,如域控或其他域用户ip,请输入主机名作为参数"
+
+    NAME_EN = "Get the IP of the domain host"
+    DESC_EN = "The IP address of the current host is collected by default.\n" \
+              "If you need to collect other hosts in the domain, such as domain controllers or other domain user IPs, please enter the host name as a parameter"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限

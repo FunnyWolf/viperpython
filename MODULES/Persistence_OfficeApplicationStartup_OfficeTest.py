@@ -13,6 +13,14 @@ class PostModule(PostMSFRawModule):
               "键中写入木马文件路径实现持久化.\n" \
               "每当运行Office程序(如打开Word文档)会自动执行木马文件\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows Office application startup persistence"
+    DESC_EN = "Via the registry\n" \
+              "HKEY_CURRENT_USER\Software\Microsoft\Office test\Special\Perf\n" \
+              "The path of the Trojan file is written in the key to achieve persistence.\n" \
+              "Whenever you run Office programs (such as opening a Word document), the Trojan file will be automatically executed\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

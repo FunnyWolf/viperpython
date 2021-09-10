@@ -10,6 +10,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFRawModule):
     NAME_ZH = "进程操作"
     DESC_ZH = "根据PID操作进程,包括注入/关闭,窃取token,还原token."
+
+    NAME_EN = "Process operation"
+    DESC_EN = "According to the PID operation process, including injecting/closing, stealing tokens, and restoring tokens."
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

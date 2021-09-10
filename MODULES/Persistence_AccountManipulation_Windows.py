@@ -10,6 +10,11 @@ class PostModule(PostMSFRawModule):
     NAME_ZH = "Windows增加本地账户/域账户"
     DESC_ZH = "通过Windows api增加本地用户/域用户.\n" \
               "可以选择steal_token功能窃取本地进程权限来执行创建用户操作."
+
+    NAME_EN = "Windows add local account/domain account"
+    DESC_EN = "Add local users/domain users through Windows api.\n" \
+              "You can choose the steal_token function to steal local process permissions to perform user creation operations."
+
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM"]  # 所需权限

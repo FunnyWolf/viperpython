@@ -9,9 +9,14 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFRawModule):
     NAME_ZH = "Windows登录脚本持久化"
     DESC_ZH = "通过在注册表\n" \
-              "HKCU\\Environment\\UserInitMprLogonScript\n" \
-              "中写入木马文件路径实现持久化.\n" \
+              "HKCU\\Environment\\UserInitMprLogonScript中写入木马文件路径实现持久化.\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows logon script persistence"
+    DESC_EN = "Via the registry\n" \
+              "HKCU\\Environment\\UserInitMprLogonScript writes the path of the Trojan file to achieve persistence.\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台

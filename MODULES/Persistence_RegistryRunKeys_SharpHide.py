@@ -8,8 +8,13 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFCSharpModule):
     NAME_ZH = "Windows注册表Run键值持久化(C#)"
-    DESC_ZH = "模块通过调用SharpHide写入隐藏的注册表键值,实现持久化.\n" \
-              "SharpHide会将目标exe路径写入到注册表Run键值中.\n"
+    DESC_ZH = "模块通过调用SharpHide.exe写入隐藏的注册表键值,实现持久化.\n" \
+              "SharpHide.exe会将目标exe路径写入到注册表Run键值中.\n"
+
+    NAME_EN = "Windows registry Run key persistence (C#)"
+    DESC_EN = "The module realizes persistence by calling Sharphide.exe to write hidden registry keys.\n" \
+              "SharpHide.exe will write the target exe path into the registry Run key.\n"
+
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

@@ -10,6 +10,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFRawModule):
     NAME_ZH = "Windows System提权"
     DESC_ZH = "模块尝试使用多种技术获取system权限,模块要求Session为绕过UAC的管理员权限"
+
+    NAME_EN = "Windows system privilege escalation"
+    DESC_EN = "The module tries to use a variety of techniques to obtain system permissions, and the module requires Session to be an administrator permission and bypassed UAC"
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Privilege_Escalation
     PLATFORM = ["Windows"]  # 平台

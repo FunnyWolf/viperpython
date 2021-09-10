@@ -12,6 +12,10 @@ from Lib.ModuleAPI import *
 class PostModule(PostPythonModule):
     NAME_ZH = "Callback免杀(CreateTimerQueue)"
     DESC_ZH = "模块通过编码shellcode与CreateTimerQueue Callback结合的方式实现免杀"
+
+    NAME_EN = "Callback AV bypass(CreateTimerQueue)"
+    DESC_EN = "The module realizes AV bypass by combining shellcode with CreateTimerQueue Callback"
+
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

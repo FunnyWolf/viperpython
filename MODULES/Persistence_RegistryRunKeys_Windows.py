@@ -12,8 +12,15 @@ class PostModule(PostMSFRawModule):
               "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run\n" \
               "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\n" \
               "键中写入木马文件路径实现持久化.\n" \
-              "不免杀,但是杀软不会弹框,直接禁止写入.\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows registry Run key persistence"
+    DESC_EN = "Via the registry\n" \
+              "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run\n" \
+              "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\n" \
+              "The path of the Trojan file is written in the key to achieve persistence.\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台

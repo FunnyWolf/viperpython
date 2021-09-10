@@ -10,8 +10,12 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(PostPythonModule):
-    NAME_ZH = "Reverse_https直连免杀"
+    NAME_ZH = "REVERSE_HTTPS直连免杀"
     DESC_ZH = "模块采用直连监听,读取stager2的方式进行免杀"
+
+    NAME_EN = "REVERSE_HTTPS direct connection to bypass AV"
+    DESC_EN = "The module adopts direct connection to handler and reads stager2 to bypass AV"
+
     MODULETYPE = TAG2TYPE.Execution
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限

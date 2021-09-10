@@ -12,8 +12,12 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFPythonWithParamsModule):
     NAME_ZH = "内网Netbios&SMB扫描"
-    DESC_ZH = "通过 NBNS 协议获取 NetBIOS Name.\n" \
-              "通过 139（默认）或者 445 探测系统相关信息.\n"
+    DESC_ZH = "通过NBNS协议获取NetBIOS Name.\n" \
+              "通过139端口(默认)或者445端口探测系统相关信息.\n"
+
+    NAME_EN = "Intranet Netbios&SMB scan"
+    DESC_EN = "Get NetBIOS Name through NBNS protocol.\n" \
+              "Detect system related information through port 139 (default) or port 445.\n"
 
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台

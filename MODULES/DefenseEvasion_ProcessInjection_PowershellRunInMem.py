@@ -9,9 +9,14 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFPowershellModule):
     NAME_ZH = "内存执行Powershell脚本"
-    DESC_ZH = "内存中执行自定义Powershell脚本,\n" \
-              "Powershell脚本只支持Powershell2.0的API.\n" \
+    DESC_ZH = "内存中执行自定义Powershell脚本.\n" \
+              "Powershell script only supports Powershell2.0 API.\n" \
               "执行的脚本可以通过<文件列表>上传到服务器"
+
+    NAME_EN = "Execute Powershell script in memory.\n"
+    DESC_EN = "Execute custom Powershell script in memory.\n" \
+              "The executed script can be uploaded to the server through <Files>"
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

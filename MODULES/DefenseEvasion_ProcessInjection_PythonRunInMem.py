@@ -8,9 +8,15 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFPythonModule):
     NAME_ZH = "内存执行Python脚本"
-    DESC_ZH = "主机内存中(Windows)或者系统Python解释器(Linux)执行自定义的Python脚本.\n" \
+    DESC_ZH = "内存中(Windows)或者系统Python解释器(Linux)执行自定义的Python脚本.\n" \
               "Python脚本只支持Python2.7及其自带的库.\n" \
-              "执行的脚本可以通过文件列表 上传到服务器."
+              "执行的脚本可以通过<文件列表>上传到服务器."
+
+    NAME_EN = "Memory execution Python script"
+    DESC_EN = "Execute custom Python scripts in memory (Windows) or the system Python interpreter (Linux).\n" \
+              "Python scripts only support Python2.7 and its own libraries.\n" \
+              "The executed script can be uploaded to the server through <Files>."
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限

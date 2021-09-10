@@ -10,7 +10,13 @@ class PostModule(PostMSFPowershellFunctionModule):
     NAME_ZH = "获取域主机最后登录用户"
     DESC_ZH = "模块获取域内远程主机最后登录的用户信息.\n" \
               "模块需要普通的域用户权限,但是需要远程主机开启远程注册功能.\n" \
-              "主机名可以使用<<获取所有域主机的信息>>模块进行获取"
+              "主机名可以使用<获取所有域主机的信息>模块进行获取"
+
+    NAME_EN = "Get the lastlogin user of the domain host"
+    DESC_EN = "The module obtains the last logged-in user information of the remote host in the domain.\n" \
+              "The module requires ordinary domain user permissions, but the remote host needs to enable the remote registration function.\n" \
+              "The host name can be obtained using the <Get the hostname in the domain> module"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["Administrator", "SYSTEM", ]  # 所需权限

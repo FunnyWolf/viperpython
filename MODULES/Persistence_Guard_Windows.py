@@ -10,6 +10,14 @@ class PostModule(PostMSFRawModule):
               "主要用于生成备用Session,防止初始权限丢失.\n" \
               "建议在取得第一个Session后马上运行此模块,确保权限不丢失\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows self-guarding Session"
+    DESC_EN = "The module uploads the loader with the function of guarding itself to the designated directory (C:\ProgramData\XXX) of the host.\n" \
+              "When the currently generated Session process crashes or exits, it will automatically restart after 10s.\n" \
+              "It is mainly used to generate a backup session to prevent the loss of initial permissions.\n" \
+              "It is recommended to run this module immediately after obtaining the first Session to ensure that the permissions are not lost\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台

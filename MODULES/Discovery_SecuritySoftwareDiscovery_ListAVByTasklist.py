@@ -14,6 +14,10 @@ class PostModule(PostPythonModule):
     NAME_ZH = "查找杀毒软件进程"
     DESC_ZH = "模块通过将 tasklist /svc 与已知数据对比,获取系统已安装杀毒软件信息.\n" \
               "通过webshell命令执行功能执行 tasklist /svc ,然后将结果拷贝到输入框运行即可"
+
+    NAME_EN = "Find antivirus software process"
+    DESC_EN = "The module obtains information about the anti-virus software installed in the system by comparing `tasklist /svc` output with known data.\n" \
+              "Execute tasklist /svc through the webshell command execution function, and then copy the result to the input box to run"
     MODULETYPE = TAG2TYPE.Discovery
 
     ATTCK = ["T1585"]  # ATTCK向量

@@ -11,6 +11,11 @@ class PostModule(PostMSFRawModule):
     NAME_ZH = "Windows计划任务持久化"
     DESC_ZH = "模块注册计划任务实现持久化,当前Session所在用户登录系统时执行载荷\n" \
               "使用模块时请勿关闭对应监听,Loader启动需要回连监听获取核心库文件."
+
+    NAME_EN = "Windows scheduled task persistence"
+    DESC_EN = "The module adds scheduled tasks to achieve persistence, and the load.exe execute when the user of session login to the system\n" \
+              "When using the module, do not turn off the corresponding handler, the Loader needs to be connected back to the monitoring to obtain the core library files."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Persistence
     PLATFORM = ["Windows"]  # 平台

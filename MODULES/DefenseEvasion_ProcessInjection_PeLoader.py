@@ -13,6 +13,13 @@ class PostModule(PostMSFRawModule):
               "不支持由golang编写的exe文件,如nps,frp." \
               "如不需要获取输出(如session上线),无需勾选获取输出.\n" \
               "如需要获取PE执行之后的输出(如mimikatz),请勾选获取输出选项,并填写等待时间\n"
+
+    NAME_EN = "Memory execution PE file (C++/C)"
+    DESC_EN = "Inject the PE file into the host memory and execute it, the file suffix must be exe.\n" \
+              "The module only supports PE files written in C++ and C, such as mimikatz, putty.\n" \
+              "Exe files written by golang, such as nps, frp, are not supported.\n" \
+              "If you don't need to get the output (such as the session is online), you don't need to check Get output.\n" \
+              "If you need to get the output after PE execution (such as mimikatz), please check the get output option and fill in the waiting time\n"
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

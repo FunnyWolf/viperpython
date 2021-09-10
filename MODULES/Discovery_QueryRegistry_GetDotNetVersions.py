@@ -8,7 +8,11 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostPythonModule):
     NAME_ZH = "获取.Net framework版本列表"
-    DESC_ZH = "模块查看主机已安装的.Net framework版本.\n"
+    DESC_ZH = "模块获取主机已安装的.Net framework版本."
+
+    NAME_EN = "Get .Net framework versions"
+    DESC_EN = "The module obtains the version of the .Net framework that the host has installed."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows"]  # 平台

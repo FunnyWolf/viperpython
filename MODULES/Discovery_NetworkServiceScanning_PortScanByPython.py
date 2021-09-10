@@ -13,8 +13,14 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFPythonWithParamsModule):
     NAME_ZH = "内网端口扫描"
     DESC_ZH = "目标内网的端口扫描.\n" \
-              "扫描脚本在目标主机中执行,所有扫描的网络流量在目标内网.\n" \
+              "扫描脚本在目标主机执行(Windows内存执行,Linux使用Python解释器),所有扫描的网络流量在目标内网.\n" \
               "如其他模块需要连接发现的服务,请使用此Session添加对应路由或使用Socks代理"
+
+    NAME_EN = "Intranet port scan"
+    DESC_EN = "Port scan of the target intranet.\n" \
+              "The scanning script is executed on the target host (Windows memory execution, Linux uses the Python interpreter), and all scanned network traffic is on the target intranet.\n" \
+              "If other modules need to connect to the discovered service, please use this Session to add the corresponding route or use Socks proxy"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

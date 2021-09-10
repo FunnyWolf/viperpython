@@ -12,7 +12,12 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFPythonWithParamsModule):
     NAME_ZH = "内网端口扫描与服务识别"
     DESC_ZH = "扫描内网中开放的TCP端口,识别已发现端口的服务,软件,版本等\n" \
-              "所有扫描的网络流量在目标内网,\n如其他模块需要连接发现的服务,请添加对应路由及Socks代理"
+              "所有扫描的网络流量在目标内网,如其他模块需要连接发现的服务,请添加对应路由及Socks代理"
+
+    NAME_EN = "Intranet port scanning and service identification"
+    DESC_EN = "Scan the open TCP ports in the intranet and identify the services, software, versions, etc. of the discovered ports\n" \
+              "All scanned network traffic is on the target intranet. If other modules need to connect to the discovered service, please add the corresponding route and Socks proxy"
+
     MODULETYPE = TAG2TYPE.Discovery
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限
