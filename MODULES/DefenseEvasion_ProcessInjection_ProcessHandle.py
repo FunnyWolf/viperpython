@@ -25,10 +25,10 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionHander(required=False),
-        OptionInt(name='PID', name_tag="进程PID", desc="进程PID", required=True),
-        OptionEnum(name='ACTION', name_tag="操作", desc="选择针对进程的操作", required=True,
+        OptionInt(name='PID', tag_zh="进程PID", desc_zh="进程PID", required=True),
+        OptionEnum(name='ACTION', tag_zh="操作", desc_zh="选择针对进程的操作", required=True,
                    default="inject",
-                   option_length=18,
+                   length=18,
                    enum_list=[
                        {'name': '窃取token(steal_token)', 'value': "steal_token"},
                        {'name': '还原token(rev2self)', 'value': "rev2self"},

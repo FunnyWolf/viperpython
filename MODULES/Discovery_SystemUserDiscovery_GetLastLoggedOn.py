@@ -26,7 +26,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='ComputerName', name_tag="主机名", desc="需要查询的主机名"),
+        OptionStr(name='ComputerName', tag_zh="主机名", desc_zh="需要查询的主机名"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

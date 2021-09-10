@@ -21,7 +21,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1087/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionEnum(name='action', name_tag="选项", desc="可以选择获取所有用户或管理员组用户", required=True,
+        OptionEnum(name='action', tag_zh="选项", desc_zh="可以选择获取所有用户或管理员组用户", required=True,
                    default="Get-NetLocalGroupMember -GroupName Administrators",
                    enum_list=[
                        {'name': "本地管理员组用户", 'value': "Get-NetLocalGroupMember -GroupName Administrators"},
@@ -29,7 +29,7 @@ class PostModule(PostMSFPowershellFunctionModule):
                        {'name': "域管理员组用户", 'value': "Get-DomainGroupMember \"Domain Admins\""},
 
                    ],
-                   option_length=6,
+                   length=6,
                    )
     ])
 

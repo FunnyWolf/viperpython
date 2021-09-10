@@ -27,14 +27,14 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionText(name='ipstr', name_tag="IP地址", required=True,
-                   desc="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
-        OptionStr(name='port_list', name_tag="端口列表", required=True, desc="扫描的端口,以逗号分隔(例如22,80,445)",
-                  default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443", option_length=24),
-        OptionInt(name='timeout', name_tag="模块超时时间(秒)", desc="模块执行的超时时间", required=True, default=3600),
-        OptionInt(name='connect_time_out', name_tag="连接超时时间(毫秒)", desc="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
+        OptionText(name='ipstr', tag_zh="IP地址", required=True,
+                   desc_zh="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
+        OptionStr(name='port_list', tag_zh="端口列表", required=True, desc_zh="扫描的端口,以逗号分隔(例如22,80,445)",
+                  default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443", length=24),
+        OptionInt(name='timeout', tag_zh="模块超时时间(秒)", desc_zh="模块执行的超时时间", required=True, default=3600),
+        OptionInt(name='connect_time_out', tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
                   default=500),
-        OptionInt(name='max_threads', name_tag="扫描线程数", desc="扫描线程数(最大值20)", default=10),
+        OptionInt(name='max_threads', tag_zh="扫描线程数", desc_zh="扫描线程数(最大值20)", default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

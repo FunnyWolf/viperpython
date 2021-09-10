@@ -28,8 +28,8 @@ class PostModule(PostMSFRawModule):
     AUTHOR = "Viper"
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionStr(name='IPADDRESS', name_tag="子网网段", option_length=24, desc="支持192.168.146.1/24类型输入"),
-        OptionInt(name='TIMEOUT', name_tag="超时时间", desc="扫描超时时间(秒)", default=60 * 10),
+        OptionStr(name='IPADDRESS', tag_zh="子网网段", length=24, desc_zh="支持192.168.146.1/24类型输入"),
+        OptionInt(name='TIMEOUT', tag_zh="超时时间", desc_zh="扫描超时时间(秒)", default=60 * 10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

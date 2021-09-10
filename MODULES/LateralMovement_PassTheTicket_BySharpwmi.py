@@ -25,19 +25,19 @@ class PostModule(PostMSFCSharpModule):
     REFERENCES = ["https://github.com/viper-sec/sharpwmi"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionStr(name='host', name_tag="目标IP", desc="横向移动目标的IP地址",
+        OptionStr(name='host', tag_zh="目标IP", desc_zh="横向移动目标的IP地址",
                   required=True),
 
-        OptionBool(name='pth', name_tag="哈希传递", desc="不使用用户名密码,使用当前用户的内存中的hash进行认证"),
+        OptionBool(name='pth', tag_zh="哈希传递", desc_zh="不使用用户名密码,使用当前用户的内存中的hash进行认证"),
 
-        OptionStr(name='SMBDomain', name_tag="域", desc="目标主机的域,如果目标不在域中则为空"),
-        OptionStr(name='SMBUser', name_tag="用户名", desc="smb用户名"),
-        OptionStr(name='SMBPass', name_tag="密码", desc="smb密码(不能是hash)"),
+        OptionStr(name='SMBDomain', tag_zh="域", desc_zh="目标主机的域,如果目标不在域中则为空"),
+        OptionStr(name='SMBUser', tag_zh="用户名", desc_zh="smb用户名"),
+        OptionStr(name='SMBPass', tag_zh="密码", desc_zh="smb密码(不能是hash)"),
         OptionCredentialEnum(required=False, password_type=['windows', ]),
 
         OptionHander(),
-        OptionInt(name='wait', name_tag="等待时间", required=True,
-                  desc="读取输出信息前等待的秒数", default=10),
+        OptionInt(name='wait', tag_zh="等待时间", required=True,
+                  desc_zh="读取输出信息前等待的秒数", default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -63,7 +63,7 @@ class PostModule(PostMSFCSharpModule):
         else:
             credential_config = self.get_credential_config()
             if credential_config is not None:
-                domain = credential_config.get('tag').get('domain')
+                domain = credential_config.get('tag_zh').get('domain')
                 username = credential_config.get('username')
                 password = credential_config.get('password')
                 # 手工输入覆盖凭证输入

@@ -12,7 +12,7 @@ class PostModule(PostPythonModule):
     NAME_ZH = "随机身份生成(中文)111111111111"
     DESC_ZH = "该脚本生成信息：中国黑客ID\姓名\年龄\性别\身份证\手机号\组织机构代码\统一社会信用代码."
     NAME_EN = "Base module"
-    DESC_EN = "Base desc"
+    DESC_EN = "Base desc_zh"
     MODULETYPE = TAG2TYPE.Resource_Development
 
     ATTCK = ["T1585"]  # ATTCK向量
@@ -23,7 +23,7 @@ class PostModule(PostPythonModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionStr(name='apiip', name_tag="API网关公网IP地址", desc="使用IP地址上线时填写此信息"),
+        OptionStr(name='apiip', tag_zh="API网关公网IP地址", desc_zh="使用IP地址上线时填写此信息"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

@@ -32,16 +32,16 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(ext=['bin']),
-        OptionEnum(name='ARCH', name_tag="ARCH", desc="选择载荷的Arch平台(x86,x64)", required=True,
+        OptionEnum(name='ARCH', tag_zh="ARCH", desc_zh="选择载荷的Arch平台(x86,x64)", required=True,
                    default='x64',
                    enum_list=[
                        {'name': 'x86', 'value': 'x86'},
                        {'name': 'x64', 'value': 'x64'},
                    ]),
-        OptionBool(name='CHANNELIZED', name_tag="获取输出", desc="是否需要获取shellcode执行后输出结果", required=True, default=True),
-        OptionInt(name='WAIT_OUTPUT', name_tag="等待输出时间(秒)", desc="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
+        OptionBool(name='CHANNELIZED', tag_zh="获取输出", desc_zh="是否需要获取shellcode执行后输出结果", required=True, default=True),
+        OptionInt(name='WAIT_OUTPUT', tag_zh="等待输出时间(秒)", desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
                   default=3),
-        OptionBool(name='KILL', name_tag="关闭进程", desc="执行shellcode完成后关闭新增的进程.", required=True, default=True),
+        OptionBool(name='KILL', tag_zh="关闭进程", desc_zh="执行shellcode完成后关闭新增的进程.", required=True, default=True),
 
     ])
 

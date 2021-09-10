@@ -28,21 +28,22 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='ipstr', name_tag="IP地址", required=True, desc="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
+        OptionStr(name='ipstr', tag_zh="IP地址", required=True,
+                  desc_zh="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
         OptionEnum(name='port',
-                   name_tag="端口",
-                   desc="139端口支持netbios+smb扫描,445端口支持smb扫描",
+                   tag_zh="端口",
+                   desc_zh="139端口支持netbios+smb扫描,445端口支持smb扫描",
                    required=True,
                    default=139,
                    enum_list=[
                        {'name': "139", 'value': 139},
                        {'name': "445", 'value': 445},
                    ]),
-        OptionInt(name='connect_time_out', name_tag="连接超时时间(毫秒)", desc="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整(通常小于500ms)",
+        OptionInt(name='connect_time_out', tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整(通常小于500ms)",
                   default=100),
-        OptionInt(name='timeout', name_tag="模块执行超时时间(秒)", desc="模块执行的超时时间", required=True, default=600),
+        OptionInt(name='timeout', tag_zh="模块执行超时时间(秒)", desc_zh="模块执行的超时时间", required=True, default=600),
 
-        # OptionInt(name='max_threads', name_tag="扫描线程数", desc="扫描线程数(最大值20)", default=10),
+        # OptionInt(name='max_threads', name_tag="扫描线程数", desc_zh="扫描线程数(最大值20)", default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

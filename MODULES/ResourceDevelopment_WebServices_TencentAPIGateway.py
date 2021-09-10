@@ -25,8 +25,8 @@ class PostModule(PostPythonModule):
     REQUIRE_SESSION = False
     OPTIONS = register_options([
         OptionHander(),
-        OptionStr(name='apiserver', name_tag="API网关公网域名", required=True, desc="填写API网关的公网域名"),
-        OptionStr(name='apiip', name_tag="API网关公网IP地址", desc="使用IP地址上线时填写此信息"),
+        OptionStr(name='apiserver', tag_zh="API网关公网域名", required=True, desc_zh="填写API网关的公网域名"),
+        OptionStr(name='apiip', tag_zh="API网关公网IP地址", desc_zh="使用IP地址上线时填写此信息"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

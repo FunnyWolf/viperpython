@@ -25,7 +25,7 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionStr(name='rhosts', name_tag="目标网站", required=True, desc="目标网站的网址,无需添加https://前缀"),
+        OptionStr(name='rhosts', tag_zh="目标网站", required=True, desc_zh="目标网站的网址,无需添加https://前缀"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

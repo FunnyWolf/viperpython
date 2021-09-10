@@ -233,7 +233,8 @@ class PostModuleConfig(object):
                         for credential in credentials:
                             if credential.get('password_type') in type_list:
                                 name = "用户:{}  密码:{}  标签:{}".format(credential.get('username'),
-                                                                    credential.get('password'), credential.get('tag'),
+                                                                    credential.get('password'),
+                                                                    credential.get('tag_zh'),
                                                                     )
                                 import json
                                 value = json.dumps(credential)

@@ -12,18 +12,58 @@ from django.conf import settings
 
 MODULE_DATA_DIR = os.path.join(settings.BASE_DIR, 'MODULES_DATA')
 
-HANDLER_OPTION = {'name': '_msgrpc_handler', 'name_tag': '监听', 'type': 'enum', 'desc': '模块需要的监听器',
-                  'option_length': 24}
+HANDLER_OPTION = {
+    'name': '_msgrpc_handler',
 
-CACHE_HANDLER_OPTION = {'name': 'cacheHandler', 'name_tag': "缓存监听", 'type': 'bool', 'desc': "模块执行成功后,缓存对应监听配置",
-                        'default': False, "required": True, }
+    'tag_zh': '监听',
+    'desc_zh': '模块需要的监听器',
 
-CREDENTIAL_OPTION = {'name': '_postmodule_credential', 'name_tag': '凭证', 'type': 'enum', 'desc': '模块需要的凭证参数',
-                     'option_length': 24}
+    'tag_en': 'Handler',
+    'desc_en': 'Handler config that use by module',
 
-FILE_OPTION = {'name': '_postmodule_file', 'name_tag': '文件', 'type': 'enum',
-               'desc': '模块执行需要的文件,可以通过<文件管理>上传',
-               'option_length': 24}
+    'type': 'enum',
+    'option_length': 24
+}
+
+CACHE_HANDLER_OPTION = {
+    'name': 'cacheHandler',
+
+    'tag_zh': "缓存监听",
+    'desc_zh': "模块执行成功后,缓存对应监听配置",
+
+    'tag_en': "Cache Handler",
+    'desc_en': "After the module is successfully executed, cache the handler configuration",
+
+    'type': 'bool',
+    'default': False,
+    "required": True,
+}
+
+CREDENTIAL_OPTION = {
+    'name': '_postmodule_credential',
+
+    'tag_zh': '凭证',
+    'desc_zh': '模块需要的凭证参数',
+
+    'tag_en': 'Credential',
+    'desc_en': 'Credential parameters required by the module',
+
+    'type': 'enum',
+    'option_length': 24
+}
+
+FILE_OPTION = {
+    'name': '_postmodule_file',
+
+    'tag_zh': '文件',
+    'desc_zh': '模块需要的文件,可以通过<文件管理>上传',
+
+    'tag_en': 'File',
+    'desc_en': 'File needed for module can be uploaded through <Files>',
+
+    'type': 'enum',
+    'option_length': 24
+}
 
 
 class BROKER(object):

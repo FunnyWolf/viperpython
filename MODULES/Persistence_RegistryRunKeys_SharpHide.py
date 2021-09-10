@@ -24,19 +24,19 @@ class PostModule(PostMSFCSharpModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionEnum(name='action', name_tag="执行动作", required=True,
-                   desc="针对键值的执行的命令",
+        OptionEnum(name='action', tag_zh="执行动作", required=True,
+                   desc_zh="针对键值的执行的命令",
                    enum_list=[
                        {'name': "创建", 'value': "create"},
                        {'name': "删除", 'value': "delete"},
                    ],
-                   option_length=6),
-        OptionStr(name='keyvalue', name_tag="可执行文件目录", required=True,
-                  desc="输入开启启动的exe文件路径.",
-                  option_length=18),
-        OptionStr(name='arguments', name_tag="命令行参数", required=False,
-                  desc="执行exe是的命令行参数",
-                  option_length=24),
+                   length=6),
+        OptionStr(name='keyvalue', tag_zh="可执行文件目录", required=True,
+                  desc_zh="输入开启启动的exe文件路径.",
+                  length=18),
+        OptionStr(name='arguments', tag_zh="命令行参数", required=False,
+                  desc_zh="执行exe是的命令行参数",
+                  length=24),
 
     ])
 

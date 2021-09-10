@@ -88,10 +88,10 @@ class Credential(object):
         default_dict = {'username': username,
                         'password': password,
                         'password_type': password_type,
-                        'tag': tag,
+                        'tag_zh': tag,
                         'source_module': source_module,
                         'host_ipaddress': host_ipaddress,
-                        'desc': desc}
+                        'desc_zh': desc}
         CredentialModel.objects.update_or_create(username=username,
                                                  password=password,
                                                  password_type=password_type,
@@ -105,19 +105,19 @@ class Credential(object):
         for credential in credential_list:
             if credential.get('password_type') == 'windows':
                 try:
-                    output_str = "域: {}  密码类型: {}".format(credential.get('tag').get('domain'),
-                                                          credential.get('tag').get('type'))
+                    output_str = "域: {}  密码类型: {}".format(credential.get('tag_zh').get('domain'),
+                                                          credential.get('tag_zh').get('type'))
                 except Exception as E:
                     logger.warning(E)
                     output_str = "解析失败"
-                credential['tag'] = output_str
+                credential['tag_zh'] = output_str
             elif credential.get('password_type') == 'userinput':
-                credential['tag'] = "用户手工输入"
+                credential['tag_zh'] = "用户手工输入"
             elif credential.get('password_type') == 'browsers':
-                # credential['tag'] = "网址: {} 浏览器: {}".format(credential.get('tag').get('url'),
-                #                                             credential.get('tag').get('browser'))
-                credential['tag'] = "网址: {}".format(credential.get('tag').get('url'))
+                # credential['tag_zh'] = "网址: {} 浏览器: {}".format(credential.get('tag_zh').get('url'),
+                #                                             credential.get('tag_zh').get('browser'))
+                credential['tag_zh'] = "网址: {}".format(credential.get('tag_zh').get('url'))
             else:
-                credential['tag'] = str(credential.get('tag'))
+                credential['tag_zh'] = str(credential.get('tag_zh'))
 
         return credential_list

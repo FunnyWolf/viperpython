@@ -25,18 +25,18 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionStr(name='USERNAME', name_tag="用户名", desc="账户的用户名,域用户无需填写域名", required=True),
-        OptionStr(name='PASSWORD', name_tag="密码", desc="账户的密码,建议使用满足一定复杂度的密码", required=True),
-        OptionStr(name='GROUP', name_tag="用户组", desc="本地用户组: Users"
-                                                     "本地管理员组: Administrators"
-                                                     "域管理员组: Domain Admins"
-                                                     "域用户组:Domain Users", required=True),
+        OptionStr(name='USERNAME', tag_zh="用户名", desc_zh="账户的用户名,域用户无需填写域名", required=True),
+        OptionStr(name='PASSWORD', tag_zh="密码", desc_zh="账户的密码,建议使用满足一定复杂度的密码", required=True),
+        OptionStr(name='GROUP', tag_zh="用户组", desc_zh="本地用户组: Users"
+                                                      "本地管理员组: Administrators"
+                                                      "域管理员组: Domain Admins"
+                                                      "域用户组:Domain Users", required=True),
         OptionBool(name="ADDTODOMAIN",
-                   name_tag="域用户",
+                   tag_zh="域用户",
                    required=True,
                    default=False,
-                   desc="选定则添加为域账户,未选定则添加为本地账户"),
-        OptionStr(name='TOKEN', name_tag="用户TOKEN", desc="添加域用户时可将TOKEN设置为用户名或PID,模块会自动使用steal_token窃取token."),
+                   desc_zh="选定则添加为域账户,未选定则添加为本地账户"),
+        OptionStr(name='TOKEN', tag_zh="用户TOKEN", desc_zh="添加域用户时可将TOKEN设置为用户名或PID,模块会自动使用steal_token窃取token."),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

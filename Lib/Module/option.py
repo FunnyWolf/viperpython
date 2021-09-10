@@ -35,45 +35,62 @@ def register_options(options_list=None):
 
 
 class _Option(object):
-    def __init__(self, name, name_tag=None, option_type='str', required=False, desc=None, default=None, enum_list=None,
-                 option_length=None, extra_data=None):
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 type='str', required=False, default=None, enum_list=None,
+                 length=None, extra_data=None):
         if enum_list is None:
             enum_list = []
+
         self._name = name  # 参数名称
 
-        if name_tag is None:
-            self._name_tag = name
+        if tag_zh is None:
+            self._tag_zh = name
         else:
-            self._name_tag = name_tag  # 参数的前端显示名称(前端显示用,例如如果name为"path",则name_tag为"路径")
-        if desc is None:
-            self._desc = name
-        else:
-            self._desc = desc  # 参数提示信息,详细描述参数作用
+            self._tag_zh = tag_zh  # 参数的前端显示名称(前端显示用,例如如果name为"path",则name_tag为"路径")
 
-        self._type = option_type  # 参数类型,参考option_type_list
+        if desc_zh is None:
+            self._desc_zh = name
+        else:
+            self._desc_zh = desc_zh  # 参数提示信息,详细描述参数作用
+
+        if tag_en is None:
+            self._tag_en = name
+        else:
+            self._tag_en = tag_en  # 参数的前端显示名称(前端显示用,例如如果name为"path",则name_tag为"路径")
+
+        if desc_en is None:
+            self._desc_en = name
+        else:
+            self._desc_en = desc_en  # 参数提示信息,详细描述参数作用
+
+        self._type = type  # 参数类型,参考option_type_list
         self._required = required  # 是否必填
         self._default = default  # 参数默认值
         self._enum_list = enum_list  # enum类型的待选列表,如果type为enum类型则此参数必须填写
-        self._option_length = option_length
+        self._length = length  # 参数在前端需要的UI长度 1表示24表示最长
         self._extra_data = extra_data  # 参数需要传递的额外信息
 
     def to_dict(self):
         """将参数对象转化为json格式数据"""
         _dict = {
             'name': self._name,
-            'name_tag': self._name_tag,
+            'tag_zh': self._tag_zh,
+            'desc_zh': self._desc_zh,
+            'tag_en': self._tag_en,
+            'desc_en': self._desc_en,
             'type': self._type,
             'required': self._required,
-            'desc': self._desc,
             'default': self._default,
             'extra_data': self._extra_data,
         }
 
         # 处理option_length参数的兼容性
-        if self._option_length is None:
-            _dict['option_length'] = option_type_default_length.get(self._type)
+        if self._length is None:
+            _dict['length'] = option_type_default_length.get(self._type)
         else:
-            _dict['option_length'] = self._option_length
+            _dict['length'] = self._length
 
         # 处理enum_list参数的兼容性,请注意,此处无法处理handler和凭证等动态参数
         tmp_enmu_list = []
@@ -84,7 +101,7 @@ class _Option(object):
                 if one_enmu.get('name') is not None and one_enmu.get('value') is not None:
                     tmp_enmu_list.append(one_enmu)
                 else:
-                    logger.warning("参数错误, name: {} name_tag:{}".format(self._name, self._name_tag))
+                    logger.warning("参数错误, name: {} name_tag:{}".format(self._name, self._tag_zh))
         _dict['enum_list'] = tmp_enmu_list
         return _dict
 
@@ -92,41 +109,56 @@ class _Option(object):
 class OptionStr(_Option):
     """字符串类型参数"""
 
-    def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
-                 option_length=None):
-        super().__init__(option_type='str', name=name, name_tag=name_tag, desc=desc, required=required, default=default,
-                         option_length=option_length)
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=None,
+                 length=None):
+        super().__init__(type='str', name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en, desc_en=desc_en,
+                         required=required, default=default,
+                         length=length)
 
 
 class OptionText(_Option):
     """text类型参数"""
 
-    def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
-                 option_length=24):
-        super().__init__(option_type='text',
-                         name=name, name_tag=name_tag, desc=desc, required=required,
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=None,
+                 length=24):
+        super().__init__(type='text',
+                         name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en, desc_en=desc_en, required=required,
                          default=default,
-                         option_length=option_length)
+                         length=length)
 
 
 class OptionInt(_Option):
     """数字类型参数"""
 
-    def __init__(self, name, name_tag=None, desc=None, required=False, default=None,
-                 option_length=6):
-        super().__init__(option_type='integer', name=name, name_tag=name_tag, desc=desc, required=required,
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=None,
+                 length=6):
+        super().__init__(type='integer', name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en, desc_en=desc_en,
+                         required=required,
                          default=default,
-                         option_length=option_length)
+                         length=length)
 
 
 class OptionBool(_Option):
     """布尔类型参数"""
 
-    def __init__(self, name, name_tag=None, desc=None, required=False, default=False,
-                 option_length=4):
-        super().__init__(option_type='bool', name=name, name_tag=name_tag, desc=desc, required=required,
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=False,
+                 length=4):
+        super().__init__(type='bool', name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en, desc_en=desc_en,
+                         required=required,
                          default=default,
-                         option_length=option_length)
+                         length=length)
 
 
 class OptionEnum(_Option):
@@ -138,14 +170,18 @@ class OptionEnum(_Option):
     ]
     """
 
-    def __init__(self, name=None, name_tag=None, desc=None, required=False, default=None, option_length=6,
+    def __init__(self, name=None,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=None, length=6,
                  enum_list=None):
         if enum_list is None:
             enum_list = []
-        super().__init__(option_type='enum', name=name, name_tag=name_tag, required=required, desc=desc,
+        super().__init__(type='enum', name=name, tag_zh=tag_zh, tag_en=tag_en, desc_en=desc_en, required=required,
+                         desc_zh=desc_zh,
                          default=default,
                          enum_list=enum_list,
-                         option_length=option_length, extra_data=None)
+                         length=length, extra_data=None)
         self.is_valid()
 
     def is_valid(self):
@@ -157,8 +193,12 @@ class OptionEnum(_Option):
 class OptionIPAddressRange(_Option):
     """IP地址范围类型参数"""
 
-    def __init__(self, name, name_tag=None, desc=None, required=False, default=None):
-        super().__init__(option_type='address_range', name=name, name_tag=name_tag, desc=desc, required=required,
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=None):
+        super().__init__(type='address_range', name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en,
+                         desc_en=desc_en, required=required,
                          default=default)
 
 
@@ -168,11 +208,13 @@ class OptionFileEnum(_Option):
     """
 
     def __init__(self, required=True, ext=None):
-        super().__init__(option_type='enum',
+        super().__init__(type='enum',
                          name=FILE_OPTION.get('name'),
-                         name_tag=FILE_OPTION.get('name_tag'),
-                         desc=FILE_OPTION.get('desc'),
-                         option_length=FILE_OPTION.get('option_length'),
+                         tag_zh=FILE_OPTION.get('tag_zh'),
+                         desc_zh=FILE_OPTION.get('desc_zh'),
+                         tag_en=FILE_OPTION.get('tag_en'),
+                         desc_en=FILE_OPTION.get('desc_en'),
+                         length=FILE_OPTION.get('option_length'),
                          required=required,
                          extra_data={'file_extension': ext}
                          )
@@ -186,11 +228,13 @@ class OptionCredentialEnum(_Option):
     def __init__(self, required=True, password_type=None):
         if password_type is None:
             password_type = []
-        super().__init__(option_type='enum',
+        super().__init__(type='enum',
                          name=CREDENTIAL_OPTION.get('name'),
-                         name_tag=CREDENTIAL_OPTION.get('name_tag'),
-                         desc=CREDENTIAL_OPTION.get('desc'),
-                         option_length=CREDENTIAL_OPTION.get('option_length'),
+                         tag_zh=CREDENTIAL_OPTION.get('tag_zh'),
+                         desc_zh=CREDENTIAL_OPTION.get('desc_zh'),
+                         tag_en=CREDENTIAL_OPTION.get('tag_en'),
+                         desc_en=CREDENTIAL_OPTION.get('desc_en'),
+                         length=CREDENTIAL_OPTION.get('option_length'),
                          required=required,
                          extra_data={'password_type': password_type}
                          )
@@ -200,11 +244,13 @@ class OptionHander(_Option):
     """监听配置参数"""
 
     def __init__(self, required=True):
-        super().__init__(option_type='enum',
+        super().__init__(type='enum',
                          name=HANDLER_OPTION.get('name'),
-                         name_tag=HANDLER_OPTION.get('name_tag'),
-                         desc=HANDLER_OPTION.get('desc'),
-                         option_length=HANDLER_OPTION.get('option_length'),
+                         tag_zh=HANDLER_OPTION.get('tag_zh'),
+                         desc_zh=HANDLER_OPTION.get('desc_zh'),
+                         tag_en=HANDLER_OPTION.get('tag_en'),
+                         desc_en=HANDLER_OPTION.get('desc_en'),
+                         length=HANDLER_OPTION.get('option_length'),
                          required=required,
                          )
 
@@ -213,11 +259,13 @@ class OptionCacheHanderConfig(_Option):
     """是否选择新建缓存监听"""
 
     def __init__(self):
-        super().__init__(option_type='bool',
+        super().__init__(type='bool',
                          name=CACHE_HANDLER_OPTION.get('name'),
-                         name_tag=CACHE_HANDLER_OPTION.get('name_tag'),
-                         desc=CACHE_HANDLER_OPTION.get('desc'),
-                         option_length=CACHE_HANDLER_OPTION.get('option_length'),
+                         tag_zh=CACHE_HANDLER_OPTION.get('tag_zh'),
+                         desc_zh=CACHE_HANDLER_OPTION.get('desc_zh'),
+                         tag_en=CACHE_HANDLER_OPTION.get('tag_en'),
+                         desc_en=CACHE_HANDLER_OPTION.get('desc_en'),
+                         length=CACHE_HANDLER_OPTION.get('option_length'),
                          required=CACHE_HANDLER_OPTION.get('required'),
                          default=CACHE_HANDLER_OPTION.get('default'),
                          )

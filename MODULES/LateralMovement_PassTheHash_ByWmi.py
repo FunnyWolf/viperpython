@@ -30,11 +30,12 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionIPAddressRange(name='address_range', name_tag="IP列表", desc="IP列表(支持1.1.1.1,2.2.2.2,3.3.3.3-3.3.3.10格式输入)",
+        OptionIPAddressRange(name='address_range', tag_zh="IP列表",
+                             desc_zh="IP列表(支持1.1.1.1,2.2.2.2,3.3.3.3-3.3.3.10格式输入)",
                              required=True),
-        OptionStr(name='SMBDomain', name_tag="域", desc="目标主机的域信息 . 表示本地域"),
-        OptionStr(name='SMBUser', name_tag="用户名", desc="smb用户名"),
-        OptionStr(name='SMBPass', name_tag="密码", desc="smb密码(不能是hash)"),
+        OptionStr(name='SMBDomain', tag_zh="域", desc_zh="目标主机的域信息 . 表示本地域"),
+        OptionStr(name='SMBUser', tag_zh="用户名", desc_zh="smb用户名"),
+        OptionStr(name='SMBPass', tag_zh="密码", desc_zh="smb密码(不能是hash)"),
         OptionCredentialEnum(required=False, password_type=['windows', ]),
         OptionHander(),
     ])

@@ -92,15 +92,15 @@ class PostModule(PostMSFRawModule):
 
             # 分析可用的进程信息
             key_list = [
-                {"re": "lsass*", "tag": "Windows", "desc": "本地凭证存储进程"},
-                # {"re": "360*","tag":"AV","desc":"360杀毒相关进程"},
-                # {"re": "ZhuDongFangYu*", "tag": "AV", "desc": "360主动防御进程"},
-                {"re": "AnyDesk*", "tag": "CC", "desc": "AnyDesk远程控制工具"},
-                {"re": "tv_*", "tag": "CC", "desc": "TeamViewer远程控制工具"},
+                {"re": "lsass*", "tag_zh": "Windows", "desc_zh": "本地凭证存储进程"},
+                # {"re": "360*","tag_zh":"AV","desc_zh":"360杀毒相关进程"},
+                # {"re": "ZhuDongFangYu*", "tag_zh": "AV", "desc_zh": "360主动防御进程"},
+                {"re": "AnyDesk*", "tag_zh": "CC", "desc_zh": "AnyDesk远程控制工具"},
+                {"re": "tv_*", "tag_zh": "CC", "desc_zh": "TeamViewer远程控制工具"},
 
             ]
             for key in avList:
-                key_list.append({"re": key, "tag": "AV", "desc": avList.get(key)})
+                key_list.append({"re": key, "tag_zh": "AV", "desc_zh": avList.get(key)})
 
             processes = data.get("PROCESSES")
             for process in processes:
@@ -108,7 +108,7 @@ class PostModule(PostMSFRawModule):
                 for one_key in key_list:
                     if re.search(one_key.get("re"), name) is not None:
                         useful_processes.append(
-                            {"tag": one_key.get("tag"), "desc": one_key.get("desc"), "process": process})
+                            {"tag_zh": one_key.get("tag_zh"), "desc_zh": one_key.get("desc_zh"), "process": process})
                         break
 
             data["NETSTAT"] = netstat_after_filter

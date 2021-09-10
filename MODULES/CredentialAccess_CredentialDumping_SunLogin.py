@@ -628,8 +628,8 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = ["Somd5-小宇", "Viper"]
 
     OPTIONS = register_options([
-        OptionStr(name='input_config_path', name_tag="config.ini路径", desc="自定义向日葵config.ini配置文件路径",
-                  option_length=24),
+        OptionStr(name='input_config_path', tag_zh="config.ini路径", desc_zh="自定义向日葵config.ini配置文件路径",
+                  length=24),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

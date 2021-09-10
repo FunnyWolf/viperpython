@@ -27,8 +27,8 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionStr(name='RHOST', name_tag="目标IP", desc="目标的IP地址"),
-        OptionEnum(name='TARGET', name_tag="执行方式", desc="选择载荷的加载方式",
+        OptionStr(name='RHOST', tag_zh="目标IP", desc_zh="目标的IP地址"),
+        OptionEnum(name='TARGET', tag_zh="执行方式", desc_zh="选择载荷的加载方式",
                    required=True,
                    default=0,
                    enum_list=[
@@ -40,11 +40,11 @@ class PostModule(PostMSFRawModule):
                    ],
                    ),
 
-        OptionStr(name='SHARE', name_tag="共享目录", default="ADMIN$",
-                  desc="目标主机的共享目录,可以是ADMIN$或C$等管理员目录或其他可读写的共享目录"),
-        OptionStr(name='SMBDomain', name_tag="域", desc="目标主机的域信息 . 表示本地域"),
-        OptionStr(name='SMBUser', name_tag="用户名", desc="smb用户名"),
-        OptionStr(name='SMBPass', name_tag="密码", desc="smb密码"),
+        OptionStr(name='SHARE', tag_zh="共享目录", default="ADMIN$",
+                  desc_zh="目标主机的共享目录,可以是ADMIN$或C$等管理员目录或其他可读写的共享目录"),
+        OptionStr(name='SMBDomain', tag_zh="域", desc_zh="目标主机的域信息 . 表示本地域"),
+        OptionStr(name='SMBUser', tag_zh="用户名", desc_zh="smb用户名"),
+        OptionStr(name='SMBPass', tag_zh="密码", desc_zh="smb密码"),
         OptionCredentialEnum(required=False, password_type=['windows', ]),
         OptionHander(required=False),
         OptionFileEnum(required=False, ext=['exe', 'dll']),

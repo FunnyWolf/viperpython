@@ -23,8 +23,8 @@ class PostModule(PostMSFPowershellFunctionModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='ComputerName', name_tag="主机名", desc="需要查询的主机名"),
-        OptionBool(name='AllComputer', name_tag="所有主机", desc="查询域内所有主机的IP地址", default=False),
+        OptionStr(name='ComputerName', tag_zh="主机名", desc_zh="需要查询的主机名"),
+        OptionBool(name='AllComputer', tag_zh="所有主机", desc_zh="查询域内所有主机的IP地址", default=False),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

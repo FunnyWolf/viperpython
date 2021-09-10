@@ -24,17 +24,17 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionEnum(name='payload',
-                   name_tag="Payload类型",
-                   desc="根据CobaltStrike的Listener中payload类型进行选择",
+                   tag_zh="Payload类型",
+                   desc_zh="根据CobaltStrike的Listener中payload类型进行选择",
                    required=True,
                    default="reverse_http",
                    enum_list=[
                        {'name': "windows/beacon_http/reverse_http", 'value': "reverse_http"},
                        {'name': "windows/beacon_http/reverse_https", 'value': "reverse_https"},
                    ],
-                   option_length=24),
-        OptionStr("cshost", name_tag="Host", desc="CS listener的host参数", required=True),
-        OptionInt("csport", name_tag="Port", desc="CS listener的port参数", required=True)
+                   length=24),
+        OptionStr("cshost", tag_zh="Host", desc_zh="CS listener的host参数", required=True),
+        OptionInt("csport", tag_zh="Port", desc_zh="CS listener的port参数", required=True)
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

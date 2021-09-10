@@ -24,11 +24,11 @@ class PostModule(PostMSFPowershellFunctionModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1135/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionStr(name='host', name_tag="目标IP", desc="横向移动目标的IP地址",
+        OptionStr(name='host', tag_zh="目标IP", desc_zh="横向移动目标的IP地址",
                   required=True),
-        OptionStr(name='SMBDomain', name_tag="域", desc="目标主机的域,如果目标不在域中则为空"),
-        OptionStr(name='SMBUser', name_tag="用户名", desc="smb用户名"),
-        OptionStr(name='SMBPass', name_tag="密码", desc="NTLM哈希(LM:NTLM或NTLM)"),
+        OptionStr(name='SMBDomain', tag_zh="域", desc_zh="目标主机的域,如果目标不在域中则为空"),
+        OptionStr(name='SMBUser', tag_zh="用户名", desc_zh="smb用户名"),
+        OptionStr(name='SMBPass', tag_zh="密码", desc_zh="NTLM哈希(LM:NTLM或NTLM)"),
         OptionCredentialEnum(required=False, password_type=['windows', ]),
 
         OptionHander(),
@@ -52,7 +52,7 @@ class PostModule(PostMSFPowershellFunctionModule):
 
         credential_config = self.get_credential_config()
         if credential_config is not None:
-            domain = credential_config.get('tag').get('domain')
+            domain = credential_config.get('tag_zh').get('domain')
             username = credential_config.get('username')
             password = credential_config.get('password')
             # 手工输入覆盖凭证输入

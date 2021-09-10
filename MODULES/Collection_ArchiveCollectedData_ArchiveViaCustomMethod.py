@@ -22,9 +22,9 @@ class PostModule(PostMSFRawModule):
     AUTHOR = "Viper"
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionStr(name='INPUTDIR', name_tag="压缩目录", option_length=24, desc="需要压缩的目录"),
-        OptionInt(name='TIMEOUT', name_tag="超时时间", desc="压缩命令超时时间", default=60 * 10),
-        OptionBool(name='GETRESULT', name_tag="自动回传压缩文件", desc="执行完成压缩后是否自动将文件回传到Viper", default=False),
+        OptionStr(name='INPUTDIR', tag_zh="压缩目录", length=24, desc_zh="需要压缩的目录"),
+        OptionInt(name='TIMEOUT', tag_zh="超时时间", desc_zh="压缩命令超时时间", default=60 * 10),
+        OptionBool(name='GETRESULT', tag_zh="自动回传压缩文件", desc_zh="执行完成压缩后是否自动将文件回传到Viper", default=False),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

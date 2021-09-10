@@ -24,17 +24,17 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(),
-        OptionStr(name='ARGS', name_tag="命令行参数", option_length=24, desc="运行可执行文件时命令行参数"),
-        OptionBool(name='CLEANUP', name_tag="是否清理可执行文件", desc="执行完成后是否删除可执行文件", default=False),
-        OptionInt(name='TIMEOUT', name_tag="等待时间", desc="读取输出前等待时间", default=10),
-        OptionEnum(name='OS', name_tag="OS", desc="可执行文件适配的OS(Windows/Linux/ALL),ALL或者不填写表示跳过检查", required=False,
+        OptionStr(name='ARGS', tag_zh="命令行参数", length=24, desc_zh="运行可执行文件时命令行参数"),
+        OptionBool(name='CLEANUP', tag_zh="是否清理可执行文件", desc_zh="执行完成后是否删除可执行文件", default=False),
+        OptionInt(name='TIMEOUT', tag_zh="等待时间", desc_zh="读取输出前等待时间", default=10),
+        OptionEnum(name='OS', tag_zh="OS", desc_zh="可执行文件适配的OS(Windows/Linux/ALL),ALL或者不填写表示跳过检查", required=False,
                    default='windows',
                    enum_list=[
                        {'name': 'Windows', 'value': 'windows'},
                        {'name': 'Linux', 'value': 'linux'},
                        {'name': 'ALL', 'value': 'all'},
                    ]),
-        OptionEnum(name='ARCH', name_tag="ARCH", desc="可执行文件适配的Arch(x86,x64),ALL或者不填写表示跳过检查", required=False,
+        OptionEnum(name='ARCH', tag_zh="ARCH", desc_zh="可执行文件适配的Arch(x86,x64),ALL或者不填写表示跳过检查", required=False,
                    default='x64',
                    enum_list=[
                        {'name': 'x86', 'value': 'x86'},

@@ -30,11 +30,11 @@ class PostModule(PostMSFCSharpModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='args', name_tag="命令行参数", required=True,
-                  desc="输入执行Ladon.exe时的命令行参数.可参考:https://k8gege.org/Ladon/",
-                  option_length=24),
-        OptionInt(name='wait', name_tag="等待时间", required=True,
-                  desc="读取输出信息前等待的秒数", default=10),
+        OptionStr(name='args', tag_zh="命令行参数", required=True,
+                  desc_zh="输入执行Ladon.exe时的命令行参数.可参考:https://k8gege.org/Ladon/",
+                  length=24),
+        OptionInt(name='wait', tag_zh="等待时间", required=True,
+                  desc_zh="读取输出信息前等待的秒数", default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

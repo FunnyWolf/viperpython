@@ -26,8 +26,8 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionEnum(name='action',
-                   name_tag="操作",
-                   desc="Hijack表示劫持数字签名DLL,Recovery表示恢复系统默认数字证书DLL",
+                   tag_zh="操作",
+                   desc_zh="Hijack表示劫持数字签名DLL,Recovery表示恢复系统默认数字证书DLL",
                    required=True,
                    default="Hijack",
                    enum_list=[
