@@ -24,7 +24,7 @@ class Handler(object):
     @staticmethod
     def list():
         handlers = Handler.list_handler()
-        context = data_return(200, CODE_MSG.get(200), handlers)
+        context = data_return(200, handlers, CODE_MSG.get(200))
         return context
 
     @staticmethod
@@ -148,7 +148,7 @@ class Handler(object):
         if opts.get('VIRTUALHANDLER') is True:  # 虚拟监听
             opts.pop('VIRTUALHANDLER')
             opts = Handler.create_virtual_handler(opts)
-            context = data_return(201, Handler_MSG.get(201), opts)
+            context = data_return(201, opts, Handler_MSG.get(201))
         else:
             # 真正的监听
             # 处理代理相关参数
@@ -211,14 +211,14 @@ class Handler(object):
                 opts['PayloadUUIDSeed'] = str(uuid.uuid1())
             except Exception as E:
                 logger.error(E)
-                context = data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, {}, CODE_MSG.get(500))
                 return context
 
             result = MSFModule.run(module_type="exploit", mname="multi/handler", opts=opts, runasjob=True,
                                    timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['ID'] = None
-                context = data_return(301, Handler_MSG.get(301), opts)
+                context = data_return(301, opts, Handler_MSG.get(301))
             else:
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
@@ -228,34 +228,34 @@ class Handler(object):
                                         "Create handler success:{} {} JobID:{}".format(opts.get('PAYLOAD'),
                                                                                        opts.get('LPORT'),
                                                                                        result.get('job_id')))
-                    context = data_return(201, Handler_MSG.get(201), opts)
+                    context = data_return(201, opts, Handler_MSG.get(201))
                 else:
-                    context = data_return(301, Handler_MSG.get(301), opts)
+                    context = data_return(301, opts, Handler_MSG.get(301))
 
         return context
 
     @staticmethod
     def destroy(id=None):
         if id is None:
-            context = data_return(303, Handler_MSG.get(303), {})
+            context = data_return(303, {}, Handler_MSG.get(303))
             return context
         else:
             if -10000 < id < 0:  # 虚拟监听
                 flag_result = Xcache.del_virtual_handler(id)
                 if flag_result:
-                    context = data_return(202, Handler_MSG.get(202), {})
+                    context = data_return(202, {}, Handler_MSG.get(202))
                 else:
-                    context = data_return(303, Handler_MSG.get(303), {})
+                    context = data_return(303, {}, Handler_MSG.get(303))
             else:
                 flag = Job.destroy(id)
                 if flag:
                     # 删除msf监听
                     if Job.is_msf_job_alive(id):
-                        context = data_return(303, Handler_MSG.get(303), {})
+                        context = data_return(303, {}, Handler_MSG.get(303))
                     else:
-                        context = data_return(202, Handler_MSG.get(202), {})
+                        context = data_return(202, {}, Handler_MSG.get(202))
                 else:
-                    context = data_return(303, Handler_MSG.get(303), {})
+                    context = data_return(303, {}, Handler_MSG.get(303))
             return context
 
     @staticmethod

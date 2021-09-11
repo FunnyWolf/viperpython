@@ -19,7 +19,7 @@ class WebDelivery(object):
     @staticmethod
     def list():
         deliverys = WebDelivery.list_webdelivery()
-        context = data_return(200, CODE_MSG.get(200), deliverys)
+        context = data_return(200, deliverys, CODE_MSG.get(200))
         return context
 
     @staticmethod
@@ -64,7 +64,7 @@ class WebDelivery(object):
                                timeout=RPC_JOB_API_REQ)
         if isinstance(result, dict) is not True or result.get('job_id') is None:
             opts['ID'] = None
-            context = data_return(301, WebDelivery_MSG.get(301), opts)
+            context = data_return(301, opts, WebDelivery_MSG.get(301))
         else:
             job_id = int(result.get('job_id'))
             if Job.is_msf_job_alive(job_id):
@@ -72,24 +72,24 @@ class WebDelivery(object):
                 Notice.send_success(
                     f"新建WebDelivery成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}",
                     f"Create WebDelivery success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
-                context = data_return(201, WebDelivery_MSG.get(201), opts)
+                context = data_return(201, opts, WebDelivery_MSG.get(201))
             else:
-                context = data_return(301, WebDelivery_MSG.get(301), opts)
+                context = data_return(301, opts, WebDelivery_MSG.get(301))
         return context
 
     @staticmethod
     def destroy(id=None):
         if id is None:
-            context = data_return(303, WebDelivery_MSG.get(303), {})
+            context = data_return(303, {}, WebDelivery_MSG.get(303))
             return context
         else:
             flag = Job.destroy(id)
             if flag:
                 # 删除msf监听
                 if Job.is_msf_job_alive(id):
-                    context = data_return(303, WebDelivery_MSG.get(303), {})
+                    context = data_return(303, {}, WebDelivery_MSG.get(303))
                 else:
-                    context = data_return(202, WebDelivery_MSG.get(202), {})
+                    context = data_return(202, {}, WebDelivery_MSG.get(202))
             else:
-                context = data_return(303, WebDelivery_MSG.get(303), {})
+                context = data_return(303, {}, WebDelivery_MSG.get(303))
             return context

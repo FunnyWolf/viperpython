@@ -29,7 +29,7 @@ class LazyLoader(object):
         from Msgrpc.Handle.handler import Handler
         data = Xcache.list_lazyloader()
         handlers = Handler.list_handler_config()
-        context = data_return(200, CODE_MSG.get(200), {"lazyloaders": data, "handlers": handlers})
+        context = data_return(200, {"lazyloaders": data, "handlers": handlers}, CODE_MSG.get(200))
         return context
 
     @staticmethod
@@ -56,23 +56,23 @@ class LazyLoader(object):
                 data = json.loads(data)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(303, LazyLoader_MSG.get(303), [])
+                context = data_return(303, [], LazyLoader_MSG.get(303))
                 return context
 
         lazyloader = Xcache.get_lazyloader_by_uuid(loader_uuid)
         if lazyloader is None:
-            context = data_return(304, LazyLoader_MSG.get(304), {})
+            context = data_return(304, {}, LazyLoader_MSG.get(304))
             return context
         else:
             lazyloader[field] = data
             Xcache.set_lazyloader_by_uuid(loader_uuid, lazyloader)
-            context = data_return(201, LazyLoader_MSG.get(201), data)
+            context = data_return(201, data, LazyLoader_MSG.get(201))
             return context
 
     @staticmethod
     def destory(loader_uuid):
         data = Xcache.del_lazyloader_by_uuid(loader_uuid)
-        context = data_return(202, LazyLoader_MSG.get(202), data)
+        context = data_return(202, data, LazyLoader_MSG.get(202))
         return context
 
     @staticmethod

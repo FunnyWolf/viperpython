@@ -12,5 +12,5 @@ class HostInfo(object):
     @staticmethod
     def list(ipaddress):
         host_info = Xcache.get_host_info(ipaddress)
-        context = data_return(200, CODE_MSG.get(200), host_info)
+        context = data_return(200, host_info, CODE_MSG.get(200))
         return context

@@ -52,46 +52,46 @@ class Socks(object):
             flag, lportsstr = is_empty_ports(port)
             if flag is not True:
                 # 端口已占用
-                context = data_return(408, CODE_MSG.get(408), {})
+                context = data_return(408, {}, CODE_MSG.get(408))
                 return context
 
             result = MSFModule.run(module_type="auxiliary", mname="server/socks4a_api", opts=opts, runasjob=True,
                                    timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
-                context = data_return(303, Socks_MSG.get(303), opts)
+                context = data_return(303, opts, Socks_MSG.get(303))
             else:
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
                     opts['job_id'] = int(result.get('job_id'))
                     Notice.send_success(f"新建msf_socks4a代理成功,Port: {opts.get('SRVPORT')}",
                                         f"Create msf_socks4a success,Port: {opts.get('SRVPORT')}")
-                    context = data_return(201, Socks_MSG.get(201), opts)
+                    context = data_return(201, opts, Socks_MSG.get(201))
                 else:
-                    context = data_return(306, Socks_MSG.get(306), opts)
+                    context = data_return(306, opts, Socks_MSG.get(306))
             return context
         elif socks_type == "msf_socks5":
             opts = {'SRVHOST': '0.0.0.0', 'SRVPORT': port}
             flag, lportsstr = is_empty_ports(port)
             if flag is not True:
                 # 端口已占用
-                context = data_return(408, CODE_MSG.get(408), {})
+                context = data_return(408, {}, CODE_MSG.get(408))
                 return context
 
             result = MSFModule.run(module_type="auxiliary", mname="server/socks5_api", opts=opts, runasjob=True,
                                    timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
-                context = data_return(303, Socks_MSG.get(303), opts)
+                context = data_return(303, opts, Socks_MSG.get(303))
             else:
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
                     opts['job_id'] = int(result.get('job_id'))
                     Notice.send_success(f"新建msf_socks5代理成功,Port: {opts.get('SRVPORT')}",
                                         f"Create msf_socks5 success,Port: {opts.get('SRVPORT')}")
-                    context = data_return(201, Socks_MSG.get(201), opts)
+                    context = data_return(201, opts, Socks_MSG.get(201))
                 else:
-                    context = data_return(306, Socks_MSG.get(306), opts)
+                    context = data_return(306, opts, Socks_MSG.get(306))
             return context
 
     @staticmethod
@@ -101,20 +101,20 @@ class Socks(object):
             if flag:
                 if Job.is_msf_job_alive(jobid) is not True:
                     Notice.send_success(f"删除msf_socks4a代理 JobID:{jobid}", f"Delete msf_socks4a JobID:{jobid}")
-                    context = data_return(204, Socks_MSG.get(204), {})
+                    context = data_return(204, {}, Socks_MSG.get(204))
                 else:
-                    context = data_return(304, Socks_MSG.get(304), {})
+                    context = data_return(304, {}, Socks_MSG.get(304))
             else:
-                context = data_return(304, Socks_MSG.get(304), {})
+                context = data_return(304, {}, Socks_MSG.get(304))
             return context
         elif socks_type == "msf_socks5":
             flag = Job.destroy(jobid)
             if flag:
                 if Job.is_msf_job_alive(jobid) is not True:
                     Notice.send_success(f"删除msf_socks5代理 JobID:{jobid}", f"Delete msf_socks5 JobID:{jobid}")
-                    context = data_return(204, Socks_MSG.get(204), {})
+                    context = data_return(204, {}, Socks_MSG.get(204))
                 else:
-                    context = data_return(304, Socks_MSG.get(304), {})
+                    context = data_return(304, {}, Socks_MSG.get(304))
             else:
-                context = data_return(304, Socks_MSG.get(404), {})
+                context = data_return(304, {}, Socks_MSG.get(404))
             return context

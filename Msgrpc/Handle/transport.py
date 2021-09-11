@@ -20,12 +20,12 @@ class Transport(object):
     def list(sessionid=None):
 
         if sessionid is None or sessionid == -1:
-            context = data_return(306, TRANSPORT_MSG.get(306), {})
+            context = data_return(306, {}, TRANSPORT_MSG.get(306))
             return context
         else:
             result_list = Transport.list_transport(sessionid)
 
-            context = data_return(200, CODE_MSG.get(200), result_list)
+            context = data_return(200, result_list, CODE_MSG.get(200))
             return context
 
     @staticmethod
@@ -68,7 +68,7 @@ class Transport(object):
             handleropts = json.loads(handler)
         except Exception as E:
             logger.warning(E)
-            context = data_return(303, TRANSPORT_MSG.get(303), [])
+            context = data_return(303, [], TRANSPORT_MSG.get(303))
             return context
 
         opts = {
@@ -101,7 +101,7 @@ class Transport(object):
         elif "bind_tcp" in handler_payload:
             opts["transport"] = "bind_tcp"
         else:
-            context = data_return(303, TRANSPORT_MSG.get(303), [])
+            context = data_return(303, [], TRANSPORT_MSG.get(303))
             return context
 
         opts["uuid"] = handleropts.get("PayloadUUIDSeed")
@@ -125,16 +125,16 @@ class Transport(object):
         if result_flag:
             Notice.send_success(f"新增传输 SID:{sessionid}", f"Add transport:{sessionid}")
 
-            context = data_return(201, TRANSPORT_MSG.get(201), {})
+            context = data_return(201, {}, TRANSPORT_MSG.get(201))
             return context
         else:
-            context = data_return(301, TRANSPORT_MSG.get(301), [])
+            context = data_return(301, [], TRANSPORT_MSG.get(301))
             return context
 
     @staticmethod
     def update(sessionid=None, action=None, sleep=0):
         if sessionid is None or sessionid <= 0:
-            context = data_return(306, TRANSPORT_MSG.get(306), {})
+            context = data_return(306, {}, TRANSPORT_MSG.get(306))
             return context
         if action == "next":
             result_flag = RpcClient.call(Method.SessionMeterpreterTransportNext, [sessionid],
@@ -151,20 +151,20 @@ class Transport(object):
                     f'切换Session到休眠 SID:{sessionid} 重连时间: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(reconnect_time))}',
                     f'Switch session to sleep SID:{sessionid} Reconnect time: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(reconnect_time))}')
 
-                context = data_return(203, TRANSPORT_MSG.get(203), {})
+                context = data_return(203, {}, TRANSPORT_MSG.get(203))
                 return context
             else:
-                context = data_return(305, TRANSPORT_MSG.get(305), [])
+                context = data_return(305, [], TRANSPORT_MSG.get(305))
                 return context
 
         else:
             result_flag = False
         if result_flag:
             Notice.send_info(f"切换传输完成 SID:{sessionid}", f"Switch transport success SID:{sessionid}")
-            context = data_return(202, TRANSPORT_MSG.get(202), {})
+            context = data_return(202, {}, TRANSPORT_MSG.get(202))
             return context
         else:
-            context = data_return(302, TRANSPORT_MSG.get(302), [])
+            context = data_return(302, [], TRANSPORT_MSG.get(302))
             return context
 
     @staticmethod
@@ -196,8 +196,8 @@ class Transport(object):
                                      timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_flag:
             Notice.send_info(f"删除传输 SID:{sessionid}", f"Delete transport:{sessionid}")
-            context = data_return(204, TRANSPORT_MSG.get(204), {})
+            context = data_return(204, {}, TRANSPORT_MSG.get(204))
             return context
         else:
-            context = data_return(304, TRANSPORT_MSG.get(304), [])
+            context = data_return(304, [], TRANSPORT_MSG.get(304))
             return context

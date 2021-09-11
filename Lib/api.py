@@ -25,5 +25,5 @@ def is_empty_ports(useport=None):
         return False, ""
 
 
-def data_return(code, message, data):
-    return {'code': code, 'message': message, 'data': data}
+def data_return(code, data, msg_zh):
+    return {'code': code, 'data': data, 'msg_zh': msg_zh}

@@ -22,7 +22,7 @@ class Credential(object):
         except Exception as E:
             format_data = data
             logger.error(E)
-        context = data_return(200, CODE_MSG.get(200), format_data)
+        context = data_return(200, format_data, CODE_MSG.get(200))
         return context
 
     @staticmethod
@@ -45,7 +45,7 @@ class Credential(object):
         model.save()
         data = CredentialSerializer(model).data
 
-        context = data_return(201, Credential_MSG.get(201), data)
+        context = data_return(201, data, Credential_MSG.get(201))
         return context
 
     @staticmethod
@@ -54,23 +54,23 @@ class Credential(object):
             orm_model = CredentialModel.objects.get(id=cid)
         except Exception as E:
             logger.exception(E)
-            context = data_return(404, Credential_MSG.get(404), {})
+            context = data_return(404, {}, Credential_MSG.get(404))
             return context
 
         orm_model.desc = desc
         orm_model.save()
         data = CredentialSerializer(orm_model).data
-        context = data_return(202, Credential_MSG.get(202), data)
+        context = data_return(202, data, Credential_MSG.get(202))
         return context
 
     @staticmethod
     def destory(cid=None):
         try:
             CredentialModel.objects.filter(id=cid).delete()
-            context = data_return(204, Credential_MSG.get(204), {})
+            context = data_return(204, {}, Credential_MSG.get(204))
         except Exception as E:
             logger.error(E)
-            context = data_return(304, Credential_MSG.get(304), {})
+            context = data_return(304, {}, Credential_MSG.get(304))
         return context
 
     @staticmethod

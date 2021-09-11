@@ -20,7 +20,7 @@ class ServiceStatus(object):
 
         result = ServiceStatus.update_service_status()
 
-        context = data_return(200, CODE_MSG.get(200), result)
+        context = data_return(200, result, CODE_MSG.get(200))
         return context
 
     @staticmethod

@@ -167,10 +167,10 @@ class Job(object):
             if broker == BROKER.post_python_job:
                 flag = aps_module.delete_job_by_uuid(task_uuid)
                 if flag is not True:
-                    context = data_return(304, Job_MSG.get(304), {})
+                    context = data_return(304, {}, Job_MSG.get(304))
                     return context
                 else:
-                    context = data_return(204, Job_MSG.get(204), {"uuid": task_uuid, "job_id": job_id})
+                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG.get(204))
                     return context
             elif broker == BROKER.post_msf_job:
                 req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
@@ -179,33 +179,33 @@ class Job(object):
                 params = [job_id]
                 result = RpcClient.call(Method.JobStop, params, timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
-                    context = data_return(305, Job_MSG.get(305), {})
+                    context = data_return(305, {}, Job_MSG.get(305))
                     return context
                 if result.get('result') == 'success':
                     # 发送通知
                     Notice.send_info(
                         f"模块: {common_module_instance.NAME_ZH} {common_module_instance._target_str} 手动删除完成",
                         f"Module: <{common_module_instance.NAME_EN}> {common_module_instance._target_str} manually delete")
-                    context = data_return(204, Job_MSG.get(204), {"uuid": task_uuid, "job_id": job_id})
+                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG.get(204))
                     return context
                 else:
-                    context = data_return(304, Job_MSG.get(304), {})
+                    context = data_return(304, {}, Job_MSG.get(304))
                     return context
             elif broker == BROKER.bot_msf_module:
                 flag = Xcache.del_bot_wait_by_group_uuid(task_uuid)
                 if flag is not True:
-                    context = data_return(304, Job_MSG.get(304), {})
+                    context = data_return(304, {}, Job_MSG.get(304))
                     return context
                 else:
-                    context = data_return(204, Job_MSG.get(204), {"uuid": task_uuid})
+                    context = data_return(204, {"uuid": task_uuid}, Job_MSG.get(204))
                     return context
             else:
-                context = data_return(304, Job_MSG.get(304), {})
+                context = data_return(304, {}, Job_MSG.get(304))
                 return context
 
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return context
 
     @staticmethod

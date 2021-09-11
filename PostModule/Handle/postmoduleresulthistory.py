@@ -33,5 +33,5 @@ class PostModuleResultHistory(object):
     @staticmethod
     def destory():
         Xcache.del_module_result_history()
-        context = data_return(204, PostModuleResultHistory_MSG.get(204), {})
+        context = data_return(204, {}, PostModuleResultHistory_MSG.get(204))
         return context

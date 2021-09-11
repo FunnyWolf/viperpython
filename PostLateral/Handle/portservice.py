@@ -20,7 +20,7 @@ class PortService(object):
     @staticmethod
     def list(ipaddress=None):
         result = PortService.list_by_ipaddress(ipaddress)
-        context = data_return(200, CODE_MSG.get(200), result)
+        context = data_return(200, result, CODE_MSG.get(200))
         return context
 
     @staticmethod
@@ -58,10 +58,10 @@ class PortService(object):
     def destory(ipaddress=None, port=None):
         try:
             PortServiceModel.objects.filter(ipaddress=ipaddress, port=port).delete()
-            context = data_return(204, PortService_MSG.get(204), {})
+            context = data_return(204, {}, PortService_MSG.get(204))
         except Exception as E:
             logger.error(E)
-            context = data_return(304, PortService_MSG.get(304), {})
+            context = data_return(304, {}, PortService_MSG.get(304))
         return context
 
     @staticmethod

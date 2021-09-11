@@ -20,28 +20,28 @@ class Session(object):
     @staticmethod
     def list(sessionid=None):
         if sessionid is None or sessionid <= 0:
-            context = data_return(304, Session_MSG.get(304), {})
+            context = data_return(304, {}, Session_MSG.get(304))
             return context
         session_interface = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
         result = SessionLibSerializer(session_interface).data
-        context = data_return(200, CODE_MSG.get(200), result)
+        context = data_return(200, result, CODE_MSG.get(200))
         return context
 
     @staticmethod
     def update(sessionid=None):
         if sessionid is None or sessionid <= 0:
-            context = data_return(304, Session_MSG.get(304), {})
+            context = data_return(304, {}, Session_MSG.get(304))
             return context
         Xcache.set_session_info(sessionid, None)
         session_lib = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
         result = SessionLibSerializer(session_lib).data
-        context = data_return(203, Session_MSG.get(203), result)
+        context = data_return(203, result, Session_MSG.get(203))
         return context
 
     @staticmethod
     def destroy(sessionid=None):
         if sessionid is None or sessionid <= 0:
-            context = data_return(304, Session_MSG.get(304), {})
+            context = data_return(304, {}, Session_MSG.get(304))
             return context
         else:
             params = [sessionid]
@@ -50,21 +50,21 @@ class Session(object):
                 if result is None:  # 删除超时
                     # TODO
                     Notice.send_success(f"{Session_MSG.get(202)} SID: {sessionid}", "")
-                    context = data_return(202, Session_MSG.get(202), {})
+                    context = data_return(202, {}, Session_MSG.get(202))
                     return context
                 elif result.get('result') == 'success':
                     # TODO
                     Notice.send_success(f"{Session_MSG.get(201)} SID: {sessionid}", "")
-                    context = data_return(201, Session_MSG.get(201), {})
+                    context = data_return(201, {}, Session_MSG.get(201))
                     return context
                 else:
                     # TODO
                     Notice.send_warning(f"{Session_MSG.get(301)} SID: {sessionid}", "")
-                    context = data_return(301, Session_MSG.get(301), {})
+                    context = data_return(301, {}, Session_MSG.get(301))
                     return context
             except Exception as E:
                 logger.error(E)
                 # TODO
                 Notice.send_warning(f"{Session_MSG.get(301)} SID: {sessionid}", "")
-                context = data_return(301, Session_MSG.get(301), {})
+                context = data_return(301, {}, Session_MSG.get(301))
                 return context

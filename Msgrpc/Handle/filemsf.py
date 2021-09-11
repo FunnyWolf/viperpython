@@ -39,22 +39,22 @@ class FileMsf(object):
 
             # 根据时间排序
             result_sorted = sorted(result, key=functools.cmp_to_key(sort_files))
-            context = data_return(200, CODE_MSG.get(200), result_sorted)
+            context = data_return(200, result_sorted, CODE_MSG.get(200))
             return context
         else:  # 下载文件
             binary_data = FileMsf.read_msf_file(filename)
             if binary_data is None:
-                context = data_return(303, FileMsf_MSG.get(303), {})
+                context = data_return(303, {}, FileMsf_MSG.get(303))
                 return context
 
             if action == "view":
                 b64data = base64.b64encode(binary_data)
                 ext = os.path.splitext(filename)[-1]
                 if ext in ['.jpeg', '.png', '.jpg']:
-                    context = data_return(200, CODE_MSG.get(200), {"type": "img", "data": b64data})
+                    context = data_return(200, {"type": "img", "data": b64data}, CODE_MSG.get(200))
                     return context
                 else:
-                    context = data_return(200, CODE_MSG.get(200), {"type": "txt", "data": b64data})
+                    context = data_return(200, {"type": "txt", "data": b64data}, CODE_MSG.get(200))
                     return context
 
             response = HttpResponse(binary_data)
@@ -71,9 +71,9 @@ class FileMsf(object):
     def create(file=None):
         result = FileMsf.upload_file_to_msf(file)
         if result is True:
-            context = data_return(201, FileMsf_MSG.get(201), {})
+            context = data_return(201, {}, FileMsf_MSG.get(201))
         else:
-            context = data_return(302, FileMsf_MSG.get(302), {})
+            context = data_return(302, {}, FileMsf_MSG.get(302))
         return context
 
     @staticmethod
@@ -81,11 +81,11 @@ class FileMsf(object):
         result = FileMsf.destory_msf_file(filename)
         if result is True:
 
-            context = data_return(202, FileMsf_MSG.get(202), {})
+            context = data_return(202, {}, FileMsf_MSG.get(202))
             return context
         else:
 
-            context = data_return(301, FileMsf_MSG.get(301), {})
+            context = data_return(301, {}, FileMsf_MSG.get(301))
             return context
 
     @staticmethod

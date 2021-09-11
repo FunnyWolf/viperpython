@@ -19,5 +19,5 @@ class PostModuleResult(object):
                        "update_time": result.get("update_time"),
                        "result": result.get("result")}
 
-        context = data_return(200, CODE_MSG.get(200), result_dict)
+        context = data_return(200, result_dict, CODE_MSG.get(200))
         return context

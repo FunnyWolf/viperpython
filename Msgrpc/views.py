@@ -45,7 +45,7 @@ class PayloadView(BaseView):
 
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
 
@@ -61,7 +61,7 @@ class JobView(BaseView):
             context = Job.destroy_adv_job(task_uuid=task_uuid, job_id=job_id, broker=broker)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
 
         return Response(context)
 
@@ -79,7 +79,7 @@ class HandlerView(BaseView):
             context = Handler.create(opts)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -88,7 +88,7 @@ class HandlerView(BaseView):
             context = Handler.destroy(jobid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -108,7 +108,7 @@ class WebDeliveryView(BaseView):
             context = WebDelivery.create(data)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -117,7 +117,7 @@ class WebDeliveryView(BaseView):
             context = WebDelivery.destroy(jobid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -130,7 +130,7 @@ class SessionIOView(BaseView):
             context = SessionIO.create(ipaddress, sessionid, user_input)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -140,7 +140,7 @@ class SessionIOView(BaseView):
             context = SessionIO.update(ipaddress, sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -149,7 +149,7 @@ class SessionIOView(BaseView):
             context = SessionIO.destroy(ipaddress)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -160,7 +160,7 @@ class SessionView(BaseView):
             context = Session.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def update(self, request, **kwargs):
@@ -171,7 +171,7 @@ class SessionView(BaseView):
         except Exception as E:
             logger.error(E)
 
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -180,7 +180,7 @@ class SessionView(BaseView):
             context = Session.destroy(sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -191,7 +191,7 @@ class RouteView(BaseView):
             context = Route.list(sessionid=sessionid)
         except Exception as E:
             logger.exception(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -203,7 +203,7 @@ class RouteView(BaseView):
             context = Route.create(subnet=subnet, netmask=netmask, sessionid=sessionid, autoroute=autoroute)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -214,7 +214,7 @@ class RouteView(BaseView):
             context = Route.destory(subnet=subnet, netmask=netmask, sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -227,7 +227,7 @@ class SocksView(BaseView):
             context = Socks.create(socks_type=socks_type, port=port)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -237,7 +237,7 @@ class SocksView(BaseView):
             context = Socks.destory(socks_type=socks_type, jobid=jobid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -248,7 +248,7 @@ class PortFwdView(BaseView):
             context = PortFwd.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -274,7 +274,7 @@ class PortFwdView(BaseView):
                                      sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -300,7 +300,7 @@ class PortFwdView(BaseView):
                                       sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -311,7 +311,7 @@ class TransportView(BaseView):
             context = Transport.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -322,7 +322,7 @@ class TransportView(BaseView):
             context = Transport.create(sessionid=sessionid, handler=handler)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -334,7 +334,7 @@ class TransportView(BaseView):
             context = Transport.update(sessionid=sessionid, action=action, sleep=sleep)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -342,7 +342,7 @@ class TransportView(BaseView):
             context = Transport.destory(query_params=request.query_params)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -355,11 +355,11 @@ class HostFileView(BaseView):
             enfilename = request.query_params.get('en', None)
             filename = FileMsf.decrypt_file_name(enfilename)
             if filename is None:
-                context = data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, {}, CODE_MSG.get(500))
                 return Response(context)
             binary_data = FileMsf.read_msf_file(filename)
             if binary_data is None:
-                context = data_return(304, HostFile_MSG.get(304), {})
+                context = data_return(304, {}, HostFile_MSG.get(304))
                 return context
 
             response = HttpResponse(binary_data)
@@ -373,7 +373,7 @@ class HostFileView(BaseView):
             return response
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
 
@@ -390,7 +390,7 @@ class FileMsfView(BaseView):
                 return context
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
     def create(self, request, **kwargs):
@@ -400,7 +400,7 @@ class FileMsfView(BaseView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -409,7 +409,7 @@ class FileMsfView(BaseView):
             context = FileMsf.destory(filename)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -426,7 +426,7 @@ class FileSessionView(BaseView):
                                        arg=arg)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -439,7 +439,7 @@ class FileSessionView(BaseView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -451,7 +451,7 @@ class FileSessionView(BaseView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -463,7 +463,7 @@ class FileSessionView(BaseView):
             context = FileSession.destory(sessionid=sessionid, filepath=filepath, dirpath=dirpath, operation=operation)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -495,7 +495,7 @@ class LazyLoaderView(BaseView):
             return Response(context)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -504,7 +504,7 @@ class LazyLoaderView(BaseView):
             context = LazyLoader.destory(loader_uuid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 

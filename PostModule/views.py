@@ -39,7 +39,7 @@ class PostModuleActuatorView(BaseView):
                                                          custom_param=custom_param)
             except Exception as E:
                 logger.error(E)
-                context = data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
         elif moduletype == "Bot":
             try:
@@ -51,10 +51,10 @@ class PostModuleActuatorView(BaseView):
                                                         custom_param=custom_param)
             except Exception as E:
                 logger.error(E)
-                context = data_return(500, CODE_MSG.get(500), {})
+                context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
         else:
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
             return Response(context)
 
 
@@ -66,7 +66,7 @@ class PostModuleResultView(BaseView):
             context = PostModuleResult.list(ipaddress=ipaddress, loadpath=loadpath)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -77,7 +77,7 @@ class PostModuleResultHistoryView(BaseView):
             context = PostModuleResultHistory.destory()
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
 
@@ -87,7 +87,7 @@ class PostModuleAutoView(BaseView):
             context = PostModuleAuto.list()
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -98,7 +98,7 @@ class PostModuleAutoView(BaseView):
                                             custom_param=custom_param)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -107,5 +107,5 @@ class PostModuleAutoView(BaseView):
             context = PostModuleAuto.destory(module_uuid=module_uuid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG.get(500))
         return Response(context)
