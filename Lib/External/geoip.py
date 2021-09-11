@@ -55,21 +55,3 @@ class Geoip(object):
         result = f"{country} {subdivision} {city}"
         Xcache.set_city_reader_cache(ip, result)
         return result
-
-    @staticmethod
-    def get_asn(ip):
-
-        asn_reader = Xcache.get_asn_reader_cache(ip)
-        if asn_reader is not None:
-            return asn_reader
-
-        asn_mmdb_dir = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'GeoLite2-ASN.mmdb')
-        asn_reader = geoip2.database.Reader(asn_mmdb_dir)
-
-        try:
-            response = asn_reader.asn(ip)
-        except Exception as _:
-            Xcache.set_asn_reader_cache(ip, "")
-            return ""
-        Xcache.set_asn_reader_cache(ip, response.autonomous_system_organization)
-        return response.autonomous_system_organization
