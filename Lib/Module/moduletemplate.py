@@ -359,7 +359,7 @@ class _CommonModule(object):
             if handler_config is None:
                 return False
 
-            handler_config["HandlerName"] = f"{self.NAME_ZH}|{self.NAME_EN} IP: {self.host_ipaddress}"
+            handler_config["HandlerName"] = f"{self.NAME_EN} IP: {self.host_ipaddress}"
             Handler.create_virtual_handler(handler_config)
             self.log_good("监听配置已缓存")
             return True

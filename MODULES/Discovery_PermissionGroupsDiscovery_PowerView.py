@@ -25,8 +25,10 @@ class PostModule(PostMSFPowershellFunctionModule):
         OptionEnum(name='action', tag_zh="选项", desc_zh="可以选择获取Session所在域信任信息及林信任信息", required=True,
                    default="Get-NetLocalGroup  | select GroupName",
                    enum_list=[
-                       {'name': "本地用户组", 'value': "Get-NetLocalGroup  | select GroupName"},
-                       {'name': "域用户组", 'value': "Get-DomainGroup | select name,samaccountname"},
+                       {'tag_zh': "本地用户组", 'tag_en': "Local user group",
+                        'value': "Get-NetLocalGroup  | select GroupName"},
+                       {'tag_zh': "域用户组", 'tag_en': "Domain User Group",
+                        'value': "Get-DomainGroup | select name,samaccountname"},
                    ]),
     ])
 

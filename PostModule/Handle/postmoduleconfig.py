@@ -232,13 +232,17 @@ class PostModuleConfig(object):
                         type_list = option.get('extra_data').get('password_type')
                         for credential in credentials:
                             if credential.get('password_type') in type_list:
-                                name = "用户:{}  密码:{}  标签:{}".format(credential.get('username'),
-                                                                    credential.get('password'),
-                                                                    credential.get('tag_zh'),
-                                                                    )
+                                tag_zh = "用户: {}  密码: {}  标签: {}".format(credential.get('username'),
+                                                                         credential.get('password'),
+                                                                         credential.get('tag'),
+                                                                         )
+                                tag_en = "User: {}  Password: {}  Tag: {}".format(credential.get('username'),
+                                                                                  credential.get('password'),
+                                                                                  credential.get('tag'),
+                                                                                  )
                                 import json
                                 value = json.dumps(credential)
-                                tmp_enum_list.append({'name': name, 'value': value})
+                                tmp_enum_list.append({'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value})
                     option['enum_list'] = tmp_enum_list
                 except Exception as E:
                     logger.warning(E)
@@ -270,9 +274,10 @@ class PostModuleConfig(object):
                     else:
                         show = True
                     if show:
-                        name = "文件: {}   大小: {}   修改时间: {}".format(name, size, style_time)
+                        tag_zh = "文件: {}\t\t大小: {}\t\t修改时间: {}".format(name, size, style_time)
+                        tag_en = "File: {}\t\tSize: {}\t\tMTime: {}".format(name, size, style_time)
                         value = json.dumps(file)
-                        tmp_enum_list.append({'name': name, 'value': value})
+                        tmp_enum_list.append({'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value})
                 option['enum_list'] = tmp_enum_list
         return one_module_config
 
@@ -280,6 +285,6 @@ class PostModuleConfig(object):
     def get_module_name_by_loadpath(loadpath=None):
         module_config = Xcache.get_moduleconfig(loadpath)
         if module_config is not None:
-            return f"{module_config.get('NAME_ZH')}|{module_config.get('NAME_EN')}"
+            return f"{module_config.get('NAME_EN')}"
         else:
             return None

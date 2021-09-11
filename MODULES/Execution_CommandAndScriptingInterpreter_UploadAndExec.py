@@ -30,16 +30,16 @@ class PostModule(PostMSFRawModule):
         OptionEnum(name='OS', tag_zh="OS", desc_zh="可执行文件适配的OS(Windows/Linux/ALL),ALL或者不填写表示跳过检查", required=False,
                    default='windows',
                    enum_list=[
-                       {'name': 'Windows', 'value': 'windows'},
-                       {'name': 'Linux', 'value': 'linux'},
-                       {'name': 'ALL', 'value': 'all'},
+                       {'tag_zh': 'Windows', 'tag_en': 'Windows', 'value': 'windows'},
+                       {'tag_zh': 'Linux', 'tag_en': 'Linux', 'value': 'linux'},
+                       {'tag_zh': 'ALL', 'tag_en': 'ALL', 'value': 'all'},
                    ]),
         OptionEnum(name='ARCH', tag_zh="ARCH", desc_zh="可执行文件适配的Arch(x86,x64),ALL或者不填写表示跳过检查", required=False,
                    default='x64',
                    enum_list=[
-                       {'name': 'x86', 'value': 'x86'},
-                       {'name': 'x64', 'value': 'x64'},
-                       {'name': 'ALL', 'value': 'all'},
+                       {'tag_zh': 'x86', 'tag_en': 'x86', 'value': 'x86'},
+                       {'tag_zh': 'x64', 'tag_en': 'x64', 'value': 'x64'},
+                       {'tag_zh': 'ALL', 'tag_en': 'ALL', 'value': 'all'},
                    ]),
 
     ])

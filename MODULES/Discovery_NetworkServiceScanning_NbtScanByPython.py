@@ -36,8 +36,8 @@ class PostModule(PostMSFPythonWithParamsModule):
                    required=True,
                    default=139,
                    enum_list=[
-                       {'name': "139", 'value': 139},
-                       {'name': "445", 'value': 445},
+                       {'tag_zh': "139", 'tag_en': "139", 'value': 139},
+                       {'tag_zh': "445", 'tag_en': "445", 'value': 445},
                    ]),
         OptionInt(name='connect_time_out', tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整(通常小于500ms)",
                   default=100),

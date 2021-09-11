@@ -32,11 +32,11 @@ class PostModule(PostMSFRawModule):
                    required=True,
                    default=0,
                    enum_list=[
-                       {'name': '自动选择', 'value': 0},
-                       {'name': 'Powershell', 'value': 1},
-                       {'name': '二进制上传', 'value': 2},
-                       {'name': 'MOF技术', 'value': 3},
-                       {'name': 'COMMAND', 'value': 4},
+                       {'tag_zh': '自动选择', 'tag_en': 'Automatic', 'value': 0},
+                       {'tag_zh': 'Powershell', 'tag_en': 'PowerShell', 'value': 1},
+                       {'tag_zh': '二进制上传', 'tag_en': 'Native upload', 'value': 2},
+                       {'tag_zh': 'MOF上传', 'tag_en': 'MOF upload', 'value': 3},
+                       {'tag_zh': 'Command', 'tag_en': 'Command', 'value': 4},
                    ],
                    ),
 

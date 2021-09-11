@@ -27,8 +27,8 @@ class PostModule(PostMSFCSharpModule):
         OptionEnum(name='action', tag_zh="执行动作", required=True,
                    desc_zh="针对键值的执行的命令",
                    enum_list=[
-                       {'name': "创建", 'value': "create"},
-                       {'name': "删除", 'value': "delete"},
+                       {'tag_zh': "创建", 'tag_en': "Create", 'value': "create"},
+                       {'tag_zh': "删除", 'tag_en': "Delete", 'value': "delete"},
                    ],
                    length=6),
         OptionStr(name='keyvalue', tag_zh="可执行文件目录", required=True,

@@ -26,11 +26,13 @@ class PostModule(PostMSFRawModule):
         OptionEnum(name='TECHNIQUE', tag_zh="提权技术", desc_zh="选择提权技术,默认使用所有可利用方法", required=True,
                    default=0,
                    enum_list=[
-                       {'name': '所有可用技术', 'value': 0},
-                       {'name': '管道仿冒技术(内存/管理员权限)', 'value': 1},
-                       {'name': '管道仿冒技术(加载器/管理员权限)', 'value': 2},
-                       {'name': 'Token复制', 'value': 3},
-                       {'name': '管道仿冒技术(RPCSS变量)', 'value': 4},
+                       {'tag_zh': '所有可用技术', 'tag_en': 'All techniques available', 'value': 0},
+                       {'tag_zh': '管道仿冒技术(内存/管理员权限)', 'tag_en': 'Named Pipe Impersonation (In Memory/Admin)',
+                        'value': 1},
+                       {'tag_zh': '管道仿冒技术(加载器/管理员权限)', 'tag_en': 'Named Pipe Impersonation (Dropper/Admin)',
+                        'value': 2},
+                       {'tag_zh': 'Token复制', 'tag_en': 'Token Duplication (In Memory/Admin)', 'value': 3},
+                       {'tag_zh': '管道仿冒技术(RPCSS变量)', 'tag_en': 'Named Pipe Impersonation (RPCSS variant)', 'value': 4},
                    ]),
     ])
 

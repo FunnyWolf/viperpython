@@ -31,8 +31,8 @@ class PostModule(PostMSFRawModule):
                    required=True,
                    default="Hijack",
                    enum_list=[
-                       {'name': "劫持", 'value': "Hijack"},
-                       {'name': "恢复", 'value': "Recovery"},
+                       {'tag_zh': "劫持", 'tag_en': "Hijack", 'value': "Hijack"},
+                       {'tag_zh': "恢复", 'tag_en': "Recovery", 'value': "Recovery"},
                    ]),
     ])
 

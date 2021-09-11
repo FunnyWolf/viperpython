@@ -38,8 +38,8 @@ class PostModule(PostMSFRawModule):
         OptionBool(name='KILL', tag_zh="结束进程", desc_zh="执行完成后结束C#进程", default=True),
         OptionEnum(name="Signature", tag_zh="入口函数", desc_zh="C#程序的入口函数", default="Main(string[])",
                    enum_list=[
-                       {'name': "Main()", 'value': "Main()"},
-                       {'name': "Main(string[])", 'value': "Main(string[])"},
+                       {'tag_zh': "Main()", 'tag_en': "Main()", 'value': "Main()"},
+                       {'tag_zh': "Main(string[])", 'tag_en': "Main(string[])", 'value': "Main(string[])"},
                    ]),
 
         OptionStr(name='PROCESS', tag_zh="新进程名", length=6, default="notepad.exe", desc_zh="新启动进程名称"),

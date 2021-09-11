@@ -91,17 +91,21 @@ class Handler(object):
 
             # 虚拟监听与真实监听标签
             if handler.get("ID") < 0:
-                handlertag = "虚拟 | "
+                handlertag_zn = "虚拟 | "
+                handlertag_en = "virtual | "
             else:
-                handlertag = ""
+                handlertag_zn = ""
+                handlertag_en = ""
 
             if handler.get("HandlerName") is None:
-                name = f"{handlertag}{handler.get('PAYLOAD')} | {lhost_str}{rhost_srt} LPORT:{handler.get('LPORT')}"
+                tag_zh = f"{handlertag_zn}{handler.get('PAYLOAD')} | {lhost_str}{rhost_srt} LPORT:{handler.get('LPORT')}"
+                tag_en = f"{handlertag_en}{handler.get('PAYLOAD')} | {lhost_str}{rhost_srt} LPORT:{handler.get('LPORT')}"
             else:
-                name = f"{handlertag}{handler.get('HandlerName')} | {handler.get('PAYLOAD')} | {lhost_str}{rhost_srt} LPORT:{handler.get('LPORT')}"
+                tag_zh = f"{handlertag_zn}{handler.get('HandlerName')} | {handler.get('PAYLOAD')} | {lhost_str}{rhost_srt} LPORT:{handler.get('LPORT')}"
+                tag_en = f"{handlertag_en}{handler.get('HandlerName')} | {handler.get('PAYLOAD')} | {lhost_str}{rhost_srt} LPORT:{handler.get('LPORT')}"
 
             value = json.dumps(handler)
-            tmp_enum_list.append({'name': name, 'value': value})
+            tmp_enum_list.append({'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value})
         return tmp_enum_list
 
     @staticmethod

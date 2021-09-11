@@ -24,10 +24,12 @@ class PostModule(PostMSFPowershellFunctionModule):
         OptionEnum(name='action', tag_zh="选项", desc_zh="可以选择获取所有用户或管理员组用户", required=True,
                    default="Get-NetLocalGroupMember -GroupName Administrators",
                    enum_list=[
-                       {'name': "本地管理员组用户", 'value': "Get-NetLocalGroupMember -GroupName Administrators"},
-                       {'name': "本地所有用户", 'value': "Get-NetLocalGroup | Get-NetLocalGroupMember"},
-                       {'name': "域管理员组用户", 'value': "Get-DomainGroupMember \"Domain Admins\""},
-
+                       {'tag_zh': "本地管理员组用户", 'tag_en': "Local Admins group users",
+                        'value': "Get-NetLocalGroupMember -GroupName Administrators"},
+                       {'tag_zh': "本地所有用户", 'tag_en': "All local users",
+                        'value': "Get-NetLocalGroup | Get-NetLocalGroupMember"},
+                       {'tag_zh': "域管理员组用户", 'tag_en': "Domain Admins group users",
+                        'value': "Get-DomainGroupMember \"Domain Admins\""},
                    ],
                    length=6,
                    )

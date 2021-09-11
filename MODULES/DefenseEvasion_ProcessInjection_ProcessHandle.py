@@ -30,10 +30,10 @@ class PostModule(PostMSFRawModule):
                    default="inject",
                    length=18,
                    enum_list=[
-                       {'name': '窃取token(steal_token)', 'value': "steal_token"},
-                       {'name': '还原token(rev2self)', 'value': "rev2self"},
-                       {'name': '注入(inject)', 'value': "inject"},
-                       {'name': '关闭(kill)', 'value': "kill"},
+                       {'tag_zh': '窃取token(steal_token)', 'tag_en': 'steal_token', 'value': "steal_token"},
+                       {'tag_zh': '还原token(rev2self)', 'tag_en': 'rev2self', 'value': "rev2self"},
+                       {'tag_zh': '注入(inject)', 'tag_en': 'inject', 'value': "inject"},
+                       {'tag_zh': '关闭(kill)', 'tag_en': 'kill', 'value': "kill"},
                    ]),
     ])
 

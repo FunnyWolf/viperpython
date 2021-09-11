@@ -35,8 +35,8 @@ class PostModule(PostMSFRawModule):
         OptionEnum(name='ARCH', tag_zh="ARCH", desc_zh="选择载荷的Arch平台(x86,x64)", required=True,
                    default='x64',
                    enum_list=[
-                       {'name': 'x86', 'value': 'x86'},
-                       {'name': 'x64', 'value': 'x64'},
+                       {'tag_zh': 'x86', 'tag_en': 'x86', 'value': 'x86'},
+                       {'tag_zh': 'x64', 'tag_en': 'x64', 'value': 'x64'},
                    ]),
         OptionBool(name='CHANNELIZED', tag_zh="获取输出", desc_zh="是否需要获取shellcode执行后输出结果", required=True, default=True),
         OptionInt(name='WAIT_OUTPUT', tag_zh="等待输出时间(秒)", desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,

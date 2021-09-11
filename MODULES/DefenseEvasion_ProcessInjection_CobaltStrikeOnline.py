@@ -29,8 +29,10 @@ class PostModule(PostMSFRawModule):
                    required=True,
                    default="reverse_http",
                    enum_list=[
-                       {'name': "windows/beacon_http/reverse_http", 'value': "reverse_http"},
-                       {'name': "windows/beacon_http/reverse_https", 'value': "reverse_https"},
+                       {'tag_zh': "windows/beacon_http/reverse_http", 'tag_en': "windows/beacon_http/reverse_http",
+                        'value': "reverse_http"},
+                       {'tag_zh': "windows/beacon_http/reverse_https", 'tag_en': "windows/beacon_http/reverse_https",
+                        'value': "reverse_https"},
                    ],
                    length=24),
         OptionStr("cshost", tag_zh="Host", desc_zh="CS listener的host参数", required=True),

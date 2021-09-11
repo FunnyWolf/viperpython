@@ -98,10 +98,10 @@ class _Option(object):
             if isinstance(one_enmu, str) or isinstance(one_enmu, bytes):
                 tmp_enmu_list.append({'name': one_enmu, 'value': one_enmu})
             else:
-                if one_enmu.get('name') is not None and one_enmu.get('value') is not None:
+                if one_enmu.get('tag_zh') is not None and one_enmu.get('value') is not None:
                     tmp_enmu_list.append(one_enmu)
                 else:
-                    logger.warning("参数错误, name: {} name_tag:{}".format(self._name, self._tag_zh))
+                    logger.warning("参数错误, name: {} tag_zh:{}".format(self._name, self._tag_zh))
         _dict['enum_list'] = tmp_enmu_list
         return _dict
 
@@ -165,8 +165,8 @@ class OptionEnum(_Option):
     """枚举类型参数
     enum_list参数样例:
     enum_list = [
-        {'name': "劫持", 'value': "Hijack"},
-        {'name': "恢复", 'value': "Recovery"},
+        {'tag_zh': "劫持",'tag_en': "Hijack", 'value': "Hijack"},
+        {'tag_zh': "恢复",'tag_en': "Recovery", 'value': "Recovery"},
     ]
     """
 
@@ -186,8 +186,8 @@ class OptionEnum(_Option):
 
     def is_valid(self):
         for oneEnum in self._enum_list:
-            if oneEnum.get("name") is None:
-                logger.exception(f"参数 {self._name} 格式不符合要求,正确格式应为字典,其中包含name及value字段")
+            if oneEnum.get("tag_zh") is None or oneEnum.get("tag_en") is None:
+                logger.exception(f"参数 {self._name} 格式不符合要求,正确格式应为字典,其中包含tag_zh,tag_en及value字段")
 
 
 class OptionIPAddressRange(_Option):
