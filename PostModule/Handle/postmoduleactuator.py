@@ -56,11 +56,27 @@ class PostModuleActuator(object):
 
         # 模块前序检查,调用check函数
         try:
-            flag, msg = post_module_intent.check()
-            if flag is not True:
-                # 如果检查未通过,返回未通过原因(msg)
-                context = data_return(405, {}, msg)
-                return context
+            check_result = post_module_intent.check()
+            # 模块忘记返回True,按照通过处理
+            if check_result is None:
+                pass
+            else:
+                # 直接return true
+                flag = False
+                if len(check_result) == 1:
+                    flag = check_result
+                    msg_zh = msg_en = ""
+                elif len(check_result) == 2:
+                    flag, msg_zh = check_result
+                    msg_en = msg_zh
+                elif len(check_result) == 3:
+                    flag, msg_zh, msg_en = check_result
+
+                if flag is not True:
+                    # 如果检查未通过,返回未通过原因(msg)
+                    context = data_return(405, {}, msg_zh, msg_en)
+                    return context
+
         except Exception as E:
             logger.warning(E)
             context = data_return(301, {}, PostModuleActuator_MSG_ZH.get(301), PostModuleActuator_MSG_EN.get(301))
@@ -124,13 +140,26 @@ class PostModuleActuator(object):
 
             # 模块前序检查,调用check函数
             try:
-                flag, msg = post_module_intent.check()
-                if flag is not True:
-                    # 如果检查未通过,返回未通过原因(msg)
-                    Notice.send_warning(f"模块:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} 检查未通过,原因:{msg}",
-                                        f"Module: <{post_module_intent.NAME_EN}> IP:{ipport.get('ip')} check failed, reason:{msg}")
-                    continue
+                check_result = post_module_intent.check()
+                # 模块忘记返回True,按照通过处理
+                if check_result is None:
+                    pass
+                else:
+                    flag = False
+                    if len(check_result) == 1:
+                        flag = check_result
+                        msg_zh = msg_en = ""
+                    elif len(check_result) == 2:
+                        flag, msg_zh = check_result
+                        msg_en = msg_zh
+                    elif len(check_result) == 3:
+                        flag, msg_zh, msg_en = check_result
 
+                    if flag is not True:
+                        # 如果检查未通过,返回未通过原因(msg)
+                        Notice.send_warning(f"模块:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} 检查未通过,原因:{msg_zh}",
+                                            f"Module: <{post_module_intent.NAME_EN}> IP:{ipport.get('ip')} check failed, reason:{msg_en}")
+                        continue
             except Exception as E:
                 logger.warning(E)
                 Notice.send_warning(f"模块:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} 检查函数执行异常",
