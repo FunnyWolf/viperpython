@@ -181,3 +181,4 @@ Docker/db/*
 Docker/module/*
 STATICFILES/TMP/*
 STATICFILES/STATIC/glibc/lib64/*
+STATICFILES/STATIC/GeoLite2-City.mmdb
