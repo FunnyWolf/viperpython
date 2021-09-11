@@ -33,18 +33,41 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(ext=['exe', 'EXE']),
-        OptionStr(name='ARGUMENTS', tag_zh="命令行参数", length=24, desc_zh="运行exe时输入的参数"),
-        OptionInt(name='WAIT', tag_zh="等待时间", desc_zh="读取输出前等待时间", default=10),
-        OptionBool(name='KILL', tag_zh="结束进程", desc_zh="执行完成后结束C#进程", default=True),
-        OptionEnum(name="Signature", tag_zh="入口函数", desc_zh="C#程序的入口函数", default="Main(string[])",
+        OptionStr(name='ARGUMENTS',
+                  tag_zh="命令行参数", desc_zh="运行exe时输入的参数",
+                  tag_en="Command line parameters", desc_en="Parameters entered when running the exe",
+                  length=24,
+                  ),
+        OptionInt(name='WAIT',
+                  tag_zh="等待时间(秒)", desc_zh="读取输出前等待时间",
+                  tag_en="Waiting time (second)", desc_en="Wait time before reading output",
+                  default=10),
+        OptionBool(name='KILL',
+                   tag_zh="结束进程", desc_zh="执行完成后结束C#进程",
+                   tag_en="Kill process", desc_en="Kill the C# process after the execution is complete",
+                   default=True),
+        OptionEnum(name="Signature",
+                   tag_zh="入口函数", desc_zh="C#程序的入口函数",
+                   tag_en="Entry function", desc_en="C# program entry function",
+                   default="Main(string[])",
                    enum_list=[
                        {'tag_zh': "Main()", 'tag_en': "Main()", 'value': "Main()"},
                        {'tag_zh': "Main(string[])", 'tag_en': "Main(string[])", 'value': "Main(string[])"},
                    ]),
 
-        OptionStr(name='PROCESS', tag_zh="新进程名", length=6, default="notepad.exe", desc_zh="新启动进程名称"),
-        OptionInt("PID", tag_zh="PID", desc_zh="注入的进程pid(0表示新建进程)", default=0),
-        OptionInt("PPID", tag_zh="PPID", desc_zh="新建进程时,伪装的PPID(父进程id)", default=0)
+        OptionStr(name='PROCESS',
+                  tag_zh="新进程名", desc_zh="新启动进程名称",
+                  tag_en="New process name", desc_en="Newly started process name",
+                  length=6, default="notepad.exe",
+                  ),
+        OptionInt("PID",
+                  tag_zh="PID", desc_zh="注入的进程pid(0表示新建进程)",
+                  tag_en="PID", desc_en="The injected process pid (0 means a new process)",
+                  default=0),
+        OptionInt("PPID",
+                  tag_zh="PPID", desc_zh="新建进程时,伪装的PPID(父进程id)",
+                  tag_en="PPID", desc_en="When creating a new process, disguised PPID (parent process id)",
+                  default=0)
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

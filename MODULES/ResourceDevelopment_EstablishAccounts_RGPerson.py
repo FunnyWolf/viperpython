@@ -24,7 +24,7 @@ class PostModule(PostPythonModule):
     AUTHOR = "Viper"
 
     REQUIRE_SESSION = False
-    OPTIONS = register_options([])
+    OPTIONS = []
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

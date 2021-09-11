@@ -25,7 +25,11 @@ class PostModule(PostPythonModule):
 
     OPTIONS = register_options([
         OptionHander(),
-        OptionStr(name='LoaderName', tag_zh="进程名称", desc_zh="载荷的进程名称,建议仿冒系统进程名,增强迷惑性.", default="dllhost.exe"),
+        OptionStr(name='LoaderName',
+                  tag_zh="进程名称", desc_zh="载荷的进程名称,建议仿冒系统进程名,增强迷惑性.",
+                  tag_en="Process name",
+                  desc_en="Process name of the payload.It is recommended to fake the name of the system process to enhance the confusion.",
+                  default="dllhost.exe"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

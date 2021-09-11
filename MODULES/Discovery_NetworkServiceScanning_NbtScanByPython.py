@@ -28,20 +28,33 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionStr(name='ipstr', tag_zh="IP地址", required=True,
-                  desc_zh="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
+        OptionStr(name='ipstr',
+                  tag_zh="IP地址",
+                  desc_zh="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)",
+                  tag_en="IP address",
+                  desc_en="Scan the list of IP addresses (10.10.10.10, 10.10.11-13, 10.10.11.1/24)",
+                  required=True,
+                  ),
         OptionEnum(name='port',
                    tag_zh="端口",
                    desc_zh="139端口支持netbios+smb扫描,445端口支持smb扫描",
+                   tag_en="Port", desc_en="Port 139 supports netbios+smb scanning, port 445 supports smb scanning",
                    required=True,
                    default=139,
                    enum_list=[
                        {'tag_zh': "139", 'tag_en': "139", 'value': 139},
                        {'tag_zh': "445", 'tag_en': "445", 'value': 445},
                    ]),
-        OptionInt(name='connect_time_out', tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整(通常小于500ms)",
+        OptionInt(name='connect_time_out',
+                  tag_zh="连接超时时间(毫秒)",
+                  desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整(通常小于500ms)",
+                  tag_en="Connection timeout (millisecond)",
+                  desc_en="Please adjust the timeout time of each network connection during the network scanning process according to the host's intranet network environment (usually less than 500ms)",
                   default=100),
-        OptionInt(name='timeout', tag_zh="模块执行超时时间(秒)", desc_zh="模块执行的超时时间", required=True, default=600),
+        OptionInt(name='timeout',
+                  tag_zh="模块执行超时时间(秒)", desc_zh="模块执行的超时时间",
+                  tag_en="Module execution timeout (second)", desc_en="Module execution timeout",
+                  required=True, default=600),
 
         # OptionInt(name='max_threads', name_tag="扫描线程数", desc_zh="扫描线程数(最大值20)", default=10),
     ])

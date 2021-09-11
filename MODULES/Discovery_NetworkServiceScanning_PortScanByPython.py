@@ -30,14 +30,30 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionText(name='ipstr', tag_zh="IP地址", required=True,
-                   desc_zh="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)"),
-        OptionStr(name='port_list', tag_zh="端口列表", required=True, desc_zh="扫描的端口,以逗号分隔(例如22,80,445)", length=24,
-                  default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443"),
-        OptionInt(name='timeout', tag_zh="模块超时时间(秒)", desc_zh="模块执行的超时时间", required=True, default=600),
-        OptionInt(name='connect_time_out', tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
+        OptionText(name='ipstr',
+                   tag_zh="IP地址",
+                   desc_zh="扫描IP地址列表(10.10.10.10,10.10.11-13,10.10.11.1/24)",
+                   tag_en="IP address",
+                   desc_en="Scan the list of IP addresses (10.10.10.10, 10.10.11-13, 10.10.11.1/24)",
+                   required=True,
+                   ),
+        OptionStr(name='port_list',
+                  tag_zh="端口列表", required=True, desc_zh="扫描的端口,以逗号分隔(例如22,80,445)",
+                  tag_en="Port list", desc_en="Scanned ports, separated by commas (e.g. 22, 80, 445)",
+                  length=24, default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443"),
+        OptionInt(name='timeout',
+                  tag_zh="模块超时时间(秒)", desc_zh="模块执行的超时时间",
+                  tag_en="Module timeout time (second)", desc_en="Module execution timeout",
+                  required=True, default=600),
+        OptionInt(name='connect_time_out',
+                  tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
+                  tag_en="Connection timeout (millisecond)",
+                  desc_en="Please adjust the timeout time of each network connection during the network scanning process according to the host's intranet network environment",
                   default=50),
-        OptionInt(name='max_threads', tag_zh="扫描线程数", desc_zh="扫描线程数(最大值20)", default=10),
+        OptionInt(name='max_threads',
+                  tag_zh="扫描线程数", desc_zh="扫描线程数(最大值20)",
+                  tag_en="Number of scanning threads", desc_en="Number of scanning threads (maximum 20)",
+                  default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

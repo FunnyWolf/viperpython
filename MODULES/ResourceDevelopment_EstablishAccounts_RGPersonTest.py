@@ -23,7 +23,11 @@ class PostModule(PostPythonModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionStr(name='apiip', tag_zh="API网关公网IP地址", desc_zh="使用IP地址上线时填写此信息"),
+        OptionStr(name='apiip',
+                  tag_zh="API网关公网IP地址", desc_zh="使用IP地址上线时填写此信息",
+                  tag_en="API gateway public IP address",
+                  desc_en="Fill in this information when using the IP address to online session",
+                  ),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

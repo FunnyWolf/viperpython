@@ -23,7 +23,7 @@ class PostModule(PostMSFExecPEModule):
     README = ["https://www.yuque.com/vipersec/module/tzbot0"]
     AUTHOR = "Viper"
 
-    OPTIONS = register_options([])
+    OPTIONS = []
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

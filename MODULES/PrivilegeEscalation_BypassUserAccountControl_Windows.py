@@ -37,7 +37,10 @@ class PostModule(PostPythonModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionEnum(name='module_select', tag_zh="Bypass方法", desc_zh="选择Bypass方法,默认使用所有可利用方法", required=True,
+        OptionEnum(name='module_select',
+                   tag_zh="Bypass方法", desc_zh="选择Bypass方法,默认使用所有可利用方法",
+                   tag_en="Bypass method", desc_en="Select Bypass method, use all available methods by default",
+                   required=True,
                    default='check',
                    enum_list=[
                        {'tag_zh': '检测模式', 'tag_en': 'Check Mode', 'value': 'check'},

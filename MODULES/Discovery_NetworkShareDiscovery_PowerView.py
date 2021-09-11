@@ -21,7 +21,11 @@ class PostModule(PostMSFPowershellFunctionModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1135/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionStr(name='ComputerName', tag_zh="主机名", desc_zh="需要查询的主机名,如未输入则查询本机共享"),
+        OptionStr(name='ComputerName',
+                  tag_zh="主机名", desc_zh="需要查询的主机名,如未输入则查询本机共享",
+                  tag_en="Computer Name",
+                  desc_en="The host name that needs to be queried, if not entered, the local share will be queried",
+                  ),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

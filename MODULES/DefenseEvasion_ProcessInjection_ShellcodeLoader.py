@@ -32,16 +32,29 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(ext=['bin']),
-        OptionEnum(name='ARCH', tag_zh="ARCH", desc_zh="选择载荷的Arch平台(x86,x64)", required=True,
+        OptionEnum(name='ARCH',
+                   tag_zh="ARCH", desc_zh="选择载荷的Arch平台(x86,x64)",
+                   tag_en="Arch", desc_en="Choose the Arch platform of the payload (x86, x64)",
+                   required=True,
                    default='x64',
                    enum_list=[
                        {'tag_zh': 'x86', 'tag_en': 'x86', 'value': 'x86'},
                        {'tag_zh': 'x64', 'tag_en': 'x64', 'value': 'x64'},
                    ]),
-        OptionBool(name='CHANNELIZED', tag_zh="获取输出", desc_zh="是否需要获取shellcode执行后输出结果", required=True, default=True),
-        OptionInt(name='WAIT_OUTPUT', tag_zh="等待输出时间(秒)", desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
+        OptionBool(name='CHANNELIZED',
+                   tag_zh="获取输出", desc_zh="是否需要获取shellcode执行后输出结果",
+                   tag_en="Get output", desc_en="Whether need to get the output result after shellcode execution",
+                   required=True, default=True),
+        OptionInt(name='WAIT_OUTPUT',
+                  tag_zh="等待输出时间(秒)", desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)",
+                  tag_en="Waiting for output time (second)",
+                  desc_en="The time to wait for the output result after shellcode is executed (seconds) (3-180)",
+                  required=True,
                   default=3),
-        OptionBool(name='KILL', tag_zh="关闭进程", desc_zh="执行shellcode完成后关闭新增的进程.", required=True, default=True),
+        OptionBool(name='KILL',
+                   tag_zh="关闭进程", desc_zh="执行shellcode完成后关闭新增的进程",
+                   tag_en="Kill process", desc_en="Close the newly added process after executing the shellcode",
+                   required=True, default=True),
 
     ])
 

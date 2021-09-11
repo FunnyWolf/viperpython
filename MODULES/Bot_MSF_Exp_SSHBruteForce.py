@@ -23,8 +23,14 @@ class PostModule(BotMSFModule):
         "Quake": 'service:"SSH"',
     }
     OPTIONS = register_options([
-        OptionStr(name='Username', tag_zh="用户名", required=True, desc_zh="暴力破解用户名"),
-        OptionStr(name='Password', tag_zh="密码", required=True, desc_zh="暴力破解密码"),
+        OptionStr(name='Username', required=True,
+                  tag_zh="用户名", desc_zh="暴力破解用户名",
+                  tag_en="Username", desc_en="Brute force username",
+                  ),
+        OptionStr(name='Password', required=True,
+                  tag_zh="密码", desc_zh="暴力破解密码",
+                  tag_en="Password", desc_en="Brute force password",
+                  ),
         OptionHander(),
     ])
 

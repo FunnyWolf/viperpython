@@ -24,7 +24,7 @@ class PostModule(PostPythonModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1088/"]
     AUTHOR = "Viper"
 
-    OPTIONS = register_options([])
+    OPTIONS = []
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

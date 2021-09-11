@@ -26,10 +26,16 @@ class PostModule(PostMSFRawModule):
     AUTHOR = "Viper"
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionIPAddressRange(name='address_range', tag_zh="IP列表",
+        OptionIPAddressRange(name='address_range',
+                             tag_zh="IP列表",
                              desc_zh="IP列表(支持1.1.1.1,2.2.2.2,3.3.3.3-3.3.3.10格式输入)",
+                             tag_en="IP list",
+                             desc_en="IP list (support 1.1.1.1, 2.2.2.2, 3.3.3.3-3.3.3.10 format input)",
                              required=True),
-        OptionInt(name='threads', tag_zh="扫描线程数", desc_zh="扫描线程数(最大值10)", required=True, default=10),
+        OptionInt(name='threads',
+                  tag_zh="扫描线程数", desc_zh="扫描线程数(最大值10)",
+                  tag_en="Number of threads", desc_en="Number of scanning threads (maximum 10)",
+                  required=True, default=10),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

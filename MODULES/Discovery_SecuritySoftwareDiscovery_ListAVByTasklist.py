@@ -28,7 +28,11 @@ class PostModule(PostPythonModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionText(name='tasklist', tag_zh="tasklist /svc命令结果", required=True, desc_zh="tasklist /svc命令结果"),
+        OptionText(name='tasklist',
+                   tag_zh="tasklist /svc命令结果", desc_zh="tasklist /svc命令结果",
+                   tag_en="tasklist /svc result", desc_en="tasklist /svc result",
+                   required=True,
+                   ),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

@@ -628,7 +628,9 @@ class PostModule(PostMSFPythonWithParamsModule):
     AUTHOR = ["Somd5-小宇", "Viper"]
 
     OPTIONS = register_options([
-        OptionStr(name='input_config_path', tag_zh="config.ini路径", desc_zh="自定义向日葵config.ini配置文件路径",
+        OptionStr(name='input_config_path',
+                  tag_zh="config.ini路径", desc_zh="向日葵config.ini配置文件路径",
+                  tag_en="config.ini path", desc_en="SunLogin config.ini configuration file path",
                   length=24),
     ])
 

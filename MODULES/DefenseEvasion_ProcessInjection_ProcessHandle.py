@@ -25,8 +25,14 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionHander(required=False),
-        OptionInt(name='PID', tag_zh="进程PID", desc_zh="进程PID", required=True),
-        OptionEnum(name='ACTION', tag_zh="操作", desc_zh="选择针对进程的操作", required=True,
+        OptionInt(name='PID',
+                  tag_zh="PID", desc_zh="进程PID",
+                  tag_en="PID", desc_en="Process PID",
+                  required=True),
+        OptionEnum(name='ACTION',
+                   tag_zh="操作", desc_zh="选择针对进程的操作",
+                   tag_en="Action", desc_en="Select the action for the process",
+                   required=True,
                    default="inject",
                    length=18,
                    enum_list=[

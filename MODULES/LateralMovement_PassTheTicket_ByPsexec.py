@@ -27,8 +27,10 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionStr(name='RHOST', tag_zh="目标IP", desc_zh="目标的IP地址"),
-        OptionEnum(name='TARGET', tag_zh="执行方式", desc_zh="选择载荷的加载方式",
+        OptionStr(name='RHOST', tag_zh="目标IP", desc_zh="目标的IP地址", tag_en="xxx", desc_en="xxx", ),
+        OptionEnum(name='TARGET',
+                   tag_zh="执行方式", desc_zh="选择载荷的加载方式",
+                   tag_en="Execution way", desc_en="Choose how to load the payload",
                    required=True,
                    default=0,
                    enum_list=[
@@ -40,11 +42,24 @@ class PostModule(PostMSFRawModule):
                    ],
                    ),
 
-        OptionStr(name='SHARE', tag_zh="共享目录", default="ADMIN$",
-                  desc_zh="目标主机的共享目录,可以是ADMIN$或C$等管理员目录或其他可读写的共享目录"),
-        OptionStr(name='SMBDomain', tag_zh="域", desc_zh="目标主机的域信息 . 表示本地域"),
-        OptionStr(name='SMBUser', tag_zh="用户名", desc_zh="smb用户名"),
-        OptionStr(name='SMBPass', tag_zh="密码", desc_zh="smb密码"),
+        OptionStr(name='SHARE',
+                  tag_zh="共享目录",
+                  desc_zh="目标主机的共享目录,可以是ADMIN$或C$等管理员目录或其他可读写的共享目录",
+                  tag_en="Shared directory",
+                  desc_en="The shared directory of the target host, which can be an administrator directory such as ADMIN$ or C$ or other readable and writable shared directories",
+                  default="ADMIN$",
+                  ),
+
+        OptionStr(name='SMBDomain',
+                  tag_zh="域", desc_zh="目标主机的域 . 表示本地域",
+                  tag_en="Domain", desc_en="Domain of the target host"
+                  ),
+        OptionStr(name='SMBUser',
+                  tag_zh="用户名", desc_zh="smb用户名",
+                  tag_en="User", desc_en="smb username", ),
+        OptionStr(name='SMBPass',
+                  tag_zh="密码", desc_zh="smb密码",
+                  tag_en="Password", desc_en="smb password", ),
         OptionCredentialEnum(required=False, password_type=['windows', ]),
         OptionHander(required=False),
         OptionFileEnum(required=False, ext=['exe', 'dll']),

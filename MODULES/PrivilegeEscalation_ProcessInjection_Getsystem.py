@@ -23,7 +23,11 @@ class PostModule(PostMSFRawModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1088/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionEnum(name='TECHNIQUE', tag_zh="提权技术", desc_zh="选择提权技术,默认使用所有可利用方法", required=True,
+        OptionEnum(name='TECHNIQUE',
+                   tag_zh="提权技术", desc_zh="选择提权技术,默认使用所有可利用方法",
+                   tag_en="Privilege escalation technology",
+                   desc_en="Select privilege escalation technology and use all available methods by default",
+                   required=True,
                    default=0,
                    enum_list=[
                        {'tag_zh': '所有可用技术', 'tag_en': 'All techniques available', 'value': 0},

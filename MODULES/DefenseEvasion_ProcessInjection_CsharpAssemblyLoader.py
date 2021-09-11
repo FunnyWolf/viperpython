@@ -31,9 +31,19 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(ext=['exe', 'EXE']),
-        OptionStr(name='ARGUMENTS', tag_zh="命令行参数", length=24, desc_zh="运行exe时输入的参数"),
-        OptionInt(name='WAIT', tag_zh="等待时间", desc_zh="读取输出前等待时间", default=10),
-        OptionBool(name='KILL', tag_zh="结束进程", desc_zh="执行完成后结束C#进程", default=True),
+        OptionStr(name='ARGUMENTS',
+                  tag_zh="命令行参数", desc_zh="运行exe时输入的参数",
+                  tag_en="Command line parameters", desc_en="Parameters entered when running the exe",
+                  length=24,
+                  ),
+        OptionInt(name='WAIT',
+                  tag_zh="等待时间(秒)", desc_zh="读取输出前等待时间",
+                  tag_en="waiting time(second)", desc_en="Wait time before reading output",
+                  default=10),
+        OptionBool(name='KILL',
+                   tag_zh="结束进程", desc_zh="执行完成后结束C#进程",
+                   tag_en="Kill process", desc_en="Kill the C# process after the execution is complete",
+                   default=True),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

@@ -31,9 +31,20 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionFileEnum(ext=['exe']),
-        OptionBool(name='CHANNELIZED', tag_zh="获取输出", desc_zh="是否需要获取shellcode执行后输出结果", required=True, default=True),
-        OptionStr(name='ARGUMENTS', tag_zh="命令行参数", desc_zh="运行exe时输入的参数", length=24),
-        OptionInt(name='WAIT_OUTPUT', tag_zh="等待输出时间(秒)", desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)", required=True,
+        OptionBool(name='CHANNELIZED',
+                   tag_zh="获取输出", desc_zh="是否需要获取shellcode执行后输出结果",
+                   tag_en="Get output", desc_en="Whether need to get the output result after shellcode execution",
+                   required=True, default=True),
+        OptionStr(name='ARGUMENTS',
+                  tag_zh="命令行参数", desc_zh="运行exe时输入的参数",
+                  tag_en="Command line parameters", desc_en="Parameters entered when running the exe",
+                  length=24),
+        OptionInt(name='WAIT_OUTPUT',
+                  tag_zh="等待输出时间(秒)",
+                  desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)",
+                  tag_en="Waiting for output time (second)",
+                  desc_en="The time to wait for the output result after shellcode is executed (second)",
+                  required=True,
                   default=3),
     ])
 

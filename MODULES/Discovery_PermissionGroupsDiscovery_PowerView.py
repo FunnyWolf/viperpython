@@ -22,7 +22,11 @@ class PostModule(PostMSFPowershellFunctionModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1069/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionEnum(name='action', tag_zh="选项", desc_zh="可以选择获取Session所在域信任信息及林信任信息", required=True,
+        OptionEnum(name='action',
+                   tag_zh="选项", desc_zh="可以选择获取Session所在域信任信息及林信任信息",
+                   tag_en="Action",
+                   desc_en="You can choose to obtain the trust information of the domain where the Session is located and the forest trust information",
+                   required=True,
                    default="Get-NetLocalGroup  | select GroupName",
                    enum_list=[
                        {'tag_zh': "本地用户组", 'tag_en': "Local user group",

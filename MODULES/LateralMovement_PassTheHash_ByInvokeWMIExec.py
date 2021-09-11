@@ -24,13 +24,20 @@ class PostModule(PostMSFPowershellFunctionModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1135/"]
     AUTHOR = "Viper"
     OPTIONS = register_options([
-        OptionStr(name='host', tag_zh="目标IP", desc_zh="横向移动目标的IP地址",
+        OptionStr(name='host',
+                  tag_zh="目标IP", desc_zh="横向移动目标的IP地址",
+                  tag_en="Target IP", desc_en="The IP address of the lateral movement target",
                   required=True),
-        OptionStr(name='SMBDomain', tag_zh="域", desc_zh="目标主机的域,如果目标不在域中则为空"),
-        OptionStr(name='SMBUser', tag_zh="用户名", desc_zh="smb用户名"),
-        OptionStr(name='SMBPass', tag_zh="密码", desc_zh="NTLM哈希(LM:NTLM或NTLM)"),
+        OptionStr(name='SMBDomain',
+                  tag_zh="域", desc_zh="目标主机的域,如果目标不在域中则为空",
+                  tag_en="Domain", desc_en="The domain of the target host, empty if the target is not in the domain", ),
+        OptionStr(name='SMBUser',
+                  tag_zh="用户名", desc_zh="smb用户名",
+                  tag_en="User", desc_en="smb username", ),
+        OptionStr(name='SMBPass',
+                  tag_zh="哈希", desc_zh="NTLM哈希(LM:NTLM或NTLM)",
+                  tag_en="Hash", desc_en="NTLM hash (LM: NTLM or NTLM)", ),
         OptionCredentialEnum(required=False, password_type=['windows', ]),
-
         OptionHander(),
     ])
 

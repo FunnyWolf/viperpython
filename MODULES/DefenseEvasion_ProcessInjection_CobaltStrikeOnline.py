@@ -26,6 +26,9 @@ class PostModule(PostMSFRawModule):
         OptionEnum(name='payload',
                    tag_zh="Payload类型",
                    desc_zh="根据CobaltStrike的Listener中payload类型进行选择",
+                   tag_en="Payload type",
+                   desc_en="Choose according to the payload type in CobaltStrike's Listener",
+
                    required=True,
                    default="reverse_http",
                    enum_list=[
@@ -35,8 +38,13 @@ class PostModule(PostMSFRawModule):
                         'value': "reverse_https"},
                    ],
                    length=24),
-        OptionStr("cshost", tag_zh="Host", desc_zh="CS listener的host参数", required=True),
-        OptionInt("csport", tag_zh="Port", desc_zh="CS listener的port参数", required=True)
+        OptionStr("cshost",
+                  tag_zh="Host", desc_zh="CS listener的host参数",
+                  tag_en="Host", desc_en="CS listener host parameter", required=True),
+        OptionInt("csport",
+                  tag_zh="Port", desc_zh="CS listener的port参数",
+                  tag_en="Port", desc_en="CS listener port parameter",
+                  required=True)
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

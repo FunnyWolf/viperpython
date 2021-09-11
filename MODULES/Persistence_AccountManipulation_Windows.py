@@ -25,18 +25,36 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionStr(name='USERNAME', tag_zh="用户名", desc_zh="账户的用户名,域用户无需填写域名", required=True),
-        OptionStr(name='PASSWORD', tag_zh="密码", desc_zh="账户的密码,建议使用满足一定复杂度的密码", required=True),
+        OptionStr(name='USERNAME',
+                  tag_zh="用户名", desc_zh="账户的用户名,域用户无需填写域名",
+                  tag_en="User",
+                  desc_en="The user name of the account, domain users do not need to fill in the domain name",
+                  required=True),
+        OptionStr(name='PASSWORD',
+                  tag_zh="密码", desc_zh="账户的密码,建议使用满足一定复杂度的密码",
+                  tag_en="Password",
+                  desc_en="The password of the account, it is recommended to use a password that meets a certain complexity",
+                  required=True),
         OptionStr(name='GROUP', tag_zh="用户组", desc_zh="本地用户组: Users"
                                                       "本地管理员组: Administrators"
                                                       "域管理员组: Domain Admins"
-                                                      "域用户组:Domain Users", required=True),
+                                                      "域用户组:Domain Users",
+                  tag_en="Group", desc_en="Users"
+                                          "Administrators"
+                                          "Domain Admins"
+                                          "Domain Users",
+                  required=True),
         OptionBool(name="ADDTODOMAIN",
                    tag_zh="域用户",
+                   desc_zh="选定则添加为域账户,未选定则添加为本地账户",
+                   tag_en="Domain user",
+                   desc_en="Selected to add as a domain account, unselected to add as a local account",
                    required=True,
-                   default=False,
-                   desc_zh="选定则添加为域账户,未选定则添加为本地账户"),
-        OptionStr(name='TOKEN', tag_zh="用户TOKEN", desc_zh="添加域用户时可将TOKEN设置为用户名或PID,模块会自动使用steal_token窃取token."),
+                   ),
+        OptionStr(name='TOKEN',
+                  tag_zh="用户TOKEN", desc_zh="添加域用户时可将TOKEN设置为用户名或PID,模块会自动使用steal_token窃取token.",
+                  tag_en="User TOKEN",
+                  desc_en="When adding a domain user, you can set the TOKEN as the username or PID, and the module will automatically use steal_token to steal the token.", ),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

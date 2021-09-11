@@ -27,7 +27,10 @@ class PostModule(PostMSFPowershellModule):
 
     OPTIONS = register_options([
         OptionFileEnum(ext=['ps', 'ps1']),
-        OptionInt(name='timeout', tag_zh="脚本超时时间(秒)", desc_zh="脚本执行的超时时间(5-3600)", required=True, default=60),
+        OptionInt(name='timeout',
+                  tag_zh="脚本超时时间(秒)", desc_zh="脚本执行的超时时间(5-3600)",
+                  tag_en="Script timeout (second)", desc_en="Script execution timeout time (5-3600)",
+                  required=True, default=60),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

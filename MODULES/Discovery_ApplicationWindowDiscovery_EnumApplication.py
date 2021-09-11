@@ -22,7 +22,7 @@ class PostModule(PostMSFRawModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1010/"]
     AUTHOR = "Viper"
     REQUIRE_SESSION = True
-    OPTIONS = register_options([])
+    OPTIONS = []
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)
