@@ -50,12 +50,12 @@ class PostModule(PostMSFRawModule):
 
         session = Session(self._sessionid)
         if not session.is_windows:
-            return False, "模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
         if session.is_admin is True:
             self.set_msf_option('TECHNIQUE', self.param('TECHNIQUE'))
             return True, None
         else:
-            return False, "模块需要管理员权限,请尝试使用UAC绕过模块"
+            return False, "模块需要管理员权限,请尝试使用UAC绕过模块", "The module requires administrator rights, please try to use UAC bypass module"
 
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)

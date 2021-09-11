@@ -36,7 +36,7 @@ class PostModule(BotMSFModule):
         """执行前的检查函数"""
         result = self.set_payload_by_handler()
         if result is not True:
-            return False, "无法解析Handler,请选择正确的监听"
+            return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
         else:
             if self._port == 443:
                 self.set_msf_option("SSL", True)

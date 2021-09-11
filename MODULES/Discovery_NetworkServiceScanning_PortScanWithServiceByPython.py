@@ -63,7 +63,7 @@ class PostModule(PostMSFPythonWithParamsModule):
         # session 检查
         self.session = Session(self._sessionid)
         if self.session.is_alive is not True:
-            return False, "此session不可用"
+            return False, "Session不可用", "Session is unavailable"
 
         ipstr = self.param('ipstr')
         port_list = self.param('port_list')
@@ -74,21 +74,21 @@ class PostModule(PostMSFPythonWithParamsModule):
         try:
             iplist = self.str_to_ips(ipstr)
             if len(iplist) > 510:
-                return False, "扫描IP范围过大(超过510),请缩小范围"
+                return False, "扫描IP范围过大(超过510)", "Scanning IP range is too large (more than 510)"
             elif len(iplist) < 0:
-                return False, "输入的IP地址格式有误,未识别到有效IP地址,请重新输入"
+                return False, "输入的IP地址格式有误,未识别到有效IP地址", "The format of the entered IP address is incorrect, and a valid IP address is not recognized"
             self.set_script_param('ipstr', ipstr)
         except Exception as E:
-            return False, "输入的IP格式有误,请重新输入"
+            return False, "输入的IP格式有误", "The entered IP format is incorrect"
 
         # 检查port_list
         try:
             list_str = "[{}]".format(port_list)
             port_list_net = json.loads(list_str)
             if len(port_list_net) > 100:
-                return False, "扫描端口数量过大(超过100),请缩小范围"
+                return False, "扫描端口数量过大(超过100),请缩小范围", "The number of scanning ports is too large (more than 100)"
             elif len(port_list_net) <= 0:
-                return False, "输入的端口列表有误,请重新输入"
+                return False, "输入的端口列表有误,请重新输入", "The port list entered is incorrect"
             port_list_tmp = port_list_net
             for port in port_list_tmp:
                 if 0 < port <= 65535:
@@ -97,20 +97,20 @@ class PostModule(PostMSFPythonWithParamsModule):
                     port_list_net.remove(port)
             self.set_script_param('port_list', port_list_net)
         except Exception as E:
-            return False, "输入的端口列表有误,请重新输入"
+            return False, "输入的端口列表有误,请重新输入", "The port list entered is incorrect"
 
         # 检查timeout
         if timeout <= 0 or timeout > 3600:
-            return False, "输入的模块超时时间有误(最大值3600),请重新输入"
+            return False, "输入的模块超时时间有误(最大值3600)", "The entered module timeout time is incorrect (maximum 3600)"
         if connect_time_out <= 0 or connect_time_out > 3000:
-            return False, "输入的连接超时时间有误(最大值3000),请重新输入"
+            return False, "输入的连接超时时间有误(最大值3000)", "The connection timeout entered is incorrect (maximum 3000)"
         if max_threads <= 0 or max_threads > 20:
-            return False, "输入的扫描线程数有误(最大值20),请重新输入"
+            return False, "输入的扫描线程数有误(最大值20)", "The number of scan threads entered is incorrect (maximum 20)"
 
         bad_cost = len(iplist) * len(port_list_net) * connect_time_out / 1000 / 20
 
         if bad_cost + 30 > timeout:  # 模块编译re需要时间,上传脚本需要时间
-            return False, "输入的模块超时时间过短,请设置为大于 {} 的值".format(int(bad_cost) + 30)
+            return False, f"输入的模块超时时间过短,请设置为大于 {int(bad_cost) + 30} 的值", f"The entered module timeout time is too short, please set it to a value greater than {int(bad_cost) + 30}"
         self.set_script_param('time_out', connect_time_out / 1000)
         self.set_script_param('max_threads', max_threads)
         self.set_script_timeout(timeout)

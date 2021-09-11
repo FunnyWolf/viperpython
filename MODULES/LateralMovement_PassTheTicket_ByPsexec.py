@@ -94,7 +94,7 @@ class PostModule(PostMSFRawModule):
                 self.set_msf_option(key='SMBUser', value=user)
                 self.set_msf_option(key='SMBPass', value=password)
             else:
-                return False, "请选择凭证或手工输入凭证"
+                return False, "请选择凭证或手工输入凭证", "Please select the certificate or enter the certificate manually"
         else:
             # 手工输入覆盖凭证输入
             domain = self.param('SMBDomain')
@@ -121,12 +121,12 @@ class PostModule(PostMSFRawModule):
         else:
             payload = self.get_handler_payload()
             if payload is None:
-                return False, "Handler解析失败,请重新选择Handler参数"
+                return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
             if "meterpreter_reverse" in payload or "meterpreter_bind" in payload:
-                return False, "请选择Stager类型的监听(例如/meterpreter/reverse_tcp或/meterpreter/bind_tcp)"
+                return False, "请选择Stager类型的监听(例如/meterpreter/reverse_tcp或/meterpreter/bind_tcp)", "Please select the stager type of handler (e.g. /meterpreter/reverse_tcp or /meterpreter/bind_tcp)"
             flag = self.set_payload_by_handler()
             if flag is not True:
-                return False, "Handler解析失败,请重新选择Handler参数"
+                return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
             return True, None
 
     def callback(self, status, message, data):

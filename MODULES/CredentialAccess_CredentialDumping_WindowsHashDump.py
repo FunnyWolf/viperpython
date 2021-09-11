@@ -33,9 +33,9 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         self.session = Session(self._sessionid)
         if self.session.is_windows is not True:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
         if self.session.is_admin is not True:
-            return False, "此模块需要管理员权限,请尝试提权"
+            return False, "此模块需要管理员权限,请尝试提权", "This module requires administrator privileges, please try privilege escalation"
         return True, None
 
     def callback(self, status, message, data):

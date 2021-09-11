@@ -43,10 +43,10 @@ class PostModule(PostMSFRawModule):
         if session.is_windows:
             pass
         else:
-            return False, "此模块只支持Meterpreter类型的Session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         if 'windows' not in self.get_handler_payload().lower():
-            return False, "选择handler错误,请选择windows平台的监听"
+            return False, "选择handler错误,请选择windows平台的监听", "Select the handler error, please select the handler of the windows platform"
         self.set_payload_by_handler()
 
         filepath = self.get_fileoption_filepath(msf=True)

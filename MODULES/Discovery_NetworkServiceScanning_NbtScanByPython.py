@@ -69,7 +69,7 @@ class PostModule(PostMSFPythonWithParamsModule):
 
         self.session = Session(self._sessionid)
         if self.session.is_alive is not True:
-            return False, "当前session不可用"
+            return False, "Session不可用", "Session unavailable"
 
         # 参数检查
         ipstr = self.param('ipstr')
@@ -82,21 +82,21 @@ class PostModule(PostMSFPythonWithParamsModule):
             iplist = self.str_to_ips(ipstr)
 
             if len(iplist) > 510:
-                return False, "扫描IP范围过大(超过510),请缩小范围"
+                return False, "扫描IP范围过大(超过510),请缩小范围", "Scanning IP range is too large (more than 510)"
             elif len(iplist) < 0:
-                return False, "输入的IP地址格式有误,未识别到有效IP地址,请重新输入"
+                return False, "输入的IP地址格式有误,未识别到有效IP地址", "The format of the entered IP address is incorrect, and a valid IP address is not recognized"
             self.set_script_param('ipstr', ipstr)
         except Exception as E:
-            return False, "输入的IP格式有误,请重新输入"
+            return False, "输入的IP格式有误", "The entered IP format is incorrect"
         if self.param('port') not in [139, 445]:
             self.set_script_param('port', 139)
         else:
             self.set_script_param('port', self.param("port"))
 
         if timeout <= 0 or timeout > 3600:
-            return False, "输入的模块超时时间有误(最大值3600),请重新输入"
+            return False, "输入的模块超时时间有误(最大值3600)", "The entered module timeout time is incorrect (maximum 3600)"
         if connect_time_out <= 0 or connect_time_out > 3000:
-            return False, "输入的连接超时时间有误(最大值3000),请重新输入"
+            return False, "输入的连接超时时间有误(最大值3000)", "The connection timeout entered is incorrect (maximum 3000)"
         # if max_threads <= 0 or max_threads > 20:
         #     return False, "输入的扫描线程数有误(最大值20),请重新输入"
 

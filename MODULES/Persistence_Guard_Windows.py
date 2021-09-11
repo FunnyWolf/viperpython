@@ -42,11 +42,11 @@ class PostModule(PostMSFRawModule):
         if session.is_windows:
             pass
         else:
-            return False, "此模块只支持Meterpreter类型的Session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         self.set_payload_by_handler()
         if 'windows' not in self.opts.get('PAYLOAD').lower():
-            return False, "选择handler错误,建议选择windows平台的handler"
+            return False, "选择handler错误,请选择windows平台的监听", "Select the handler error, please select the handler of the windows platform"
         exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_GUARD")
         self.set_msf_option("EXE::Custom", exe_filepath)
         return True, None

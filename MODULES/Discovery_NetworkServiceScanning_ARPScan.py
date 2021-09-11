@@ -48,19 +48,19 @@ class PostModule(PostMSFRawModule):
 
         self.session = Session(self._sessionid)
         if self.session.is_windows is not True:
-            return False, "此模块只支持windows平台meterpreter类型的session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         address_range = self.param_address_range('address_range')
         if len(address_range) > 256:
-            return False, "扫描IP范围过大(超过256),请缩小范围"
+            return False, "扫描IP范围过大(超过256),请缩小范围", "Scanning IP range is too large (more than 256), please reduce the range"
         elif len(address_range) < 0:
-            return False, "输入的IP列表格式有误,请重新输入"
+            return False, "输入的IP列表格式有误", "The format of the entered IP list is incorrect"
         self.set_msf_option('RHOSTS', ", ".join(address_range))
 
         threads = self.param('threads')
         # 检查port_list
         if threads <= 0 or threads > 20:
-            return False, "输入的扫描线程数有误(最大值10),请重新输入"
+            return False, "输入的扫描线程数有误(最大值10)", "The number of scan threads entered is incorrect (maximum 10)"
         self.set_msf_option('THREADS', threads)
 
         return True, None

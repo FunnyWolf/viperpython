@@ -52,14 +52,14 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if not session.is_windows:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         if self.param("ACTION") in ["inject"]:
             self.type = "exploit"
             self.mname = "windows/local/process_handle_api"
             flag = self.set_payload_by_handler()
             if flag is not True:
-                return False, "Handler解析失败,请重新选择Handler参数"
+                return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
 
         self.set_msf_option(key='PID', value=self.param("PID"))
         self.set_msf_option(key='ACTION', value=self.param("ACTION"))

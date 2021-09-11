@@ -35,10 +35,9 @@ class PostModule(PostMSFExecPEModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if session.is_windows:
-
             return True, None
         else:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
     def callback(self, status, message, data):
         if status is not True:

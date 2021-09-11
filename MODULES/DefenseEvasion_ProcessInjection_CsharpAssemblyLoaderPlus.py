@@ -79,11 +79,11 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if not session.is_windows:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         exe_file = self.get_fileoption_filename()
         if exe_file is None:
-            return False, "请选择执行exe文件,文件后缀必须为exe"
+            return False, "请选择执行exe文件,文件后缀必须为exe", "Please choose to execute the exe file, the file suffix must be exe"
         else:
             self.set_msf_option(key='ASSEMBLY', value=exe_file)
 
@@ -104,7 +104,7 @@ class PostModule(PostMSFRawModule):
         PPID = self.param("PPID")
         PROCESS = self.param("PROCESS")
         if PID != 0 and PPID != 0:
-            return False, "不能同时指定PID及PPID"
+            return False, "不能同时指定PID及PPID", "Cannot specify PID and PPID at the same time"
         self.set_msf_option(key='PID', value=PID)
         self.set_msf_option(key='PPID', value=PPID)
         self.set_msf_option(key='PROCESS', value=PROCESS)

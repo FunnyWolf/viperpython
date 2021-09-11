@@ -48,11 +48,11 @@ class PostModule(PostMSFRawModule):
         if session.is_alive:
             pass
         else:
-            return False, "Session不可用"
+            return False, "Session不可用", "Session is unavailable"
         if session.is_admin:
             pass
         else:
-            return False, "模块需要系统管理员权限"
+            return False, "此模块需要管理员权限,请尝试提权", "This module requires administrator privileges, please try privilege escalation"
 
         self.set_msf_option("Action", action)
         return True, None

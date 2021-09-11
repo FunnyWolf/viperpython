@@ -75,40 +75,40 @@ class PostModule(PostPythonModule):
         if session.is_windows:
             pass
         else:
-            return False, "模块只支持Meterpreter类型的Session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         # 检查权限
         if session.is_admin or session.is_system:
-            return False, "当前Session已获取管理员权限,无需执行模块"
+            return False, "当前Session已获取管理员权限,无需执行模块", "The current Session has obtained administrator rights, no need to execute the module"
         if session.is_in_admin_group is not True:
-            return False, "当前Session用户不在管理员组中,无法执行模块"
+            return False, "当前Session用户不在管理员组中,无法执行模块", "The current session user is not in the administrator group and cannot execute the module"
         # 检查UAC设置
         if session.is_uac_enable is not True:
-            return False, "当前Session用户所在主机未开启UAC或UAC情况未知,无需执行模块"
+            return False, "当前Session用户所在主机未开启UAC或UAC情况未知,无需执行模块", "The current session user's host has not enabled UAC or the UAC situation is unknown, no need to execute the module"
         if session.uac_level in [UACLevel.UAC_PROMPT_CREDS_IF_SECURE_DESKTOP,
                                  UACLevel.UAC_PROMPT_CONSENT_IF_SECURE_DESKTOP,
                                  UACLevel.UAC_PROMPT_CREDS,
                                  UACLevel.UAC_PROMPT_CONSENT]:
-            return False, "当前Session用户设置的UAC级别为过高,无法执行模块"
+            return False, "当前Session用户设置的UAC级别为过高,无法执行模块", "The UAC level set by the current session user is too high to execute the module"
         # 检查integrity_level
         if session.integrity is None or session.integrity == 'low':
-            return False, "当前Session的完整性级别过低,无法执行模块"
+            return False, "当前Session的完整性级别过低,无法执行模块", "The integrity level of the current session is too low to execute the module"
 
         flag = self.set_payload_by_handler()
         if 'windows' not in self.opts.get('PAYLOAD').lower():
-            return False, "选择handler错误,建议选择windows平台的handler"
+            return False, "选择handler错误,请选择windows平台的监听", "Select the handler error, please select the handler of the windows platform"
 
         # 检查handler和arch是否对应
         host_arch = session.arch
         try:
             if host_arch == 'x64':
                 if 'x64' not in self.opts.get('PAYLOAD'):
-                    return False, "选择handler的arch错误,建议选择x64平台的handler"
+                    return False, "选择handler的arch错误,请选择x64平台的handler", "The arch error of the selected handler, please select the handler of the x64 platform"
             else:
                 if 'x64' in self.opts.get('PAYLOAD'):
-                    return False, "选择handler的arch错误,建议选择x86平台的handler"
+                    return False, "选择handler的arch错误,请选择x86平台的handler", "Select the arch error of the handler, please select the handler of the x86 platform"
         except Exception as E:
-            return False, "handler检查失败,请正确设置handler"
+            return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
 
         # 通过适用的操作系统进行正则匹配
         host_os = session.os
@@ -177,7 +177,7 @@ class PostModule(PostPythonModule):
                     self.module_path_list.append(one)
 
         if len(self.module_path_list) == 0:
-            return False, "未找到符合要求的模块,退出执行"
+            return False, "未找到符合要求的模块,退出执行", "No module that meets the requirements is found, exit execution"
 
         module_select = self.param('module_select')
         tmprecord = None
@@ -186,7 +186,7 @@ class PostModule(PostPythonModule):
                 if one.get('mname') == module_select:
                     tmprecord = [one]
             if tmprecord is None:
-                return False, "选择的Bypass方法不符合Session要求,退出执行"
+                return False, "选择的Bypass方法不符合Session要求,退出执行", "The selected Bypass method does not meet the Session requirements, exit execution"
             else:
                 self.module_path_list = tmprecord
         self.opts["SESSION"] = self._sessionid

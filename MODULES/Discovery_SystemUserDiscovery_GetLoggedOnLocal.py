@@ -41,15 +41,13 @@ class PostModule(PostMSFPowershellFunctionModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if session.is_windows is not True:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         computerName = self.param('ComputerName')
-        if self.param('ComputerName') is None:
-            return False, "必须输入主机名"
         if session.is_in_domain:
             execute_string = "Get-LoggedOnLocal -ComputerName {} | ConvertTo-JSON -maxDepth 2".format(computerName)
         else:
-            return False, "此模块只支持Windows的Meterpreter,Session所属用户必须在域中"
+            return False, "此模块只支持Windows的Meterpreter,且session所属用户必须在域中", "This module only supports Meterpreter of Windows, and the user of the session must be in the domain"
         self.set_execute_string(execute_string)
 
         return True, None

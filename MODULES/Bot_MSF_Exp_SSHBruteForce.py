@@ -44,7 +44,8 @@ class PostModule(BotMSFModule):
         # check函数中不要执行耗时操作
         result = self.set_payload_by_handler()
         if result is not True:
-            return False, "无法解析Handler,请选择正确的监听"  # check失败,返回提示
+            # check失败,返回提示
+            return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
         else:
             Username = self.param("Username")
             Password = self.param("Password")

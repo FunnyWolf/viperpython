@@ -35,9 +35,9 @@ class PostModule(PostPythonModule):
         """执行前的检查函数"""
         payload = self.get_handler_payload()
         if "windows" not in payload:
-            return False, "模块只支持windows类型载荷"
+            return False, "选择handler错误,请选择windows平台的监听", "Select the handler error, please select the handler of the windows platform"
         if "reverse_tcp_rc4" not in payload:
-            return False, "模块只支持reverse_tcp_rc4载荷"
+            return False, "模块只支持reverse_tcp_rc4载荷", "The module only supports reverse_tcp_rc4 payload"
         return True, None
 
     def run(self):

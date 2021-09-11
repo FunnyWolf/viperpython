@@ -40,7 +40,7 @@ class PostModule(PostMSFPowershellFunctionModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if session.is_windows is not True:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         computerName = self.param('ComputerName')
         if self.param('ComputerName') is not None:
@@ -48,7 +48,7 @@ class PostModule(PostMSFPowershellFunctionModule):
                 execute_string = "Get-WMIRegLastLoggedOn -ComputerName {} | ConvertTo-JSON -maxDepth 1".format(
                     computerName)
             else:
-                return False, "当填写'主机名'时Session必须在域中"
+                return False, "当填写'主机名'时Session必须在域中", "Get the session must be in the domain when filling in the'Computer Name'"
 
         else:
             execute_string = "Get-WMIRegLastLoggedOn | ConvertTo-JSON -maxDepth 1"

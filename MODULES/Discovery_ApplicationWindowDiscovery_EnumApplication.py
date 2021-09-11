@@ -34,7 +34,7 @@ class PostModule(PostMSFRawModule):
 
         self.session = Session(self._sessionid)
         if self.session.is_windows is not True:
-            return False, "此模块只支持windows平台meterpreter类型的session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
         return True, None
 
     def callback(self, status, message, data):

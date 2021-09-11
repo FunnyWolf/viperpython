@@ -49,13 +49,13 @@ class PostModule(PostMSFPowershellFunctionModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if session.is_windows is not True:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         payload_cmd = self.generate_payload("psh-cmd")
         try:
             payload_cmd = payload_cmd.decode()[30:]
         except Exception as E:
-            return True, "生成载荷失败"
+            return False, "生成载荷失败", "Failed to generate payload"
 
         credential_config = self.get_credential_config()
         if credential_config is not None:

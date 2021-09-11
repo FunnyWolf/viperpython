@@ -37,7 +37,7 @@ class PostModule(PostPythonModule):
         if session.is_windows:
             self.opts["SESSION"] = self._sessionid  # 设置msf模块的options
         else:
-            return False, "模块只支持Meterpreter类型的Session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
         return True, None
 
     def run(self):

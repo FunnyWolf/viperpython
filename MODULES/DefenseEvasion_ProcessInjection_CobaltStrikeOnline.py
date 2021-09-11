@@ -57,7 +57,7 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         session = Session(self._sessionid)
         if not session.is_windows:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         if self.param("payload") == "reverse_http":
             self.opts["PAYLOAD"] = "windows/meterpreter/reverse_http"

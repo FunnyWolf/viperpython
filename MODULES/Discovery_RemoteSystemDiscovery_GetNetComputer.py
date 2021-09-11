@@ -35,7 +35,7 @@ class PostModule(PostMSFPowershellFunctionModule):
             self.set_execute_string('Get-NetComputer')
             return True, None
         else:
-            return False, "此模块只支持Windows的Meterpreter,且必须在域中"
+            return False, "此模块只支持Windows的Meterpreter,且session所属用户必须在域中", "This module only supports Meterpreter of Windows, and the user of the session must be in the domain"
 
     def callback(self, status, message, data):
         if status:

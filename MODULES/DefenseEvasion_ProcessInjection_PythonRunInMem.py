@@ -40,20 +40,20 @@ class PostModule(PostMSFPythonModule):
         """执行前的检查函数"""
         script = self.get_fileoption_filename()
         if script is None:
-            return False, "请选择执行的脚本,脚本后缀必须为py或pyc"
+            return False, "请选择执行的脚本,脚本后缀必须为py或pyc", "Please select the script to execute, the script suffix must be py or pyc"
         self.set_script(script)
 
         timeout = self.param("timeout")
         # 检查timeout
         if timeout < 5 or timeout > 3600:
-            return False, "输入的模块超时时间有误(最小值60,最大值3600),请重新输入"
+            return False, "输入的模块超时时间有误(最小值60,最大值3600)", "The entered module timeout time is incorrect (minimum value 60, maximum value 3600)"
         self.set_script_timeout(timeout)
 
         session = Session(self._sessionid)
         if session.is_alive:
             return True, None
         else:
-            return False, "Session不可用"
+            return False, "Session不可用", "Session is unavailable"
 
     def callback(self, status, message, data):
         if status:

@@ -46,10 +46,10 @@ class PostModule(PostPythonModule):
         # 检查
         payload = handler_config.get("PAYLOAD")
         if "meterpreter_reverse_https" not in payload:
-            return False, "只支持meterpreter_reverse_https类型监听"
+            return False, "只支持meterpreter_reverse_https类型监听", "Only supports meterpreter_reverse_https type handler"
         handlerid = handler_config.get("ID")
         if handlerid < 0:
-            return False, "必须使用真实监听"
+            return False, "模块必须选择真实监听", "Module need real handler"
         return True, None
 
     def run(self):

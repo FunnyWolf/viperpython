@@ -42,7 +42,7 @@ class PostModule(PostMSFPowershellFunctionModule):
 
         session = Session(self._sessionid)
         if session.is_windows is not True:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
         all_computer = self.param('AllComputer')
         computerName = self.param('ComputerName')
 
@@ -50,7 +50,7 @@ class PostModule(PostMSFPowershellFunctionModule):
             if session.is_in_domain:
                 execute_string = "Get-DomainComputer | select name | Resolve-IPAddress | ConvertTo-JSON -maxDepth 2"
             else:
-                return False, "获取域内其他主机IP地址时,此Session必须在域中"
+                return False, "获取域内其他主机IP地址时,此Session必须在域中", "When obtaining the IP addresses of other hosts in the domain, this session must be in the domain"
         else:
             if computerName is not None:
                 execute_string = "Resolve-IPAddress -ComputerName {} | ConvertTo-JSON -maxDepth 2".format(computerName)

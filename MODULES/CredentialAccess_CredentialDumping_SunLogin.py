@@ -646,7 +646,7 @@ class PostModule(PostMSFPythonWithParamsModule):
             self.set_script_param('input_config_path', input_config_path)
             return True, None
         else:
-            return False, "Session不可用"
+            return False, "Session不可用", "Session is unavailable"
 
     def callback(self, status, message, data):
         if status:

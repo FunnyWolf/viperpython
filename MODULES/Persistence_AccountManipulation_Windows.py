@@ -68,7 +68,7 @@ class PostModule(PostMSFRawModule):
         if session.is_windows:
             pass
         else:
-            return False, "此模块只支持Meterpreter类型的Session"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         self.set_msf_option("ADDTODOMAIN", self.param("ADDTODOMAIN"))
         self.set_msf_option("USERNAME", self.param("USERNAME"))

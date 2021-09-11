@@ -46,14 +46,14 @@ class PostModule(PostMSFRawModule):
 
         session = Session(self._sessionid)
         if not session.is_windows:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         if not session.is_admin:
-            return False, "模块要求最低权限为管理员权限,如需低权限进程迁移,请选择<Session克隆>模块"
+            return False, "模块要求最低权限为管理员权限,如需低权限进程迁移,请选择<Session克隆>模块", "The module requires the minimum permissions to be administrator permissions, if you need low-privileged process migration, please select the <Session clone> module"
 
         flag = self.set_payload_by_handler()
         if not flag:
-            return False, "Handler设置失败,请重新设置"
+            return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
 
         return True, None
 

@@ -37,9 +37,9 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         result = self.set_payload_by_handler()
         if result is not True:
-            return False, "无法解析Handler,请选择正确的监听"
+            return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
         if 'windows' not in self.opts.get('PAYLOAD').lower():
-            return False, "选择handler错误,建议选择windows平台的handler"
+            return False, "选择handler错误,请选择windows平台的监听", "Select the handler error, please select the handler of the windows platform"
         return True, None
 
     def callback(self, status, message, data):

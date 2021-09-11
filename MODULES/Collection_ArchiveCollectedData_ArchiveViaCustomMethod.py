@@ -44,7 +44,7 @@ class PostModule(PostMSFRawModule):
             self.set_msf_option("LPATH", "viperzip")
             self.set_msf_option("RPATH", "viperzip_viper")
         else:
-            return False, "模块只支持Windows及Linux原生Session"
+            return False, "模块只支持Windows及Linux原生Session", "This module only supports Meterpreter for Windows"
 
         inputdir = self.param("INPUTDIR")
         self.outfile = f"{self.random_str(8)}.zip"

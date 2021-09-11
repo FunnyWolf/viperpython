@@ -56,7 +56,7 @@ class PostModule(PostMSFRawModule):
             self.set_msf_option("LPATH", "nextnet")
             self.set_msf_option("RPATH", "nextnet_viper")
         else:
-            return False, "模块只支持Windows及Linux原生Session"
+            return False, "模块只支持Windows/Linux meterpreter类型Session", "The module only supports Windows/Linux meterpreter type Session"
 
         ipaddress = self.param("IPADDRESS")
         args = f"{ipaddress}"

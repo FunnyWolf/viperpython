@@ -34,7 +34,7 @@ class PostModule(PostMSFPowershellFunctionModule):
         if session.is_in_domain:
             return True, None
         else:
-            return False, "此模块只支持Windows的Meterpreter,且必须在域中"
+            return False, "此模块只支持Windows的Meterpreter,且主机必须在域中", "This module only supports Meterpreter of Windows, and the host must be in the domain"
 
     def callback(self, status, message, data):
         if status:

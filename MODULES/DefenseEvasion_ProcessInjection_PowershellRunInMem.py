@@ -40,24 +40,24 @@ class PostModule(PostMSFPowershellModule):
         """执行前的检查函数"""
         script = self.get_fileoption_filename()
         if script is None:
-            return False, "请选择执行的脚本,脚本后缀必须为ps或ps1"
+            return False, "请选择执行的脚本,脚本后缀必须为ps或ps1", "Please select the script to execute, the script suffix must be ps or ps1"
         self.set_script(script)
 
         timeout = self.param("timeout")
         # 检查timeout
         if timeout < 5 or timeout > 3600:
-            return False, "输入的模块超时时间有误(最小值60,最大值3600),请重新输入"
+            return False, "输入的模块超时时间有误(最小值60,最大值3600)", "The entered module timeout time is incorrect (minimum value 60, maximum value 3600)"
         self.set_script_timeout(timeout)
 
         session = Session(self._sessionid)
         if session.is_alive:
             pass
         else:
-            return False, "Session不可用"
+            return False, "Session不可用", "Session is unavailable"
         if session.is_windows:
             return True, None
         else:
-            return False, "模块只支持Windows系统"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
     def callback(self, status, message, data):
         if status:

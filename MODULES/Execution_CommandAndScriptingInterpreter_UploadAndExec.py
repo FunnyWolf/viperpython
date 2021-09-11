@@ -75,7 +75,7 @@ class PostModule(PostMSFRawModule):
         elif os is None or os == "all":
             pass
         else:
-            return False, "模块os参数与session的os不一致"
+            return False, "模块os参数与session的os不一致", "The module os parameter is inconsistent with the session os"
         arch = self.param('ARCH')
 
         if arch == session.arch:
@@ -83,7 +83,7 @@ class PostModule(PostMSFRawModule):
         elif arch is None or arch == "all":
             pass
         else:
-            return False, "模块arch参数与session的arch不一致"
+            return False, "模块arch参数与session的arch不一致", "The module arch parameter is inconsistent with the session arch"
 
         filename = self.get_fileoption_filename()
         self.set_msf_option("LPATH", filename)

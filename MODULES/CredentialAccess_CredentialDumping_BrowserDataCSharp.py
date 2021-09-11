@@ -34,7 +34,7 @@ class PostModule(PostMSFCSharpModule):
         session = Session(self._sessionid)
 
         if session.is_windows is not True:
-            return False, "此模块只支持Windows的Meterpreter"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         return True, None
 

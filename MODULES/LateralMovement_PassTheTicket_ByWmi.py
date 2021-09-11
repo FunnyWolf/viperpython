@@ -57,7 +57,7 @@ class PostModule(PostMSFRawModule):
         # 设置RHOSTS参数
         address_range = self.param_address_range('address_range')
         if len(address_range) > 256:
-            return False, "扫描IP范围过大(超过256),请缩小范围"
+            return False, "扫描IP范围过大(超过256)", "Scanning IP range is too large (more than 256)"
         elif len(address_range) < 0:
             self.set_msf_option(key='RHOSTS', value=self.host_ipaddress)
         self.set_msf_option('RHOSTS', ", ".join(address_range))
@@ -69,10 +69,10 @@ class PostModule(PostMSFRawModule):
 
         payload = self.get_handler_payload()
         if "meterpreter_reverse" in payload or "meterpreter_bind" in payload:
-            return False, "请选择Stager类型的监听(例如/meterpreter/reverse_tcp或/meterpreter/bind_tcp)"
+            return False, "请选择Stager类型的监听(例如/meterpreter/reverse_tcp或/meterpreter/bind_tcp)", "Please select the stager type of handler (e.g. /meterpreter/reverse_tcp or /meterpreter/bind_tcp)"
         flag = self.set_payload_by_handler()
         if flag is not True:
-            return False, "Handler解析失败,请重新选择Handler参数"
+            return False, "无法解析Handler,请选择正确的监听", "Unable to resolve Handler, please select the correct handler"
 
         flag = self.set_smb_info_by_credential()
         if flag is not True:

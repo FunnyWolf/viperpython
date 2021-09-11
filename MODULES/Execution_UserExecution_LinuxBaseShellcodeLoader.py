@@ -42,7 +42,7 @@ class PostModule(PostPythonModule):
         payload = self.get_handler_payload()
         if payload not in ['linux/x86/meterpreter/reverse_tcp', 'linux/x86/meterpreter/bind_tcp',
                            'linux/x64/meterpreter/reverse_tcp', 'linux/x64/meterpreter/bind_tcp', ]:
-            return False, "输入的载荷类型不满足要求,请参考模块说明"
+            return False, "输入的载荷类型不满足要求,请参考模块说明", "The input payload type does not meet the requirements, please refer to the module description"
         return True, None
 
     def run(self):

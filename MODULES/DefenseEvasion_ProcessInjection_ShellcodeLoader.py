@@ -67,7 +67,7 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         script = self.get_fileoption_filename()
         if script is None:
-            return False, "请选择执行shellcode文件,文件后缀必须为bin"
+            return False, "请选择执行shellcode文件,文件后缀必须为bin", "Please choose to execute the shellcode file, the file suffix must be bin"
         else:
             self.set_msf_option(key='SHELLCODE_FILE', value=script)
         self.set_msf_option(key='CHANNELIZED', value=self.param('CHANNELIZED'))
@@ -84,16 +84,16 @@ class PostModule(PostMSFRawModule):
         if session.is_alive:
             pass
         else:
-            return False, "Session不可用"
+            return False, "Session不可用", "Session is unavailable"
         if session.is_windows:
             pass
         else:
-            return False, "模块只支持Windows系统"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         if self.param('ARCH') in ["x86", "x64"]:
             self.set_msf_option(key='ARCH', value=self.param("ARCH"))
         else:
-            return False, "Arch输入错误"
+            return False, "Arch输入错误", "Arch input error"
         return True, None
 
     def callback(self, status, message, data):

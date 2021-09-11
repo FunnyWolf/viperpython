@@ -57,7 +57,7 @@ class PostModule(PostMSFRawModule):
         """执行前的检查函数"""
         pe = self.get_fileoption_filepath(msf=True)
         if pe is None:
-            return False, "请选择执行PE文件,文件后缀必须为exe"
+            return False, "请选择执行exe文件,文件后缀必须为exe", "Please choose to execute the exe file, the file suffix must be exe"
         else:
             self.set_msf_option(key='PE', value=pe)
 
@@ -75,11 +75,11 @@ class PostModule(PostMSFRawModule):
         if session.is_alive:
             pass
         else:
-            return False, "Session不可用"
+            return False, "Session不可用", "Session is unavailable"
         if session.is_windows:
             pass
         else:
-            return False, "模块只支持Windows系统"
+            return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
 
         return True, None
 
