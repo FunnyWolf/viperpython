@@ -13,7 +13,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, STATIC_STORE_PATH, LazyLoader_MSG
+from Lib.configs import CODE_MSG_ZH, STATIC_STORE_PATH, LazyLoader_MSG_ZH, CODE_MSG_EN, LazyLoader_MSG_EN
 from Lib.log import logger
 from Lib.xcache import Xcache
 
@@ -29,7 +29,8 @@ class LazyLoader(object):
         from Msgrpc.Handle.handler import Handler
         data = Xcache.list_lazyloader()
         handlers = Handler.list_handler_config()
-        context = data_return(200, {"lazyloaders": data, "handlers": handlers}, CODE_MSG.get(200))
+        context = data_return(200, {"lazyloaders": data, "handlers": handlers}, CODE_MSG_ZH.get(200),
+                              CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
@@ -41,7 +42,8 @@ class LazyLoader(object):
         response = HttpResponse(byteresult)
         response['Content-Type'] = 'application/octet-stream'
         response['Code'] = 200
-        response['Message'] = parse.quote(LazyLoader_MSG.get(203))
+        response['Msg_zh'] = parse.quote(LazyLoader_MSG_ZH.get(203))
+        response['Msg_en'] = parse.quote(LazyLoader_MSG_EN.get(203))
         # 中文特殊处理
         urlpart = parse.quote(os.path.splitext(filename)[0], 'utf-8')
         leftpart = os.path.splitext(filename)[-1]
@@ -56,23 +58,23 @@ class LazyLoader(object):
                 data = json.loads(data)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(303, [], LazyLoader_MSG.get(303))
+                context = data_return(303, [], LazyLoader_MSG_ZH.get(303), LazyLoader_MSG_EN.get(303))
                 return context
 
         lazyloader = Xcache.get_lazyloader_by_uuid(loader_uuid)
         if lazyloader is None:
-            context = data_return(304, {}, LazyLoader_MSG.get(304))
+            context = data_return(304, {}, LazyLoader_MSG_ZH.get(304), LazyLoader_MSG_EN.get(304))
             return context
         else:
             lazyloader[field] = data
             Xcache.set_lazyloader_by_uuid(loader_uuid, lazyloader)
-            context = data_return(201, data, LazyLoader_MSG.get(201))
+            context = data_return(201, data, LazyLoader_MSG_ZH.get(201), LazyLoader_MSG_EN.get(201))
             return context
 
     @staticmethod
     def destory(loader_uuid):
         data = Xcache.del_lazyloader_by_uuid(loader_uuid)
-        context = data_return(202, data, LazyLoader_MSG.get(202))
+        context = data_return(202, data, LazyLoader_MSG_ZH.get(202), LazyLoader_MSG_EN.get(202))
         return context
 
     @staticmethod

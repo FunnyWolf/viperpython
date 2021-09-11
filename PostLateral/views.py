@@ -17,7 +17,7 @@ class PortServiceView(BaseView):
             context = PortService.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, [], CODE_MSG.get(500))
+            context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -27,7 +27,7 @@ class PortServiceView(BaseView):
             context = PortService.destory(ipaddress=ipaddress, port=port)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, CODE_MSG.get(500), {})
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
 
@@ -37,7 +37,7 @@ class CredentialView(BaseView):
             context = Credential.list()
         except Exception as E:
             logger.error(E)
-            context = data_return(500, [], CODE_MSG.get(500))
+            context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def create(self, request, **kwargs):
@@ -58,7 +58,7 @@ class CredentialView(BaseView):
             context = Credential.create(username, password, password_type, source_module, tag)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def update(self, request, pk=None, **kwargs):
@@ -69,7 +69,7 @@ class CredentialView(BaseView):
             context = Credential.update(cid, desc)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -78,7 +78,7 @@ class CredentialView(BaseView):
             context = Credential.destory(cid=cid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
 
@@ -89,7 +89,7 @@ class VulnerabilityView(BaseView):
             context = Vulnerability.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, [], CODE_MSG.get(500))
+            context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -98,5 +98,5 @@ class VulnerabilityView(BaseView):
             context = Vulnerability.destory(vid=vid)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)

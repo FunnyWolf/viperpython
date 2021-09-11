@@ -3,7 +3,7 @@
 # @Date  : 2021/2/26
 # @Desc  :
 from Lib.api import data_return
-from Lib.configs import PostModuleResultHistory_MSG
+from Lib.configs import PostModuleResultHistory_MSG_ZH, PostModuleResultHistory_MSG_EN
 from Lib.log import logger
 from Lib.xcache import Xcache
 
@@ -33,5 +33,5 @@ class PostModuleResultHistory(object):
     @staticmethod
     def destory():
         Xcache.del_module_result_history()
-        context = data_return(204, {}, PostModuleResultHistory_MSG.get(204))
+        context = data_return(204, {}, PostModuleResultHistory_MSG_ZH.get(204), PostModuleResultHistory_MSG_EN.get(204))
         return context

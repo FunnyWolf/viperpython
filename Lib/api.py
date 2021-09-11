@@ -25,5 +25,7 @@ def is_empty_ports(useport=None):
         return False, ""
 
 
-def data_return(code, data, msg_zh):
-    return {'code': code, 'data': data, 'msg_zh': msg_zh}
+def data_return(code=500, data=None,
+                msg_zh="服务器发生错误，请检查服务器",
+                msg_en="An error occurred on the server, please check the server."):
+    return {'code': code, 'data': data, 'msg_zh': msg_zh, "msg_en": msg_en}

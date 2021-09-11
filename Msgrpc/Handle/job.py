@@ -8,7 +8,7 @@ import time
 from Lib.Module.configs import HANDLER_OPTION, BROKER
 from Lib.api import data_return
 from Lib.apsmodule import aps_module
-from Lib.configs import Job_MSG, CODE_MSG, RPC_FRAMEWORK_API_REQ
+from Lib.configs import Job_MSG_ZH, CODE_MSG_ZH, RPC_FRAMEWORK_API_REQ, Job_MSG_EN, CODE_MSG_EN
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -167,10 +167,11 @@ class Job(object):
             if broker == BROKER.post_python_job:
                 flag = aps_module.delete_job_by_uuid(task_uuid)
                 if flag is not True:
-                    context = data_return(304, {}, Job_MSG.get(304))
+                    context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))
                     return context
                 else:
-                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG.get(204))
+                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG_ZH.get(204),
+                                          Job_MSG_EN.get(204))
                     return context
             elif broker == BROKER.post_msf_job:
                 req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
@@ -179,33 +180,34 @@ class Job(object):
                 params = [job_id]
                 result = RpcClient.call(Method.JobStop, params, timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
-                    context = data_return(305, {}, Job_MSG.get(305))
+                    context = data_return(305, {}, Job_MSG_ZH.get(305), Job_MSG_EN.get(305))
                     return context
                 if result.get('result') == 'success':
                     # 发送通知
                     Notice.send_info(
                         f"模块: {common_module_instance.NAME_ZH} {common_module_instance._target_str} 手动删除完成",
                         f"Module: <{common_module_instance.NAME_EN}> {common_module_instance._target_str} manually delete")
-                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG.get(204))
+                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG_ZH.get(204),
+                                          Job_MSG_EN.get(204))
                     return context
                 else:
-                    context = data_return(304, {}, Job_MSG.get(304))
+                    context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))
                     return context
             elif broker == BROKER.bot_msf_module:
                 flag = Xcache.del_bot_wait_by_group_uuid(task_uuid)
                 if flag is not True:
-                    context = data_return(304, {}, Job_MSG.get(304))
+                    context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))
                     return context
                 else:
-                    context = data_return(204, {"uuid": task_uuid}, Job_MSG.get(204))
+                    context = data_return(204, {"uuid": task_uuid}, Job_MSG_ZH.get(204), Job_MSG_EN.get(204))
                     return context
             else:
-                context = data_return(304, {}, Job_MSG.get(304))
+                context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))
                 return context
 
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
             return context
 
     @staticmethod

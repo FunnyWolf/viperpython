@@ -5,7 +5,8 @@
 import json
 
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, Route_MSG, RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ
+from Lib.configs import CODE_MSG_ZH, Route_MSG_ZH, RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ, CODE_MSG_EN, \
+    Route_MSG_EN
 from Lib.log import logger
 from Lib.method import Method
 from Lib.msfmodule import MSFModule
@@ -37,15 +38,15 @@ class Route(object):
                     if sessionid == route.get('session'):
                         tmproutes.append(route)
 
-                context = data_return(200, {"route": tmproutes}, CODE_MSG.get(200))
+                context = data_return(200, {"route": tmproutes}, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                 return context
             else:
 
-                context = data_return(200, {"route": result}, CODE_MSG.get(200))
+                context = data_return(200, {"route": result}, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                 return context
         else:
             logger.warning(result)
-            context = data_return(306, {}, Route_MSG.get(306))
+            context = data_return(306, {}, Route_MSG_ZH.get(306), Route_MSG_EN.get(306))
             return context
 
     @staticmethod
@@ -65,13 +66,13 @@ class Route(object):
         result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts,
                                timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
-            context = data_return(505, [], CODE_MSG.get(505))
+            context = data_return(505, [], CODE_MSG_ZH.get(505), CODE_MSG_EN.get(505))
             return context
         try:
             result_dict = json.loads(result)
         except Exception as E:
             logger.warning(E)
-            context = data_return(306, [], Route_MSG.get(306))
+            context = data_return(306, [], Route_MSG_ZH.get(306), Route_MSG_EN.get(306))
             return context
         if result_dict.get('status') is True:
             if isinstance(result_dict.get('data'), list):
@@ -81,12 +82,12 @@ class Route(object):
                     Notice.send_success(f"新增路由,SID:{sessionid} {subnet}/{netmask}",
                                         f"Create route success,SID:{sessionid} {subnet}/{netmask}")
 
-                context = data_return(201, result_dict.get('data'), Route_MSG.get(201))
+                context = data_return(201, result_dict.get('data'), Route_MSG_ZH.get(201), Route_MSG_EN.get(201))
             else:
-                context = data_return(305, [], Route_MSG.get(305))
+                context = data_return(305, [], Route_MSG_ZH.get(305), Route_MSG_EN.get(305))
             return context
         else:
-            context = data_return(305, [], Route_MSG.get(305))
+            context = data_return(305, [], Route_MSG_ZH.get(305), Route_MSG_EN.get(305))
             return context
 
     @staticmethod
@@ -95,20 +96,20 @@ class Route(object):
         result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts,
                                timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
-            context = data_return(505, [], CODE_MSG.get(505))
+            context = data_return(505, [], CODE_MSG_ZH.get(505), CODE_MSG_EN.get(505))
             return context
         try:
             result_dict = json.loads(result)
         except Exception as E:
             logger.warning(E)
-            context = data_return(306, {}, Route_MSG.get(306))
+            context = data_return(306, {}, Route_MSG_ZH.get(306), Route_MSG_EN.get(306))
             return context
 
         if result_dict.get('status') is True:
             Notice.send_info(f"删除路由,SID:{sessionid} {subnet}/{netmask}",
                              f"Delete route,SID:{sessionid} {subnet}/{netmask}")
-            context = data_return(204, {}, Route_MSG.get(204))
+            context = data_return(204, {}, Route_MSG_ZH.get(204), Route_MSG_EN.get(204))
             return context
         else:
-            context = data_return(304, {}, Route_MSG.get(304))
+            context = data_return(304, {}, Route_MSG_ZH.get(304), Route_MSG_EN.get(304))
             return context

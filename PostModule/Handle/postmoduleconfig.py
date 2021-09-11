@@ -10,7 +10,7 @@ from django.conf import settings
 
 from Lib.Module.configs import TAG2TYPE, HANDLER_OPTION, CREDENTIAL_OPTION, FILE_OPTION
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, PostModuleConfig_MSG
+from Lib.configs import CODE_MSG_ZH, PostModuleConfig_MSG_ZH, CODE_MSG_EN, PostModuleConfig_MSG_EN
 from Lib.log import logger
 from Lib.notice import Notice
 from Lib.xcache import Xcache
@@ -39,17 +39,17 @@ class PostModuleConfig(object):
         if loadpath is None:
             for one in all_modules_config:
                 one['OPTIONS'] = []
-            context = data_return(200, all_modules_config, CODE_MSG.get(200))
+            context = data_return(200, all_modules_config, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
         else:
             for one_module_config in all_modules_config:
                 if one_module_config.get('loadpath') == loadpath:
                     # 动态处理handler和凭证选项
                     new_module_config = PostModuleConfig._deal_dynamic_option(one_module_config=one_module_config)
-                    context = data_return(200, new_module_config, CODE_MSG.get(200))
+                    context = data_return(200, new_module_config, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                     return context
             # 没有找到模块
-            context = data_return(200, {}, CODE_MSG.get(200))
+            context = data_return(200, {}, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
 
     @staticmethod
@@ -62,7 +62,8 @@ class PostModuleConfig(object):
                 all_modules_config.remove(one)
         for one in all_modules_config:
             one['OPTIONS'] = []
-        context = data_return(201, all_modules_config, PostModuleConfig_MSG.get(201))
+        context = data_return(201, all_modules_config, PostModuleConfig_MSG_ZH.get(201),
+                              PostModuleConfig_MSG_EN.get(201))
         return context
 
     @staticmethod

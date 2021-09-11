@@ -24,10 +24,10 @@ class NoticesView(BaseView):
     def list(self, request, **kwargs):
         try:
             context = Notice.list_notices()
-            context = data_return(200, context, CODE_MSG.get(200))
+            context = data_return(200, context, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def create(self, request, pk=None, **kwargs):
@@ -35,19 +35,19 @@ class NoticesView(BaseView):
             content = str(request.data.get('content', None))
             userkey = str(request.data.get('userkey', "0"))
             context = Notice.send_userinput(content=content, userkey=userkey)
-            context = data_return(200, context, Notice_MSG.get(200))
+            context = data_return(200, context, Notice_MSG_ZH.get(200), Notice_MSG_EN.get(200))
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
         try:
             Notice.clean_notices()
-            context = data_return(201, {}, Notice_MSG.get(201))
+            context = data_return(201, {}, Notice_MSG_ZH.get(201), Notice_MSG_EN.get(201))
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
 
@@ -64,7 +64,7 @@ class HostView(BaseView):
             context = Host.update(ipaddress, tag, comment)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
     def destroy(self, request, pk=None, **kwargs):
@@ -81,7 +81,7 @@ class HostView(BaseView):
                 context = Host.destory_single(ipaddress)
         except Exception as E:
             logger.error(E)
-            context = data_return(500, {}, CODE_MSG.get(500))
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
 
@@ -108,7 +108,7 @@ class NetworkSearchView(BaseView):
                                                     page=page, size=size)
             except Exception as E:
                 logger.error(E)
-                context = data_return(500, {}, CODE_MSG.get(500))
+                context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         else:
             context = NetworkSearch.list_engine()
         return Response(context)
@@ -127,7 +127,7 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
         # 检查是否为diypassword
         password = request.data.get('password', None)
         if password == "diypassword":
-            context = data_return(302, null_response, BASEAUTH_MSG.get(302))
+            context = data_return(302, null_response, BASEAUTH_MSG_ZH.get(302), BASEAUTH_MSG_EN.get(302))
             return Response(context)
 
         try:
@@ -147,18 +147,18 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                 # 成功登录通知
                 Notice.send_info(f"{serializer.validated_data['user']} 登录成功",
                                  f"{serializer.validated_data['user']} login")
-                context = data_return(201, null_response, BASEAUTH_MSG.get(201))
+                context = data_return(201, null_response, BASEAUTH_MSG_ZH.get(201), BASEAUTH_MSG_EN.get(201))
                 return Response(context)
             else:
                 if Xcache.login_fail_count():
                     Notice.send_alert("Viper被暴力破解，服务器地址可能已经暴露",
                                       "Viper has been brute force, and the server address may have been exposed")
 
-                context = data_return(301, null_response, BASEAUTH_MSG.get(301))
+                context = data_return(301, null_response, BASEAUTH_MSG_ZH.get(301), BASEAUTH_MSG_EN.get(301))
                 return Response(context)
         except Exception as E:
             logger.error(E)
-            context = data_return(301, null_response, BASEAUTH_MSG.get(301))
+            context = data_return(301, null_response, BASEAUTH_MSG_ZH.get(301), BASEAUTH_MSG_EN.get(301))
             return Response(context)
 
 

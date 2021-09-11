@@ -11,7 +11,7 @@ from Lib.External.quake import Quake
 from Lib.External.serverchan import ServerChan
 from Lib.External.telegram import Telegram
 from Lib.api import data_return
-from Lib.configs import Setting_MSG, CODE_MSG
+from Lib.configs import Setting_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, Setting_MSG_EN
 from Lib.log import logger
 from Lib.notice import Notice
 from Lib.xcache import Xcache
@@ -67,10 +67,10 @@ class Settings(object):
         elif kind == "handlerconf":
             conf = Handler.list_handler_config()
         else:
-            context = data_return(301, Setting_MSG.get(301), {})
+            context = data_return(301, {}, Setting_MSG_ZH.get(301), Setting_MSG_EN.get(301))
             return context
 
-        context = data_return(200, CODE_MSG.get(200), conf)
+        context = data_return(200, CODE_MSG_ZH.get(200), conf, CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
@@ -105,19 +105,19 @@ class Settings(object):
             if tag == "check":
                 # 获取chat_id
                 user_chat_id_list = Telegram.get_alive_chat_id(token, proxy)
-                context = data_return(201, Setting_MSG.get(201), user_chat_id_list)
+                context = data_return(201, user_chat_id_list, Setting_MSG_ZH.get(201), Setting_MSG_EN.get(201))
                 return context
             else:
                 if Settings._check_telegram_aliveable(token, chat_id, proxy) is not True:
                     data = {"token": token, "chat_id": chat_id, "proxy": proxy, "alive": False}
                     Xcache.set_telegram_conf(data)
-                    context = data_return(303, Setting_MSG.get(303), data)
+                    context = data_return(303, data, Setting_MSG_ZH.get(303), Setting_MSG_EN.get(303))
                     return context
                 else:
                     Notice.send_success("设置Telegram通知成功", "Set Telegram notification success")
                     data = {"token": token, "chat_id": chat_id, "proxy": proxy, "alive": True}
                     Xcache.set_telegram_conf(data)
-                    context = data_return(202, Setting_MSG.get(202), data)
+                    context = data_return(202, data, Setting_MSG_ZH.get(202), Setting_MSG_EN.get(202))
                     return context
 
         elif kind == "dingding":
@@ -127,28 +127,28 @@ class Settings(object):
             if Settings._check_dingding_aliveable(access_token, keyword) is not True:
                 data = {"access_token": access_token, "keyword": keyword, "alive": False}
                 Xcache.set_dingding_conf(data)
-                context = data_return(304, Setting_MSG.get(304), data)
+                context = data_return(304, data, Setting_MSG_ZH.get(304), Setting_MSG_EN.get(304))
                 return context
             else:
                 Notice.send_success("设置DingDing通知成功", "Set DingDing notification success")
                 data = {"access_token": access_token, "keyword": keyword, "alive": True}
                 Xcache.set_dingding_conf(data)
 
-                context = data_return(203, Setting_MSG.get(203), data)
+                context = data_return(203, data, Setting_MSG_ZH.get(203), Setting_MSG_EN.get(203))
                 return context
         elif kind == "serverchan":
             sendkey = setting.get("sendkey")
             if Settings._check_serverchan_aliveable(sendkey) is not True:
                 data = {"sendkey": sendkey, "alive": False}
                 Xcache.set_serverchan_conf(data)
-                context = data_return(305, Setting_MSG.get(305), data)
+                context = data_return(305, data, Setting_MSG_ZH.get(305), Setting_MSG_EN.get(305))
                 return context
             else:
                 Notice.send_success("设置Server酱通知成功", "Set ServerChan notification success")
                 data = {"sendkey": sendkey, "alive": True}
                 Xcache.set_serverchan_conf(data)
 
-                context = data_return(207, Setting_MSG.get(207), data)
+                context = data_return(207, data, Setting_MSG_ZH.get(207), Setting_MSG_EN.get(207))
                 return context
 
         elif kind == "FOFA":
@@ -159,13 +159,13 @@ class Settings(object):
             if client.is_alive() is not True:
                 data = {"email": email, "key": key, "alive": False}
                 Xcache.set_fofa_conf(data)
-                context = data_return(306, Setting_MSG.get(306), data)
+                context = data_return(306, data, Setting_MSG_ZH.get(306), Setting_MSG_EN.get(306))
                 return context
             else:
                 Notice.send_success("设置FOFA API成功", "Set FOFA API success")
                 data = {"email": email, "key": key, "alive": True}
                 Xcache.set_fofa_conf(data)
-                context = data_return(206, Setting_MSG.get(206), data)
+                context = data_return(206, data, Setting_MSG_ZH.get(206), Setting_MSG_EN.get(206))
                 return context
 
         elif kind == "Quake":
@@ -175,13 +175,13 @@ class Settings(object):
             if client.is_alive() is not True:
                 data = {"key": key, "alive": False}
                 Xcache.set_quake_conf(data)
-                context = data_return(307, Setting_MSG.get(307), data)
+                context = data_return(307, data, Setting_MSG_ZH.get(307), Setting_MSG_EN.get(307))
                 return context
             else:
                 Notice.send_success("设置360Quake API成功", "Set 360Quake API success")
                 data = {"key": key, "alive": True}
                 Xcache.set_quake_conf(data)
-                context = data_return(208, Setting_MSG.get(208), data)
+                context = data_return(208, data, Setting_MSG_ZH.get(208), Setting_MSG_EN.get(208))
                 return context
 
         elif kind == "sessionmonitor":
@@ -199,22 +199,22 @@ class Settings(object):
                 Notice.send_info(msg, msg_en)
                 Notice.send_sms(msg, msg_en)
 
-            context = data_return(204, Setting_MSG.get(204), {"flag": flag})
+            context = data_return(204, {"flag": flag}, Setting_MSG_ZH.get(204), Setting_MSG_EN.get(204))
             return context
 
         elif kind == "lhost":
             Xcache.set_lhost_config(setting)
             Notice.send_success(f"设置回连地址成功,当前回连地址: {setting.get('lhost')}",
                                 f"Set the lhost successfully, the current lhost: {setting.get('lhost')}")
-            context = data_return(205, Setting_MSG.get(205), setting)
+            context = data_return(205, setting, Setting_MSG_ZH.get(205), Setting_MSG_EN.get(205))
             return context
         elif kind == "postmoduleautoconf":
             new_conf = Xcache.set_postmodule_auto_conf(setting)
             Notice.send_success(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")
-            context = data_return(209, Setting_MSG.get(209), new_conf)
+            context = data_return(209, new_conf, Setting_MSG_ZH.get(209), Setting_MSG_EN.get(209))
             return context
         else:
-            context = data_return(301, Setting_MSG.get(301), {})
+            context = data_return(301, {}, Setting_MSG_ZH.get(301), Setting_MSG_EN.get(301))
             return context
 
     @staticmethod

@@ -3,7 +3,7 @@
 # @Date  : 2021/2/26
 # @Desc  :
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, Credential_MSG
+from Lib.configs import CODE_MSG_ZH, Credential_MSG_ZH, CODE_MSG_EN, Credential_MSG_EN
 from Lib.log import logger
 from PostLateral.models import CredentialModel
 from PostLateral.serializers import CredentialSerializer
@@ -22,7 +22,7 @@ class Credential(object):
         except Exception as E:
             format_data = data
             logger.error(E)
-        context = data_return(200, format_data, CODE_MSG.get(200))
+        context = data_return(200, format_data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
@@ -45,7 +45,7 @@ class Credential(object):
         model.save()
         data = CredentialSerializer(model).data
 
-        context = data_return(201, data, Credential_MSG.get(201))
+        context = data_return(201, data, Credential_MSG_ZH.get(201), Credential_MSG_EN.get(201))
         return context
 
     @staticmethod
@@ -54,23 +54,23 @@ class Credential(object):
             orm_model = CredentialModel.objects.get(id=cid)
         except Exception as E:
             logger.exception(E)
-            context = data_return(404, {}, Credential_MSG.get(404))
+            context = data_return(404, {}, Credential_MSG_ZH.get(404), Credential_MSG_EN.get(404))
             return context
 
         orm_model.desc = desc
         orm_model.save()
         data = CredentialSerializer(orm_model).data
-        context = data_return(202, data, Credential_MSG.get(202))
+        context = data_return(202, data, Credential_MSG_ZH.get(202), Credential_MSG_EN.get(202))
         return context
 
     @staticmethod
     def destory(cid=None):
         try:
             CredentialModel.objects.filter(id=cid).delete()
-            context = data_return(204, {}, Credential_MSG.get(204))
+            context = data_return(204, {}, Credential_MSG_ZH.get(204), Credential_MSG_EN.get(204))
         except Exception as E:
             logger.error(E)
-            context = data_return(304, {}, Credential_MSG.get(304))
+            context = data_return(304, {}, Credential_MSG_ZH.get(304), Credential_MSG_EN.get(304))
         return context
 
     @staticmethod

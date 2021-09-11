@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from CONFIG import MSFLOOTTRUE
 from Lib.aescrypt import Aescrypt
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, FileMsf_MSG, MSFLOOT
+from Lib.configs import CODE_MSG_ZH, FileMsf_MSG_ZH, MSFLOOT, CODE_MSG_EN, FileMsf_MSG_EN
 from Lib.file import File
 from Lib.log import logger
 from Lib.xcache import Xcache
@@ -39,28 +39,31 @@ class FileMsf(object):
 
             # 根据时间排序
             result_sorted = sorted(result, key=functools.cmp_to_key(sort_files))
-            context = data_return(200, result_sorted, CODE_MSG.get(200))
+            context = data_return(200, result_sorted, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
         else:  # 下载文件
             binary_data = FileMsf.read_msf_file(filename)
             if binary_data is None:
-                context = data_return(303, {}, FileMsf_MSG.get(303))
+                context = data_return(303, {}, FileMsf_MSG_ZH.get(303), FileMsf_MSG_EN.get(303))
                 return context
 
             if action == "view":
                 b64data = base64.b64encode(binary_data)
                 ext = os.path.splitext(filename)[-1]
                 if ext in ['.jpeg', '.png', '.jpg']:
-                    context = data_return(200, {"type": "img", "data": b64data}, CODE_MSG.get(200))
+                    context = data_return(200, {"type": "img", "data": b64data}, CODE_MSG_ZH.get(200),
+                                          CODE_MSG_EN.get(200))
                     return context
                 else:
-                    context = data_return(200, {"type": "txt", "data": b64data}, CODE_MSG.get(200))
+                    context = data_return(200, {"type": "txt", "data": b64data}, CODE_MSG_ZH.get(200),
+                                          CODE_MSG_EN.get(200))
                     return context
 
             response = HttpResponse(binary_data)
             response['Content-Type'] = 'application/octet-stream'
             response['Code'] = 200
-            response['Message'] = parse.quote(FileMsf_MSG.get(203))
+            response['Msg_zh'] = parse.quote(FileMsf_MSG_ZH.get(203))
+            response['Msg_en'] = parse.quote(FileMsf_MSG_EN.get(203))
             # 中文特殊处理
             urlpart = parse.quote(os.path.splitext(filename)[0], 'utf-8')
             leftpart = os.path.splitext(filename)[-1]
@@ -71,9 +74,9 @@ class FileMsf(object):
     def create(file=None):
         result = FileMsf.upload_file_to_msf(file)
         if result is True:
-            context = data_return(201, {}, FileMsf_MSG.get(201))
+            context = data_return(201, {}, FileMsf_MSG_ZH.get(201), FileMsf_MSG_EN.get(201))
         else:
-            context = data_return(302, {}, FileMsf_MSG.get(302))
+            context = data_return(302, {}, FileMsf_MSG_ZH.get(302), FileMsf_MSG_EN.get(302))
         return context
 
     @staticmethod
@@ -81,11 +84,11 @@ class FileMsf(object):
         result = FileMsf.destory_msf_file(filename)
         if result is True:
 
-            context = data_return(202, {}, FileMsf_MSG.get(202))
+            context = data_return(202, {}, FileMsf_MSG_ZH.get(202), FileMsf_MSG_EN.get(202))
             return context
         else:
 
-            context = data_return(301, {}, FileMsf_MSG.get(301))
+            context = data_return(301, {}, FileMsf_MSG_ZH.get(301), FileMsf_MSG_EN.get(301))
             return context
 
     @staticmethod

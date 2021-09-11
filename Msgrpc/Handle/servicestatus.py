@@ -3,7 +3,7 @@
 # @Date  : 2021/2/25
 # @Desc  :
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, RPC_FRAMEWORK_API_REQ
+from Lib.configs import CODE_MSG_ZH, RPC_FRAMEWORK_API_REQ, CODE_MSG_EN
 from Lib.log import logger
 from Lib.method import Method
 from Lib.rpcclient import RpcClient
@@ -20,7 +20,7 @@ class ServiceStatus(object):
 
         result = ServiceStatus.update_service_status()
 
-        context = data_return(200, result, CODE_MSG.get(200))
+        context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
 
     @staticmethod

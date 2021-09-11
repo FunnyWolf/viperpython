@@ -5,7 +5,7 @@
 import json
 
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, PORTFWD_MSG, RPC_SESSION_OPER_SHORT_REQ
+from Lib.configs import CODE_MSG_ZH, PORTFWD_MSG_ZH, RPC_SESSION_OPER_SHORT_REQ, CODE_MSG_EN, PORTFWD_MSG_EN
 from Lib.log import logger
 from Lib.method import Method
 from Lib.msfmodule import MSFModule
@@ -19,7 +19,7 @@ class PortFwd(object):
         result_list = PortFwd.list_portfwd()
         if sessionid is None or sessionid == -1:
 
-            context = data_return(200, result_list, CODE_MSG.get(200))
+            context = data_return(200, result_list, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
         else:
             tmplist = []
@@ -30,7 +30,7 @@ class PortFwd(object):
             except Exception as E:
                 logger.warning(E)
 
-            context = data_return(200, tmplist, CODE_MSG.get(200))
+            context = data_return(200, tmplist, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
 
     @staticmethod
@@ -51,7 +51,7 @@ class PortFwd(object):
         # flag, lportsstr = is_empty_ports(lportint)
         # if flag is not True:
         #       # 端口已占用
-        #     context = dict_data_return(CODE, CODE_MSG.get(CODE), {})
+        #     context = dict_data_return(CODE, CODE_MSG_ZH.get(CODE), {})
         #     return context
 
         opts = {'TYPE': portfwdtype,
@@ -61,21 +61,21 @@ class PortFwd(object):
         result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
                                timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
-            context = data_return(308, {}, PORTFWD_MSG.get(308))
+            context = data_return(308, {}, PORTFWD_MSG_ZH.get(308), PORTFWD_MSG_EN.get(308))
             return context
         try:
             result_dict = json.loads(result)
         except Exception as E:
             logger.warning(E)
-            context = data_return(301, [], PORTFWD_MSG.get(301))
+            context = data_return(301, [], PORTFWD_MSG_ZH.get(301), PORTFWD_MSG_EN.get(301))
             return context
         if result_dict.get('status') is True:
             Notice.send_success(f"新增端口转发成功 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}",
                                 f"Create portfwd success SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
-            context = data_return(201, result_dict.get('data'), PORTFWD_MSG.get(201))
+            context = data_return(201, result_dict.get('data'), PORTFWD_MSG_ZH.get(201), PORTFWD_MSG_EN.get(201))
             return context
         else:
-            context = data_return(301, [], PORTFWD_MSG.get(301))
+            context = data_return(301, [], PORTFWD_MSG_ZH.get(301), PORTFWD_MSG_EN.get(301))
             return context
 
     @staticmethod
@@ -86,40 +86,40 @@ class PortFwd(object):
             result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
                                    timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
-                context = data_return(308, {}, PORTFWD_MSG.get(308))
+                context = data_return(308, {}, PORTFWD_MSG_ZH.get(308), PORTFWD_MSG_EN.get(308))
                 return context
             try:
                 result_dict = json.loads(result)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(302, [], PORTFWD_MSG.get(302))
+                context = data_return(302, [], PORTFWD_MSG_ZH.get(302), PORTFWD_MSG_EN.get(302))
                 return context
             if result_dict.get('status') is True:
                 Notice.send_info(f"删除端口转发 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}",
                                  f"Delete portFwd SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
-                context = data_return(204, result_dict.get('data'), PORTFWD_MSG.get(204))
+                context = data_return(204, result_dict.get('data'), PORTFWD_MSG_ZH.get(204), PORTFWD_MSG_EN.get(204))
                 return context
             else:
-                context = data_return(305, [], PORTFWD_MSG.get(305))
+                context = data_return(305, [], PORTFWD_MSG_ZH.get(305), PORTFWD_MSG_EN.get(305))
                 return context
         else:
-            context = data_return(306, [], PORTFWD_MSG.get(306))
+            context = data_return(306, [], PORTFWD_MSG_ZH.get(306), PORTFWD_MSG_EN.get(306))
             return context
 
     @staticmethod
     def _check_host_port(portfwd_type=None, lhost=None, lport=None, rhost=None, rport=None):
         if portfwd_type not in ['Reverse', 'Forward']:
-            context = data_return(306, {}, PORTFWD_MSG.get(306))
+            context = data_return(306, {}, PORTFWD_MSG_ZH.get(306), PORTFWD_MSG_EN.get(306))
             return False, context
         if lport is None or rport is None:
-            context = data_return(306, {}, PORTFWD_MSG.get(306))
+            context = data_return(306, {}, PORTFWD_MSG_ZH.get(306), PORTFWD_MSG_EN.get(306))
             return False, context
         if portfwd_type == "Reverse":
             if lhost is None:
-                context = data_return(306, {}, PORTFWD_MSG.get(306))
+                context = data_return(306, {}, PORTFWD_MSG_ZH.get(306), PORTFWD_MSG_EN.get(306))
                 return False, context
         else:
             if rhost is None:
-                context = data_return(306, {}, PORTFWD_MSG.get(306))
+                context = data_return(306, {}, PORTFWD_MSG_ZH.get(306), PORTFWD_MSG_EN.get(306))
                 return False, context
         return True, None

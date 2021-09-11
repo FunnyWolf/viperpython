@@ -4,7 +4,7 @@
 # @Desc  :
 
 from Lib.api import data_return
-from Lib.configs import Session_MSG, CODE_MSG, RPC_SESSION_OPER_SHORT_REQ
+from Lib.configs import Session_MSG_ZH, CODE_MSG_ZH, RPC_SESSION_OPER_SHORT_REQ, CODE_MSG_EN, Session_MSG_EN
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -20,51 +20,51 @@ class Session(object):
     @staticmethod
     def list(sessionid=None):
         if sessionid is None or sessionid <= 0:
-            context = data_return(304, {}, Session_MSG.get(304))
+            context = data_return(304, {}, Session_MSG_ZH.get(304), Session_MSG_EN.get(304))
             return context
         session_interface = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
         result = SessionLibSerializer(session_interface).data
-        context = data_return(200, result, CODE_MSG.get(200))
+        context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
     def update(sessionid=None):
         if sessionid is None or sessionid <= 0:
-            context = data_return(304, {}, Session_MSG.get(304))
+            context = data_return(304, {}, Session_MSG_ZH.get(304), Session_MSG_EN.get(304))
             return context
         Xcache.set_session_info(sessionid, None)
         session_lib = SessionLib(sessionid, rightinfo=True, uacinfo=True, pinfo=True)
         result = SessionLibSerializer(session_lib).data
-        context = data_return(203, result, Session_MSG.get(203))
+        context = data_return(203, result, Session_MSG_ZH.get(203), Session_MSG_EN.get(203))
         return context
 
     @staticmethod
     def destroy(sessionid=None):
         if sessionid is None or sessionid <= 0:
-            context = data_return(304, {}, Session_MSG.get(304))
+            context = data_return(304, {}, Session_MSG_ZH.get(304), Session_MSG_EN.get(304))
             return context
         else:
             params = [sessionid]
             try:
                 result = RpcClient.call(Method.SessionStop, params, timeout=RPC_SESSION_OPER_SHORT_REQ)
                 if result is None:  # 删除超时
-                    # TODO
-                    Notice.send_success(f"{Session_MSG.get(202)} SID: {sessionid}", "")
-                    context = data_return(202, {}, Session_MSG.get(202))
+                    Notice.send_success(f"{Session_MSG_ZH.get(202)} SID: {sessionid}",
+                                        f"{Session_MSG_EN.get(202)} SID: {sessionid}")
+                    context = data_return(202, {}, Session_MSG_ZH.get(202), Session_MSG_EN.get(202))
                     return context
                 elif result.get('result') == 'success':
-                    # TODO
-                    Notice.send_success(f"{Session_MSG.get(201)} SID: {sessionid}", "")
-                    context = data_return(201, {}, Session_MSG.get(201))
+                    Notice.send_success(f"{Session_MSG_ZH.get(201)} SID: {sessionid}",
+                                        f"{Session_MSG_EN.get(201)} SID: {sessionid}")
+                    context = data_return(201, {}, Session_MSG_ZH.get(201), Session_MSG_EN.get(201))
                     return context
                 else:
-                    # TODO
-                    Notice.send_warning(f"{Session_MSG.get(301)} SID: {sessionid}", "")
-                    context = data_return(301, {}, Session_MSG.get(301))
+                    Notice.send_warning(f"{Session_MSG_ZH.get(301)} SID: {sessionid}",
+                                        f"{Session_MSG_EN.get(301)} SID: {sessionid}")
+                    context = data_return(301, {}, Session_MSG_ZH.get(301), Session_MSG_EN.get(301))
                     return context
             except Exception as E:
                 logger.error(E)
                 # TODO
-                Notice.send_warning(f"{Session_MSG.get(301)} SID: {sessionid}", "")
-                context = data_return(301, {}, Session_MSG.get(301))
+                Notice.send_warning(f"{Session_MSG_ZH.get(301)} SID: {sessionid}", "")
+                context = data_return(301, {}, Session_MSG_ZH.get(301), Session_MSG_EN.get(301))
                 return context

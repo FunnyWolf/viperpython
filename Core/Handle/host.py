@@ -9,7 +9,7 @@ from django.db import transaction
 from Core.models import HostModel
 from Core.serializers import HostSerializer
 from Lib.api import data_return
-from Lib.configs import CODE_MSG, Host_MSG
+from Lib.configs import CODE_MSG_ZH, Host_MSG_ZH, Host_MSG_EN, CODE_MSG_EN
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.portfwd import PortFwd
@@ -47,7 +47,7 @@ class Host(object):
 
         result = {'hosts': hosts, 'routes': route_list, 'socks': socks_list, 'portfwds': portfwds, }
 
-        context = data_return(200, result, CODE_MSG.get(200))
+        context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
@@ -79,9 +79,9 @@ class Host(object):
         """更新主机标签,说明"""
         host_update = Host.update_host(ipaddress, tag, comment)
         if host_update is None:
-            context = data_return(304, host_update, Host_MSG.get(304))
+            context = data_return(304, host_update, Host_MSG_ZH.get(304), Host_MSG_EN.get(304))
         else:
-            context = data_return(201, host_update, Host_MSG.get(201))
+            context = data_return(201, host_update, Host_MSG_ZH.get(201), Host_MSG_EN.get(201))
         return context
 
     @staticmethod
@@ -110,9 +110,9 @@ class Host(object):
     def destory_single(ipaddress=None):
         flag = Host.destory_host(ipaddress)
         if flag:
-            context = data_return(202, {}, Host_MSG.get(202))
+            context = data_return(202, {}, Host_MSG_ZH.get(202), Host_MSG_EN.get(202))
         else:
-            context = data_return(301, {}, Host_MSG.get(301))
+            context = data_return(301, {}, Host_MSG_ZH.get(301), Host_MSG_EN.get(301))
         return context
 
     @staticmethod
@@ -120,7 +120,7 @@ class Host(object):
         for ipaddress in ipaddress_list:
             Host.destory_host(ipaddress)
 
-        context = data_return(202, {}, Host_MSG.get(202))
+        context = data_return(202, {}, Host_MSG_ZH.get(202), Host_MSG_EN.get(202))
         return context
 
     @staticmethod

@@ -9,8 +9,8 @@ import re
 from pathlib import PurePosixPath
 
 from Lib.api import data_return
-from Lib.configs import FileSession_MSG, CODE_MSG, RPC_SESSION_OPER_SHORT_REQ, RPC_JOB_API_REQ, \
-    RPC_SESSION_OPER_LONG_REQ
+from Lib.configs import FileSession_MSG_ZH, CODE_MSG_ZH, RPC_SESSION_OPER_SHORT_REQ, RPC_JOB_API_REQ, \
+    RPC_SESSION_OPER_LONG_REQ, CODE_MSG_EN, FileSession_MSG_EN
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 
@@ -30,17 +30,17 @@ class FileSession(object):
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                    timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             try:
                 result = json.loads(result)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(302, {}, FileSession_MSG.get(302))
+                context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
 
             if result.get('status') is not True:
-                context = data_return(303, {}, FileSession_MSG.get(303))
+                context = data_return(303, {}, FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                 return context
             else:
                 data = result.get('data')
@@ -73,24 +73,24 @@ class FileSession(object):
                     else:
                         one['absolute_path'] = "{}".format(path)
 
-                context = data_return(200, data, CODE_MSG.get(200))
+                context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                 return context
         elif operation == 'pwd' and sessionid is not None:  # 列当前目录
             opts = {'OPERATION': 'pwd', 'SESSION': sessionid}
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                    timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             try:
                 result = json.loads(result)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(302, {}, FileSession_MSG.get(302))
+                context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
 
             if result.get('status') is not True:
-                context = data_return(303, {}, FileSession_MSG.get(303))
+                context = data_return(303, {}, FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                 return context
             else:
                 data = result.get('data')
@@ -113,51 +113,51 @@ class FileSession(object):
                         one['format_mode'] = one.get('mode').split('/')[1]
                     else:
                         one['format_mode'] = ''
-                context = data_return(200, data, CODE_MSG.get(200))
+                context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                 return context
         elif operation == 'download' and sessionid is not None and filepath is not None:  # 下载文件
             opts = {'OPERATION': 'download', 'SESSION': sessionid, 'SESSION_FILE': filepath}
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
                                    timeout=RPC_JOB_API_REQ)  # 后台运行
             if result is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             else:
-                context = data_return(200, result, CODE_MSG.get(200))
+                context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                 return context
         elif operation == "run":  # 执行文件
             opts = {'OPERATION': 'execute', 'SESSION': sessionid, 'SESSION_FILE': filepath, 'ARGS': arg}
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
                                    timeout=RPC_JOB_API_REQ)  # 后台运行
             if result is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             else:
-                context = data_return(202, result, FileSession_MSG.get(202))
+                context = data_return(202, result, FileSession_MSG_ZH.get(202), FileSession_MSG_EN.get(202))
                 return context
         elif operation == "cat":  # 查看文件
             opts = {'OPERATION': 'cat', 'SESSION': sessionid, 'SESSION_FILE': filepath}
             moduleresult = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                          timeout=RPC_SESSION_OPER_LONG_REQ)  # 后台运行
             if moduleresult is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             else:
                 try:
                     moduleresult = json.loads(moduleresult)
                 except Exception as E:
                     logger.warning(E)
-                    context = data_return(302, {}, FileSession_MSG.get(302))
+                    context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                     return context
 
                 if moduleresult.get("status"):
                     filedata = base64.b64decode(moduleresult.get("data")).decode("utf-8", 'ignore')
                     result = {"data": filedata, "reason": filepath}
-                    context = data_return(200, result, CODE_MSG.get(200))
+                    context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                     return context
                 else:
                     result = {"data": None, "reason": moduleresult.get("message")}
-                    context = data_return(303, result, FileSession_MSG.get(303))
+                    context = data_return(303, result, FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                     return context
 
         elif operation == "cd":  # 查看文件
@@ -166,26 +166,26 @@ class FileSession(object):
             moduleresult = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                          timeout=RPC_SESSION_OPER_SHORT_REQ)  # 后台运行
             if moduleresult is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             else:
                 try:
                     moduleresult = json.loads(moduleresult)
                 except Exception as E:
                     logger.warning(E)
-                    context = data_return(302, {}, FileSession_MSG.get(302))
+                    context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                     return context
 
                 if moduleresult.get("status"):
                     result = {}
-                    context = data_return(203, result, FileSession_MSG.get(203))
+                    context = data_return(203, result, FileSession_MSG_ZH.get(203), FileSession_MSG_EN.get(203))
                     return context
                 else:
                     result = {"data": None, "reason": moduleresult.get("message")}
-                    context = data_return(303, result, FileSession_MSG.get(303))
+                    context = data_return(303, result, FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                     return context
         else:
-            context = data_return(306, {}, FileSession_MSG.get(306))
+            context = data_return(306, {}, FileSession_MSG_ZH.get(306), FileSession_MSG_EN.get(306))
             return context
 
     @staticmethod
@@ -196,20 +196,20 @@ class FileSession(object):
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                    timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
-                context = data_return(301, [], FileSession_MSG.get(301))
+                context = data_return(301, [], FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             try:
                 result = json.loads(result)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(302, {}, FileSession_MSG.get(302))
+                context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
 
             if result.get('status') is not True:
-                context = data_return(303, [], FileSession_MSG.get(303))
+                context = data_return(303, [], FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                 return context
             else:
-                context = data_return(201, result.get('data'), FileSession_MSG.get(201))
+                context = data_return(201, result.get('data'), FileSession_MSG_ZH.get(201), FileSession_MSG_EN.get(201))
                 return context
         # 上传文件
         elif operation == 'upload_file' and sessionid is not None and filename is not None and dirpath is not None:
@@ -218,13 +218,13 @@ class FileSession(object):
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
                                    timeout=RPC_JOB_API_REQ)
             if result is None:
-                context = data_return(301, {}, FileSession_MSG.get(301))
+                context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             else:
-                context = data_return(201, result, FileSession_MSG.get(201))
+                context = data_return(201, result, FileSession_MSG_ZH.get(201), FileSession_MSG_EN.get(201))
                 return context
         else:
-            context = data_return(306, [], FileSession_MSG.get(306))
+            context = data_return(306, [], FileSession_MSG_ZH.get(306), FileSession_MSG_EN.get(306))
             return context
 
     @staticmethod
@@ -233,10 +233,10 @@ class FileSession(object):
         result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=True,
                                timeout=RPC_SESSION_OPER_LONG_REQ)
         if result is None:
-            context = data_return(301, {}, FileSession_MSG.get(301))
+            context = data_return(301, {}, FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
             return context
         else:
-            context = data_return(204, result, FileSession_MSG.get(204))
+            context = data_return(204, result, FileSession_MSG_ZH.get(204), FileSession_MSG_EN.get(204))
             return context
 
     @staticmethod
@@ -246,19 +246,19 @@ class FileSession(object):
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                    timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
-                context = data_return(301, [], FileSession_MSG.get(301))
+                context = data_return(301, [], FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             try:
                 result = json.loads(result)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(302, {}, FileSession_MSG.get(302))
+                context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
             if result.get('status') is not True:
-                context = data_return(303, [], FileSession_MSG.get(303))
+                context = data_return(303, [], FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                 return context
             else:
-                context = data_return(201, [], FileSession_MSG.get(201))
+                context = data_return(201, [], FileSession_MSG_ZH.get(201), FileSession_MSG_EN.get(201))
                 return context
         elif operation == 'destory_dir':
             formatdir = FileSession.deal_path(dirpath)
@@ -266,22 +266,22 @@ class FileSession(object):
             result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts, runasjob=False,
                                    timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
-                context = data_return(301, [], FileSession_MSG.get(301))
+                context = data_return(301, [], FileSession_MSG_ZH.get(301), FileSession_MSG_EN.get(301))
                 return context
             try:
                 result = json.loads(result)
             except Exception as E:
                 logger.warning(E)
-                context = data_return(302, {}, FileSession_MSG.get(302))
+                context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
             if result.get('status') is not True:
-                context = data_return(303, [], FileSession_MSG.get(303))
+                context = data_return(303, [], FileSession_MSG_ZH.get(303), FileSession_MSG_EN.get(303))
                 return context
             else:
-                context = data_return(201, [], FileSession_MSG.get(201))
+                context = data_return(201, [], FileSession_MSG_ZH.get(201), FileSession_MSG_EN.get(201))
                 return context
         else:
-            context = data_return(306, {}, FileSession_MSG.get(306))
+            context = data_return(306, {}, FileSession_MSG_ZH.get(306), FileSession_MSG_EN.get(306))
             return context
 
     @staticmethod

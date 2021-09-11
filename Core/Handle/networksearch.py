@@ -5,7 +5,7 @@
 from Lib.External.fofaclient import FOFAClient
 from Lib.External.quake import Quake
 from Lib.api import data_return
-from Lib.configs import NetworkSearch_MSG, CODE_MSG
+from Lib.configs import NetworkSearch_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, NetworkSearch_MSG_EN
 from Lib.log import logger
 from Lib.xcache import Xcache
 
@@ -31,26 +31,27 @@ class NetworkSearch(object):
                 querystr = f"{moduleQuery} AND {inputstr}"
             client = Quake()
         else:
-            context = data_return(304, {}, NetworkSearch_MSG.get(304))
+            context = data_return(304, {}, NetworkSearch_MSG_ZH.get(304), NetworkSearch_MSG_EN.get(304))
             return context
 
         flag = client.init_conf_from_cache()
         if flag is not True:
-            context = data_return(301, {}, NetworkSearch_MSG.get(301))
+            context = data_return(301, {}, NetworkSearch_MSG_ZH.get(301), NetworkSearch_MSG_EN.get(301))
             return context
 
         try:
             flag, data = client.get_data(query_str=querystr, page=page, size=size)
             if flag is not True:
-                context = data_return(303, {"errmsg": data}, NetworkSearch_MSG.get(303))
+                context = data_return(303, {"errmsg": data}, NetworkSearch_MSG_ZH.get(303),
+                                      NetworkSearch_MSG_EN.get(303))
             else:
                 data.extend(NetworkSearch.get_test_data())
-                context = data_return(200, data, CODE_MSG.get(200))
+                context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
 
         except Exception as E:
             logger.exception(E)
-            context = data_return(303, {"errmsg": NetworkSearch_MSG.get(303)}, NetworkSearch_MSG.get(303))
+            context = data_return(303, {"errmsg": NetworkSearch_MSG_ZH.get(303)}, NetworkSearch_MSG_EN.get(303))
             return context
 
     @staticmethod
@@ -95,5 +96,5 @@ class NetworkSearch(object):
         result["FOFA"] = fofaconf.get("alive")
         quakeconf = Xcache.get_quake_conf()
         result["Quake"] = quakeconf.get("alive")
-        context = data_return(200, result, CODE_MSG.get(200))
+        context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
