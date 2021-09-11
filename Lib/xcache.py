@@ -876,3 +876,23 @@ class Xcache(object):
         else:
             cache.set(Xcache.XCACHE_MSFRPC_ERROR_LOG, True, 30)  # 10秒计时周期
             return True
+
+    @staticmethod
+    def set_city_reader_cache(ip, cache_data):
+        cache.set(f"{Xcache.XCACHE_GEOIP_CITYREADER}:{ip}", cache_data, 3600 * 24)
+        return True
+
+    @staticmethod
+    def get_city_reader_cache(ip):
+        cache_data = cache.get(f"{Xcache.XCACHE_GEOIP_CITYREADER}:{ip}")
+        return cache_data
+
+    @staticmethod
+    def set_asn_reader_cache(ip, cache_data):
+        cache.set(f"{Xcache.XCACHE_GEOIP_ASNREADER}:{ip}", cache_data, 3600 * 24)  # 24小时是为了mmdb更新时启用
+        return True
+
+    @staticmethod
+    def get_asn_reader_cache(ip):
+        cache_data = cache.get(f"{Xcache.XCACHE_GEOIP_ASNREADER}:{ip}")
+        return cache_data
