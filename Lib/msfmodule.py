@@ -20,7 +20,8 @@ class MSFModule(object):
         pass
 
     @staticmethod
-    def run(module_type=None, mname=None, opts=None, runasjob=False, timeout=RPC_SESSION_OPER_SHORT_REQ):
+    def run_msf_module_realtime(module_type=None, mname=None, opts=None, runasjob=False,
+                                timeout=RPC_SESSION_OPER_SHORT_REQ):
         """实时运行MSF模块"""
         params = [module_type,
                   mname,
@@ -31,48 +32,7 @@ class MSFModule(object):
         return result
 
     @staticmethod
-    def putin_post_msf_module_queue(msf_module=None):
-        """调用msgrpc生成job,放入列表"""
-
-        params = [msf_module.type,
-                  msf_module.mname,
-                  msf_module.opts,
-                  True,  # 强制设置后台运行
-                  RPC_JOB_API_REQ  # 超时时间
-                  ]
-
-        result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_JOB_API_REQ)
-        if result is None:
-            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME_ZH}",
-                                f"MSFRPC connection failed and the module could not be executed :<{msf_module.NAME_EN}>")
-            return False
-
-        # result 数据格式
-        # {'job_id': 3, 'uuid': 'dbcb2530-95b1-0137-5100-000c2966078a', 'module': b'\x80\ub.'}
-
-        if result.get("job_id") is None:
-            logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME_ZH, result.get("uuid")))
-            Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败,请检查输入参数",
-                                f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task, please check input parameters")
-            return False
-        else:
-            logger.warning(
-                "模块实例放入列表:{} job_id: {} uuid: {}".format(msf_module.NAME_ZH, result.get("job_id"), result.get("uuid")))
-            # 放入请求队列
-            req = {
-                'broker': msf_module.MODULE_BROKER,
-                'uuid': result.get("uuid"),
-                'module': msf_module,
-                'time': int(time.time()),
-                'job_id': result.get("job_id"),
-            }
-            Xcache.create_module_task(req)
-            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 开始执行",
-                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} start running")
-            return True
-
-    @staticmethod
-    def run_bot_msf_module(msf_module=None):
+    def run_msf_module_bot(msf_module=None):
         """实时运行bot_msf_job类型的任务"""
 
         params = [msf_module.type,
@@ -116,7 +76,51 @@ class MSFModule(object):
                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} run finish")
 
     @staticmethod
+    def putin_msf_module_job_queue(msf_module=None):
+        """调用msgrpc生成job,放入列表"""
+
+        params = [msf_module.type,
+                  msf_module.mname,
+                  msf_module.opts,
+                  True,  # 强制设置后台运行
+                  RPC_JOB_API_REQ  # 超时时间
+                  ]
+
+        result = RpcClient.call(Method.ModuleExecute, params, timeout=RPC_JOB_API_REQ)
+        if result is None:
+            Notice.send_warning(f"渗透服务连接失败,无法执行模块 :{msf_module.NAME_ZH}",
+                                f"MSFRPC connection failed and the module could not be executed :<{msf_module.NAME_EN}>")
+            return False
+
+        # result 数据格式
+        # {'job_id': 3, 'uuid': 'dbcb2530-95b1-0137-5100-000c2966078a', 'module': b'\x80\ub.'}
+
+        if result.get("job_id") is None:
+            logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME_ZH, result.get("uuid")))
+            Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败",
+                                f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task")
+            return False
+        else:
+            logger.warning(
+                "模块实例放入列表:{} job_id: {} uuid: {}".format(msf_module.NAME_ZH, result.get("job_id"), result.get("uuid")))
+
+            # 放入请求队列
+            msf_module._module_uuid = result.get("uuid")
+            req = {
+                'broker': msf_module.MODULE_BROKER,
+                'uuid': result.get("uuid"),
+                'module': msf_module,
+                'time': int(time.time()),
+                'job_id': result.get("job_id"),
+            }
+            Xcache.create_module_task(req)
+            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 开始执行",
+                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} start running")
+            return True
+
+    @staticmethod
     def store_result_from_sub(message=None):
+        """处理msf模块发送的result信息pub_json_result"""
         # 回调报文数据格式
         # {
         # 'job_id': None,
@@ -179,6 +183,7 @@ class MSFModule(object):
 
     @staticmethod
     def store_monitor_from_sub(message=None):
+        """处理msf模块发送的data信息pub_json_data"""
         body = message.get('data')
         try:
             msf_module_return_dict = json.loads(body)
@@ -219,6 +224,7 @@ class MSFModule(object):
 
     @staticmethod
     def store_log_from_sub(message=None):
+        """处理msf发送的notice信息print_XXX_redis"""
         body = message.get('data')
         try:
             msf_module_logs_dict = json.loads(body)

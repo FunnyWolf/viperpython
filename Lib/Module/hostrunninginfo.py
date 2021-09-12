@@ -26,7 +26,8 @@ class HostRunningInfo(object):
         opts = {'SESSION': self.sessionid, 'INFO_PART': info_part}
         if self.sessionid is None or self.sessionid <= 0:
             return None
-        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=RPC_SESSION_OPER_LONG_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type=module_type, mname=mname, opts=opts,
+                                                   timeout=RPC_SESSION_OPER_LONG_REQ)
 
         if result is None:
             return None

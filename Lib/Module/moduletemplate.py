@@ -69,6 +69,7 @@ class _CommonModule(object):
         self._ip = None  # 补齐默认参数,为了Serializer
         self._port = None  # 补齐默认参数,为了Serializer
         self._protocol = None  # 补齐默认参数,为了Serializer
+        self._module_uuid = None  # 为了存储uuid设置的字段
         self.opts = {}  # 用于存储msf模块的options
 
     # 公用函数
@@ -248,27 +249,27 @@ class _CommonModule(object):
         if result_line is None:
             return
         if not result_line.endswith('\n'):
-            result_line = "{}\n".format(result_line)
+            result_line = f"{result_line}\n"
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_line)
 
     def log_info(self, result_line):
-        result_format = "[*] {} \n".format(result_line)
+        result_format = f"[*] {result_line} \n"
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_good(self, result_line):
-        result_format = "[+] {} \n".format(result_line)
+        result_format = f"[+] {result_line} \n"
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_warning(self, result_line):
-        result_format = "[!] {} \n".format(result_line)
+        result_format = f"[!] {result_line} \n"
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_error(self, result_line):
-        result_format = "[-] {} \n".format(result_line)
+        result_format = f"[-] {result_line} \n"
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_except(self, result_line):
-        result_format = "[x] {} \n".format(result_line)
+        result_format = f"[x] {result_line} \n"
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_store(self, result_format):
@@ -290,7 +291,9 @@ class _CommonModule(object):
                 if option.get("name") == key:
                     if self._custom_param.get(key) is None:
                         continue
-                    opts[option.get("name_tag")] = self._custom_param.get(key)
+                    opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
+                                                "tag_en": option.get("tag_en"),
+                                                "data": self._custom_param.get(key)}
 
                     # 处理凭证,监听,文件等参数
                     try:
@@ -306,25 +309,37 @@ class _CommonModule(object):
                             if handler_dict.get("RHOST") is not None:
                                 new_params["RHOST"] = handler_dict.get("RHOST")
 
-                            opts[option.get("name_tag")] = json.dumps(new_params)
+                            opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
+                                                        "tag_en": option.get("tag_en"),
+                                                        "data": json.dumps(new_params)}
+
+
                         elif key == FILE_OPTION.get("name"):
                             file_dict = json.loads(self._custom_param.get(key))
-                            opts[option.get("name_tag")] = json.dumps({
-                                "name": file_dict.get("name"),
-                            })
+                            opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
+                                                        "tag_en": option.get("tag_en"),
+                                                        "data": json.dumps({
+                                                            "name": file_dict.get("name"),
+                                                        })}
+
                         elif key == CREDENTIAL_OPTION.get("name"):
                             credential_dict = json.loads(self._custom_param.get(key))
-                            opts[option.get("name_tag")] = json.dumps({
-                                "username": credential_dict.get("username"),
-                                "password": credential_dict.get("password"),
-                                "password_type": credential_dict.get("password_type"),
-                            })
+                            opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
+                                                        "tag_en": option.get("tag_en"),
+                                                        "data": json.dumps({
+                                                            "username": credential_dict.get("username"),
+                                                            "password": credential_dict.get("password"),
+                                                            "password_type": credential_dict.get("password_type"),
+                                                        })}
+
                     except Exception as E:
                         logger.exception(E)
                     # 处理text类型参数
                     try:
                         if option.get("type") == "text":
-                            opts[option.get("name_tag")] = self._custom_param.get(key)[0:30]
+                            opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
+                                                        "tag_en": option.get("tag_en"),
+                                                        "data": self._custom_param.get(key)[0:30]}
                     except Exception as E:
                         logger.exception(E)
         module_result = Xcache.get_module_result(ipaddress=self.host_ipaddress,
@@ -693,7 +708,7 @@ class PostPythonModule(_PostCommonModule):
         super().__init__(sessionid, ipaddress, custom_param)  # 父类无需参数
 
         # 设置模块参数
-        self.module_self_uuid = None  # 为了存储uuid设置的字段
+
         self.exit_flag = False
 
     # shellcode及exe相关函数
@@ -728,7 +743,7 @@ class PostPythonModule(_PostCommonModule):
         t1 = ThreadWithExc(target=self.run)
         t1.start()
         while True:
-            req = Xcache.get_module_task_by_uuid_nowait(self.module_self_uuid)
+            req = Xcache.get_module_task_by_uuid_nowait(self._module_uuid)
             if req is None:  # 检查模块是否已经删除
                 self.exit_flag = True
                 time.sleep(3)

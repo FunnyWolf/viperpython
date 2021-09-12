@@ -97,8 +97,8 @@ class SessionLib(object):
                         'PINFO': self._pinfo,
                         'RIGHTINFO': self._rightinfo,
                         'UACINFO': self._uacinfo}
-                result = MSFModule.run(module_type=module_type, mname=mname, opts=opts,
-                                       timeout=RPC_SESSION_OPER_LONG_REQ)
+                result = MSFModule.run_msf_module_realtime(module_type=module_type, mname=mname, opts=opts,
+                                                           timeout=RPC_SESSION_OPER_LONG_REQ)
                 if result is None:
                     Notice.send_warning("更新Session信息失败,请稍后重试",
                                         "Failed to update Session information, please try again later")
@@ -279,7 +279,8 @@ class SessionLib(object):
             'KEY': key,
             'VALNAME': valname,
         }
-        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=RPC_SESSION_OPER_SHORT_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type=module_type, mname=mname, opts=opts,
+                                                   timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
             return {'status': False, "message": "MSFRPC Error", "data": None}
         try:
@@ -297,7 +298,8 @@ class SessionLib(object):
             'OPERATION': "registry_enumkeys",
             'KEY': key,
         }
-        result = MSFModule.run(module_type=module_type, mname=mname, opts=opts, timeout=RPC_SESSION_OPER_SHORT_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type=module_type, mname=mname, opts=opts,
+                                                   timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
             return {'status': False, "message": "MSFRPC Error", "data": None}
         try:
@@ -309,8 +311,8 @@ class SessionLib(object):
     def download_file(self, filepath=None):
         """返回下载的文件内容,二进制数据"""
         opts = {'OPERATION': 'download', 'SESSION': self.sessionid, 'SESSION_FILE': filepath}
-        result = MSFModule.run('post', 'multi/manage/file_system_operation_api', opts,
-                               timeout=RPC_RUN_MODULE_LONG)  # 后台运行
+        result = MSFModule.run_msf_module_realtime('post', 'multi/manage/file_system_operation_api', opts,
+                                                   timeout=RPC_RUN_MODULE_LONG)  # 后台运行
         if result is None:
             return None
         filename = os.path.basename(filepath)

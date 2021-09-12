@@ -103,7 +103,7 @@ class PostModuleAutoView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            module_uuid = request.query_params.get('module_uuid', None)
+            module_uuid = request.query_params.get('_module_uuid', None)
             context = PostModuleAuto.destory(module_uuid=module_uuid)
         except Exception as E:
             logger.error(E)

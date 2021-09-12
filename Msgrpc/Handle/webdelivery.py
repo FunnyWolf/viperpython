@@ -60,8 +60,9 @@ class WebDelivery(object):
         opts["SRVHOST"] = "0.0.0.0"
         opts["SRVPORT"] = opts["URIPORT"]
 
-        result = MSFModule.run(module_type="exploit", mname="multi/script/web_delivery_api", opts=opts, runasjob=True,
-                               timeout=RPC_JOB_API_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="exploit", mname="multi/script/web_delivery_api",
+                                                   opts=opts, runasjob=True,
+                                                   timeout=RPC_JOB_API_REQ)
         if isinstance(result, dict) is not True or result.get('job_id') is None:
             opts['ID'] = None
             context = data_return(301, opts, WebDelivery_MSG_ZH.get(301), WebDelivery_MSG_EN.get(301))

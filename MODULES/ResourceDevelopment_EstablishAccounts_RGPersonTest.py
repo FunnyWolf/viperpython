@@ -39,7 +39,7 @@ class PostModule(PostPythonModule):
 
     def run(self):
         import time
-        time.sleep(20)
+        time.sleep(3)
         age = random.randint(18, 60)  # 可调整生成的年龄范围（身份证），这边是16-60岁
         gender = random.randint(0, 1)
         name = genName()

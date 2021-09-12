@@ -105,7 +105,8 @@ class Payload(object):
             # 生成原始payload
             tmp_type = opts.get("Format")
             opts["Format"] = "hex"
-            result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                       timeout=RPC_FRAMEWORK_API_REQ)
             if result is None:
                 context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                 return context
@@ -120,7 +121,8 @@ class Payload(object):
         elif opts.get("Format") == "msbuild":
             # 生成原始payload
             opts["Format"] = "csharp"
-            result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                       timeout=RPC_FRAMEWORK_API_REQ)
             if result is None:
                 context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                 return context
@@ -141,7 +143,8 @@ class Payload(object):
                          'windows/x64/meterpreter_reverse_https',
                          'windows/x64/meterpreter_reverse_dns']:
                 opts["Format"] = "exe"
-                result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+                result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                           timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
                     context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                     return context
@@ -149,7 +152,8 @@ class Payload(object):
                 filename = "{}.exe".format(int(time.time()))
             else:
                 opts["Format"] = "hex"
-                result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+                result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                           timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
                     context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                     return context
@@ -159,7 +163,8 @@ class Payload(object):
                 filename = "{}.exe".format(int(time.time()))
         elif opts.get("Format") == "exe-src-service":
             opts["Format"] = "hex"
-            result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                       timeout=RPC_FRAMEWORK_API_REQ)
             if result is None:
                 context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                 return context
@@ -172,7 +177,8 @@ class Payload(object):
             if mname in ['linux/x86/meterpreter/reverse_tcp', 'linux/x86/meterpreter/bind_tcp',
                          'linux/x64/meterpreter/reverse_tcp', 'linux/x64/meterpreter/bind_tcp', ]:
                 opts["Format"] = "hex"
-                result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+                result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                           timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
                     context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                     return context
@@ -181,7 +187,8 @@ class Payload(object):
                 filename = "{}.elf".format(int(time.time()))
             else:
                 opts["Format"] = "elf"
-                result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+                result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                           timeout=RPC_FRAMEWORK_API_REQ)
                 if result is None:
                     context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                     return context
@@ -234,7 +241,8 @@ class Payload(object):
                 "loop-vbs": "vbs",
                 "war": "war",
             }
-            result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                       timeout=RPC_FRAMEWORK_API_REQ)
             if result is None:
                 context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                 return context
@@ -285,7 +293,8 @@ class Payload(object):
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
             opts['EXTENSIONS'] = 'stdapi'
 
-        result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                   timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             return result
         byteresult = base64.b64decode(result.get('payload'))
@@ -333,7 +342,8 @@ class Payload(object):
         elif "php" in mname:
             opts["Format"] = 'raw'
 
-        result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                   timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             return result
         byteresult = base64.b64decode(result.get('payload'))
@@ -370,7 +380,8 @@ class Payload(object):
             opts['EXTENSIONS'] = 'stdapi'
 
         opts["Format"] = "hex"
-        result = MSFModule.run(module_type="payload", mname=mname, opts=opts, timeout=RPC_FRAMEWORK_API_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                   timeout=RPC_FRAMEWORK_API_REQ)
         if result is None:
             return None
         shellcode = base64.b64decode(result.get('payload'))

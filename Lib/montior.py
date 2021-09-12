@@ -122,7 +122,7 @@ class MainMonitor(object):
         broker = req.get("broker")
         module_intent = req.get("module")
         if broker == BROKER.bot_msf_module:
-            MSFModule.run_bot_msf_module(module_intent)
+            MSFModule.run_msf_module_bot(module_intent)
         else:
             logger.error("unknow broker")
 

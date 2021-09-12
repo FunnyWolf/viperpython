@@ -27,7 +27,7 @@ class PostModuleAuto(object):
         postmodule_auto_dict = Xcache.get_postmodule_auto_dict()
         for module_uuid in postmodule_auto_dict:
             one_result = postmodule_auto_dict.get(module_uuid)
-            one_result["module_uuid"] = module_uuid
+            one_result["_module_uuid"] = module_uuid
             loadpath = postmodule_auto_dict.get(module_uuid).get("loadpath")
             one_result["moduleinfo"] = Xcache.get_moduleconfig(loadpath)
 
@@ -53,7 +53,7 @@ class PostModuleAuto(object):
     @staticmethod
     def destory(module_uuid):
         if Xcache.delete_postmodule_auto_list(module_uuid):
-            context = data_return(204, {"module_uuid": module_uuid}, PostModuleAuto_MSG_ZH.get(204),
+            context = data_return(204, {"_module_uuid": module_uuid}, PostModuleAuto_MSG_ZH.get(204),
                                   PostModuleAuto_MSG_EN.get(204))
             return context
         else:

@@ -55,8 +55,9 @@ class Socks(object):
                 context = data_return(408, {}, CODE_MSG_ZH.get(408), CODE_MSG_EN.get(408))
                 return context
 
-            result = MSFModule.run(module_type="auxiliary", mname="server/socks4a_api", opts=opts, runasjob=True,
-                                   timeout=RPC_JOB_API_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="auxiliary", mname="server/socks4a_api", opts=opts,
+                                                       runasjob=True,
+                                                       timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
                 context = data_return(303, opts, Socks_MSG_ZH.get(303), Socks_MSG_EN.get(303))
@@ -78,8 +79,9 @@ class Socks(object):
                 context = data_return(408, {}, CODE_MSG_ZH.get(408), CODE_MSG_EN.get(408))
                 return context
 
-            result = MSFModule.run(module_type="auxiliary", mname="server/socks5_api", opts=opts, runasjob=True,
-                                   timeout=RPC_JOB_API_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="auxiliary", mname="server/socks5_api", opts=opts,
+                                                       runasjob=True,
+                                                       timeout=RPC_JOB_API_REQ)
             if isinstance(result, dict) is not True or result.get('job_id') is None:
                 opts['job_id'] = None
                 context = data_return(303, opts, Socks_MSG_ZH.get(303), Socks_MSG_EN.get(303))

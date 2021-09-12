@@ -99,7 +99,7 @@ class PostModuleActuator(object):
                 return context
         elif broker == BROKER.post_msf_job:
             # 放入后台运行队列
-            if MSFModule.putin_post_msf_module_queue(post_module_intent):
+            if MSFModule.putin_msf_module_job_queue(post_module_intent):
                 context = data_return(201, {}, PostModuleActuator_MSG_ZH.get(201), PostModuleActuator_MSG_EN.get(201))
                 return context
             else:

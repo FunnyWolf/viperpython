@@ -63,8 +63,8 @@ class Route(object):
             opts = {'CMD': 'autoadd', 'SESSION': sessionid}
         else:
             opts = {'CMD': 'add', 'SUBNET': subnet, 'NETMASK': netmask, 'SESSION': sessionid}
-        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts,
-                               timeout=RPC_SESSION_OPER_SHORT_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="post", mname="multi/manage/routeapi", opts=opts,
+                                                   timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
             context = data_return(505, [], CODE_MSG_ZH.get(505), CODE_MSG_EN.get(505))
             return context
@@ -93,8 +93,8 @@ class Route(object):
     @staticmethod
     def destory(subnet=None, netmask=None, sessionid=None):
         opts = {'CMD': 'delete', 'SUBNET': subnet, 'NETMASK': netmask, 'SESSION': sessionid}
-        result = MSFModule.run(module_type="post", mname="multi/manage/routeapi", opts=opts,
-                               timeout=RPC_SESSION_OPER_SHORT_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="post", mname="multi/manage/routeapi", opts=opts,
+                                                   timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
             context = data_return(505, [], CODE_MSG_ZH.get(505), CODE_MSG_EN.get(505))
             return context

@@ -93,8 +93,6 @@ class PostModule(PostMSFRawModule):
             # 分析可用的进程信息
             key_list = [
                 {"re": "lsass*", "tag_zh": "Windows", "desc_zh": "本地凭证存储进程"},
-                # {"re": "360*","tag_zh":"AV","desc_zh":"360杀毒相关进程"},
-                # {"re": "ZhuDongFangYu*", "tag_zh": "AV", "desc_zh": "360主动防御进程"},
                 {"re": "AnyDesk*", "tag_zh": "CC", "desc_zh": "AnyDesk远程控制工具"},
                 {"re": "tv_*", "tag_zh": "CC", "desc_zh": "TeamViewer远程控制工具"},
 

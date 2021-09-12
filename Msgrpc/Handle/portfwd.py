@@ -58,8 +58,8 @@ class PortFwd(object):
                 'LHOST': lhost, 'LPORT': lport, 'RHOST': rhost, 'RPORT': rport,
                 'SESSION': sessionid, 'CMD': 'add'}
 
-        result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
-                               timeout=RPC_SESSION_OPER_SHORT_REQ)
+        result = MSFModule.run_msf_module_realtime(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
+                                                   timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result is None:
             context = data_return(308, {}, PORTFWD_MSG_ZH.get(308), PORTFWD_MSG_EN.get(308))
             return context
@@ -83,8 +83,8 @@ class PortFwd(object):
         if sessionid is not None or sessionid == -1:
             opts = {'TYPE': portfwdtype, 'LHOST': lhost, 'LPORT': lport, 'RHOST': rhost, 'RPORT': rport,
                     'SESSION': sessionid, 'CMD': 'delete'}
-            result = MSFModule.run(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
-                                   timeout=RPC_SESSION_OPER_SHORT_REQ)
+            result = MSFModule.run_msf_module_realtime(module_type="post", mname="multi/manage/portfwd_api", opts=opts,
+                                                       timeout=RPC_SESSION_OPER_SHORT_REQ)
             if result is None:
                 context = data_return(308, {}, PORTFWD_MSG_ZH.get(308), PORTFWD_MSG_EN.get(308))
                 return context

@@ -37,25 +37,24 @@ class APSModule(object):
     def putin_post_python_module_queue(self, post_module_intent=None):
         try:
             # 存储uuid
-            tmp_self_uuid = str(uuid.uuid1())
+            module_uuid = str(uuid.uuid1())
 
             # 清空历史记录
             post_module_intent._clean_log()
+            post_module_intent._module_uuid = module_uuid
 
-            logger.warning("模块放入列表:{} job_id: {} uuid: {}".format(post_module_intent.NAME_ZH, None, tmp_self_uuid))
-            post_module_intent.module_self_uuid = tmp_self_uuid
-            self.ModuleJobsScheduler.add_job(func=post_module_intent._thread_run, max_instances=1, id=tmp_self_uuid)
+            logger.warning("模块放入列表:{} job_id: {} uuid: {}".format(post_module_intent.NAME_ZH, None, module_uuid))
+            self.ModuleJobsScheduler.add_job(func=post_module_intent._thread_run, max_instances=1, id=module_uuid)
 
             # 放入缓存队列,用于后续删除任务,存储结果等
             req = {
                 'broker': post_module_intent.MODULE_BROKER,
-                'uuid': tmp_self_uuid,
+                'uuid': module_uuid,
                 'module': post_module_intent,
                 'time': int(time.time()),
                 'job_id': None,
             }
             Xcache.create_module_task(req)
-
             Notice.send_info(f"模块: {post_module_intent.NAME_ZH} {post_module_intent._target_str} 开始执行",
                              f"Module: <{post_module_intent.NAME_EN}> {post_module_intent._target_str} running")
             return True
