@@ -27,7 +27,9 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([
-        OptionStr(name='RHOST', tag_zh="目标IP", desc_zh="目标的IP地址", tag_en="xxx", desc_en="xxx", ),
+        OptionStr(name='RHOST',
+                  tag_zh="目标IP", desc_zh="目标的IP地址",
+                  tag_en="Target IP", desc_en="IP address of the target"),
         OptionEnum(name='TARGET',
                    tag_zh="执行方式", desc_zh="选择载荷的加载方式",
                    tag_en="Execution way", desc_en="Choose how to load the payload",
@@ -130,11 +132,11 @@ class PostModule(PostMSFRawModule):
             return True, None
 
     def callback(self, status, message, data):
-
         if status:
-            result_format = "模块执行完成,稍等片刻后查看是否生成新的Session"
-            self.log_good(result_format, "XXX")
+            self.log_good("模块执行完成,稍等片刻后查看是否生成新的Session",
+                          "The module execution is complete, wait a while to see if a new Session is generated")
         else:
-            result_format = "模块执行失败,无法使用提供的参数连接远程SMB服务.请检查是否添加内网路由或主机是否可以连接"
-            self.log_error(result_format, "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error("无法使用提供的参数连接远程SMB服务.请检查是否添加内网路由或主机是否可以连接",
+                           "Unable to connect to the remote SMB service using the provided parameters. Please check whether the intranet route is added or the host can be connected")
+            self.log_error(message, message)

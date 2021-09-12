@@ -41,21 +41,18 @@ class PostModule(PostMSFPowershellFunctionModule):
             if isinstance(powershell_json_output, list) and len(powershell_json_output) > 0:
                 try:
                     for one in powershell_json_output:
-                        outputstr = f"域名: {one.get('Name')}\n域控: {one.get('DomainControllers')}\n域林: {one.get('Forest')}\nRidOwner: {one.get('RidRoleOwner')}"
-                        self.log_good(outputstr, "XXX")
+                        self.log_good(
+                            f"域名: {one.get('Name')}\n域控: {one.get('DomainControllers')}\n域林: {one.get('Forest')}\nRidOwner: {one.get('RidRoleOwner')}",
+                            f"Domain: {one.get('Name')}\nDomain controller: {one.get('DomainControllers')}\nDomain forest: {one.get('Forest')}\nRidOwner: {one.get('RidRoleOwner')}")
                 except Exception as E:
                     pass
             elif isinstance(powershell_json_output, dict):
-                outputstr = f"域名: {powershell_json_output.get('Name')}\n域控: {powershell_json_output.get('DomainControllers')}\n域林: {powershell_json_output.get('Forest')}\nRidOwner: {powershell_json_output.get('RidRoleOwner')}"
-                self.log_good(outputstr, "XXX")
+                self.log_good(
+                    f"域名: {powershell_json_output.get('Name')}\n域控: {powershell_json_output.get('DomainControllers')}\n域林: {powershell_json_output.get('Forest')}\nRidOwner: {powershell_json_output.get('RidRoleOwner')}",
+                    f"Domain: {powershell_json_output.get('Name')}\nDomain control: {powershell_json_output.get('DomainControllers')}\nDomain forest: {powershell_json_output.get('Forest')}\nRidOwner: {powershell_json_output.get('RidRoleOwner')}")
             else:
-                self.log_error("脚本无有效输出", "XXX")
-                self.log_error(powershell_json_output, "XXX")
-
-
-
-
-
+                self.log_error("脚本无有效输出", "Script has no valid output")
+                self.log_error(powershell_json_output, powershell_json_output)
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

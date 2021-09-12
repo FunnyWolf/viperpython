@@ -31,17 +31,14 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-
         session = Session(self._sessionid)
         key = "HKEY_LOCAL_MACHINE\\\\Software\\\\Microsoft\\\\NET Framework Setup\\\\NDP"
         result = session.registry_enumkeys(key)
         if result.get("status"):
-            self.log_good("已安装.Net framework版本:", "XXX")
+            self.log_good("已安装.Net framework版本:", "Installed .Net framework version:")
             version_list = result.get("data")
             for one in version_list:
                 if one.startswith('v'):
-                    self.log_good(f'{one}', "XXX")
-
-
+                    self.log_good(one, one)
         else:
-            self.log_error(result.get("message"), "XXX")
+            self.log_error(result.get("message"), result.get("message"))

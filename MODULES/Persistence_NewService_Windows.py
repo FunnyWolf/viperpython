@@ -72,9 +72,10 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)
         if status:
-            self.log_good("模块执行成功", "XXX")
-            self.log_good(f"脚本输出: {data.get('psresult')} EXE路径: {data.get('victim_path')}", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
+            self.log_good(f"脚本输出: {data.get('psresult')}", f"Script output: {data.get('psresult')}")
+            self.log_good(f"EXE路径: {data.get('victim_path')}", f"EXE path: {data.get('victim_path')}")
             self.cache_handler()
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

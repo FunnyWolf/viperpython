@@ -53,7 +53,8 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error(f"模块执行失败,失败原因:{message}", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
         else:
-            self.log_good("模块执行成功", "XXX")
-            self.log_good(f"请在 <文件列表> 中查看生成的pem文件", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
+            self.log_good(f"请在 <文件列表> 中查看生成的pem文件", "Please check the generated pem file in <Files>")

@@ -121,7 +121,7 @@ class APSModule(object):
 
         # 存储运行结果
         try:
-            module_common_instance.log_except(exception, "XXX")
+            module_common_instance.log_except(str(exception), str(exception))
             module_common_instance._store_result_in_history()
             logger.error(f"多模块实例执行异常:{module_common_instance.NAME_ZH} 异常信息: {exception}")
             return True
@@ -148,7 +148,7 @@ class APSModule(object):
 
         # 存储已经生成的结果
         try:
-            module_common_instance.log_info("用户手动删除任务", "XXX")
+            module_common_instance.log_warning("用户手动删除任务", "User manually delete task")
             module_common_instance._store_result_in_history()
         except Exception as E:
             logger.error(f"删除多模块实例异常:{module_common_instance.NAME_ZH} 异常信息: {E}")

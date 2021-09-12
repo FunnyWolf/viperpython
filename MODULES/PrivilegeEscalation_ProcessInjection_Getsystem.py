@@ -58,11 +58,11 @@ class PostModule(PostMSFRawModule):
             return False, "模块需要管理员权限,请尝试使用UAC绕过模块", "The module requires administrator rights, please try to use UAC bypass module"
 
     def callback(self, status, message, data):
-        # 调用父类函数存储结果(必须调用)
-
         if status is not True:
-            self.log_error(f"模块运行失败,无法获取System权限,错误码: {message} ", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
             return
         else:
-            self.log_good("获取成功,Session已获取System权限", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
+            self.log_good("Session已获取System权限", "Session has obtained System permissions")
             return

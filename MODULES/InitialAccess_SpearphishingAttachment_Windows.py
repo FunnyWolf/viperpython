@@ -45,9 +45,9 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)
         if status:
-            self.log_good("模块执行成功", "XXX")
-            self.log_good(f"生成文档名称: {data.get('docm')}", "XXX")
-            self.log_good("请在 <文件列表> 中下载此文档", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
+            self.log_good(f"生成文档名称: {data.get('docm')}", f"Generate document name: {data.get('docm')}")
+            self.log_good("请在 <文件列表> 中下载此文档", "Please download this document in <Files>")
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

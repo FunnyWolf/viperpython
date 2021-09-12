@@ -53,5 +53,5 @@ class PostModule(PostPythonModule):
         filename = f"FakeWordDoc_{int(time.time())}.zip"
         self.write_zip_vs_project(filename, source_code)
 
-        self.log_good("模块执行成功", "XXX")
-        self.log_good(f"请在<文件列表>中查看生成的源码: {filename}", "XXX")
+        self.log_info("模块执行完成", "Module operation completed")
+        self.log_good(f"请在<文件列表>中查看生成的源码: {filename}", f"Please check the generated source code in <Files>: {filename}")

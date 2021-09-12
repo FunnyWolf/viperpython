@@ -70,5 +70,6 @@ class PostModule(PostPythonModule):
                                   exe_file=exefilename,
                                   exe_data=binbytes)
 
-        self.log_good("模块执行成功", "XXX")
-        self.log_good(f"请在<文件列表>中查看生成的zip文件: {projectfilename}", "XXX")
+        self.log_info("模块执行完成", "Module operation completed")
+        self.log_good(f"请在<文件列表>中查看生成的zip文件: {projectfilename}",
+                      f"Please check the generated zip file in <Files>: {projectfilename}")

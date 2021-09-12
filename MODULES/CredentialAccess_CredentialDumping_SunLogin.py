@@ -650,7 +650,7 @@ class PostModule(PostMSFPythonWithParamsModule):
 
     def callback(self, status, message, data):
         if status:
-            self.log_good("脚本执行完成", "XXX")
+            self.log_info("脚本执行完成", "Module operation completed")
             return_data = json.loads(data)
             for one_config in return_data:
                 localuser = one_config.get("localuser")
@@ -664,15 +664,19 @@ class PostModule(PostMSFPythonWithParamsModule):
 
                     except Exception as E:
                         pass
-                    self.log_good(f"本机识别码: {localuser}  本机验证码: {localpassword}", "XXX")
+                    self.log_good(f"本机识别码: {localuser}  本机验证码: {localpassword}",
+                                  f"Local ID: {localuser} Local Verification Code: {localpassword}")
                 else:
-                    self.log_good(f"本机识别码: {localuser}  本机验证码: {clearpassword}", "XXX")
+                    self.log_good(f"本机识别码: {localuser}  本机验证码: {clearpassword}",
+                                  f"Local ID: {localuser} Local Verification Code: {clearpassword}")
 
                 for partner in one_config.get("partner"):
                     fastcode = partner.get("fastcode")
                     password = partner.get("password")
-                    self.log_good(f"伙伴识别码: {fastcode}  验证码: {password}", "XXX")
-            self.log_warning("为保证兼容性本机识别码开头如有字母,使用时请自行尝试去除", "XXX")  # 不要手工去除,可能会导致缺位
+                    self.log_good(f"伙伴识别码: {fastcode}  验证码: {password}",
+                                  f"Partner ID: {fastcode} Verification Code: {password}")
+            self.log_warning("为保证兼容性本机识别码开头如有字母,使用时请自行尝试去除",
+                             "In order to ensure compatibility, if there are letters at the beginning of the machine identification code, please try to remove it when you use it.")  # 不要手工去除,可能会导致缺位
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

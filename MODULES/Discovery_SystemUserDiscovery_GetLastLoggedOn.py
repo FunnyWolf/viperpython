@@ -58,10 +58,11 @@ class PostModule(PostMSFPowershellFunctionModule):
         if status:
             powershell_json_output = self.deal_powershell_json_result(data)
             if powershell_json_output is not None:
-                ouputstr = f"登录主机: {powershell_json_output.get('ComputerName')} 登录用户:{powershell_json_output.get('LastLoggedOn')}"
-                self.log_good(ouputstr, "XXX")
+                self.log_good(
+                    f"登录主机: {powershell_json_output.get('ComputerName')} 登录用户:{powershell_json_output.get('LastLoggedOn')}",
+                    f"Login host: {powershell_json_output.get('ComputerName')} Login user: {powershell_json_output.get('LastLoggedOn')}")
             else:
-                self.log_error("脚本无有效输出", "XXX")
+                self.log_error("脚本无有效输出", "Script has no valid output")
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

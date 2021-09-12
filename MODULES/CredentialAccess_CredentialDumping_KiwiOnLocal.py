@@ -66,29 +66,29 @@ class PostModule(PostMSFRawModule):
 
     def format_dict(self, tmpdict):
         if tmpdict.get('Password') is not None:
-            result_str = f"用户名:{tmpdict.get('Username')} 域:{tmpdict.get('Domain')} 密码:{tmpdict.get('Password')}"
-            self.log_good(result_str, "XXX")
+            self.log_good(f"用户名:{tmpdict.get('Username')} 域:{tmpdict.get('Domain')} 密码:{tmpdict.get('Password')}",
+                          f"Username: {tmpdict.get('Username')} Domain: {tmpdict.get('Domain')} Password: {tmpdict.get('Password')}")
             tag = {'domain': tmpdict.get('Domain'), 'type': 'Password'}
             self.add_credential(username=tmpdict.get('Username'), password=tmpdict.get('Password'),
                                 password_type='windows', tag=tag)
 
         if tmpdict.get('LM') is not None and tmpdict.get('NTLM') is not None:
-            result_str = f"用户名:{tmpdict.get('Username')} 域:{tmpdict.get('Domain')} LM/NTLM:{tmpdict.get('LM')}:{tmpdict.get('NTLM')}"
-            self.log_good(result_str, "XXX")
+            self.log_good(
+                f"用户名:{tmpdict.get('Username')} 域:{tmpdict.get('Domain')} LM/NTLM:{tmpdict.get('LM')}:{tmpdict.get('NTLM')}",
+                f"Username: {tmpdict.get('Username')} Domain: {tmpdict.get('Domain')} LM/NTLM: {tmpdict.get('LM')}: {tmpdict.get('NTLM')}")
             tag = {'domain': tmpdict.get('Domain'), 'type': 'Hash'}
             self.add_credential(username=tmpdict.get('Username'), password=f"{tmpdict.get('LM')}:{tmpdict.get('NTLM')}",
                                 password_type='windows', tag=tag)
 
         if tmpdict.get('SHA1') is not None:
-            result_str = f"用户名:{tmpdict.get('Username')} 域:{tmpdict.get('Domain')} SHA1:{tmpdict.get('SHA1')}"
-            self.log_good(result_str, "XXX")
-            tag = {'domain': tmpdict.get('Domain'), 'type': 'SHA1'}
+            self.log_good(f"用户名:{tmpdict.get('Username')} 域:{tmpdict.get('Domain')} SHA1:{tmpdict.get('SHA1')}",
+                          f"Username: {tmpdict.get('Username')} Domain: {tmpdict.get('Domain')} SHA1: {tmpdict.get('SHA1')}")
+            # tag = {'domain': tmpdict.get('Domain'), 'type': 'SHA1'}
 
     def callback(self, status, message, data):
-
         if status:
             output = data.replace('\x00', '')
-            self.log_info("获取密码列表", "XXX")
+            self.log_info("密码列表", "Password list")
             tmpdict = {'Username': None, 'Domain': None, 'Password': None, 'LM': None, 'NTLM': None, 'SHA1': None}
             for line in output.split('\n'):
                 username = self.search('username', line, 'isusername')
@@ -117,9 +117,9 @@ class PostModule(PostMSFRawModule):
                     tmpdict['SHA1'] = SHA1
 
             self.log_raw("\n\n")
-            self.log_info("原始结果", "XXX")
+            self.log_info("原始输出", "Raw output")
             self.log_raw(output)
 
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

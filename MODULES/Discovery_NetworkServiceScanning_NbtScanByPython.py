@@ -113,16 +113,18 @@ class PostModule(PostMSFPythonWithParamsModule):
                 result = base64.b64decode(bytes(data, encoding="utf8")).decode('ascii')
                 portservice_list = json.loads(result)
             except Exception as E:
-                self.log_error("脚本输出解析失败", "XXX")
-                self.log_error(E, "XXX")
-                self.log_error(data, "XXX")
+                self.log_error("脚本输出解析失败", "Script output parsing failed")
+                self.log_error(data, data)
+                self.log_except(str(E), str(E))
                 return
             if len(portservice_list) == 0:
-                self.log_info("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试", "XXX")
-                self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描", "XXX")
+                self.log_info("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试",
+                              "The script execution is complete, but no valid data is scanned. It may be because the other party's network is closed. Please check the host's netstat information and try again")
+                self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件'功能重置后重新扫描",
+                              "If you confirm that the network connection is normal but the scan has no results, please use the'reset python plugin' in the Meterpreter command line to scan again after reset")
                 return
 
-            self.log_info("扫描结果", "XXX")
+            self.log_info("扫描结果", "Scan result")
             for portservice in portservice_list:
                 # 输出部分
                 ipaddress = portservice.get("ipaddress")
@@ -167,5 +169,5 @@ class PostModule(PostMSFPythonWithParamsModule):
                 self.log_raw("-----------------------------------------------\n\n")
 
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

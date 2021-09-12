@@ -98,9 +98,9 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status:
-            self.log_good("模块执行完成", "XXX")
-            self.log_good(f"新进程PID :{data.get('pid')}", "XXX")
-            self.log_good(f"新进程输出 :{data.get('output')}", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
+            self.log_good(f"新进程PID :{data.get('pid')}", f"New process PID: {data.get('pid')}")
+            self.log_good(f"新进程输出 :{data.get('output')}", f"New process output: {data.get('output')}")
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

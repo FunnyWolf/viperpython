@@ -57,7 +57,7 @@ class PostModule(PostMSFRawModule):
 
         tmppath = tmppath.replace('//', '/')
         if tmppath == '' or tmppath is None:
-            self.log_warning('输入错误字符', "XXX")
+            self.log_warning('输入错误字符', "Typing wrong characters")
             tmppath = '/'
         return tmppath
 
@@ -71,7 +71,7 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)
         if status:
-            self.log_good(f'{self.param("MSF_FILE")} 上传完成.', "XXX")
+            self.log_good(f'{self.param("MSF_FILE")} 上传完成.', f'{self.param("MSF_FILE")} upload completed.')
         else:
-            self.log_error('上传失败', "XXX")
-            self.log_error(message, "XXX")
+            self.log_error('上传失败', "Upload failed")
+            self.log_error(message, message)

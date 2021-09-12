@@ -68,9 +68,10 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error(f"模块执行失败,失败原因:{message}", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
         else:
-            self.log_good("模块执行成功", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
             if self.param("ACTION") in ['steal_token', "rev2self"]:
-                self.log_good(f"当前用户: {data.get('user')}", "XXX")
-            self.log_good(f"进程PID: {data.get('pid')}", "XXX")
+                self.log_good(f"当前用户: {data.get('user')}", f"Current user: {data.get('user')}")
+            self.log_good(f"进程PID: {data.get('pid')}", f"Process PID: {data.get('pid')}")

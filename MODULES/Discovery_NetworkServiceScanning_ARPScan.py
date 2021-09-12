@@ -67,15 +67,16 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error(f"模块执行失败,失败原因:{message}", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
             return
         try:
             host_mac_list = data
-            self.log_info("扫描结果:", "XXX")
+            self.log_info("扫描结果:", "Scan result")
             for host_mac in host_mac_list:
                 # 输出部分
-                tmpstr = f"IP地址: {host_mac.get('host')} MAC: {host_mac.get('mac')} 网卡厂商:{host_mac.get('company')}"
-                self.log_good(tmpstr, "XXX")
+                self.log_good(f"IP地址: {host_mac.get('host')} MAC: {host_mac.get('mac')} 网卡厂商:{host_mac.get('company')}",
+                              f"IP address: {host_mac.get('host')} MAC: {host_mac.get('mac')} NIC manufacturer: {host_mac.get('company')}")
                 # 存储部分
                 ipaddress = host_mac.get('host')
                 result = self.add_host(ipaddress, source=self.host_ipaddress, linktype="scan", data={"method": "arp"})
@@ -83,4 +84,5 @@ class PostModule(PostMSFRawModule):
                 self.add_portservice(ipaddress, 0, banner={'mac': host_mac.get('mac')}, service="MAC")
 
         except Exception as E:
-            self.log_error(f"模块执行失败,失败原因:{E}", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_except(str(E), str(E))

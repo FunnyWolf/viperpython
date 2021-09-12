@@ -28,6 +28,8 @@ class PostModule(PostMSFRawModule):
         OptionEnum(name='action',
                    tag_zh="操作",
                    desc_zh="Hijack表示劫持数字签名DLL,Recovery表示恢复系统默认数字证书DLL",
+                   tag_en="Action",
+                   desc_en="Hijack means hijacking the digital signature DLL, and Recovery means restoring the system default digital certificate DLL",
                    required=True,
                    default="Hijack",
                    enum_list=[
@@ -59,8 +61,8 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status:
-            self.log_good("模块执行成功", "XXX")
-            self.log_good(f"运行模式: {data}", "XXX")
+            self.log_info("模块执行完成", "Module operation completed")
+            self.log_good(f"运行模式: {data}", f"Operating mode: {data}")
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(f"运行模式: {data}", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(f"运行模式: {data}", f"Operating mode: {data}")

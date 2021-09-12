@@ -94,9 +94,9 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
             return
 
-        self.log_good("模块运行完成,可执行文件输出信息:", "XXX")
+        self.log_good("模块运行完成,可执行文件输出:", "After the module runs, the executable file outputs:")
         self.log_raw(data)

@@ -67,15 +67,17 @@ class PostModule(PostMSFPowershellFunctionModule):
 
                 if isinstance(powershell_json_output, list):
                     for one in powershell_json_output:
-                        ouputstr = f"主机名: {one.get('ComputerName')} IP地址:{one.get('IPAddress')}"
-                        self.log_good(ouputstr, "XXX")
+                        self.log_good(f"主机名: {one.get('ComputerName')} IP地址:{one.get('IPAddress')}",
+                                      f"Hostname: {one.get('ComputerName')} IPAddress: {one.get('IPAddress')}")
                 elif isinstance(powershell_json_output, dict):
                     ouputstr = f"主机名: {powershell_json_output.get('ComputerName')} IP地址:{powershell_json_output.get('IPAddress')}"
-                    self.log_good(ouputstr, "XXX")
+                    self.log_good(
+                        f"主机名: {powershell_json_output.get('ComputerName')} IP地址:{powershell_json_output.get('IPAddress')}",
+                        f"Hostname: {powershell_json_output.get('ComputerName')} IPAddress: {powershell_json_output.get('IPAddress')}")
                 else:
-                    self.log_error("脚本无有效输出", "XXX")
+                    self.log_error("脚本无有效输出", "Script has no valid output")
             else:
-                self.log_error("脚本无有效输出", "XXX")
+                self.log_error("脚本无有效输出", "Script has no valid output")
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

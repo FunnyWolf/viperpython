@@ -22,9 +22,16 @@ class PostModule(PostMSFRawModule):
     AUTHOR = "Viper"
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionStr(name='INPUTDIR', tag_zh="压缩目录", length=24, desc_zh="需要压缩的目录"),
-        OptionInt(name='TIMEOUT', tag_zh="超时时间", desc_zh="压缩命令超时时间", default=60 * 10),
-        OptionBool(name='GETRESULT', tag_zh="自动回传压缩文件", desc_zh="执行完成压缩后是否自动将文件回传到Viper", default=False),
+        OptionStr(name='INPUTDIR', tag_zh="压缩目录", desc_zh="需要压缩的目录",
+                  tag_en="Directory", desc_en="Fill in the directory that needs to be compressed", length=24),
+        OptionInt(name='TIMEOUT',
+                  tag_zh="超时时间", desc_zh="压缩命令超时时间",
+                  tag_en="Time out", desc_en="Compression timeout",
+                  default=60 * 10),
+        OptionBool(name='GETRESULT', tag_zh="自动回传压缩文件", desc_zh="执行完成压缩后是否自动将文件回传到Viper",
+                   tag_en="Automatically upload compressed files",
+                   desc_en="Whether to automatically upload the file to Viper after the compression is performed",
+                   default=False),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -61,11 +68,11 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
             return
-
-        self.log_good("模块运行完成,压缩文件输出:", "XXX")
+        self.log_info("模块执行完成", "Module operation completed")
+        self.log_good("压缩文件:", "Zip file")
         self.log_raw(data)
         if self.param("GETRESULT"):
-            self.log_good(f"压缩后文件存放在<文件管理>:{message}", "XXX")
+            self.log_good(f"压缩后文件存放在<文件管理>:{message}", f"Zip file is stored in <Files>: {message}")

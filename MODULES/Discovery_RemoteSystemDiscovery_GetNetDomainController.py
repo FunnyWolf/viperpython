@@ -41,17 +41,18 @@ class PostModule(PostMSFPowershellFunctionModule):
             if isinstance(powershell_json_output, list):
                 try:
                     for one in powershell_json_output:
-                        outputstr = f"名称:{one.get('Name')}\n域:{one.get('Domain')}\n林:{one.get('Forest')}\nIP地址:{one.get('IPAddress')}\nOS版本:{one.get('OSVersion')}\n角色:{one.get('Roles')}"
-                        self.log_good(outputstr, "XXX")
+                        self.log_good(
+                            f"名称:{one.get('Name')}\n域:{one.get('Domain')}\n林:{one.get('Forest')}\nIP地址:{one.get('IPAddress')}\nOS版本:{one.get('OSVersion')}\n角色:{one.get('Roles')}",
+                            f"Name:{one.get('Name')}\nDomain:{one.get('Domain')}\nForest:{one.get('Forest')}\nIP address:{one.get('IPAddress')}\nOS version: {one.get('OSVersion')}\nRole: {one.get('Roles')}")
                 except Exception as E:
                     pass
             elif isinstance(powershell_json_output, dict):
-                outputstr = f"名称:{powershell_json_output.get('Name')}\n域:{powershell_json_output.get('Domain')}\n林:{powershell_json_output.get('Forest')}\nIP地址:{powershell_json_output.get('IPAddress')}\nOS版本:{powershell_json_output.get('OSVersion')}\n角色:{powershell_json_output.get('Roles')}"
-                self.log_good(outputstr, "XXX")
+                self.log_good(
+                    f"名称:{powershell_json_output.get('Name')}\n域:{powershell_json_output.get('Domain')}\n林:{powershell_json_output.get('Forest')}\nIP地址:{powershell_json_output.get('IPAddress')}\nOS版本:{powershell_json_output.get('OSVersion')}\n角色:{powershell_json_output.get('Roles')}",
+                    f"Name:{powershell_json_output.get('Name')}\nDomain:{powershell_json_output.get('Domain')}\nLin:{powershell_json_output.get('Forest')}\nIP address:{powershell_json_output.get('IPAddress')}\nOS version: {powershell_json_output.get('OSVersion')}\nRole: {powershell_json_output.get('Roles')}")
             else:
-                self.log_error("脚本无有效输出", "XXX")
-                self.log_error(data, "XXX")
-
+                self.log_error("脚本无有效输出", "Script has no valid output")
+                self.log_error(data, data)
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

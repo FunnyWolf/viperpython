@@ -46,14 +46,13 @@ class PostModule(PostMSFPowershellFunctionModule):
                         if one is None or len(one) == 0:
                             continue
                         else:
-                            ouputstr = f"主机名: {one}"
-                        self.log_good(ouputstr, "XXX")
+                            self.log_good(f"主机名: {one}", f"Hostname: {one}")
                 except Exception as E:
                     pass
             else:
-                self.log_error("脚本无有效输出", "XXX")
-                self.log_error(powershell_json_output, "XXX")
+                self.log_error("脚本无有效输出", "Script has no valid output")
+                self.log_error(powershell_json_output, powershell_json_output)
 
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)

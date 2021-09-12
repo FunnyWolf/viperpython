@@ -37,6 +37,7 @@ class PostModule(PostPythonModule):
         valname = "PortNumber"
         result = session.registry_getvalinfo(key, valname)
         if result.get("status"):
-            self.log_good(f"RDP端口号注册表信息: {result.get('data')}", "XXX")
+            self.log_good(f"RDP端口号注册表信息: {result.get('data')}",
+                          f"RDP port number registry information: {result.get('data')}")
         else:
-            self.log_error(result.get("message"), "XXX")
+            self.log_error(result.get("message"), result.get("message"))

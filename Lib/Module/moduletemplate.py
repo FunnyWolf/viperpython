@@ -386,7 +386,7 @@ class _CommonModule(object):
 
             handler_config["HandlerName"] = f"{self.NAME_EN} IP: {self.host_ipaddress}"
             Handler.create_virtual_handler(handler_config)
-            self.log_good("监听配置已缓存", "XXX")
+            self.log_info("监听配置已缓存", "Hander configuration is cached")
             return True
         else:
             return False
@@ -741,7 +741,7 @@ class PostPythonModule(_PostCommonModule):
 
     def run(self):
         """任务执行时框架会自动调用的函数,子类需要重新实现"""
-        self.log_error("模块中未实现run函数", "XXX")
+        self.log_error("模块中未实现run函数", "The run function is not implemented in the module")
 
     def _thread_run(self):
         t1 = ThreadWithExc(target=self.run)
@@ -819,14 +819,16 @@ class PostMSFCSharpModule(_PostMSFModuleCommon):
 
     def get_console_output(self, status, message, data):
         if status is not True:
-            self.log_error(f"模块执行失败,失败原因:{message}", "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
             return None
         else:
             assembly_out = base64.b64decode(data).decode('utf-8', errors="ignore")
             if assembly_out is None or len(assembly_out) == 0:
-                self.log_warning("exe文件未输出信息", "XXX")
+                self.log_warning("exe文件未输出信息", "exe file does not output information")
                 if self.param("ARGUMENTS") is None or len(self.param("ARGUMENTS")) == 0:
-                    self.log_warning("如果exe程序接受参数输入，请尝试输入参数", "XXX")
+                    self.log_warning("如果exe程序接受参数输入，请尝试输入参数",
+                                     "If the exe program accepts parameter input, please try to enter the parameter")
                 return assembly_out
             else:
                 return assembly_out.replace("\nExecuteSharp end", "")

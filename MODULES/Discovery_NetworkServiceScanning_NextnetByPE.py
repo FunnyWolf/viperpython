@@ -69,16 +69,17 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
             return
-        self.log_good("模块运行完成:", "XXX")
+        self.log_info("模块执行完成", "Module operation completed")
         for oneline in data.split("\n"):
             try:
                 one_result = json.loads(oneline)
                 ipaddress = one_result.get('host')
-                tmpstr = f"IP: {ipaddress}  Host:{one_result.get('name')}  Info:{one_result.get('info')}  Nets:{one_result.get('nets')}"
-                self.log_good(tmpstr, "XXX")
+                self.log_good(
+                    f"IP: {ipaddress}  Host:{one_result.get('name')}  Info:{one_result.get('info')}  Nets:{one_result.get('nets')}",
+                    f"IP: {ipaddress}  Host:{one_result.get('name')}  Info:{one_result.get('info')}  Nets:{one_result.get('nets')}")
 
                 self.add_host(ipaddress,
                               source=self.host_ipaddress,
@@ -97,5 +98,5 @@ class PostModule(PostMSFRawModule):
             except Exception as E:
                 pass
         self.log_raw("\n\n")
-        self.log_good("原始输出:", "XXX")
+        self.log_good("原始输出:", "Raw output:")
         self.log_raw(data)

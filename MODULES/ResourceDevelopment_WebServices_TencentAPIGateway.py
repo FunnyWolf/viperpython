@@ -55,7 +55,8 @@ class PostModule(PostPythonModule):
     def run(self):
         handler_config = self.get_handler_config()
         backendserver = f"https://{handler_config.get('LHOST')}:{handler_config.get('LPORT')}"
-        self.log_good(f"API网关中填写的后端地址: {backendserver}", "XXX")
+        self.log_good(f"API网关中填写的后端地址: {backendserver}",
+                      f"The backend address filled in the API gateway: {backendserver}")
         apiserver = self.param("apiserver")
         apiserver = apiserver.replace(":80", "")
         apiserver = apiserver.replace(":443", "")
@@ -72,4 +73,5 @@ class PostModule(PostPythonModule):
         handler_config["LPORT"] = 443
         handler_config["VIRTUALHANDLER"] = True  # 添加虚拟监听
         _, handler_config = self.create_handler(handler_config)
-        self.log_good(f"虚拟监听ID: {-handler_config.get('data').get('ID')}", "XXX")
+        self.log_good(f"虚拟监听ID: {-handler_config.get('data').get('ID')}",
+                      f"Virtual Handler ID: {-handler_config.get('data').get('ID')}")

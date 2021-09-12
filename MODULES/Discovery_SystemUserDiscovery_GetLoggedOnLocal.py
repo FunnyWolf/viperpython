@@ -59,18 +59,20 @@ class PostModule(PostMSFPowershellFunctionModule):
                 if isinstance(powershell_json_output, list):
                     try:
                         for one in powershell_json_output:
-                            ouputstr = f"登录主机: {one.get('ComputerName')} 域:{one.get('UserDomain')} 登录用户:{one.get('UserName')} 用户SID:{one.get('UserSID')[0:11]}"
-                            self.log_good(ouputstr, "XXX")
+                            self.log_good(
+                                f"登录主机: {one.get('ComputerName')} 域:{one.get('UserDomain')} 登录用户:{one.get('UserName')} 用户SID:{one.get('UserSID')[0:11]}",
+                                f"Login host: {one.get('ComputerName')} Domain: {one.get('UserDomain')} Login user: {one.get('UserName')} User SID: {one.get('UserSID ')[0:11]}")
                     except Exception as E:
                         pass
                 elif isinstance(powershell_json_output, dict):
-                    ouputstr = f"登录主机: {powershell_json_output.get('ComputerName')} 域:{powershell_json_output.get('UserDomain')} 登录用户:{powershell_json_output.get('UserName')} 用户SID:{powershell_json_output.get('UserSID')[0:11]}"
-                    self.log_good(ouputstr, "XXX")
+                    self.log_good(
+                        f"登录主机: {powershell_json_output.get('ComputerName')} 域:{powershell_json_output.get('UserDomain')} 登录用户:{powershell_json_output.get('UserName')} 用户SID:{powershell_json_output.get('UserSID')[0:11]}",
+                        f"Login host: {powershell_json_output.get('ComputerName')} Domain: {powershell_json_output.get('UserDomain')} Login user: {powershell_json_output.get('UserName')} User SID: {powershell_json_output.get('UserSID ')[0:11]}")
                 else:
-                    self.log_error("脚本无有效输出", "XXX")
-                    self.log_error(powershell_json_output, "XXX")
+                    self.log_error("脚本无有效输出", "Script has no valid output")
+                    self.log_error(powershell_json_output, powershell_json_output)
             else:
-                self.log_error("脚本无有效输出", "XXX")
+                self.log_error("脚本无有效输出", "Script has no valid output")
         else:
-            self.log_error("模块执行失败", "XXX")
-            self.log_error(message, "XXX")
+            self.log_error("模块执行失败", "Module execution failed")
+            self.log_error(message, message)
