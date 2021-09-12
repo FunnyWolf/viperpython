@@ -68,8 +68,8 @@ class PostModule(BotMSFModule):
         # """[-] Exploit aborted due to failure: unreachable: Disconnected during negotiation
         # """
         if "[*] Command Stager progress - 100.00% done" in module_output:
-            self.log_good("模块执行成功")
+            self.log_good("模块执行成功", "XXX")
             return True  # 存储callback中的输出,结果显示在主界面模块输出中
         else:
-            self.log_error("模块执行失败")
+            self.log_error("模块执行失败", "XXX")
             return False  # 不存储callback中的输出,以免主界面出现大量无意义的结果

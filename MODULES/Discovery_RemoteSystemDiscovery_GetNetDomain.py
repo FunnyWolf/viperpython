@@ -41,31 +41,21 @@ class PostModule(PostMSFPowershellFunctionModule):
             if isinstance(powershell_json_output, list) and len(powershell_json_output) > 0:
                 try:
                     for one in powershell_json_output:
-                        outputstr = "域名: {}\n域控: {}\n域林: {}\nRidOwner: {}".format(
-                            one.get('Name'),
-                            one.get('DomainControllers'),
-                            one.get('Forest'),
-                            one.get('RidRoleOwner'),
-                        )
-                        self.log_good(outputstr)
+                        outputstr = f"域名: {one.get('Name')}\n域控: {one.get('DomainControllers')}\n域林: {one.get('Forest')}\nRidOwner: {one.get('RidRoleOwner')}"
+                        self.log_good(outputstr, "XXX")
                 except Exception as E:
                     pass
             elif isinstance(powershell_json_output, dict):
-                outputstr = "域名: {}\n域控: {}\n域林: {}\nRidOwner: {}".format(
-                    powershell_json_output.get('Name'),
-                    powershell_json_output.get('DomainControllers'),
-                    powershell_json_output.get('Forest'),
-                    powershell_json_output.get('RidRoleOwner'),
-                )
-                self.log_good(outputstr)
+                outputstr = f"域名: {powershell_json_output.get('Name')}\n域控: {powershell_json_output.get('DomainControllers')}\n域林: {powershell_json_output.get('Forest')}\nRidOwner: {powershell_json_output.get('RidRoleOwner')}"
+                self.log_good(outputstr, "XXX")
             else:
-                self.log_error("脚本无有效输出")
-                self.log_error(powershell_json_output)
+                self.log_error("脚本无有效输出", "XXX")
+                self.log_error(powershell_json_output, "XXX")
 
 
 
 
 
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

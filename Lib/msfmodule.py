@@ -96,13 +96,12 @@ class MSFModule(object):
         # {'job_id': 3, 'uuid': 'dbcb2530-95b1-0137-5100-000c2966078a', 'module': b'\x80\ub.'}
 
         if result.get("job_id") is None:
-            logger.warning("模块实例:{} uuid: {} 创建后台任务失败".format(msf_module.NAME_ZH, result.get("uuid")))
+            logger.warning(f"模块实例:{msf_module.NAME_ZH} uuid: {result.get('uuid')} 创建后台任务失败")
             Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败",
                                 f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task")
             return False
         else:
-            logger.warning(
-                "模块实例放入列表:{} job_id: {} uuid: {}".format(msf_module.NAME_ZH, result.get("job_id"), result.get("uuid")))
+            logger.warning(f"模块实例放入列表:{msf_module.NAME_ZH} job_id: {result.get('job_id')} uuid: {result.get('uuid')}")
 
             # 放入请求队列
             msf_module._module_uuid = result.get("uuid")
@@ -151,7 +150,7 @@ class MSFModule(object):
 
         module_intent = req.get('module')
         if module_intent is None:
-            logger.error("获取模块失败,body: {}".format(msf_module_return_dict))
+            logger.error(f"获取模块失败,body: {msf_module_return_dict}")
             return False
 
         # 调用回调函数

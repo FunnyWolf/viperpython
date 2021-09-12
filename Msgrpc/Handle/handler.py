@@ -80,14 +80,14 @@ class Handler(object):
                     pass
 
             else:
-                lhost_str = "LHOST:{} | ".format(handler.get('LHOST'))
+                lhost_str = f"LHOST:{handler.get('LHOST')} | "
             if handler.get('RHOST') is None:
                 try:
                     handler.pop('RHOST')
                 except Exception as _:
                     pass
             else:
-                rhost_srt = "RHOST:{} | ".format(handler.get('RHOST'))
+                rhost_srt = f"RHOST:{handler.get('RHOST')} | "
 
             # 虚拟监听与真实监听标签
             if handler.get("ID") < 0:
@@ -224,11 +224,8 @@ class Handler(object):
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
                     opts['ID'] = int(result.get('job_id'))
-                    Notice.send_success("新建监听成功:{} {} JobID:{}".format(opts.get('PAYLOAD'), opts.get('LPORT'),
-                                                                       result.get('job_id')),
-                                        "Create handler success:{} {} JobID:{}".format(opts.get('PAYLOAD'),
-                                                                                       opts.get('LPORT'),
-                                                                                       result.get('job_id')))
+                    Notice.send_success(f"新建监听成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}"
+                                        f"Create handler success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
                     context = data_return(201, opts, Handler_MSG_ZH.get(201), Handler_MSG_EN.get(201))
                 else:
                     context = data_return(301, opts, Handler_MSG_ZH.get(301), Handler_MSG_EN.get(301))

@@ -117,7 +117,7 @@ class PostModuleConfig(object):
                     "MODULETYPE": module_intent.MODULETYPE,
 
                     "OPTIONS": module_intent.OPTIONS,
-                    "loadpath": 'MODULES.{}'.format(modulename),
+                    "loadpath": f'MODULES.{modulename}',
 
                     # post类配置
                     "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
@@ -134,7 +134,7 @@ class PostModuleConfig(object):
             except Exception as E:
                 logger.error(E)
                 continue
-        logger.warning("内置模块加载完成,加载{}个模块".format(viper_module_count))
+        logger.warning(f"内置模块加载完成,加载{viper_module_count}个模块")
         Notice.send_success(f"内置模块加载完成,加载{viper_module_count}个模块",
                             f"The built-in modules is loaded, {viper_module_count} modules has loaded")
         # 自定义模块
@@ -145,7 +145,7 @@ class PostModuleConfig(object):
             if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
                 continue
             try:
-                class_intent = importlib.import_module('Docker.module.{}'.format(modulename))
+                class_intent = importlib.import_module(f'Docker.module.{modulename}')
                 importlib.reload(class_intent)
                 module_intent = class_intent.PostModule
             except Exception as E:
@@ -184,7 +184,7 @@ class PostModuleConfig(object):
                     "MODULETYPE": module_intent.MODULETYPE,
 
                     "OPTIONS": module_intent.OPTIONS,
-                    "loadpath": 'Docker.module.{}'.format(modulename),
+                    "loadpath": f'Docker.module.{modulename}',
 
                     # post类配置
                     "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
@@ -201,7 +201,7 @@ class PostModuleConfig(object):
             except Exception as E:
                 logger.error(E)
                 continue
-        logger.warning("自定义模块加载完成,加载{}个模块".format(diy_module_count))
+        logger.warning(f"自定义模块加载完成,加载{diy_module_count}个模块")
         Notice.send_success(f"自定义模块加载完成,加载{diy_module_count}个模块",
                             f"The customize modules is loaded, {diy_module_count} modules has loaded")
 
@@ -233,14 +233,8 @@ class PostModuleConfig(object):
                         type_list = option.get('extra_data').get('password_type')
                         for credential in credentials:
                             if credential.get('password_type') in type_list:
-                                tag_zh = "用户: {}  密码: {}  标签: {}".format(credential.get('username'),
-                                                                         credential.get('password'),
-                                                                         credential.get('tag'),
-                                                                         )
-                                tag_en = "User: {}  Password: {}  Tag: {}".format(credential.get('username'),
-                                                                                  credential.get('password'),
-                                                                                  credential.get('tag'),
-                                                                                  )
+                                tag_zh = f"用户: {credential.get('username')}  密码: {credential.get('password')}  标签: {credential.get('tag')}"
+                                tag_en = f"User: {credential.get('username')}  Password: {credential.get('password')}  Tag: {credential.get('tag')}"
                                 import json
                                 value = json.dumps(credential)
                                 tmp_enum_list.append({'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value})
@@ -275,8 +269,8 @@ class PostModuleConfig(object):
                     else:
                         show = True
                     if show:
-                        tag_zh = "文件: {}\t\t大小: {}\t\t修改时间: {}".format(name, size, style_time)
-                        tag_en = "File: {}\t\tSize: {}\t\tMTime: {}".format(name, size, style_time)
+                        tag_zh = f"文件: {name}\t\t大小: {size}\t\t修改时间: {style_time}"
+                        tag_en = f"File: {name}\t\tSize: {size}\t\tMTime: {style_time}"
                         value = json.dumps(file)
                         tmp_enum_list.append({'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value})
                 option['enum_list'] = tmp_enum_list

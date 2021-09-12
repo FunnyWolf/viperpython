@@ -124,7 +124,7 @@ def writeCert(cert, exe, output):
 
     shutil.copy2(exe, output)
 
-    print("Output file: {0}".format(output))
+    print(f"Output file: {output}")
 
     with open(exe, 'rb') as g:
         with open(output, 'wb') as f:
@@ -144,7 +144,7 @@ def outputCert(exe, output):
     if not output:
         output = str(exe) + "_sig"
 
-    print("Output file: {0}".format(output))
+    print(f"Output file: {output}")
 
     open(output, 'wb').write(cert)
 
@@ -174,7 +174,7 @@ def truncate(exe, output):
     if not output:
         output = str(exe) + "_nosig"
 
-    print("Output file: {0}".format(output))
+    print(f"Output file: {output}")
 
     shutil.copy2(exe, output)
 
@@ -198,7 +198,7 @@ def signfile(exe, sigfile, output):
 
     shutil.copy2(exe, output)
 
-    print("Output file: {0}".format(output))
+    print(f"Output file: {output}")
 
     with open(exe, 'rb') as g:
         with open(output, 'wb') as f:

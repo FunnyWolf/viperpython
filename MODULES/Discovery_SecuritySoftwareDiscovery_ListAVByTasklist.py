@@ -52,7 +52,7 @@ class PostModule(PostPythonModule):
                 if f"{onetask}.exe".lower() == avtask.lower():
                     findav = True
                     avname = avList.get(avtask)
-                    self.log_warning(f"发现杀毒软件: {avtask} => {avname}")
+                    self.log_warning(f"发现杀毒软件: {avtask} => {avname}", "XXX")
         if not findav:
-            self.log_info("未发现杀毒软件.")
-        self.log_info("模块运行完成.")
+            self.log_info("未发现杀毒软件.", "XXX")
+        self.log_info("模块运行完成.", "XXX")

@@ -41,33 +41,17 @@ class PostModule(PostMSFPowershellFunctionModule):
             if isinstance(powershell_json_output, list):
                 try:
                     for one in powershell_json_output:
-                        outputstr = "名称:{}\n域:{}\n林:{}\nIP地址:{}\nOS版本:{}\n角色:{}".format(
-                            one.get('Name'),
-                            one.get('Domain'),
-                            one.get('Forest'),
-                            one.get('IPAddress'),
-                            one.get('OSVersion'),
-                            one.get('Roles'),
-
-                        )
-                        self.log_good(outputstr)
+                        outputstr = f"名称:{one.get('Name')}\n域:{one.get('Domain')}\n林:{one.get('Forest')}\nIP地址:{one.get('IPAddress')}\nOS版本:{one.get('OSVersion')}\n角色:{one.get('Roles')}"
+                        self.log_good(outputstr, "XXX")
                 except Exception as E:
                     pass
             elif isinstance(powershell_json_output, dict):
-                outputstr = "名称:{}\n域:{}\n林:{}\nIP地址:{}\nOS版本:{}\n角色:{}".format(
-                    powershell_json_output.get('Name'),
-                    powershell_json_output.get('Domain'),
-                    powershell_json_output.get('Forest'),
-                    powershell_json_output.get('IPAddress'),
-                    powershell_json_output.get('OSVersion'),
-                    powershell_json_output.get('Roles'),
-
-                )
-                self.log_good(outputstr)
+                outputstr = f"名称:{powershell_json_output.get('Name')}\n域:{powershell_json_output.get('Domain')}\n林:{powershell_json_output.get('Forest')}\nIP地址:{powershell_json_output.get('IPAddress')}\nOS版本:{powershell_json_output.get('OSVersion')}\n角色:{powershell_json_output.get('Roles')}"
+                self.log_good(outputstr, "XXX")
             else:
-                self.log_error("脚本无有效输出")
-                self.log_error(data)
+                self.log_error("脚本无有效输出", "XXX")
+                self.log_error(data, "XXX")
 
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

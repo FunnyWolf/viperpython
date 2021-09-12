@@ -43,41 +43,22 @@ class PostModule(PostMSFPowershellFunctionModule):
                 if isinstance(powershell_json_output, list):
                     try:
                         for one in powershell_json_output:
-                            outputstr = "用户:{} 显示名称:{} 域内标识:{} 账户控制:{}\n" \
-                                        "最后登录时间:{} 账户更改时间:{} 最后设置密码时间:{} 账户创建时间:{}".format(
-                                one.get('name'),
-                                one.get('displayname'),
-                                one.get('userprincipalname'),
-                                one.get('useraccountcontrol'),
-                                one.get('lastlogon'),
-                                one.get('whenchanged'),
-                                one.get('pwdlastset'),
-                                one.get('whencreated'),
-
-                            )
-                            self.log_good(outputstr)
+                            outputstr = f"用户:{one.get('name')} 显示名称:{one.get('displayname')} 域内标识:{one.get('userprincipalname')} 账户控制:{one.get('useraccountcontrol')}\n" \
+                                        f"最后登录时间:{one.get('lastlogon')} 账户更改时间:{one.get('whenchanged')} 最后设置密码时间:{one.get('pwdlastset')} 账户创建时间:{one.get('whencreated')}"
+                            self.log_good(outputstr, "XXX")
                     except Exception as E:
                         pass
                 elif isinstance(powershell_json_output, dict):
                     one = powershell_json_output
-                    outputstr = "用户:{} 显示名称:{} 域内标识:{} 账户控制:{}\n" \
-                                "最后登录时间:{} 账户更改时间:{} 最后设置密码时间:{} 账户创建时间:{}".format(
-                        one.get('name'),
-                        one.get('displayname'),
-                        one.get('userprincipalname'),
-                        one.get('useraccountcontrol'),
-                        one.get('lastlogon'),
-                        one.get('whenchanged'),
-                        one.get('pwdlastset'),
-                        one.get('whencreated'),
-                    )
-                    self.log_good(outputstr)
+                    outputstr = f"用户:{one.get('name')} 显示名称:{one.get('displayname')} 域内标识:{one.get('userprincipalname')} 账户控制:{one.get('useraccountcontrol')}\n" \
+                                f"最后登录时间:{one.get('lastlogon')} 账户更改时间:{one.get('whenchanged')} 最后设置密码时间:{one.get('pwdlastset')} 账户创建时间:{one.get('whencreated')}"
+                    self.log_good(outputstr, "XXX")
                 else:
-                    self.log_error("脚本无有效输出")
-                    self.log_error(powershell_json_output)
+                    self.log_error("脚本无有效输出", "XXX")
+                    self.log_error(powershell_json_output, "XXX")
 
             else:
-                self.log_error("脚本无有效输出")
+                self.log_error("脚本无有效输出", "XXX")
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

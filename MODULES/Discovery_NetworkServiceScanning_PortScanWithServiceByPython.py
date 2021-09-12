@@ -83,7 +83,7 @@ class PostModule(PostMSFPythonWithParamsModule):
 
         # 检查port_list
         try:
-            list_str = "[{}]".format(port_list)
+            list_str = f"[{port_list}]"
             port_list_net = json.loads(list_str)
             if len(port_list_net) > 100:
                 return False, "扫描端口数量过大(超过100),请缩小范围", "The number of scanning ports is too large (more than 100)"
@@ -137,16 +137,16 @@ class PostModule(PostMSFPythonWithParamsModule):
                 result = base64.b64decode(bytes(data, encoding="utf8")).decode('ascii')
                 portservice_list = json.loads(result)
             except Exception as E:
-                self.log_error("脚本输出解析失败")
-                self.log_error(E)
-                self.log_error(data)
+                self.log_error("脚本输出解析失败", "XXX")
+                self.log_error(E, "XXX")
+                self.log_error(data, "XXX")
                 return
 
             if len(portservice_list) == 0:
-                self.log_info("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试")
-                self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描")
+                self.log_info("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试", "XXX")
+                self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描", "XXX")
                 return
-            self.log_info("扫描结果")
+            self.log_info("扫描结果", "XXX")
             for portservice in portservice_list:
                 # 输出部分
 
@@ -161,10 +161,8 @@ class PostModule(PostMSFPythonWithParamsModule):
                 if tmpBanner is None:
                     tmpBanner = {}
 
-                tmpstr = "IP地址: {} 端口: {} 协议:{} 服务:{}".format(portservice.get('host'), portservice.get('port'),
-                                                              portservice.get('proto'),
-                                                              tmpService)
-                self.log_good(tmpstr)
+                tmpstr = f"IP地址: {portservice.get('host')} 端口: {portservice.get('port')} 协议:{portservice.get('proto')} 服务:{tmpService}"
+                self.log_good(tmpstr, "XXX")
                 # 存储部分
                 ipaddress = portservice.get('host')
                 result = self.add_host(ipaddress,
@@ -175,5 +173,5 @@ class PostModule(PostMSFPythonWithParamsModule):
                                      port=portservice.get('port'),
                                      banner=tmpBanner, service=tmpService)
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

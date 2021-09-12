@@ -45,8 +45,7 @@ class PostModule(PostMSFPowershellFunctionModule):
         computerName = self.param('ComputerName')
         if self.param('ComputerName') is not None:
             if session.is_in_domain:
-                execute_string = "Get-WMIRegLastLoggedOn -ComputerName {} | ConvertTo-JSON -maxDepth 1".format(
-                    computerName)
+                execute_string = f"Get-WMIRegLastLoggedOn -ComputerName {computerName} | ConvertTo-JSON -maxDepth 1"
             else:
                 return False, "当填写'主机名'时Session必须在域中", "Get the session must be in the domain when filling in the'Computer Name'"
 
@@ -59,11 +58,10 @@ class PostModule(PostMSFPowershellFunctionModule):
         if status:
             powershell_json_output = self.deal_powershell_json_result(data)
             if powershell_json_output is not None:
-                ouputstr = "登录主机: {} 登录用户:{}".format(powershell_json_output.get('ComputerName'),
-                                                     powershell_json_output.get('LastLoggedOn'))
-                self.log_good(ouputstr)
+                ouputstr = f"登录主机: {powershell_json_output.get('ComputerName')} 登录用户:{powershell_json_output.get('LastLoggedOn')}"
+                self.log_good(ouputstr, "XXX")
             else:
-                self.log_error("脚本无有效输出")
+                self.log_error("脚本无有效输出", "XXX")
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

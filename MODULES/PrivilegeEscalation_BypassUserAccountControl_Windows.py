@@ -204,16 +204,16 @@ class PostModule(PostPythonModule):
             self.opts['target'] = 0
 
         if self.param('module_select') == "check":  # 只检测,不执行
-            self.log_good("存在 {} 个符合要求的模块".format(len(self.module_path_list)))
+            self.log_good(f"存在 {len(self.module_path_list)} 个符合要求的模块", "XXX")
             for one in self.module_path_list:
-                self.log_good("{}".format(one.get('mname')))
+                self.log_good(f"{one.get('mname')}", "XXX")
         else:
-            self.log_good("存在 {} 个符合要求的模块,准备执行".format(len(self.module_path_list)))
+            self.log_good(f"存在 {len(self.module_path_list)} 个符合要求的模块,准备执行", "XXX")
             # 运行模块
             for one in self.module_path_list:
-                self.log_info("正在执行 {}".format(one.get('mname')))
+                self.log_info(f"正在执行 {one.get('mname')}", "XXX")
                 MsfModule.run_with_output(module_type=one.get('type'), mname=one.get('mname'), opts=self.opts)
-                self.log_info("等待30秒")
+                self.log_info("等待30秒", "XXX")
                 time.sleep(30)
             # 调用父类函数存储结果(必须调用)
-            self.log_info("执行完成,请查看新生成Session的权限")
+            self.log_info("执行完成,请查看新生成Session的权限", "XXX")

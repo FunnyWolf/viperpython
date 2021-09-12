@@ -105,6 +105,6 @@ class PostModule(PostMSFCSharpModule):
 
     def callback(self, status, message, data):
         assembly_out = self.get_console_output(status, message, data)
-        self.log_info("结果输出:")
+        self.log_info("结果输出:", "XXX")
         self.log_raw(assembly_out)
-        self.log_info("请等待10s-20s,观察是否有新Session上线")
+        self.log_info("请等待10s-20s,观察是否有新Session上线", "XXX")

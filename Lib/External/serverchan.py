@@ -26,7 +26,7 @@ class ServerChan(object):
         if r.status_code == 200:
             content = json.loads(r.content.decode('utf-8', 'ignore'))
             if content.get('data').get('error') != "SUCCESS":
-                logger.warning("ServerChan 消息发送失败,错误码:{} 错误消息:{}".format(content.get('code'), content.get('message')))
+                logger.warning(f"ServerChan 消息发送失败,错误码:{content.get('code')} 错误消息:{content.get('message')}")
                 Notice.send_warning(
                     f"ServerChan消息发送失败,错误码:{content.get('code')} 错误消息:{content.get('message')}",
                     f"ServerChan message failed to send, error code:{content.get('code')} error msg:{content.get('message')}")
@@ -35,5 +35,5 @@ class ServerChan(object):
                 return True
 
         else:
-            logger.warning("ServerChan 消息发送失败,HTTP状态码:{} 结果:{}".format(r.status_code, r.content))
+            logger.warning(f"ServerChan 消息发送失败,HTTP状态码:{r.status_code} 结果:{r.content}")
             return False

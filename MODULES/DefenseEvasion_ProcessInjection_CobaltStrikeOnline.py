@@ -71,7 +71,7 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败,失败原因:{}".format(message))
+            self.log_error(f"模块执行失败,失败原因:{message}", "XXX")
         else:
-            self.log_good("模块执行成功,请在CobaltStrike中查看beacon是否生成")
-            self.log_good(f"进程PID: {data.get('pid')}")
+            self.log_good("模块执行成功,请在CobaltStrike中查看beacon是否生成", "XXX")
+            self.log_good(f"进程PID: {data.get('pid')}", "XXX")

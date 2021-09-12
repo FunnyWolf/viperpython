@@ -95,7 +95,7 @@ class Console(object):
         if result is None:
             return False, {}
         elif result.get("result") == "failure":
-            logger.warning("Cid: {}错误".format(cid))
+            logger.warning(f"Cid: {cid}错误")
             return False, {}
         else:
             return True, result
@@ -108,7 +108,7 @@ class Console(object):
         params = [cid, line]
         result = RpcClient.call(Method.ConsoleTabs, params, timeout=RPC_FRAMEWORK_API_REQ)
         if result is None or result.get("result") == "failure":
-            logger.warning("Cid: {}错误".format(cid))
+            logger.warning(f"Cid: {cid}错误")
             return False, {}
         else:
             return True, result
@@ -123,7 +123,7 @@ class Console(object):
         if result is None:
             return False, {}
         elif result.get("result") == "failure":
-            logger.warning("Cid: {}错误".format(cid))
+            logger.warning(f"Cid: {cid}错误")
             return False, {}
         else:
             return True, result
@@ -138,7 +138,7 @@ class Console(object):
         if result is None:
             return False, {}
         elif result.get("result") == "failure":
-            logger.warning("Cid: {}错误".format(cid))
+            logger.warning(f"Cid: {cid}错误")
             return False, {}
         else:
             return True, result

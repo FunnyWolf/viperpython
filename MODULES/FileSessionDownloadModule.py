@@ -56,7 +56,7 @@ class PostModule(PostMSFRawModule):
 
         tmppath = tmppath.replace('//', '/')
         if tmppath == '' or tmppath is None:
-            self.log_warning('输入错误字符')
+            self.log_warning('输入错误字符', "XXX")
             tmppath = '/'
         return tmppath
 
@@ -70,7 +70,7 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)
         if status:
-            self.log_good(f"{self.param('SESSION_FILE')} 下载完成.")
+            self.log_good(f"{self.param('SESSION_FILE')} 下载完成.", "XXX")
         else:
-            self.log_error('下载失败')
-            self.log_error(message)
+            self.log_error('下载失败', "XXX")
+            self.log_error(message, "XXX")

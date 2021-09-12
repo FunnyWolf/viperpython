@@ -79,7 +79,7 @@ class Credential(object):
         if tag is None:
             tag = {}
         if isinstance(tag, dict) is not True:
-            logger.warning('数据类型检查错误,数据 {}'.format(tag))
+            logger.warning(f'数据类型检查错误,数据 {tag}')
             tag = {}
         if password == '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
@@ -105,10 +105,10 @@ class Credential(object):
         for credential in credential_list:
             if credential.get('password_type') == 'windows':
                 try:
-                    credential['tag_zh'] = "域: {}  密码类型: {}".format(credential.get('tag').get('domain'),
-                                                                    credential.get('tag').get('type'))
-                    credential['tag_en'] = "Domain: {}  Type: {}".format(credential.get('tag').get('domain'),
-                                                                         credential.get('tag').get('type'))
+                    credential[
+                        'tag_zh'] = f"域: {credential.get('tag').get('domain')}  密码类型: {credential.get('tag').get('type')}"
+                    credential[
+                        'tag_en'] = f"Domain: {credential.get('tag').get('domain')}  Type: {credential.get('tag').get('type')}"
                 except Exception as E:
                     logger.warning(E)
                     credential['tag_zh'] = "解析失败"
@@ -117,10 +117,8 @@ class Credential(object):
                 credential['tag_zh'] = "用户手工输入"
                 credential['tag_en'] = "用户手工输入"
             elif credential.get('password_type') == 'browsers':
-                # credential['tag'] = "网址: {} 浏览器: {}".format(credential.get('tag').get('url'),
-                #                                             credential.get('tag').get('browser'))
-                credential['tag_zh'] = "网址: {}".format(credential.get('tag_zh').get('url'))
-                credential['tag_en'] = "URL: {}".format(credential.get('tag_zh').get('url'))
+                credential['tag_zh'] = f"网址: {credential.get('tag_zh').get('url')}"
+                credential['tag_en'] = f"URL: {credential.get('tag_zh').get('url')}"
             else:
                 credential['tag_zh'] = str(credential.get('tag'))
                 credential['tag_en'] = str(credential.get('tag'))

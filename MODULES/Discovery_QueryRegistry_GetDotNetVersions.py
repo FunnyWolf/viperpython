@@ -36,12 +36,12 @@ class PostModule(PostPythonModule):
         key = "HKEY_LOCAL_MACHINE\\\\Software\\\\Microsoft\\\\NET Framework Setup\\\\NDP"
         result = session.registry_enumkeys(key)
         if result.get("status"):
-            self.log_good("已安装.Net framework版本:")
+            self.log_good("已安装.Net framework版本:", "XXX")
             version_list = result.get("data")
             for one in version_list:
                 if one.startswith('v'):
-                    self.log_good(f'{one}')
+                    self.log_good(f'{one}', "XXX")
 
 
         else:
-            self.log_error(result.get("message"))
+            self.log_error(result.get("message"), "XXX")

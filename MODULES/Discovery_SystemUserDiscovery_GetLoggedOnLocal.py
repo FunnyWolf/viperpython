@@ -45,7 +45,7 @@ class PostModule(PostMSFPowershellFunctionModule):
 
         computerName = self.param('ComputerName')
         if session.is_in_domain:
-            execute_string = "Get-LoggedOnLocal -ComputerName {} | ConvertTo-JSON -maxDepth 2".format(computerName)
+            execute_string = f"Get-LoggedOnLocal -ComputerName {computerName} | ConvertTo-JSON -maxDepth 2"
         else:
             return False, "此模块只支持Windows的Meterpreter,且session所属用户必须在域中", "This module only supports Meterpreter of Windows, and the user of the session must be in the domain"
         self.set_execute_string(execute_string)
@@ -59,28 +59,18 @@ class PostModule(PostMSFPowershellFunctionModule):
                 if isinstance(powershell_json_output, list):
                     try:
                         for one in powershell_json_output:
-                            ouputstr = "登录主机: {} 域:{} 登录用户:{} 用户SID:{}".format(
-                                one.get('ComputerName'),
-                                one.get('UserDomain'),
-                                one.get('UserName'),
-                                one.get('UserSID')[0:11],
-                            )
-                            self.log_good(ouputstr)
+                            ouputstr = f"登录主机: {one.get('ComputerName')} 域:{one.get('UserDomain')} 登录用户:{one.get('UserName')} 用户SID:{one.get('UserSID')[0:11]}"
+                            self.log_good(ouputstr, "XXX")
                     except Exception as E:
                         pass
                 elif isinstance(powershell_json_output, dict):
-                    ouputstr = "登录主机: {} 域:{} 登录用户:{} 用户SID:{}".format(
-                        powershell_json_output.get('ComputerName'),
-                        powershell_json_output.get('UserDomain'),
-                        powershell_json_output.get('UserName'),
-                        powershell_json_output.get('UserSID')[0:11],
-                    )
-                    self.log_good(ouputstr)
+                    ouputstr = f"登录主机: {powershell_json_output.get('ComputerName')} 域:{powershell_json_output.get('UserDomain')} 登录用户:{powershell_json_output.get('UserName')} 用户SID:{powershell_json_output.get('UserSID')[0:11]}"
+                    self.log_good(ouputstr, "XXX")
                 else:
-                    self.log_error("脚本无有效输出")
-                    self.log_error(powershell_json_output)
+                    self.log_error("脚本无有效输出", "XXX")
+                    self.log_error(powershell_json_output, "XXX")
             else:
-                self.log_error("脚本无有效输出")
+                self.log_error("脚本无有效输出", "XXX")
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

@@ -56,8 +56,8 @@ class FileSession(object):
                     if one.get('total_space') is not None and one.get('free_space') is not None:
                         use_space = one.get('total_space') - one.get('free_space')
                         one['format_size'] = FileSession.get_size_in_nice_string(use_space)
-                        one['format_mode'] = '{}|{}'.format(FileSession.get_size_in_nice_string(one.get('free_space')),
-                                                            FileSession.get_size_in_nice_string(one.get('total_space')))
+                        one[
+                            'format_mode'] = f"{FileSession.get_size_in_nice_string(one.get('free_space'))}|{FileSession.get_size_in_nice_string(one.get('total_space'))}"
                     else:
                         one['format_size'] = FileSession.get_size_in_nice_string(one.get('size'))
 
@@ -70,9 +70,9 @@ class FileSession(object):
                         one['absolute_path'] = os.path.join(path, one.get('name')).replace('\\\\', '/').replace('\\',
                                                                                                                 '/')
                     elif one.get('type') in ['fix', 'cdrom']:
-                        one['absolute_path'] = "{}".format(one.get('name'))
+                        one['absolute_path'] = f"{one.get('name')}"
                     else:
-                        one['absolute_path'] = "{}".format(path)
+                        one['absolute_path'] = path
 
                 context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
                 return context
@@ -108,9 +108,9 @@ class FileSession(object):
                         one['absolute_path'] = os.path.join(path, one.get('name')).replace('\\\\', '/').replace('\\',
                                                                                                                 '/')
                     elif one.get('type') in ['fix', 'cdrom']:
-                        one['absolute_path'] = "{}".format(one.get('name'))
+                        one['absolute_path'] = one.get('name')
                     else:
-                        one['absolute_path'] = "{}".format(path)
+                        one['absolute_path'] = path
                     if len(one.get('mode').split('/')) > 1:
                         one['format_mode'] = one.get('mode').split('/')[1]
                     else:

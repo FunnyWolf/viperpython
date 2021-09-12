@@ -44,7 +44,7 @@ class Domain(object):
         opts = {
             'SESSION': self._sessionid,
             'SCRIPT': 'PowerView_dev.ps1',
-            'EXECUTE_STRING': ' \'{}\' | Get-DomainGroupMember'.format(group),
+            'EXECUTE_STRING': f' \'{group}\' | Get-DomainGroupMember',
             'CHECK_FUNCTION': False,
         }
         result = MsfModule.run_with_output(module_type, mname, opts)

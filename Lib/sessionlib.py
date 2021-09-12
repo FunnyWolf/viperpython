@@ -111,7 +111,7 @@ class SessionLib(object):
                     Xcache.set_session_info(self.sessionid, json.dumps(result_dict))
             except Exception as E:
                 logger.warning(E)
-                logger.warning("更新Session信息失败,返回消息为{}".format(result))
+                logger.warning(f"更新Session信息失败,返回消息为{result}")
                 Notice.send_warning("更新Session信息失败,请稍后重试",
                                     "Failed to update Session information, please try again later")
 

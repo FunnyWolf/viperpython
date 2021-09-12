@@ -63,9 +63,9 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)
         if status:
-            self.log_good("模块执行成功")
-            self.log_good("EXE路径: {}\n用户下次登录时生效".format(data))
+            self.log_good("模块执行成功", "XXX")
+            self.log_good(f"EXE路径: {data}\n用户下次登录时生效", "XXX")
             self.cache_handler()
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

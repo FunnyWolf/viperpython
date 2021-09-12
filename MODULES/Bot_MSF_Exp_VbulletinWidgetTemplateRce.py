@@ -49,6 +49,6 @@ class PostModule(BotMSFModule):
     def callback(self, module_output):
         # 调用父类函数存储结果(必须调用)
         if "The target is vulnerable." in module_output:
-            self.log_good("检测完成,检测到网站存在CVE-2020-17496漏洞,执行payload")
+            self.log_good("检测完成,检测到网站存在CVE-2020-17496漏洞,执行payload", "XXX")
         else:
-            self.log_error("网站不存在漏洞")
+            self.log_error("网站不存在漏洞", "XXX")

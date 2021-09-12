@@ -61,11 +61,11 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")
             return
 
-        self.log_good("模块运行完成,压缩文件输出:")
+        self.log_good("模块运行完成,压缩文件输出:", "XXX")
         self.log_raw(data)
         if self.param("GETRESULT"):
-            self.log_good(f"压缩后文件存放在<文件管理>:{message}")
+            self.log_good(f"压缩后文件存放在<文件管理>:{message}", "XXX")

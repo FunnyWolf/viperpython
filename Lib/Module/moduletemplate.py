@@ -93,6 +93,7 @@ class _CommonModule(object):
         self.opts[key] = value  # msf模块参数
 
     # 模块参数相关函数
+    # 模块参数相关函数
 
     def param(self, name):
         """获取输入参数的接口"""
@@ -109,6 +110,7 @@ class _CommonModule(object):
         else:
             return self._custom_param.get(name)
 
+    # 文件操作相关函数
     # 文件操作相关函数
 
     def _get_option_fileinfo(self):
@@ -196,6 +198,7 @@ class _CommonModule(object):
         return True
 
     # 新增数据相关函数
+    # 新增数据相关函数
 
     def add_portservice(self, ipaddress, port, banner=None, service=""):
         """增加一个端口/服务信息"""
@@ -203,7 +206,7 @@ class _CommonModule(object):
             banner = {}
 
         if isinstance(banner, dict) is not True:
-            logger.warning('数据类型检查错误,数据 {}'.format(banner))
+            logger.warning(f'数据类型检查错误,数据 {banner}')
             banner = {}
         result = PortService.add_or_update(ipaddress=ipaddress, port=port, banner=banner, service=service)
         return result
@@ -213,7 +216,7 @@ class _CommonModule(object):
         if tag is None:
             tag = {}
         if isinstance(tag, dict) is not True:
-            logger.warning('数据类型检查错误,数据 {}'.format(tag))
+            logger.warning(f'数据类型检查错误,数据 {tag}')
             tag = {}
         if password == '' or password.find('n.a.(') > 0 or len(password) > 100:
             return False
@@ -227,7 +230,7 @@ class _CommonModule(object):
         if extra_data is None:
             extra_data = {}
         if isinstance(extra_data, dict) is not True:
-            logger.warning('数据类型检查错误,数据 {}'.format(extra_data))
+            logger.warning(f'数据类型检查错误,数据 {extra_data}')
             extra_data = {}
 
         result = Vulnerability.add_or_update(ipaddress, self.loadpath, extra_data, desc)
@@ -243,33 +246,38 @@ class _CommonModule(object):
         result = Host.create_host(ipaddress, source, linktype, data)
         return result
 
+    def get_credential_config(self):
+        """"""
+        credential_record = self.param(CREDENTIAL_OPTION.get('name'))
+        return credential_record
+
+    # 模块输出相关函数
     # 模块输出相关函数
 
-    def log_raw(self, result_line):
-        if result_line is None:
+    def log_raw(self, data):
+        if data is None:
             return
-        if not result_line.endswith('\n'):
-            result_line = f"{result_line}\n"
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_line)
-
-    def log_info(self, result_line):
-        result_format = f"[*] {result_line} \n"
+        result_format = {"type": "raw", "data_zh": data, "data_en": data}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
-    def log_good(self, result_line):
-        result_format = f"[+] {result_line} \n"
+    def log_info(self, data_zh, data_en=None):
+        result_format = {"type": "info", "data_zh": data_zh, "data_en": data_en}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
-    def log_warning(self, result_line):
-        result_format = f"[!] {result_line} \n"
+    def log_good(self, data_zh, data_en=None):
+        result_format = {"type": "good", "data_zh": data_zh, "data_en": data_en}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
-    def log_error(self, result_line):
-        result_format = f"[-] {result_line} \n"
+    def log_warning(self, data_zh, data_en=None):
+        result_format = {"type": "warning", "data_zh": data_zh, "data_en": data_en}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
-    def log_except(self, result_line):
-        result_format = f"[x] {result_line} \n"
+    def log_error(self, data_zh, data_en=None):
+        result_format = {"type": "error", "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+
+    def log_except(self, data_zh, data_en=None):
+        result_format = {"type": "except", "data_zh": data_zh, "data_en": data_en}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_store(self, result_format):
@@ -278,7 +286,7 @@ class _CommonModule(object):
         Xcache.set_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def _clean_log(self):
-        flag = Xcache.set_module_result(self.host_ipaddress, self.loadpath, "")
+        flag = Xcache.del_module_result_by_ipaddress_and_loadpath(self.host_ipaddress, self.loadpath)
         return flag
 
     def _store_result_in_history(self):
@@ -353,6 +361,8 @@ class _CommonModule(object):
         return flag
 
     # 监听相关函数
+    # 监听相关函数
+
     def set_payload_by_handler(self):
         """通过handler参数设置msf模块的payload"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
@@ -376,7 +386,7 @@ class _CommonModule(object):
 
             handler_config["HandlerName"] = f"{self.NAME_EN} IP: {self.host_ipaddress}"
             Handler.create_virtual_handler(handler_config)
-            self.log_good("监听配置已缓存")
+            self.log_good("监听配置已缓存", "XXX")
             return True
         else:
             return False
@@ -444,13 +454,9 @@ class _CommonModule(object):
         filepath = self.write_to_loot(filename, bytedata, msf=msf)
         return filepath
 
-    # 凭证相关接口
-    def get_credential_config(self):
-        """货物handler详细配置信息"""
-        credential_record = self.param(CREDENTIAL_OPTION.get('name'))
-        return credential_record
+    # 功能函数
+    # 功能函数
 
-    # 功能函数集
     @staticmethod
     def dqtoi(dq):
         """将字符串ip地址转换为int数字."""
@@ -706,9 +712,7 @@ class PostPythonModule(_PostCommonModule):
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)  # 父类无需参数
-
         # 设置模块参数
-
         self.exit_flag = False
 
     # shellcode及exe相关函数
@@ -737,7 +741,7 @@ class PostPythonModule(_PostCommonModule):
 
     def run(self):
         """任务执行时框架会自动调用的函数,子类需要重新实现"""
-        self.log_error("模块中未实现run函数")
+        self.log_error("模块中未实现run函数", "XXX")
 
     def _thread_run(self):
         t1 = ThreadWithExc(target=self.run)
@@ -815,14 +819,14 @@ class PostMSFCSharpModule(_PostMSFModuleCommon):
 
     def get_console_output(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败,失败原因:{}".format(message))
+            self.log_error(f"模块执行失败,失败原因:{message}", "XXX")
             return None
         else:
             assembly_out = base64.b64decode(data).decode('utf-8', errors="ignore")
             if assembly_out is None or len(assembly_out) == 0:
-                self.log_warning("exe文件未输出信息")
+                self.log_warning("exe文件未输出信息", "XXX")
                 if self.param("ARGUMENTS") is None or len(self.param("ARGUMENTS")) == 0:
-                    self.log_warning("如果exe程序接受参数输入，请尝试输入参数")
+                    self.log_warning("如果exe程序接受参数输入，请尝试输入参数", "XXX")
                 return assembly_out
             else:
                 return assembly_out.replace("\nExecuteSharp end", "")
@@ -923,7 +927,7 @@ class PostMSFPowershellFunctionModule(_PostMSFModuleCommon):
 
     def set_execute_string(self, execute_string):
         """API:设置执行的函数及参数"""
-        self.opts['EXECUTE_STRING'] = "{}".format(execute_string)
+        self.opts['EXECUTE_STRING'] = execute_string
 
 
 class PostMSFExecPEModule(_PostMSFModuleCommon):

@@ -81,8 +81,8 @@ class PostModule(PostMSFRawModule):
     def callback(self, status, message, data):
         # 调用父类函数存储结果(必须调用)
         if status:
-            self.log_good("模块执行成功")
-            self.log_good("详细日志请查看右侧日志栏")
+            self.log_good("模块执行成功", "XXX")
+            self.log_good("详细日志请查看右侧日志栏", "XXX")
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

@@ -67,34 +67,35 @@ class PortService(object):
     @staticmethod
     def format_banner(port_service_list=None):
         """将服务信息格式化"""
+        # TODO
         for port_service in port_service_list:
             output_str = ""
             if port_service.get('banner').get('vendorproductname'):
-                output_str += "软件: {}\t".format(",".join(port_service.get('banner').get('vendorproductname')))
+                output_str += f"软件: {','.join(port_service.get('banner').get('vendorproductname'))}\t"
 
             if port_service.get('banner').get('version'):
-                output_str += "版本: {}\t".format(",".join(port_service.get('banner').get('version')))
+                output_str += f"版本: {','.join(port_service.get('banner').get('version'))}\t"
 
             if port_service.get('banner').get('info'):
                 info = ",".join(port_service.get('banner').get('info'))
                 info = info.replace('\x00', '').replace('\0', '')
-                output_str += "信息: {}\t".format(info)
+                output_str += f"信息: {info}\t"
 
             if port_service.get('banner').get('hostname'):
                 hostname = ",".join(port_service.get('banner').get('hostname'))
                 hostname = hostname.replace('\x00', '').replace('\0', '')
-                output_str += "主机名: {}\t".format(hostname)
+                output_str += f"主机名: {hostname}\t"
 
             if port_service.get('banner').get('operatingsystem'):
-                output_str += "操作系统: {}\t".format(",".join(port_service.get('banner').get('operatingsystem')))
+                output_str += f"操作系统: {','.join(port_service.get('banner').get('operatingsystem'))}\t"
 
             if port_service.get('banner').get('devicetype'):
-                output_str += "设备类型: {}\t".format(",".join(port_service.get('banner').get('devicetype')))
+                output_str += f"设备类型: {','.join(port_service.get('banner').get('devicetype'))}\t"
 
             if port_service.get('banner').get('mac'):
-                output_str += "MAC地址: {}\t".format(port_service.get('banner').get('mac'))
+                output_str += f"MAC地址: {port_service.get('banner').get('mac')}\t"
 
             if port_service.get('banner').get('other'):
-                output_str += "原始: {}\t".format(port_service.get('banner').get('other'))
+                output_str += f"原始: {port_service.get('banner').get('other')}\t"
             port_service['banner'] = output_str
         return port_service_list

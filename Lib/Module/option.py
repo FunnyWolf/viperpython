@@ -101,7 +101,7 @@ class _Option(object):
                 if one_enmu.get('tag_zh') is not None and one_enmu.get('value') is not None:
                     tmp_enmu_list.append(one_enmu)
                 else:
-                    logger.warning("参数错误, name: {} tag_zh:{}".format(self._name, self._tag_zh))
+                    logger.warning(f"参数错误, name: {self._name} tag_zh:{self._tag_zh}")
         _dict['enum_list'] = tmp_enmu_list
         return _dict
 

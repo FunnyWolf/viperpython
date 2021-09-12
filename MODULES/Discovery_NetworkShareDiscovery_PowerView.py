@@ -38,7 +38,7 @@ class PostModule(PostMSFPowershellFunctionModule):
         if session.is_windows:
             computerName = self.param("ComputerName")
             if computerName is not None:
-                self.set_execute_string("Get-NetShare -ComputerName {} | select name,ComputerName".format(computerName))
+                self.set_execute_string(f"Get-NetShare -ComputerName {computerName} | select name,ComputerName")
             else:
                 self.set_execute_string("Get-NetShare | select name")
             return True, None
@@ -47,8 +47,8 @@ class PostModule(PostMSFPowershellFunctionModule):
 
     def callback(self, status, message, data):
         if status:
-            self.log_good("模块执行成功")
+            self.log_good("模块执行成功", "XXX")
             self.log_raw(data)
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

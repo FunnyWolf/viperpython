@@ -61,8 +61,8 @@ class PostModule(PostMSFPowershellModule):
 
     def callback(self, status, message, data):
         if status:
-            self.log_good("脚本执行完成")
+            self.log_good("脚本执行完成", "XXX")
             self.log_raw(data)
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

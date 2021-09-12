@@ -138,7 +138,7 @@ class Xcache(object):
         cache.set(Xcache.XCACHE_MODULES_CONFIG, None, None)
 
         # 清理muit_module缓存
-        re_key = "{}_*".format(Xcache.XCACHE_MODULES_TASK_LIST)
+        re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
         keys = cache.keys(re_key)
         for key in keys:
             try:
@@ -150,7 +150,7 @@ class Xcache(object):
                 cache.delete(key)
 
         # 清理session_info缓存
-        re_key = "{}_*".format(Xcache.XCACHE_SESSION_INFO)
+        re_key = f"{Xcache.XCACHE_SESSION_INFO}_*"
         keys = cache.keys(re_key)
         for key in keys:
             try:
@@ -234,7 +234,7 @@ class Xcache(object):
     @staticmethod
     def get_module_task_by_uuid(task_uuid):
         for i in range(2):
-            key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, task_uuid)
+            key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{task_uuid}"
             req = cache.get(key)
             if req is not None:
                 return req
@@ -244,13 +244,13 @@ class Xcache(object):
 
     @staticmethod
     def get_module_task_by_uuid_nowait(task_uuid):
-        key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, task_uuid)
+        key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{task_uuid}"
         req = cache.get(key)
         return req
 
     @staticmethod
     def list_module_tasks():
-        re_key = "{}_*".format(Xcache.XCACHE_MODULES_TASK_LIST)
+        re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
         keys = cache.keys(re_key)
         reqs = []
         for key in keys:
@@ -261,7 +261,7 @@ class Xcache(object):
     def create_module_task(req):
         """任务队列"""
         for i in range(5):
-            key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, req.get("uuid"))
+            key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{req.get('uuid')}"
             cache.set(key, req, None)
             if cache.get(key) is not None:
                 break
@@ -272,14 +272,14 @@ class Xcache(object):
 
     @staticmethod
     def del_module_task_by_uuid(task_uuid):
-        key = "{}_{}".format(Xcache.XCACHE_MODULES_TASK_LIST, task_uuid)
+        key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{task_uuid}"
         cache.delete(key)
 
     # XCACHE_BOT_MODULES_WAIT_LIST
 
     @staticmethod
     def pop_one_from_bot_wait():
-        re_key = "{}_*".format(Xcache.XCACHE_BOT_MODULES_WAIT_LIST)
+        re_key = f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*"
         keys = cache.keys(re_key)
 
         for key in keys:
@@ -291,7 +291,7 @@ class Xcache(object):
 
     @staticmethod
     def list_bot_wait():
-        re_key = "{}_*".format(Xcache.XCACHE_BOT_MODULES_WAIT_LIST)
+        re_key = f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*"
 
         keys = cache.keys(re_key)
         reqs = []
@@ -302,13 +302,13 @@ class Xcache(object):
     @staticmethod
     def putin_bot_wait(req):
         """任务队列"""
-        key = "{}_{}".format(Xcache.XCACHE_BOT_MODULES_WAIT_LIST, req.get("uuid"))
+        key = f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_{req.get('uuid')}"
         cache.set(key, req, None)
         return True
 
     @staticmethod
     def del_bot_wait_by_group_uuid(group_uuid):
-        re_key = "{}_*".format(Xcache.XCACHE_BOT_MODULES_WAIT_LIST)
+        re_key = f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*"
         keys = cache.keys(re_key)
         for key in keys:
             req = cache.get(key)
@@ -318,38 +318,44 @@ class Xcache(object):
 
     @staticmethod
     def get_module_result(ipaddress, loadpath):
-        key = "{}_{}_{}".format(Xcache.XCACHE_MODULES_RESULT, ipaddress, loadpath)
+        key = f"{Xcache.XCACHE_MODULES_RESULT}_{ipaddress}_{loadpath}"
         result_dict = cache.get(key)
         if result_dict is None:
-            return {"update_time": int(time.time()), "result": ""}
+            return {"update_time": int(time.time()), "result": None}
         return result_dict
 
     @staticmethod
     def set_module_result(ipaddress, loadpath, result):
-        key = "{}_{}_{}".format(Xcache.XCACHE_MODULES_RESULT, ipaddress, loadpath)
+        key = f"{Xcache.XCACHE_MODULES_RESULT}_{ipaddress}_{loadpath}"
 
         cache.set(key, {"update_time": int(time.time()), "result": result}, None)
         return True
 
     @staticmethod
     def add_module_result(ipaddress, loadpath, result):
-        key = "{}_{}_{}".format(Xcache.XCACHE_MODULES_RESULT, ipaddress, loadpath)
+        key = f"{Xcache.XCACHE_MODULES_RESULT}_{ipaddress}_{loadpath}"
         old_result = cache.get(key)
         if old_result is None:
-            new_result = result
+            cache.set(key, {"update_time": int(time.time()), "result": [result]}, None)
         else:
-            new_result = old_result.get("result") + result
-
-        cache.set(key, {"update_time": int(time.time()), "result": new_result}, None)
+            old_result.get("result")
+            old_result["result"].append(result)
+            old_result["update_time"] = int(time.time())
+            cache.set(key, old_result, None)
         return True
 
     @staticmethod
     def del_module_result_by_ipaddress(ipaddress):
-        re_key = "{}_{}_*".format(Xcache.XCACHE_MODULES_RESULT, ipaddress)
+        re_key = f"{Xcache.XCACHE_MODULES_RESULT}_{ipaddress}_*"
         keys = cache.keys(re_key)
         for key in keys:
-            cache.set(key, None, None)
+            cache.delete(key)
         return True
+
+    @staticmethod
+    def del_module_result_by_ipaddress_and_loadpath(ipaddress, loadpath):
+        key = f"{Xcache.XCACHE_MODULES_RESULT}_{ipaddress}_{loadpath}"
+        return cache.delete(key)
 
     @staticmethod
     def list_module_result_history():
@@ -397,7 +403,7 @@ class Xcache(object):
 
     @staticmethod
     def get_module_task_length():
-        re_key = "{}_*".format(Xcache.XCACHE_MODULES_TASK_LIST)
+        re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
         keys = cache.keys(re_key)
         return len(keys)
 
@@ -452,19 +458,19 @@ class Xcache(object):
 
     @staticmethod
     def set_session_info(sessionid, session_info):
-        key = "{}_{}".format(Xcache.XCACHE_SESSION_INFO, sessionid)
+        key = f"{Xcache.XCACHE_SESSION_INFO}_{sessionid}"
         cache.set(key, session_info, None)
         return True
 
     @staticmethod
     def get_session_info(sessionid):
-        key = "{}_{}".format(Xcache.XCACHE_SESSION_INFO, sessionid)
+        key = f"{Xcache.XCACHE_SESSION_INFO}_{sessionid}"
         session_info = cache.get(key)
         return session_info
 
     @staticmethod
     def get_host_info(ipaddress):
-        key = "{}_{}".format(Xcache.XCACHE_HOST_INFO, ipaddress)
+        key = f"{Xcache.XCACHE_HOST_INFO}_{ipaddress}"
         host_info = cache.get(key)
         if host_info is None:
             return {}
@@ -472,7 +478,7 @@ class Xcache(object):
 
     @staticmethod
     def update_host_info(ipaddress, new_value: dict):
-        key = "{}_{}".format(Xcache.XCACHE_HOST_INFO, ipaddress)
+        key = f"{Xcache.XCACHE_HOST_INFO}_{ipaddress}"
         host_info_old = Xcache.get_host_info(ipaddress)
         host_info_old.update(new_value)
         cache.set(key, host_info_old, None)
@@ -480,7 +486,7 @@ class Xcache(object):
 
     @staticmethod
     def del_host_info(ipaddress):
-        key = "{}_{}".format(Xcache.XCACHE_HOST_INFO, ipaddress)
+        key = f"{Xcache.XCACHE_HOST_INFO}_{ipaddress}"
         try:
             cache.delete(key)
             return True
@@ -650,7 +656,7 @@ class Xcache(object):
 
     @staticmethod
     def clean_all_token():
-        re_key = "{}-*".format(Xcache.XCACHE_TOKEN)
+        re_key = f"{Xcache.XCACHE_TOKEN}-*"
         keys = cache.keys(re_key)
         for key in keys:
             req = cache.delete(key)
@@ -826,7 +832,7 @@ class Xcache(object):
 
     @staticmethod
     def list_lazyloader():
-        re_key = "{}_*".format(Xcache.XCACHE_LAZYLOADER_CACHE)
+        re_key = f"{Xcache.XCACHE_LAZYLOADER_CACHE}_*"
         keys = cache.keys(re_key)
         reqs = []
         for key in keys:

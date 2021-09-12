@@ -149,7 +149,7 @@ class Payload(object):
                     context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                     return context
                 byteresult = base64.b64decode(result.get('payload'))
-                filename = "{}.exe".format(int(time.time()))
+                filename = f"{int(time.time())}.exe"
             else:
                 opts["Format"] = "hex"
                 result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
@@ -160,7 +160,7 @@ class Payload(object):
                 byteresult = base64.b64decode(result.get('payload'))
                 byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
                                                               template="REVERSE_HEX_BASE")
-                filename = "{}.exe".format(int(time.time()))
+                filename = f"{int(time.time())}.exe"
         elif opts.get("Format") == "exe-src-service":
             opts["Format"] = "hex"
             result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
@@ -171,7 +171,7 @@ class Payload(object):
             byteresult = base64.b64decode(result.get('payload'))  # result为None会抛异常
             byteresult = Payload._create_payload_by_mingw(mname=mname, shellcode=byteresult,
                                                           template="REVERSE_HEX_AS_SERVICE")
-            filename = "{}.exe".format(int(time.time()))
+            filename = f"{int(time.time())}.exe"
         # linux类型免杀
         elif opts.get("Format") == "elf-src":
             if mname in ['linux/x86/meterpreter/reverse_tcp', 'linux/x86/meterpreter/bind_tcp',
@@ -184,7 +184,7 @@ class Payload(object):
                     return context
                 byteresult = base64.b64decode(result.get('payload'))
                 byteresult = Payload._create_payload_by_gcc(mname=mname, shellcode=byteresult)
-                filename = "{}.elf".format(int(time.time()))
+                filename = f"{int(time.time())}.elf"
             else:
                 opts["Format"] = "elf"
                 result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
@@ -193,7 +193,7 @@ class Payload(object):
                     context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                     return context
                 byteresult = base64.b64decode(result.get('payload'))
-                filename = "{}.elf".format(int(time.time()))
+                filename = f"{int(time.time())}.elf"
         else:
             file_suffix = {
                 "asp": "asp",
@@ -248,9 +248,9 @@ class Payload(object):
                 return context
             byteresult = base64.b64decode(result.get('payload'))
             if file_suffix.get(opts.get("Format")) is None:
-                filename = "{}".format(int(time.time()))
+                filename = f"{int(time.time())}"
             else:
-                filename = "{}.{}".format(int(time.time()), file_suffix.get(opts.get("Format")))
+                filename = f"{int(time.time())}.{file_suffix.get(opts.get('Format'))}"
 
         response = HttpResponse(byteresult)
         response['Content-Type'] = 'application/octet-stream'
@@ -447,7 +447,7 @@ class Payload(object):
 
     @staticmethod
     def _create_payload_with_loader(mname=None, result=None, payload_type="exe-diy"):
-        filename = "{}.zip".format(int(time.time()))
+        filename = f"{int(time.time())}.zip"
 
         payloadfile = os.path.join(File.tmp_dir(), filename)
         extraloader_filepath = None
@@ -515,7 +515,7 @@ class Payload(object):
 
     @staticmethod
     def _create_payload_use_msbuild(mname=None, shellcode=None):
-        filename = "{}.zip".format(int(time.time()))
+        filename = f"{int(time.time())}.zip"
         if isinstance(shellcode, bytes):
             shellcode = shellcode.decode(encoding="utf-8").replace("\n", '')
 

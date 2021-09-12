@@ -41,9 +41,9 @@ class PostModule(PostMSFExecPEModule):
 
     def callback(self, status, message, data):
         if status is not True:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")
             return
 
-        format_output = "运行完成,收集到的信息存储在 <文件列表>-<{}> 中".format(message)
-        self.log_good(format_output)
+        format_output = f"运行完成,收集到的信息存储在 <文件列表>-<{message}> 中"
+        self.log_good(format_output, "XXX")

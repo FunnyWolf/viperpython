@@ -38,7 +38,7 @@ class Telegram(object):
                 send_result.append(one_chat_id)
             except Exception as E:
                 logger.exception(E)
-                logger.warning("无效的chat_id: {}".format(one_chat_id))
+                logger.warning(f"无效的chat_id: {one_chat_id}")
         return send_result
 
     @staticmethod
@@ -59,7 +59,7 @@ class Telegram(object):
             first_name = update.effective_chat.first_name if update.effective_chat.first_name is not None else ""
             last_name = update.effective_chat.last_name if update.effective_chat.last_name is not None else ""
             one_data = {
-                "user": "{}{}".format(first_name, last_name),
+                "user": f"{first_name}{last_name}",
                 "chat_id": update.effective_chat.id
             }
             if one_data not in user_chat_id_list:

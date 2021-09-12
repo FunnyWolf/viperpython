@@ -21,8 +21,7 @@ class SessionIO(object):
             if user_input.startswith('shell'):
                 command = user_input[len('shell'):].strip()
                 if len(command) == 0:
-                    new_bufer = "\n{}\n".format(
-                        "Not support switch to Dos/Bash,input like\"shell whoami\" to run os cmd.")
+                    new_bufer = "\nNot support switch to Dos/Bash,input like\'shell whoami\' to run os cmd.\n"
                     result = Xcache.add_sessionio_cache(ipaddress, new_bufer)
 
                     context = data_return(200, result, SessionIO_MSG_ZH.get(200), SessionIO_MSG_EN.get(200))
@@ -43,7 +42,7 @@ class SessionIO(object):
             if result is None:
                 context = data_return(305, {}, SessionIO_MSG_ZH.get(305), SessionIO_MSG_EN.get(305))
             elif result.get('result') == 'success':
-                new_bufer = "{}{}\n".format(METERPRETER_PROMPT, user_input)
+                new_bufer = f"{METERPRETER_PROMPT}{user_input}\n"
                 result = Xcache.add_sessionio_cache(ipaddress, new_bufer)
                 context = data_return(200, result, SessionIO_MSG_ZH.get(200), SessionIO_MSG_EN.get(200))
             else:

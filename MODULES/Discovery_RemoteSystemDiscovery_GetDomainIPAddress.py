@@ -53,7 +53,7 @@ class PostModule(PostMSFPowershellFunctionModule):
                 return False, "获取域内其他主机IP地址时,此Session必须在域中", "When obtaining the IP addresses of other hosts in the domain, this session must be in the domain"
         else:
             if computerName is not None:
-                execute_string = "Resolve-IPAddress -ComputerName {} | ConvertTo-JSON -maxDepth 2".format(computerName)
+                execute_string = f"Resolve-IPAddress -ComputerName {computerName} | ConvertTo-JSON -maxDepth 2"
             else:
                 execute_string = "Resolve-IPAddress|ConvertTo-JSON -maxDepth 2"
         self.set_execute_string(execute_string)
@@ -67,16 +67,15 @@ class PostModule(PostMSFPowershellFunctionModule):
 
                 if isinstance(powershell_json_output, list):
                     for one in powershell_json_output:
-                        ouputstr = "主机名: {} IP地址:{}".format(one.get('ComputerName'), one.get('IPAddress'))
-                        self.log_good(ouputstr)
+                        ouputstr = f"主机名: {one.get('ComputerName')} IP地址:{one.get('IPAddress')}"
+                        self.log_good(ouputstr, "XXX")
                 elif isinstance(powershell_json_output, dict):
-                    ouputstr = "主机名: {} IP地址:{}".format(powershell_json_output.get('ComputerName'),
-                                                        powershell_json_output.get('IPAddress'))
-                    self.log_good(ouputstr)
+                    ouputstr = f"主机名: {powershell_json_output.get('ComputerName')} IP地址:{powershell_json_output.get('IPAddress')}"
+                    self.log_good(ouputstr, "XXX")
                 else:
-                    self.log_error("脚本无有效输出")
+                    self.log_error("脚本无有效输出", "XXX")
             else:
-                self.log_error("脚本无有效输出")
+                self.log_error("脚本无有效输出", "XXX")
         else:
-            self.log_error("模块执行失败")
-            self.log_error(message)
+            self.log_error("模块执行失败", "XXX")
+            self.log_error(message, "XXX")

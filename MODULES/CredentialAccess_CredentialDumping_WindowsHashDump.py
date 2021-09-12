@@ -40,7 +40,7 @@ class PostModule(PostMSFRawModule):
 
     def callback(self, status, message, data):
         if status:
-            self.log_info("获取Hash列表:")
+            self.log_info("获取Hash列表:", "XXX")
             domain = self.session.domain
             for record in data:
                 self.log_raw(record.get("hash_string"))
@@ -53,9 +53,9 @@ class PostModule(PostMSFRawModule):
                     tag = {'domain': domain, 'type': type}
                     self.add_credential(username=user, password=password, password_type='windows', tag=tag)
                 except Exception as E:
-                    self.log_except(E)
+                    self.log_except(E, "XXX")
                     continue
         else:
-            print_str = "运行失败:{}".format(message)
-            self.log_error(print_str)
-        self.log_info("Hash已存储,可以到<数据管理>-<凭证>页面查看")
+            print_str = f"运行失败:{message}"
+            self.log_error(print_str, "XXX")
+        self.log_info("Hash已存储,可以到<数据管理>-<凭证>页面查看", "XXX")

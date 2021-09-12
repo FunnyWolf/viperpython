@@ -38,13 +38,15 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        import time
-        time.sleep(3)
         age = random.randint(18, 60)  # 可调整生成的年龄范围（身份证），这边是16-60岁
         gender = random.randint(0, 1)
         name = genName()
         sex = u"男" if gender == 1 else u"女"
-
+        self.log_info(f'中文:{self.param("apiip")}', f'EN:{self.param("apiip")}')
+        self.log_good(f'中文:{self.param("apiip")}', f'EN:{self.param("apiip")}')
+        self.log_warning(f'中文:{self.param("apiip")}', f'EN:{self.param("apiip")}')
+        self.log_error(f'中文:{self.param("apiip")}', f'EN:{self.param("apiip")}')
+        self.log_except(f'中文:{self.param("apiip")}', f'EN:{self.param("apiip")}')
         self.log_raw("ID: {}\n姓名: {} \n年龄: {}\n性别: {}\n身份证: {}\n手机号: {} {}\n组织机构代码: {}\n统一社会信用代码: {}\n单位性质: {}".format(
             genHackerId(), name, age, sex, genIdCard(age, gender), list(genMobile().keys())[0],
             list(genMobile().values())[0], genOrgCode(), list(genCreditCode().keys())[0],

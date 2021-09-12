@@ -150,7 +150,7 @@ class MainMonitor(object):
         ps.subscribe(**{VIPER_POSTMODULE_AUTO_CHANNEL: PostModuleAuto.handle_task})
         for message in ps.listen():
             if message:
-                logger.warning("不应获取非空message {}".format(message))
+                logger.warning(f"不应获取非空message {message}")
 
     @staticmethod
     def sub_send_sms_thread():
@@ -163,7 +163,7 @@ class MainMonitor(object):
         ps.subscribe(**{VIPER_SEND_SMS_CHANNEL: Settings._send_bot_msg})
         for message in ps.listen():
             if message:
-                logger.warning("不应获取非空message {}".format(message))
+                logger.warning(f"不应获取非空message {message}")
 
     @staticmethod
     def sub_msf_module_result_thread():
@@ -175,7 +175,7 @@ class MainMonitor(object):
         ps.subscribe(**{MSF_RPC_RESULT_CHANNEL: MSFModule.store_result_from_sub})
         for message in ps.listen():
             if message:
-                logger.warning("不应获取非空message {}".format(message))
+                logger.warning(f"不应获取非空message {message}")
 
     @staticmethod
     def sub_msf_module_data_thread():
@@ -187,7 +187,7 @@ class MainMonitor(object):
         ps.subscribe(**{MSF_RPC_DATA_CHANNEL: MSFModule.store_monitor_from_sub})
         for message in ps.listen():
             if message:
-                logger.warning("不应获取非空message {}".format(message))
+                logger.warning(f"不应获取非空message {message}")
 
     @staticmethod
     def sub_msf_module_log_thread():
@@ -199,4 +199,4 @@ class MainMonitor(object):
         ps.subscribe(**{MSF_RPC_LOG_CHANNEL: MSFModule.store_log_from_sub})
         for message in ps.listen():
             if message:
-                logger.warning("不应获取非空message {}".format(message))
+                logger.warning(f"不应获取非空message {message}")

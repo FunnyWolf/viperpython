@@ -46,5 +46,5 @@ class PostModule(PostPythonModule):
         filename = f"NtCreateSection_{int(time.time())}.zip"
         self.write_zip_vs_project(filename, source_code, )
 
-        self.log_good("模块执行成功")
-        self.log_good(f"请在<文件列表>中查看生成的zip文件: {filename}")
+        self.log_good("模块执行成功", "XXX")
+        self.log_good(f"请在<文件列表>中查看生成的zip文件: {filename}", "XXX")

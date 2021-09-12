@@ -26,7 +26,7 @@ class RpcClient(object):
         _headers = {
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',
-            'Authorization': "Bearer {}".format(RPC_TOKEN),
+            'Authorization': f"Bearer {RPC_TOKEN}",
         }
 
         data = {'jsonrpc': '2.0', 'id': 1, 'method': method}
@@ -44,7 +44,7 @@ class RpcClient(object):
             if Xcache.msfrpc_error_send():
                 Notice.send_warning(f"渗透服务连接失败,请检查MSFRPC状态",
                                     "MSFRPC service connection failed, please check MSFRPC status")
-            logger.warning('msf连接失败,检查 {} 是否可用'.format(JSON_RPC_URL))
+            logger.warning(f'msf连接失败,检查 {JSON_RPC_URL} 是否可用')
             return None
         if r.status_code == 200:
             data_bytes = r.content
@@ -56,8 +56,7 @@ class RpcClient(object):
 
             content = json.loads(data)
             if content.get('error') is not None:
-                logger.warning(
-                    "错误码:{} 信息:{}".format(content.get('error').get('code'), content.get('error').get('message')))
+                logger.warning(f"错误码:{content.get('error').get('code')} 信息:{content.get('error').get('message')}")
                 Notice.send_exception(f"MSFRPC> {content.get('error').get('message')}",
                                       f"MSFRPC> {content.get('error').get('message')}")
                 return None
@@ -65,5 +64,5 @@ class RpcClient(object):
                 return content.get('result')
 
         else:
-            logger.warning("返回码:{} 结果:{}".format(r.status_code, r.content))
+            logger.warning(f"返回码:{r.status_code} 结果:{r.content}")
             return None

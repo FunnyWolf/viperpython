@@ -39,7 +39,12 @@ class PostModule(PostPythonModule):
         name = genName()
         sex = u"男" if gender == 1 else u"女"
 
-        self.log_raw("ID: {}\n姓名: {} \n年龄: {}\n性别: {}\n身份证: {}\n手机号: {} {}\n组织机构代码: {}\n统一社会信用代码: {}\n单位性质: {}".format(
-            genHackerId(), name, age, sex, genIdCard(age, gender), list(genMobile().keys())[0],
-            list(genMobile().values())[0], genOrgCode(), list(genCreditCode().keys())[0],
-            list(genCreditCode().values())[0]))
+        self.log_raw(f"ID: {genHackerId()}\n"
+                     f"姓名: {name} \n"
+                     f"年龄: {age}\n"
+                     f"性别: {sex}\n"
+                     f"身份证: {genIdCard(age, gender)}\n"
+                     f"手机号: {list(genMobile().keys())[0]} {list(genMobile().values())[0]}\n"
+                     f"组织机构代码: {genOrgCode()}\n"
+                     f"统一社会信用代码: {list(genCreditCode().keys())[0]}\n"
+                     f"单位性质: {list(genCreditCode().values())[0]}")
