@@ -221,7 +221,7 @@ class Settings(object):
 
     @staticmethod
     def _check_telegram_aliveable(token=None, chat_id=None, proxy=None):
-        msg = "此消息为测试消息,Viper已加入通知bot"
+        msg = "此消息为测试消息,Viper已加入通知bot.This message is a test message, Viper has joined the notification bot"
         send_result = Settings.send_telegram_message(msg, {"token": token, "chat_id": chat_id, "proxy": proxy,
                                                            "alive": True})
         if len(send_result) > 0:
@@ -231,14 +231,14 @@ class Settings(object):
 
     @staticmethod
     def _check_dingding_aliveable(access_token=None, keyword=None):
-        msg = "此消息为测试消息,Viper已加入通知bot"
+        msg = "此消息为测试消息,Viper已加入通知bot.This message is a test message, Viper has joined the notification bot"
         result = Settings.send_dingding_message(msg,
                                                 {"access_token": access_token, "keyword": keyword, "alive": True})
         return result
 
     @staticmethod
     def _check_serverchan_aliveable(sendkey=None):
-        msg = "此消息为测试消息,Viper已加入通知bot"
+        msg = "此消息为测试消息,Viper已加入通知bot.This message is a test message, Viper has joined the notification bot"
         result = Settings.send_serverchan_message(msg, {"sendkey": sendkey, "alive": True})
         return result
 
