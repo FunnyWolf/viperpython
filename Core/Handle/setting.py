@@ -5,6 +5,8 @@
 import json
 import socket
 
+import chardet
+
 from Lib.External.dingding import DingDing
 from Lib.External.fofaclient import FOFAClient
 from Lib.External.quake import Quake
@@ -300,16 +302,21 @@ class Settings(object):
 
     @staticmethod
     def _send_bot_msg(message=None):
-
         content = message.get('data')
+        chardet_result = chardet.detect(content)
+        try:
+            data = content.decode(chardet_result['encoding'] or 'utf-8', 'ignore')
+        except UnicodeDecodeError as e:
+            data = content.decode('utf-8', 'ignore')
+
         flag = False
-        send_result = Settings.send_telegram_message(content)
+        send_result = Settings.send_telegram_message(data)
         if len(send_result) > 0:
             flag = True
-        send_result = Settings.send_dingding_message(content)
+        send_result = Settings.send_dingding_message(data)
         if send_result is True:
             flag = True
-        send_result = Settings.send_serverchan_message(content)
+        send_result = Settings.send_serverchan_message(data)
         if send_result is True:
             flag = True
         return flag

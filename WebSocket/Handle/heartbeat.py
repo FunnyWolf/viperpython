@@ -516,8 +516,21 @@ class HeartBeat(object):
         # session监控功能
         if Xcache.get_sessionmonitor_conf().get("flag"):
             for session_uuid in add_session_dict:
-                Notice.send_sms(f"新增session: {json.dumps(add_session_dict.get(session_uuid))}",
-                                f"New session: {json.dumps(add_session_dict.get(session_uuid))}")
+                session = add_session_dict.get(session_uuid)
+                sessionsms = f"ID:{session.get('id')}\t\n" \
+                             f"Host:{session.get('session_host')}\t\n" \
+                             f"Local:{session.get('tunnel_local')}\t\n" \
+                             f"Peer:{session.get('tunnel_peer')}\t\n" \
+                             f"Peer_ZH:{session.get('tunnel_peer_locate_zh')}\t\n" \
+                             f"Peer_EN:{session.get('tunnel_peer_locate_en')}\t\n" \
+                             f"Platform:{session.get('platform')}\t\n" \
+                             f"Heartbeat:{session.get('fromnow')}\t\n" \
+                             f"Info:{session.get('info')}\t\n" \
+                             f"OS:{session.get('os')}\t\n" \
+                             f"Arch:{session.get('arch')}\t\n"
+
+                Notice.send_sms(f"新增session: {sessionsms}",
+                                f"New session: {sessionsms}")
 
         # postmoduleauto功能
         if Xcache.get_postmodule_auto_conf().get("flag"):
