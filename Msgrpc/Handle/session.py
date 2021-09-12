@@ -64,7 +64,7 @@ class Session(object):
                     return context
             except Exception as E:
                 logger.error(E)
-                # TODO
-                Notice.send_warning(f"{Session_MSG_ZH.get(301)} SID: {sessionid}", "")
+                Notice.send_warning(f"{Session_MSG_ZH.get(301)} SID: {sessionid}",
+                                    f"{Session_MSG_EN.get(301)} SID: {sessionid}")
                 context = data_return(301, {}, Session_MSG_ZH.get(301), Session_MSG_EN.get(301))
                 return context

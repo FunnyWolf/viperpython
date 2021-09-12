@@ -21,8 +21,6 @@ class PostModuleResultHistory(object):
                 moduleconfig = Xcache.get_moduleconfig(loadpath)
                 if moduleconfig is None:
                     continue
-                # TODO
-
                 one["NAME_EN"] = moduleconfig.get("NAME_EN")
                 one["NAME_ZH"] = moduleconfig.get("NAME_ZH")
             return result
