@@ -55,4 +55,4 @@ class PostModule(PostPythonModule):
                     self.log_good(f"发现杀毒软件: {avtask} => {avname}", f"Antivirus software found: {avtask} => {avname}")
         if not findav:
             self.log_info("未发现杀毒软件.", "No antivirus software found")
-        self.log_info("模块执行完成.", "Module operation completed")
+        self.log_info("模块执行完成", "Module operation completed")

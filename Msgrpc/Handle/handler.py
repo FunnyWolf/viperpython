@@ -224,8 +224,9 @@ class Handler(object):
                 job_id = int(result.get('job_id'))
                 if Job.is_msf_job_alive(job_id):
                     opts['ID'] = int(result.get('job_id'))
-                    Notice.send_success(f"新建监听成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}"
-                                        f"Create handler success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
+                    Notice.send_success(
+                        f"新建监听成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}",
+                        f"Create handler success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
                     context = data_return(201, opts, Handler_MSG_ZH.get(201), Handler_MSG_EN.get(201))
                 else:
                     context = data_return(301, opts, Handler_MSG_ZH.get(301), Handler_MSG_EN.get(301))
