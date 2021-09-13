@@ -22,6 +22,7 @@ class PostModule(PostMSFRawModule):
               "The executable file needs to be the same as the version of the controlled host.net.\n" \
               "The function is similar to the execute-assembly of CobaltStrike. When C# needs to input parameters, you need to make sure to fill in the parameters.\n" \
               "This module adds BypassETW and BypassAmsi functions, but the module is only applicable to x64-bit systems"
+
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
@@ -118,12 +119,12 @@ class PostModule(PostMSFRawModule):
         else:
             assembly_out = base64.b64decode(data).decode('utf-8', errors="ignore")
             if assembly_out is None or len(assembly_out) == 0:
-                self.log_warning("exe文件未输出信息", "exe file does not output information")
+                self.log_warning("exe文件未输出信息", "exe does not output information")
                 if self.param("ARGUMENTS") is None or len(self.param("ARGUMENTS")) == 0:
                     self.log_warning("如果exe程序接受参数输入，请尝试输入参数",
                                      "If the exe program accepts parameter input, please try to enter the parameter")
             else:
-                self.log_good("exe执行完成,输出信息:", "exe execution is complete, output information:")
+                self.log_good("exe执行完成,输出信息:", "exe execution is complete, output:")
                 try:
 
                     self.log_raw(base64.b64decode(data).decode('utf-8', errors="ignore"))

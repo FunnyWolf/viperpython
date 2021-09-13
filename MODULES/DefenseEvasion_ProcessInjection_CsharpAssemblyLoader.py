@@ -59,7 +59,7 @@ class PostModule(PostMSFRawModule):
 
         exe_file = self.get_fileoption_filename()
         if exe_file is None:
-            return False, "请选择执行exe文件,文件后缀必须为exe", "Please choose to execute the exe file, the file suffix must be exe"
+            return False, "请选择exe文件,文件后缀必须为exe", "Please choose to exe file, the file suffix must be exe"
         else:
             self.set_msf_option(key='ASSEMBLY', value=exe_file)
 
@@ -84,7 +84,7 @@ class PostModule(PostMSFRawModule):
                     self.log_warning("如果exe程序接受参数输入，请尝试输入参数",
                                      "If the exe program accepts parameter input, please try to enter the parameter")
             else:
-                self.log_good("exe执行完成,输出信息:", "exe execution is complete, output information:")
+                self.log_good("exe执行完成,输出信息:", "exe execution is complete, output:")
                 try:
                     self.log_raw(base64.b64decode(data).decode('utf-8', errors="ignore"))
                 except Exception as E:
