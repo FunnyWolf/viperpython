@@ -53,7 +53,7 @@ class PostModule(PostMSFPythonWithParamsModule):
                   default=100),
         OptionInt(name='timeout',
                   tag_zh="模块执行超时时间(秒)", desc_zh="模块执行的超时时间",
-                  tag_en="Module execution timeout (second)", desc_en="Module execution timeout",
+                  tag_en="Module execution timeout (seconds)", desc_en="Module execution timeout",
                   required=True, default=600),
 
         # OptionInt(name='max_threads', name_tag="扫描线程数", desc_zh="扫描线程数(最大值20)", default=10),

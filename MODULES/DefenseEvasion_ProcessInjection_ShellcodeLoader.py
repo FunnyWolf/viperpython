@@ -47,7 +47,7 @@ class PostModule(PostMSFRawModule):
                    required=True, default=True),
         OptionInt(name='WAIT_OUTPUT',
                   tag_zh="等待输出时间(秒)", desc_zh="shellcode执行后等待输出结果的时间(秒)(3-180)",
-                  tag_en="Waiting for output time (second)",
+                  tag_en="Waiting for output time (seconds)",
                   desc_en="The time to wait for the output result after shellcode is executed (seconds) (3-180)",
                   required=True,
                   default=3),

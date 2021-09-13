@@ -41,7 +41,7 @@ class PostModule(PostMSFPythonWithParamsModule):
                   default="21,22,80,88,139,445,1433,3306,3389,6379,7001,8080,8443", length=24),
         OptionInt(name='timeout',
                   tag_zh="模块超时时间(秒)", desc_zh="模块执行的超时时间",
-                  tag_en="Module timeout time (second)", desc_en="Module execution timeout",
+                  tag_en="Module timeout time (seconds)", desc_en="Module execution timeout",
                   required=True, default=3600),
         OptionInt(name='connect_time_out',
                   tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",

@@ -38,7 +38,7 @@ class PostModule(PostMSFRawModule):
                   ),
         OptionInt(name='WAIT',
                   tag_zh="等待时间(秒)", desc_zh="读取输出前等待时间",
-                  tag_en="waiting time(second)", desc_en="Wait time before reading output",
+                  tag_en="waiting time(seconds)", desc_en="Wait time before reading output",
                   default=10),
         OptionBool(name='KILL',
                    tag_zh="结束进程", desc_zh="执行完成后结束C#进程",

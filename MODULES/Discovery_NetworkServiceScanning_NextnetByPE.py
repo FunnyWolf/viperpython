@@ -35,7 +35,7 @@ class PostModule(PostMSFRawModule):
                   ),
         OptionInt(name='TIMEOUT',
                   tag_zh="超时时间", desc_zh="扫描超时时间(秒)",
-                  tag_en="Timeout", desc_en="Scan timeout (second)",
+                  tag_en="Timeout", desc_en="Scan timeout (seconds)",
                   default=60 * 10),
     ])
 

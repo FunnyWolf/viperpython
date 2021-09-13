@@ -464,7 +464,7 @@ Credential_MSG_ZH = {
 
 Credential_MSG_EN = {
     201: "Successfully added certificate",
-    202: "Update of credentials indicates success",
+    202: "Update of credentials note success",
     204: "Credentials deleted successfully",
 
     304: "Input parameter error",

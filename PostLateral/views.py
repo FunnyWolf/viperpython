@@ -65,7 +65,7 @@ class CredentialView(BaseView):
 
         try:
             cid = int(request.data.get('id', None))
-            desc = request.data.get('desc_zh', None)
+            desc = request.data.get('desc', None)
             context = Credential.update(cid, desc)
         except Exception as E:
             logger.error(E)
