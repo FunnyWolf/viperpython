@@ -51,7 +51,8 @@ class NetworkSearch(object):
 
         except Exception as E:
             logger.exception(E)
-            context = data_return(303, {"errmsg": NetworkSearch_MSG_ZH.get(303)}, NetworkSearch_MSG_EN.get(303))
+            context = data_return(303, {"errmsg": NetworkSearch_MSG_EN.get(303)}, NetworkSearch_MSG_ZH.get(303),
+                                  NetworkSearch_MSG_EN.get(303))
             return context
 
     @staticmethod

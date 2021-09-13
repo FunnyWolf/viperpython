@@ -63,7 +63,7 @@ class Xcache(object):
     XCACHE_GEOIP_CITYREADER = "XCACHE_GEOIP_CITYREADER"
     XCACHE_GEOIP_ASNREADER = "XCACHE_GEOIP_ASNREADER"
 
-    XCACHE_MSFRPC_CONFIG = "XCACHE_MSFRPC_CONFIG"
+    XCACHE_DEFAULT_LHOST_CONFIG = "XCACHE_DEFAULT_LHOST_CONFIG"
 
     XCACHE_SESSIONIO_CACHE = "XCACHE_SESSIONIO_CACHE"
 
@@ -759,12 +759,12 @@ class Xcache(object):
 
     @staticmethod
     def get_lhost_config():
-        cache_data = cache.get(Xcache.XCACHE_MSFRPC_CONFIG)
+        cache_data = cache.get(Xcache.XCACHE_DEFAULT_LHOST_CONFIG)
         return cache_data
 
     @staticmethod
     def set_lhost_config(cache_data):
-        cache.set(Xcache.XCACHE_MSFRPC_CONFIG, cache_data, None)
+        cache.set(Xcache.XCACHE_DEFAULT_LHOST_CONFIG, cache_data, None)
         return True
 
     @staticmethod

@@ -72,7 +72,7 @@ class Settings(object):
             context = data_return(301, {}, Setting_MSG_ZH.get(301), Setting_MSG_EN.get(301))
             return context
 
-        context = data_return(200, CODE_MSG_ZH.get(200), conf, CODE_MSG_EN.get(200))
+        context = data_return(200, conf, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
