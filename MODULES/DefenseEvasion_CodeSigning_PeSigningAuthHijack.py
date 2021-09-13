@@ -13,7 +13,7 @@ class PostModule(PostMSFRawModule):
               "模块会影响系统所有exe的运行签名认证,请谨慎使用."
 
     NAME_EN = "Hijacking Windows digital signature authentication"
-    DESC_EN = "Modify the Windows default digital certificate authentication file so that the system certifies that all digital signatures are valid by default.\n" \
+    DESC_EN = "Modify the Windows default digital certificate authentication program so that the system certifies that all digital signatures are valid by default.\n" \
               "The module will affect the running signature authentication of all exe in the system, please use it with caution."
     MODULETYPE = TAG2TYPE.Defense_Evasion
     PLATFORM = ["Windows"]  # 平台

@@ -77,10 +77,10 @@ class Route(object):
         if result_dict.get('status') is True:
             if isinstance(result_dict.get('data'), list):
                 if autoroute:
-                    Notice.send_success(f"新增路由,SID:{sessionid} 自动模式", f"Create route success,SID:{sessionid} Auto")
+                    Notice.send_success(f"新增路由,SID:{sessionid} 自动模式", f"Create route successfully,SID:{sessionid} Auto")
                 else:
                     Notice.send_success(f"新增路由,SID:{sessionid} {subnet}/{netmask}",
-                                        f"Create route success,SID:{sessionid} {subnet}/{netmask}")
+                                        f"Create route successfully,SID:{sessionid} {subnet}/{netmask}")
 
                 context = data_return(201, result_dict.get('data'), Route_MSG_ZH.get(201), Route_MSG_EN.get(201))
             else:

@@ -160,7 +160,7 @@ class Transport(object):
         else:
             result_flag = False
         if result_flag:
-            Notice.send_info(f"切换传输完成 SID:{sessionid}", f"Switch transport success SID:{sessionid}")
+            Notice.send_info(f"切换传输完成 SID:{sessionid}", f"Switch transport successfully SID:{sessionid}")
             context = data_return(202, {}, TRANSPORT_MSG_ZH.get(202), TRANSPORT_MSG_EN.get(202))
             return context
         else:

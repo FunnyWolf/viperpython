@@ -72,7 +72,7 @@ class WebDelivery(object):
                 opts['ID'] = int(result.get('job_id'))
                 Notice.send_success(
                     f"新建WebDelivery成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}",
-                    f"Create WebDelivery success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
+                    f"Create WebDelivery successfully:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
                 context = data_return(201, opts, WebDelivery_MSG_ZH.get(201), WebDelivery_MSG_EN.get(201))
             else:
                 context = data_return(301, opts, WebDelivery_MSG_ZH.get(301), WebDelivery_MSG_EN.get(301))

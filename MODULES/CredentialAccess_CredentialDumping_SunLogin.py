@@ -616,7 +616,7 @@ class PostModule(PostMSFPythonWithParamsModule):
               "安装版:C:\Program Files\Oray\SunLogin\SunloginClient\config.ini"
 
     NAME_EN = "Get SunLogin Password"
-    DESC_EN = "Read the default configuration file config.ini of the green version and the installed version of SunLogin, and get the Sunflower connection password after decryption\n" \
+    DESC_EN = "Read the default configuration file config.ini of the free installlation version and the installed version of SunLogin, and get the Sunflower connection password after decryption\n" \
               "Free installation: C:\ProgramData\Oray\SunloginClient\config.ini\n" \
               "Installed version: C:\Program Files\Oray\SunLogin\SunloginClient\config.ini"
     MODULETYPE = TAG2TYPE.Credential_Access

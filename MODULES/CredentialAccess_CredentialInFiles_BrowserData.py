@@ -10,11 +10,12 @@ from Lib.ModuleAPI import *
 class PostModule(PostMSFExecPEModule):
     NAME_ZH = "获取Windows浏览器密码(Golang)"
     DESC_ZH = "模块使用HackBrowserData获取Windows系统浏览器密码/cookie/历史记录/书签.\n" \
-              "模块将HackBrowserData的二进制文件上传到目标主机,执行后下载执行结果文件到Viper."
+              "模块将HackBrowserData的二进制文件上传到目标主机,执行后下载结果文件到Viper."
 
     NAME_EN = "Get Windows browser password (Golang)"
     DESC_EN = "The module uses HackBrowserData to get the Windows system browser password/cookie/history/bookmark.\n" \
-              "The module uploads the binary file of HackBrowserData to the target host, and downloads the execution result file to Viper after execution."
+              "The module uploads the binary file of HackBrowserData to the target host, and downloads theresult file to Viper after execution."
+
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
@@ -45,5 +46,5 @@ class PostModule(PostMSFExecPEModule):
             self.log_error(message, message)
             return
         self.log_info("模块执行完成", "Module operation completed")
-        self.log_good(f"收集到的信息存储在 <文件列表>-<{message}> 中",
-                      f"The collected information is stored in <file list>-<(message)>")
+        self.log_good(f"收集到的信息存储在 <文件列表>:{message} 中",
+                      f"The collected information is stored in <Files>:{message}")

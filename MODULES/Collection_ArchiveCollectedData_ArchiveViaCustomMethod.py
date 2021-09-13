@@ -11,8 +11,9 @@ class PostModule(PostMSFRawModule):
     NAME_ZH = "打包压缩目录并回传"
     DESC_ZH = "zip压缩目标指定目录,并将压缩后的文件回传到Viper."
 
-    NAME_EN = "Zip the directory and send back"
-    DESC_EN = "Zip compresses the target specified directory, and returns the compressed file to Viper."
+    NAME_EN = "Zip directory and send back"
+    DESC_EN = "Zip compresses the target specified directory, and send the compressed file to Viper."
+
     MODULETYPE = TAG2TYPE.Collection
     PLATFORM = ["Windows", "Linux"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", "Root"]  # 所需权限
@@ -51,7 +52,7 @@ class PostModule(PostMSFRawModule):
             self.set_msf_option("LPATH", "viperzip")
             self.set_msf_option("RPATH", "viperzip_viper")
         else:
-            return False, "模块只支持Windows及Linux原生Session", "This module only supports Meterpreter for Windows"
+            return False, "模块只支持Windows及Linux原生Session", "This module only supports Meterpreter for Windows and Linux"
 
         inputdir = self.param("INPUTDIR")
         self.outfile = f"{self.random_str(8)}.zip"

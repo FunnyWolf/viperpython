@@ -116,7 +116,7 @@ class Settings(object):
                     context = data_return(303, data, Setting_MSG_ZH.get(303), Setting_MSG_EN.get(303))
                     return context
                 else:
-                    Notice.send_success("设置Telegram通知成功", "Set Telegram notification success")
+                    Notice.send_success("设置Telegram通知成功", "Set Telegram notification successfully")
                     data = {"token": token, "chat_id": chat_id, "proxy": proxy, "alive": True}
                     Xcache.set_telegram_conf(data)
                     context = data_return(202, data, Setting_MSG_ZH.get(202), Setting_MSG_EN.get(202))
@@ -132,7 +132,7 @@ class Settings(object):
                 context = data_return(304, data, Setting_MSG_ZH.get(304), Setting_MSG_EN.get(304))
                 return context
             else:
-                Notice.send_success("设置DingDing通知成功", "Set DingDing notification success")
+                Notice.send_success("设置DingDing通知成功", "Set DingDing notification successfully")
                 data = {"access_token": access_token, "keyword": keyword, "alive": True}
                 Xcache.set_dingding_conf(data)
 
@@ -146,7 +146,7 @@ class Settings(object):
                 context = data_return(305, data, Setting_MSG_ZH.get(305), Setting_MSG_EN.get(305))
                 return context
             else:
-                Notice.send_success("设置Server酱通知成功", "Set ServerChan notification success")
+                Notice.send_success("设置Server酱通知成功", "Set ServerChan notification successfully")
                 data = {"sendkey": sendkey, "alive": True}
                 Xcache.set_serverchan_conf(data)
 
@@ -164,7 +164,7 @@ class Settings(object):
                 context = data_return(306, data, Setting_MSG_ZH.get(306), Setting_MSG_EN.get(306))
                 return context
             else:
-                Notice.send_success("设置FOFA API成功", "Set FOFA API success")
+                Notice.send_success("设置FOFA API成功", "Set FOFA API successfully")
                 data = {"email": email, "key": key, "alive": True}
                 Xcache.set_fofa_conf(data)
                 context = data_return(206, data, Setting_MSG_ZH.get(206), Setting_MSG_EN.get(206))
@@ -180,7 +180,7 @@ class Settings(object):
                 context = data_return(307, data, Setting_MSG_ZH.get(307), Setting_MSG_EN.get(307))
                 return context
             else:
-                Notice.send_success("设置360Quake API成功", "Set 360Quake API success")
+                Notice.send_success("设置360Quake API成功", "Set 360Quake API successfully")
                 data = {"key": key, "alive": True}
                 Xcache.set_quake_conf(data)
                 context = data_return(208, data, Setting_MSG_ZH.get(208), Setting_MSG_EN.get(208))

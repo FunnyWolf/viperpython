@@ -80,8 +80,8 @@ PORTFWD_MSG_EN = {
     201: 'Create portfwd succeeded',
     204: 'Delete portfwd successfully',
 
-    301: 'Unable to create forwarding, please confirm that the server and target host ports are not occupied',
-    302: 'Failed to parse the running result',
+    301: 'Unable to create portfwd, please confirm that the server and target host ports are not occupied',
+    302: 'Failed to parse the result',
     305: 'Failed to delete portfwd',
     306: 'Parameter check failed',
     307: 'Failed to delete portfwd',
@@ -125,7 +125,7 @@ PostModuleActuator_MSG_ZH = {
 }
 
 PostModuleActuator_MSG_EN = {
-    201: "New background task succeeded",
+    201: "Create background task succeeded",
 
     301: "Module pre-check failed, check function internal error",
     305: "Failed to get module configuration",
@@ -141,8 +141,8 @@ PostModuleAuto_MSG_ZH = {
 }
 
 PostModuleAuto_MSG_EN = {
-    201: "New automatic execution configuration succeeded",
-    204: "The automatic execution configuration is deleted successfully",
+    201: "Create automatic configuration succeeded",
+    204: "The automatic configuration is deleted successfully",
 
     304: "Failed to delete automatic configuration",
     306: "Failed to create new automatic configuration",
@@ -163,7 +163,7 @@ PostModuleResultHistory_MSG_ZH = {
 }
 
 PostModuleResultHistory_MSG_EN = {
-    204: "Delete history successfully",
+    204: "Delete history record successfully",
 
     304: "Input parameter error",
 }
@@ -190,11 +190,11 @@ Setting_MSG_ZH = {
 Setting_MSG_EN = {
     201: "Get the chat_id list successfully",
     202: "Set Telegram notification successfully",
-    203: "Set DingDing notification success",
+    203: "Set DingDing notification successfully",
     204: "Session monitor is set successfully",
     205: "Set lhost successfully",
     206: "FOFA API set successfully",
-    207: "Set ServerChan notification success",
+    207: "Set ServerChan notification successfully",
     208: "Successfully set up 360Quake API",
     209: "The automatic arrangement configuration is set successfully",
     301: "Unknown configuration type",
@@ -464,7 +464,7 @@ Credential_MSG_ZH = {
 
 Credential_MSG_EN = {
     201: "Successfully added certificate",
-    202: "Update of credentials note success",
+    202: "Update of credentials note successfully",
     204: "Credentials deleted successfully",
 
     304: "Input parameter error",

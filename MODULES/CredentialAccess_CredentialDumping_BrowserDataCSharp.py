@@ -14,6 +14,7 @@ class PostModule(PostMSFCSharpModule):
     NAME_EN = "Get Windows browser password (C#)"
     DESC_EN = "The module uses BrowserGhost to obtain the Windows system browser password/cookie/history/bookmark.\n" \
               "Module executes BrowserGhost in memory to obtain information and output the result"
+
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM", ]  # 所需权限

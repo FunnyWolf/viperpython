@@ -127,7 +127,7 @@ class Handler(object):
             port = opts.get('LPORT')
             if code == 201:
                 Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 加载成功",
-                                 f"History handler Payload:{payload} Port:{port} load success")
+                                 f"History handler Payload:{payload} Port:{port} load successfully")
             elif code in [301]:
                 Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,端口已占用",
                                     f"History handler Payload:{payload} Port:{port} load failed,Port is using")
@@ -226,7 +226,7 @@ class Handler(object):
                     opts['ID'] = int(result.get('job_id'))
                     Notice.send_success(
                         f"新建监听成功:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}",
-                        f"Create handler success:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
+                        f"Create handler successfully:{opts.get('PAYLOAD')} {opts.get('LPORT')} JobID:{result.get('job_id')}")
                     context = data_return(201, opts, Handler_MSG_ZH.get(201), Handler_MSG_EN.get(201))
                 else:
                     context = data_return(301, opts, Handler_MSG_ZH.get(301), Handler_MSG_EN.get(301))

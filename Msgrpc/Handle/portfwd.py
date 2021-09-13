@@ -71,7 +71,7 @@ class PortFwd(object):
             return context
         if result_dict.get('status') is True:
             Notice.send_success(f"新增端口转发成功 SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}",
-                                f"Create portfwd success SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
+                                f"Create portfwd successfully SID:{sessionid} {portfwdtype} {lhost}/{lport} {rhost}/{rport}")
             context = data_return(201, result_dict.get('data'), PORTFWD_MSG_ZH.get(201), PORTFWD_MSG_EN.get(201))
             return context
         else:

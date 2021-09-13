@@ -9,12 +9,13 @@ from Lib.ModuleAPI import *
 
 class PostModule(PostMSFRawModule):
     NAME_ZH = "获取Windows内存Hash"
-    DESC_ZH = "此模块使用Hashdump抓取内存及SAM数据库中的Hask.\n" \
+    DESC_ZH = "此模块使用Hashdump抓取内存及SAM数据库中的Hash.\n" \
               "针对DC的Haskdump的耗时与域用户数量成正比."
 
     NAME_EN = "Get Windows hash"
-    DESC_EN = "This module uses Hashdump to grab Hask in memory and SAM database.\n" \
+    DESC_EN = "This module uses Hashdump to grab Hash in memory and SAM database.\n" \
               "The time consumption of Haskdump for DC is proportional to the number of domain users."
+
     REQUIRE_SESSION = True
     MODULETYPE = TAG2TYPE.Credential_Access
     PLATFORM = ["Windows"]  # 平台
