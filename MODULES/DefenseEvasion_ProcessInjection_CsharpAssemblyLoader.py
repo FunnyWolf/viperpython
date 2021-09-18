@@ -30,7 +30,7 @@ class PostModule(PostMSFRawModule):
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([
-        OptionFileEnum(ext=['exe', 'EXE']),
+        OptionFileEnum(ext=['exe']),
         OptionStr(name='ARGUMENTS',
                   tag_zh="命令行参数", desc_zh="运行exe时输入的参数",
                   tag_en="Command line parameters", desc_en="Parameters entered when running the exe",

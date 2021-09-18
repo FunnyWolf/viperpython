@@ -19,6 +19,7 @@ from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
 from PostLateral.Handle.edge import Edge
 from PostModule.Handle.postmoduleauto import PostModuleAuto
+from PostModule.Handle.postmoduleconfig import PostModuleConfig
 from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
 
 
@@ -42,7 +43,8 @@ class HeartBeat(object):
 
         # 任务队列长度
         task_queue_length = Xcache.get_module_task_length()
-
+        moduleoptions = PostModuleConfig.get_dynamic_option()
+        module_options = PostModuleConfig.list_dynamic_option()
         result = {
             'hosts_sorted_update': True,
             'hosts_sorted': hosts_sorted,
@@ -56,7 +58,10 @@ class HeartBeat(object):
             'jobs_update': True,
             'jobs': jobs,
             'bot_wait_list_update': True,
-            'bot_wait_list': bot_wait_list
+            'bot_wait_list': bot_wait_list,
+            'module_option': moduleoptions,
+            'module_options_update': True,
+            'module_options': module_options,
         }
 
         return result
@@ -136,11 +141,23 @@ class HeartBeat(object):
             result["bot_wait_list_update"] = True
             result["bot_wait_list"] = bot_wait_list
 
+        # module option
+        result["module_option"] = PostModuleConfig.get_dynamic_option()
+
+        # module_options 列表
+        module_options = PostModuleConfig.list_dynamic_option()
+        cache_module_options = Xcache.get_heartbeat_cache_module_options()
+        if cache_module_options == module_options:
+            result["module_options_update"] = False
+            result["module_options"] = []
+        else:
+            Xcache.set_heartbeat_cache_module_options(module_options)
+            result["module_options_update"] = True
+            result["module_options"] = module_options
         return result
 
     @staticmethod
     def list_hostandsession():
-
         def short_payload(payload):
             payload = payload.replace("windows", "win")
             payload = payload.replace("linux", "lin")

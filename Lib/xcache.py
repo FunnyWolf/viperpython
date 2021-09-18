@@ -39,6 +39,7 @@ class Xcache(object):
     XCACHE_HEARTBEAT_CACHE_BOT_WAIT_LIST = "XCACHE_HEARTBEAT_CACHE_BOT_WAIT_LIST"
     XCACHE_HEARTBEAT_CACHE_HOSTS_SORTED = "XCACHE_HEARTBEAT_CACHE_HOSTS_SORTED"
     XCACHE_HEARTBEAT_CACHE_NETWORK_DATA = "XCACHE_HEARTBEAT_CACHE_NETWORK_DATA"
+    XCACHE_HEARTBEAT_CACHE_MODULES_OPTIONS = "XCACHE_HEARTBEAT_CACHE_MODULES_OPTIONS"
 
     XCACHE_MSFCONSOLE_INPUT_CACHE = "XCACHE_MSFCONSOLE_INPUT_CACHE"
     XCACHE_MSFCONSOLE_CID = "XCACHE_MSFCONSOLE_CID"
@@ -219,6 +220,16 @@ class Xcache(object):
     @staticmethod
     def set_heartbeat_cache_bot_wait_list(result):
         cache.set(Xcache.XCACHE_HEARTBEAT_CACHE_BOT_WAIT_LIST, result, None)
+        return True
+
+    @staticmethod
+    def get_heartbeat_cache_module_options():
+        result = cache.get(Xcache.XCACHE_HEARTBEAT_CACHE_MODULES_OPTIONS)
+        return result
+
+    @staticmethod
+    def set_heartbeat_cache_module_options(result):
+        cache.set(Xcache.XCACHE_HEARTBEAT_CACHE_MODULES_OPTIONS, result, None)
         return True
 
     @staticmethod

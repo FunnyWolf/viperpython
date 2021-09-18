@@ -25,7 +25,7 @@ class PostModule(PostPythonModule):
     AUTHOR = "Viper"
 
     OPTIONS = register_options([
-        OptionFileEnum(ext=['exe', 'EXE']),
+        OptionFileEnum(ext=['exe']),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

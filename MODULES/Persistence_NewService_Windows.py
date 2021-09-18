@@ -30,7 +30,7 @@ class PostModule(PostMSFRawModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     OPTIONS = register_options([
         OptionHander(),
-        OptionFileEnum(ext=['exe', 'EXE'], required=False),
+        OptionFileEnum(ext=['exe'], required=False),
         OptionCacheHanderConfig(),
 
     ])

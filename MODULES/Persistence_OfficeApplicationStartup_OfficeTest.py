@@ -32,7 +32,7 @@ class PostModule(PostMSFRawModule):
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionHander(),
-        OptionFileEnum(ext=['exe', 'EXE'], required=False),
+        OptionFileEnum(ext=['exe'], required=False),
         OptionCacheHanderConfig(),
     ])
 
