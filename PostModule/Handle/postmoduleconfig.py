@@ -419,3 +419,17 @@ class PostModuleConfig(object):
             return f"{module_config.get('NAME_EN')}"
         else:
             return None
+
+    @staticmethod
+    def get_post_module_intent(loadpath, sessionid=-1, ipaddress="255.255.255.255", custom_param=None):
+        if custom_param is None:
+            custom_param = {}
+        """获取一个模块实例"""
+        # 获取模块实例
+        try:
+            class_intent = importlib.import_module(loadpath)
+            post_module_intent = class_intent.PostModule(sessionid, ipaddress, custom_param)
+            return post_module_intent
+        except Exception as E:
+            logger.exception(E)
+            return None

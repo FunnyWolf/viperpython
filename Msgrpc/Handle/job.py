@@ -33,26 +33,10 @@ class Job(object):
         reqs = Xcache.list_module_tasks()
         reqs_temp = []
         for req in reqs:
-            # post python module
-            if req.get("job_id") is None:
+            if uncheck or req.get("job_id") is None or msf_jobs_dict.get(str(req.get("job_id"))) is not None:
                 req["moduleinfo"] = PostModuleSerializer(req.get("module"), many=False).data
-                req["moduleinfo"]['_custom_param'] = Job._deal_dynamic_param(req["moduleinfo"]['_custom_param'])
-                req.pop("module")  # 弹出module实例
-                reqs_temp.append(req)
-                continue
-
-            # post msf module
-            # 跳过任务检查
-            if uncheck:
-                req["moduleinfo"] = PostModuleSerializer(req.get("module"), many=False).data
-                req.pop("module")  # 弹出module实例
-                req["moduleinfo"]['_custom_param'] = Job._deal_dynamic_param(req["moduleinfo"]['_custom_param'])
-                reqs_temp.append(req)
-                continue
-            elif msf_jobs_dict.get(str(req.get("job_id"))) is not None:
-                req["moduleinfo"] = PostModuleSerializer(req.get("module"), many=False).data
-                req["moduleinfo"]['_custom_param'] = Job._deal_dynamic_param(req["moduleinfo"]['_custom_param'])
-                req.pop("module")  # 弹出module实例
+                module_intent = req.pop("module")  # 弹出module实例
+                req["opts"] = module_intent._get_human_opts()
                 reqs_temp.append(req)
                 continue
             else:

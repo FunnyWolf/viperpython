@@ -13,8 +13,8 @@ from Lib.log import logger
 from Lib.notice import Notice
 from Lib.redisclient import RedisClient
 from Lib.xcache import Xcache
-from Msgrpc.Handle.job import Job
 from PostModule.Handle.postmoduleactuator import PostModuleActuator
+from PostModule.Handle.postmoduleconfig import PostModuleConfig
 
 
 class PostModuleAuto(object):
@@ -30,12 +30,15 @@ class PostModuleAuto(object):
             one_result["_module_uuid"] = module_uuid
             loadpath = postmodule_auto_dict.get(module_uuid).get("loadpath")
             one_result["moduleinfo"] = Xcache.get_moduleconfig(loadpath)
-
             try:
-                one_result["custom_param"] = Job._deal_dynamic_param(json.loads(one_result.get("custom_param")))
+                module_intent = PostModuleConfig.get_post_module_intent(loadpath=one_result["loadpath"],
+                                                                        custom_param=json.loads(
+                                                                            one_result["custom_param"]))
+                one_result["opts"] = module_intent._get_human_opts()
             except Exception as E:
                 logger.warning(E)
-                one_result["custom_param"] = {}
+                one_result["opts"] = {}
+
             result_list.append(one_result)
         context = data_return(200, result_list, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context

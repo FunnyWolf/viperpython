@@ -293,6 +293,19 @@ class _CommonModule(object):
         """存储模块运行结果到历史记录"""
         if self.MODULETYPE in [TAG2TYPE.internal]:
             return None
+        # 处理参数
+
+        module_result = Xcache.get_module_result(ipaddress=self.host_ipaddress,
+                                                 loadpath=self.__module__)
+
+        flag = Xcache.add_module_result_history(ipaddress=self.host_ipaddress,
+                                                loadpath=self.__module__,
+                                                opts=self._get_human_opts(),
+                                                update_time=module_result.get("update_time"),
+                                                result=module_result.get("result"))
+        return flag
+
+    def _get_human_opts(self):
         opts = {}
         for key in self._custom_param:
             for option in self.OPTIONS:
@@ -342,6 +355,7 @@ class _CommonModule(object):
 
                     except Exception as E:
                         logger.exception(E)
+
                     # 处理text类型参数
                     try:
                         if option.get("type") == "text":
@@ -350,15 +364,8 @@ class _CommonModule(object):
                                                         "data": self._custom_param.get(key)[0:30]}
                     except Exception as E:
                         logger.exception(E)
-        module_result = Xcache.get_module_result(ipaddress=self.host_ipaddress,
-                                                 loadpath=self.__module__)
 
-        flag = Xcache.add_module_result_history(ipaddress=self.host_ipaddress,
-                                                loadpath=self.__module__,
-                                                opts=opts,
-                                                update_time=module_result.get("update_time"),
-                                                result=module_result.get("result"))
-        return flag
+        return opts
 
     # 监听相关函数
     # 监听相关函数
