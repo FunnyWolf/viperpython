@@ -59,7 +59,7 @@ class HostView(BaseView):
     def update(self, request, pk=None, **kwargs):
         try:
             ipaddress = request.data.get('ipaddress', None)
-            tag = str(request.data.get('tag_zh', None))
+            tag = str(request.data.get('tag', None))
             comment = request.data.get('comment', None)
             context = Host.update(ipaddress, tag, comment)
         except Exception as E:
@@ -179,7 +179,7 @@ class SettingView(BaseView):
     def create(self, request, pk=None, **kwargs):
         """更新host信息到数据库"""
         kind = str(request.data.get('kind', None))
-        tag = str(request.data.get('tag_zh', None))
+        tag = str(request.data.get('tag', None))
         setting = request.data.get('setting', None)
         context = Settings.create(kind=kind, tag=tag, setting=setting)
         return Response(context)

@@ -87,7 +87,7 @@ class Host(object):
     @staticmethod
     def update_host(ipaddress=None, tag=None, comment=None):
         # 没有此主机数据时新建
-        defaultdict = {'ipaddress': ipaddress, 'tag_zh': tag, 'comment': comment}
+        defaultdict = {'ipaddress': ipaddress, 'tag': tag, 'comment': comment}
         model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
         if created is True:
             result = HostSerializer(model, many=False).data

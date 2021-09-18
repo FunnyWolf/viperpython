@@ -78,7 +78,7 @@ class PostModule(PostMSFCSharpModule):
         else:
             credential_config = self.get_credential_config()
             if credential_config is not None:
-                domain = credential_config.get('tag_zh').get('domain')
+                domain = credential_config.get('tag').get('domain')
                 username = credential_config.get('username')
                 password = credential_config.get('password')
                 # 手工输入覆盖凭证输入

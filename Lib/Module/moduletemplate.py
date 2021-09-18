@@ -792,8 +792,8 @@ class PostMSFRawModule(_PostMSFModuleCommon):
             self.set_msf_option(key='SMBPass', value=credential_record.get('password'))
         else:
             return False
-        if credential_record.get('tag_zh').get('domain') is not None:
-            self.set_msf_option(key='SMBDomain', value=credential_record.get('tag_zh').get('domain'))
+        if credential_record.get('tag').get('domain') is not None:
+            self.set_msf_option(key='SMBDomain', value=credential_record.get('tag').get('domain'))
         else:
             return True
         return True
