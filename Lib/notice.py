@@ -77,5 +77,5 @@ class Notice(object):
         rcon = RedisClient.get_result_connection()
         if rcon is None:
             return
-        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, f"中文:{content_cn}\nEnglish:{content_en}")
+        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, f"中文:\n{content_cn}\n\nEnglish:\n{content_en}")
         logger.info(f"send_sms: {result}")
