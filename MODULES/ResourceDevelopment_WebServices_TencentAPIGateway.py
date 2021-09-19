@@ -53,8 +53,6 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        import time
-        time.sleep(60)
         handler_config = self.get_handler_config()
         backendserver = f"https://{handler_config.get('LHOST')}:{handler_config.get('LPORT')}"
         self.log_good(f"API网关中填写的后端地址: {backendserver}",
