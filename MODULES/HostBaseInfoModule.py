@@ -9,7 +9,7 @@ import json
 import re
 
 from Lib.ModuleAPI import *
-from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist import avList
+from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist import avList_zh, avList_en
 
 
 class PostModule(PostMSFRawModule):
@@ -92,13 +92,21 @@ class PostModule(PostMSFRawModule):
 
             # 分析可用的进程信息
             key_list = [
-                {"re": "lsass*", "tag_zh": "Windows", "desc_zh": "本地凭证存储进程"},
-                {"re": "AnyDesk*", "tag_zh": "CC", "desc_zh": "AnyDesk远程控制工具"},
-                {"re": "tv_*", "tag_zh": "CC", "desc_zh": "TeamViewer远程控制工具"},
+                {"re": "lsass*",
+                 "tag_zh": "Windows", "desc_zh": "本地凭证存储进程", "tag_en": "Windows",
+                 "desc_en": "Local credential store process"},
+                {"re": "AnyDesk*",
+                 "tag_zh": "CC", "desc_zh": "AnyDesk远程控制工具",
+                 "tag_en": "CC", "desc_en": "Anydesk remote control tool"},
+                {"re": "tv_*",
+                 "tag_zh": "CC", "desc_zh": "TeamViewer远程控制工具",
+                 "tag_en": "CC", "desc_en": "TeamViewer remote control tool"},
 
             ]
-            for key in avList:
-                key_list.append({"re": key, "tag_zh": "AV", "desc_zh": avList.get(key)})
+            for key in avList_zh:
+                key_list.append({"re": key,
+                                 "tag_zh": "AV", "desc_zh": avList_zh.get(key),
+                                 "tag_en": "AV", "desc_en": avList_en.get(key)})
 
             processes = data.get("PROCESSES")
             for process in processes:
@@ -106,7 +114,8 @@ class PostModule(PostMSFRawModule):
                 for one_key in key_list:
                     if re.search(one_key.get("re"), name) is not None:
                         useful_processes.append(
-                            {"tag_zh": one_key.get("tag_zh"), "desc_zh": one_key.get("desc_zh"), "process": process})
+                            {"tag_zh": one_key.get("tag_zh"), "desc_zh": one_key.get("desc_zh"),
+                             "tag_en": one_key.get("tag_en"), "desc_en": one_key.get("desc_en"), "process": process})
                         break
 
             data["NETSTAT"] = netstat_after_filter

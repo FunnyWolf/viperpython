@@ -7,7 +7,7 @@
 import re
 
 from Lib.ModuleAPI import *
-from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist import avList
+from MODULES_DATA.Discovery_SecuritySoftwareDiscovery_ListAVByTasklist.avlist import avList_zh, avList_en
 
 
 class PostModule(PostPythonModule):
@@ -48,11 +48,13 @@ class PostModule(PostPythonModule):
         pattern = re.compile(r"(.*?)\.exe")  # 查找数字
         tasklist = pattern.findall(data)
         for onetask in tasklist:
-            for avtask in avList:
+            for avtask in avList_zh:
                 if f"{onetask}.exe".lower() == avtask.lower():
                     findav = True
-                    avname = avList.get(avtask)
-                    self.log_good(f"发现杀毒软件: {avtask} => {avname}", f"Antivirus software found: {avtask} => {avname}")
+                    avname_zh = avList_zh.get(avtask)
+                    avname_en = avList_en.get(avtask)
+                    self.log_good(f"发现杀毒软件: {avtask} => {avname_zh}",
+                                  f"Antivirus software found: {avtask} => {avname_en}")
         if not findav:
             self.log_info("未发现杀毒软件.", "No antivirus software found")
         self.log_info("模块执行完成", "Module operation completed")
