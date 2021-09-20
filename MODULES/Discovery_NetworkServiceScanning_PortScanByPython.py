@@ -134,18 +134,23 @@ class PostModule(PostMSFPythonWithParamsModule):
                               "If you confirm that the network connection is normal but the scan has no results, please use the'reset python plugin' function in the Meterpreter command line to rescan after reset")
                 return
 
-            self.log_info("扫描结果", "Scan result")
+            data_zh = []
+            data_en = []
+
             for portservice in portservice_list:
                 # 输出部分
-                self.log_good(
-                    f"IP地址: {portservice.get('host')} 端口: {portservice.get('port')} 协议:{portservice.get('proto')}",
-                    f"IP address: {portservice.get('host')} Port: {portservice.get('port')} Protocol: {portservice.get('proto')}")
+                data_zh.append(
+                    {"IP": portservice.get('host'), "端口": portservice.get('port'), "协议": portservice.get('proto')})
+                data_en.append(
+                    {"IP": portservice.get('host'), "Port": portservice.get('port'),
+                     "Protocol": portservice.get('proto')})
 
                 # 存储部分
                 ipaddress = portservice.get('host')
                 result = self.add_host(ipaddress, source=self.host_ipaddress, linktype="scan",
                                        data={"method": "portscan"})
                 self.add_portservice(ipaddress, portservice.get('port'), banner={}, service="")
+            self.log_table(data_zh, data_en)
         else:
             self.log_error("模块执行失败", "Module execution failed")
             self.log_error(message, message)

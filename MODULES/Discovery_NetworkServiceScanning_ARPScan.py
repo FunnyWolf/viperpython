@@ -72,16 +72,21 @@ class PostModule(PostMSFRawModule):
             return
         try:
             host_mac_list = data
-            self.log_info("扫描结果:", "Scan result")
+            data_zh = []
+            data_en = []
             for host_mac in host_mac_list:
                 # 输出部分
-                self.log_good(f"IP地址: {host_mac.get('host')} MAC: {host_mac.get('mac')} 网卡厂商:{host_mac.get('company')}",
-                              f"IP address: {host_mac.get('host')} MAC: {host_mac.get('mac')} NIC manufacturer: {host_mac.get('company')}")
+                data_zh.append(
+                    {"IP": host_mac.get('host'), "MAC": host_mac.get('mac'), "网卡厂商": host_mac.get('company')})
+                data_en.append(
+                    {"IP": host_mac.get('host'), "MAC": host_mac.get('mac'),
+                     "NIC manufacturer": host_mac.get('company')})
                 # 存储部分
                 ipaddress = host_mac.get('host')
                 result = self.add_host(ipaddress, source=self.host_ipaddress, linktype="scan", data={"method": "arp"})
                 # -1端口存储mac地址 -2端口存储网卡厂商
                 self.add_portservice(ipaddress, 0, banner={'mac': host_mac.get('mac')}, service="MAC")
+            self.log_table(data_zh, data_en)
 
         except Exception as E:
             self.log_error("模块执行失败", "Module execution failed")

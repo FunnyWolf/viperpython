@@ -53,8 +53,8 @@ class PostModule(PostPythonModule):
                     findav = True
                     avname_zh = avList_zh.get(avtask)
                     avname_en = avList_en.get(avtask)
-                    self.log_good(f"发现杀毒软件: {avtask} => {avname_zh}",
-                                  f"Antivirus software found: {avtask} => {avname_en}")
+                    self.log_good(f"杀毒软件: {avtask} => {avname_zh}",
+                                  f"Antivirus: {avtask} => {avname_en}")
         if not findav:
             self.log_info("未发现杀毒软件.", "No antivirus software found")
         self.log_info("模块执行完成", "Module operation completed")

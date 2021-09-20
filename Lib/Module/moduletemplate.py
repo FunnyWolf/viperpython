@@ -253,6 +253,23 @@ class _CommonModule(object):
 
     # 模块输出相关函数
     # 模块输出相关函数
+    def log_table(self, data_zh, data_en):
+        if data_zh is None:
+            return
+
+        columns_zh = []
+        for key in data_zh[0]:
+            columns_zh.append({"title": key, "dataIndex": key})
+
+        columns_en = []
+        for key in data_en[0]:
+            columns_en.append({"title": key, "dataIndex": key})
+
+        result_format = {"type": "table",
+                         "data_zh": data_zh, "data_en": data_en,
+                         "columns_zh": columns_zh, "columns_en": columns_en}
+
+        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
     def log_raw(self, data):
         if data is None:

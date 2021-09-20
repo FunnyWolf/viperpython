@@ -72,14 +72,18 @@ class PostModule(PostMSFRawModule):
             self.log_error("模块执行失败", "Module execution failed")
             self.log_error(message, message)
             return
-        self.log_info("模块执行完成", "Module operation completed")
+        data_zh = []
+        data_en = []
         for oneline in data.split("\n"):
             try:
                 one_result = json.loads(oneline)
                 ipaddress = one_result.get('host')
-                self.log_good(
-                    f"IP: {ipaddress}  Host:{one_result.get('name')}  Info:{one_result.get('info')}  Nets:{one_result.get('nets')}",
-                    f"IP: {ipaddress}  Host:{one_result.get('name')}  Info:{one_result.get('info')}  Nets:{one_result.get('nets')}")
+                data_zh.append(
+                    {"IP": ipaddress, "Host": one_result.get('name'), "Info": str(one_result.get('info')),
+                     "Nets": str(one_result.get('nets'))})
+                data_en.append(
+                    {"IP": ipaddress, "Host": one_result.get('name'), "Info": str(one_result.get('info')),
+                     "Nets": str(one_result.get('nets'))})
 
                 self.add_host(ipaddress,
                               source=self.host_ipaddress,
@@ -97,6 +101,8 @@ class PostModule(PostMSFRawModule):
                                      service=tmpService)
             except Exception as E:
                 pass
+
+        self.log_table(data_zh, data_en)
         self.log_raw("\n\n")
         self.log_good("原始输出:", "Raw output:")
         self.log_raw(data)

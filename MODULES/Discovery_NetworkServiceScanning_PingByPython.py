@@ -114,16 +114,20 @@ class PostModule(PostMSFPythonWithParamsModule):
                 self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件'功能重置后重新扫描",
                               "If you confirm that the network connection is normal but the scan has no results, please use the'reset python plugin' function in the Meterpreter command line to rescan after reset")
                 return
-
-            self.log_info("扫描结果", "Scan result")
+            data_zh = []
+            data_en = []
             for portservice in portservice_list:
                 # 输出部分
                 ipaddress = portservice.get("ipaddress")
                 delay = portservice.get("delay")
+
+                data_zh.append({"IP": ipaddress, "Delay": f"{'%.1f' % (delay * 1000)}ms"})
+                data_en.append({"IP": ipaddress, "Delay": f"{'%.1f' % (delay * 1000)}ms"})
+
                 # 新增主机
                 result = self.add_host(ipaddress, source=self.host_ipaddress, linktype="scan",
                                        data={"method": "ping"})
-                self.log_raw(f"{ipaddress}  {delay * 1000}ms")
+            self.log_table(data_zh, data_en)
         else:
             self.log_error("模块执行失败", "Module execution failed")
             self.log_error(message, message)
