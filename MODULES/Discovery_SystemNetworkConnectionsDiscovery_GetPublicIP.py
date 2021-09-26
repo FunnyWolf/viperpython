@@ -65,7 +65,7 @@ class PostModule(PostMSFPowershellModule):
         if status:
             try:
                 data = data.strip()
-                ipaddress.ip_network(data)
+                ipaddress.IPv4Network(data)
             except Exception as E:
                 self.log_error("获取信息错误", "Get output error")
                 self.log_raw(data)
