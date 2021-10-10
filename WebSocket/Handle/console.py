@@ -2,6 +2,13 @@
 # @File  : console.py
 # @Date  : 2021/2/26
 # @Desc  :
+import base64
+import json
+
+import chardet
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
 from Lib.configs import RPC_FRAMEWORK_API_REQ
 from Lib.log import logger
 from Lib.method import Method
@@ -142,3 +149,38 @@ class Console(object):
             return False, {}
         else:
             return True, result
+
+    @staticmethod
+    def print_monitor_from_sub(message=None):
+        """处理msf模块发送的data信息pub_json_data"""
+        body = message.get('data')
+        try:
+            msf_module_return_dict = json.loads(body)
+            prompt = msf_module_return_dict.get("prompt")
+            output = base64.b64decode(msf_module_return_dict.get("message"))
+            chardet_result = chardet.detect(output)
+            try:
+                output = output.decode(chardet_result['encoding'] or 'utf-8', 'ignore')
+            except UnicodeDecodeError as e:
+                output = output.decode('utf-8', 'ignore')
+            output = output.replace("\n", "\r\n")
+            message = {}
+            if len(output) == 0:
+                message['status'] = 0
+                message['data'] = f"{prompt}"
+            else:
+                message['status'] = 0
+                message['data'] = f"{output}"
+
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                "msfconsole",
+                {
+                    'type': 'send.message',
+                    'message': json.dumps(message)
+                }
+            )
+
+        except Exception as E:
+            logger.error(E)
+            return False

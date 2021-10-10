@@ -845,7 +845,7 @@ class IncomingDataRequest(Request):
         counter = int(kwargs['cnt'])
         index = int(kwargs['idx'])
         encoder = kwargs['encoder']
-        enc_data = re.sub(r"\.", "", enc_data)
+        enc_data = re.sub(r"", "", enc_data)
         return client.incoming_data(enc_data, index, counter, encoder)
 
 

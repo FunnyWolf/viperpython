@@ -23,6 +23,7 @@ from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
 from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
+from WebSocket.Handle.console import Console
 from WebSocket.Handle.heartbeat import HeartBeat
 
 
@@ -64,6 +65,12 @@ class MainMonitor(object):
                                    max_instances=1,
                                    trigger='interval',
                                    seconds=1, id='sub_msf_module_data_thread')
+
+        # msf console 输出数据监听线程
+        self.MainScheduler.add_job(func=self.sub_msf_console_print_thread,
+                                   max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_msf_console_print_thread')
 
         # msf模块log数据监听线程
         self.MainScheduler.add_job(func=self.sub_msf_module_log_thread,
@@ -185,6 +192,18 @@ class MainMonitor(object):
             return
         ps = rcon.pubsub(ignore_subscribe_messages=True)
         ps.subscribe(**{MSF_RPC_DATA_CHANNEL: MSFModule.store_monitor_from_sub})
+        for message in ps.listen():
+            if message:
+                logger.warning(f"不应获取非空message {message}")
+
+    @staticmethod
+    def sub_msf_console_print_thread():
+        """这个函数必须以线程的方式运行,监控msf发送的redis消息"""
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{MSF_RPC_CONSOLE_PRINT: Console.print_monitor_from_sub})
         for message in ps.listen():
             if message:
                 logger.warning(f"不应获取非空message {message}")

@@ -1,6 +1,4 @@
 import json
-import time
-from threading import Thread
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -60,19 +58,18 @@ class MsfConsoleView(WebsocketConsumer):
         if cmd == "reset":
             Console.reset_active_console()
             Xcache.clean_msfconsoleinputcache()
-            Thread(target=self.send_msfrpc_read).start()
             return
 
         cache_str = Xcache.get_msfconsoleinputcache()
         # 输入处理
         if input_data == "\r" or input_data == "\r\n":
             Xcache.add_to_msfconsole_history_cache(cache_str)
-            Console.write(cache_str + "\n")
             Xcache.clean_msfconsoleinputcache()
-            self.send_input_feedback("\r\n")
-            Thread(target=self.send_msfrpc_read).start()
-            # Thread(target=self.send_msfrpc_read_loop).start()
-
+            flag, result = Console.write(cache_str + "\n")
+            if flag:
+                self.send_input_feedback(f"\r\n")
+            else:
+                self.send_input_feedback("\r\nConnect Error >")
         elif input_data == "\x7f":  # 删除键
             return_str = Xcache.del_one_from_msfconsoleinputcache()
             self.send_input_feedback(return_str)
@@ -123,15 +120,19 @@ class MsfConsoleView(WebsocketConsumer):
         elif input_data == '\x03':  # ctrl+c
             Console.session_kill()
             Xcache.clean_msfconsoleinputcache()
-            Console.write("\n")
-            self.send_input_feedback("\r\n")
-            Thread(target=self.send_msfrpc_read).start()
+            flag, result = Console.write("\n")
+            if flag:
+                self.send_input_feedback(f"\r\n")
+            else:
+                self.send_input_feedback("\r\nConnect Error >")
         elif input_data == '\x1a':  # ctrl+z
             Console.session_detach()
             Xcache.clean_msfconsoleinputcache()
-            Console.write("\n")
-            self.send_input_feedback("\r\n")
-            Thread(target=self.send_msfrpc_read).start()
+            flag, result = Console.write("\n")
+            if flag:
+                self.send_input_feedback(f"\r\n")
+            else:
+                self.send_input_feedback("\r\nConnect Error >")
         elif isinstance(input_data, str):
             Xcache.add_to_msfconsoleinputcache(input_data)
             self.send_input_feedback(input_data)
@@ -143,7 +144,6 @@ class MsfConsoleView(WebsocketConsumer):
         message['status'] = 0
         message['data'] = data
         message = json.dumps(message)
-        # self.send(message)
         async_to_sync(self.channel_layer.group_send)(
             "msfconsole",
             {
@@ -151,44 +151,6 @@ class MsfConsoleView(WebsocketConsumer):
                 'message': message
             }
         )
-
-    def send_msfrpc_read_loop(self):
-        first_flag = True
-        while True:
-            flag, result = Console.read()
-
-            if flag is not True:
-                self.send_input_feedback("\r\nConnect Error >")
-                return
-
-            data = result.get("data").replace("\n", "\r\n")
-            if len(data) == 0:
-                if first_flag:
-                    self.send_input_feedback(result.get("prompt"))
-                    first_flag = False
-                else:
-                    continue
-            else:
-                self.send_input_feedback(data)
-
-            if len(Xcache.get_msfconsoleinputcache()) == 0:
-                time.sleep(1)
-                continue
-            else:
-                return
-
-    def send_msfrpc_read(self):
-        while True:
-            flag, result = Console.read()
-            if flag is not True:
-                self.send_input_feedback("\r\nConnect Error >")
-                return
-            data = result.get("data").replace("\n", "\r\n")
-            if len(data) == 0:
-                self.send_input_feedback(result.get("prompt"))
-                return
-            else:
-                self.send_input_feedback(data)
 
     def deal_tabs_options(self, input, tabs):
         if len(tabs) == 0:
