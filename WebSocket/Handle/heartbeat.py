@@ -96,7 +96,7 @@ class HeartBeat(object):
         cache_network_data = Xcache.get_heartbeat_cache_network_data()
         if cache_network_data == network_data:
             result["network_data_update"] = False
-            result["network_data"] = []
+            result["network_data"] = {"nodes": [], "edges": []}
         else:
             Xcache.set_heartbeat_cache_network_data(network_data)
             result["network_data_update"] = True
@@ -376,6 +376,7 @@ class HeartBeat(object):
                     }
                     if edge_data not in edges:
                         edges.append(edge_data)
+                        break  # 不存在session的主机只取一个payload即可
         network_data = {"nodes": nodes, "edges": edges}
         return hosts, network_data
 

@@ -27,9 +27,8 @@ find . -name *.py -exec chmod 755 {} \;
 rm -rf /root/.cache/*
 rm -rf /root/.bundle/cache
 rm -rf /root/.gem/specs
-rm -rf /usr/local/lib/ruby/gems/2.6.0/doc/*
-rm -rf /usr/local/lib/ruby/gems/2.6.0/cache/*
-rm -rf /usr/local/share/ri/2.6.0/system
+rm -rf /usr/local/lib/ruby/gems/2.7.0/doc/*
+rm -rf /usr/local/lib/ruby/gems/2.7.0/cache/*
 rm -rf /usr/lib/python3
 
 # clean metasploit-framework
