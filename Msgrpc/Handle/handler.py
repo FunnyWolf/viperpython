@@ -176,6 +176,7 @@ class Handler(object):
                     pass
             try:
                 if opts.get('PAYLOAD').find("reverse") > 0:
+                    opts["ReverseListenerBindAddress"] = "0.0.0.0"
                     if opts.get('PAYLOAD').find("reverse_dns") > 0:
                         try:
                             opts.pop('LHOST')
@@ -204,7 +205,6 @@ class Handler(object):
                 # 反向http(s)服务常驻问题特殊处理
                 if "reverse_http" in opts.get('PAYLOAD') or "reverse_winhttp" in opts.get('PAYLOAD'):
                     opts['ExitOnSession'] = False
-                    opts['KillHandlerFouce'] = True
                 else:
                     if opts.get('ExitOnSession') is None:
                         opts['ExitOnSession'] = False
