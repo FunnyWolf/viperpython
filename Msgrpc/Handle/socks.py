@@ -4,8 +4,8 @@
 # @Desc  :
 
 from Core.Handle.setting import Settings
-from Lib.api import data_return, is_empty_ports
-from Lib.configs import CODE_MSG_ZH, Socks_MSG_ZH, RPC_JOB_API_REQ, CODE_MSG_EN, Socks_MSG_EN
+from Lib.api import data_return
+from Lib.configs import Socks_MSG_ZH, RPC_JOB_API_REQ, Socks_MSG_EN
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 from Msgrpc.Handle.job import Job
@@ -49,12 +49,6 @@ class Socks(object):
     def create(socks_type=None, port=None):
         if socks_type == "msf_socks4a":
             opts = {'SRVHOST': '0.0.0.0', 'SRVPORT': port}
-            flag, lportsstr = is_empty_ports(port)
-            if flag is not True:
-                # 端口已占用
-                context = data_return(408, {}, CODE_MSG_ZH.get(408), CODE_MSG_EN.get(408))
-                return context
-
             result = MSFModule.run_msf_module_realtime(module_type="auxiliary", mname="server/socks4a_api", opts=opts,
                                                        runasjob=True,
                                                        timeout=RPC_JOB_API_REQ)
@@ -73,12 +67,6 @@ class Socks(object):
             return context
         elif socks_type == "msf_socks5":
             opts = {'SRVHOST': '0.0.0.0', 'SRVPORT': port}
-            flag, lportsstr = is_empty_ports(port)
-            if flag is not True:
-                # 端口已占用
-                context = data_return(408, {}, CODE_MSG_ZH.get(408), CODE_MSG_EN.get(408))
-                return context
-
             result = MSFModule.run_msf_module_realtime(module_type="auxiliary", mname="server/socks5_api", opts=opts,
                                                        runasjob=True,
                                                        timeout=RPC_JOB_API_REQ)

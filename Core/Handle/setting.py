@@ -3,7 +3,6 @@
 # @Date  : 2021/2/25
 # @Desc  :
 import json
-import socket
 
 import chardet
 
@@ -82,17 +81,6 @@ class Settings(object):
             return None
         else:
             return conf.get("lhost")
-
-    @staticmethod
-    def is_empty_ports(useport=None):
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.bind(("0.0.0.0", useport))
-            sock.close()
-            return True
-        except socket.error:
-            logger.warning(f"端口: {useport},已占用")
-            return False
 
     @staticmethod
     def create(kind=None, tag=None, setting=None):

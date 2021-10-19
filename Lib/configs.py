@@ -25,7 +25,6 @@ CODE_MSG_ZH = {
 
     # 自定义的错误码
     505: "MSFRPC调用失败",
-    408: '填写的端口已占用',
 }
 
 CODE_MSG_EN = {
@@ -48,7 +47,6 @@ CODE_MSG_EN = {
 
     # 自定义的错误码
     505: "MSFRPC call failed",
-    408: 'The filled port is already occupied',
 }
 
 BASEAUTH_MSG_ZH = {
