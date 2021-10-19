@@ -15,6 +15,7 @@ from channels.layers import get_channel_layer
 from Core.Handle.setting import Settings
 from Lib.Module.moduletemplate import BROKER
 from Lib.configs import *
+from Lib.file import File
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
@@ -108,8 +109,9 @@ class MainMonitor(object):
                                    args=[handler_list],
                                    id='recovery_cache_last_handler')
 
+        # 定时清理日志
+        self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
         self.MainScheduler.start()
-
         logger.warning("后台服务启动成功")
         Notice.send_success(f"后台服务启动成功,10秒后开始加载历史监听.",
                             "Background service is started successfully,history handler start to load after 10 seconds.")

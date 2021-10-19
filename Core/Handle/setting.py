@@ -3,8 +3,11 @@
 # @Date  : 2021/2/25
 # @Desc  :
 import json
+import os
+from urllib import parse
 
 import chardet
+from django.http import HttpResponse
 
 from Lib.External.dingding import DingDing
 from Lib.External.fofaclient import FOFAClient
@@ -13,6 +16,7 @@ from Lib.External.serverchan import ServerChan
 from Lib.External.telegram import Telegram
 from Lib.api import data_return
 from Lib.configs import Setting_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, Setting_MSG_EN
+from Lib.file import File
 from Lib.log import logger
 from Lib.notice import Notice
 from Lib.xcache import Xcache
@@ -67,6 +71,18 @@ class Settings(object):
             conf = Xcache.get_postmodule_auto_conf()
         elif kind == "handlerconf":
             conf = Handler.list_handler_config()
+        elif kind == "downloadlog":  # 下载日志文件
+            zip_file_path = File.zip_logs()
+            with open(zip_file_path, "rb+") as f:
+                binary_data = f.read()
+            os.remove(zip_file_path)
+            response = HttpResponse(binary_data)
+            response['Content-Type'] = 'application/octet-stream'
+            response['Code'] = 200
+            response['Msg_zh'] = parse.quote(Setting_MSG_ZH.get(210))
+            response['Msg_en'] = parse.quote(Setting_MSG_ZH.get(210))
+            response['Content-Disposition'] = os.path.split(zip_file_path)[1]
+            return response
         else:
             context = data_return(301, {}, Setting_MSG_ZH.get(301), Setting_MSG_EN.get(301))
             return context

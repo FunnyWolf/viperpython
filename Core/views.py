@@ -174,7 +174,10 @@ class SettingView(BaseView):
     def list(self, request, **kwargs):
         kind = str(request.query_params.get('kind', None))
         context = Settings.list(kind=kind)
-        return Response(context)
+        if isinstance(context, dict):
+            return Response(context)
+        else:
+            return context
 
     def create(self, request, pk=None, **kwargs):
         """更新host信息到数据库"""
