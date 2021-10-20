@@ -126,11 +126,11 @@ class Host(object):
     @staticmethod
     def destory_host(ipaddress=None):
         # 删除相关缓存信息
-        # 删除缓存的session命令行结果
         # 255.255.255.255 特殊处理
         if ipaddress == "255.255.255.255":
             return False
 
+        # 删除缓存的session命令行结果
         Xcache.del_sessionio_cache(ipaddress=ipaddress)
         # 删除缓存的模块结果
         Xcache.del_module_result_by_ipaddress(ipaddress=ipaddress)

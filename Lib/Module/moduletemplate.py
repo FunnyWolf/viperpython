@@ -141,20 +141,6 @@ class _CommonModule(object):
             filename = self.param(FILE_OPTION.get('name')).get("name")
             return filename
 
-    def read_from_loot(self, filename):
-        "从loot(文件列表)目录读取文件"
-        filepath = File.safe_os_path_join(MSFLOOT, filename)
-        with open(filepath, "rb+") as f:
-            data = f.read()
-        return data
-
-    def write_to_loot(self, filename, data, msf=True):
-        """向loot目录写文件"""
-        filepath = File.safe_os_path_join(MSFLOOT, filename)
-        with open(filepath, "wb+") as f:
-            f.write(data)
-        return FileMsf.get_absolute_path(filename, msf=msf)
-
     @property
     def _target_str(self):
         """返回模块实例的标识"""
@@ -475,7 +461,7 @@ class _CommonModule(object):
         bytedata = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config,
                                                template=template)
         filename = f"tmp_{int(time.time())}.exe"
-        filepath = self.write_to_loot(filename, bytedata, msf=msf)
+        filepath = FileMsf.write_msf_file(filename, bytedata, msf=msf)
         return filepath
 
     # 功能函数

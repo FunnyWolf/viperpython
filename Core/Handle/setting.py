@@ -30,7 +30,6 @@ class Settings(object):
 
     @staticmethod
     def list(kind=None):
-
         if kind == "lhost":
             # 获取pem秘钥文件,用于https监听配置
             files = FileMsf.list_msf_files()
@@ -40,29 +39,17 @@ class Settings(object):
                 if name.lower().endswith(".pem"):
                     pem_files.append(name)
 
-            conf = Xcache.get_lhost_config()
-            if conf is None:
-                conf = {'lhost': None, "pem_files": pem_files}
-            else:
-                conf["pem_files"] = pem_files
+            lhostconf = Xcache.get_lhost_config()
 
+            conf = {'lhost': lhostconf, "pem_files": pem_files}
         elif kind == "telegram":
             conf = Xcache.get_telegram_conf()
-            if conf is None:
-                conf = {"token": None, "chat_id": [], "proxy": None, "alive": False}
-
         elif kind == "dingding":
             conf = Xcache.get_dingding_conf()
-            if conf is None:
-                conf = {"access_token": None, "keyword": None, "alive": False}
         elif kind == "serverchan":
             conf = Xcache.get_serverchan_conf()
-            if conf is None:
-                conf = {"sendkey": None, "alive": False}
         elif kind == "FOFA":
             conf = Xcache.get_fofa_conf()
-            if conf is None:
-                conf = {"email": None, "key": None, "alive": False}
         elif kind == "Quake":
             conf = Xcache.get_quake_conf()
         elif kind == "sessionmonitor":
@@ -86,17 +73,8 @@ class Settings(object):
         else:
             context = data_return(301, {}, Setting_MSG_ZH.get(301), Setting_MSG_EN.get(301))
             return context
-
         context = data_return(200, conf, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
-
-    @staticmethod
-    def get_lhost():
-        conf = Xcache.get_lhost_config()
-        if conf is None:
-            return None
-        else:
-            return conf.get("lhost")
 
     @staticmethod
     def create(kind=None, tag=None, setting=None):
@@ -214,6 +192,7 @@ class Settings(object):
                                 f"Set the lhost successfully, the current lhost: {setting.get('lhost')}")
             context = data_return(205, setting, Setting_MSG_ZH.get(205), Setting_MSG_EN.get(205))
             return context
+
         elif kind == "postmoduleautoconf":
             new_conf = Xcache.set_postmodule_auto_conf(setting)
             Notice.send_success(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")
@@ -226,8 +205,8 @@ class Settings(object):
     @staticmethod
     def _check_telegram_aliveable(token=None, chat_id=None, proxy=None):
         msg = "此消息为测试消息,Viper已加入通知bot.This message is a test message, Viper has joined the notification bot"
-        send_result = Settings.send_telegram_message(msg, {"token": token, "chat_id": chat_id, "proxy": proxy,
-                                                           "alive": True})
+        send_result = Settings._send_telegram_message(msg, {"token": token, "chat_id": chat_id, "proxy": proxy,
+                                                            "alive": True})
         if len(send_result) > 0:
             return True
         else:
@@ -236,18 +215,18 @@ class Settings(object):
     @staticmethod
     def _check_dingding_aliveable(access_token=None, keyword=None):
         msg = "此消息为测试消息,Viper已加入通知bot.This message is a test message, Viper has joined the notification bot"
-        result = Settings.send_dingding_message(msg,
-                                                {"access_token": access_token, "keyword": keyword, "alive": True})
+        result = Settings._send_dingding_message(msg,
+                                                 {"access_token": access_token, "keyword": keyword, "alive": True})
         return result
 
     @staticmethod
     def _check_serverchan_aliveable(sendkey=None):
         msg = "此消息为测试消息,Viper已加入通知bot.This message is a test message, Viper has joined the notification bot"
-        result = Settings.send_serverchan_message(msg, {"sendkey": sendkey, "alive": True})
+        result = Settings._send_serverchan_message(msg, {"sendkey": sendkey, "alive": True})
         return result
 
     @staticmethod
-    def send_telegram_message(msg=None, conf=None):
+    def _send_telegram_message(msg=None, conf=None):
         if conf is None:
             conf = Xcache.get_telegram_conf()
         if conf is None:
@@ -263,7 +242,7 @@ class Settings(object):
         return send_result
 
     @staticmethod
-    def send_dingding_message(msg=None, conf=None):
+    def _send_dingding_message(msg=None, conf=None):
         if conf is None:
             conf = Xcache.get_dingding_conf()
         if conf is None:
@@ -286,7 +265,7 @@ class Settings(object):
             return False
 
     @staticmethod
-    def send_serverchan_message(msg=None, conf=None):
+    def _send_serverchan_message(msg=None, conf=None):
         if conf is None:
             conf = Xcache.get_serverchan_conf()
         if conf is None:
@@ -314,13 +293,13 @@ class Settings(object):
             data = content.decode('utf-8', 'ignore')
 
         flag = False
-        send_result = Settings.send_telegram_message(data)
+        send_result = Settings._send_telegram_message(data)
         if len(send_result) > 0:
             flag = True
-        send_result = Settings.send_dingding_message(data)
+        send_result = Settings._send_dingding_message(data)
         if send_result is True:
             flag = True
-        send_result = Settings.send_serverchan_message(data)
+        send_result = Settings._send_serverchan_message(data)
         if send_result is True:
             flag = True
         return flag

@@ -126,11 +126,11 @@ class FileMsf(object):
             return False
 
     @staticmethod
-    def write_msf_file(filename=None, data=None):
+    def write_msf_file(filename=None, data=None, msf=True):
         filepath = File.safe_os_path_join(MSFLOOT, filename)
         with open(filepath, "wb+") as f:
             f.write(data)
-        return True
+        return FileMsf.get_absolute_path(filename, msf=msf)
 
     @staticmethod
     def read_msf_file(filename=None):

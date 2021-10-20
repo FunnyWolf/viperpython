@@ -24,17 +24,18 @@ class NetworkSearch(object):
             else:
                 querystr = f"{moduleQuery} && {inputstr}"
             client = FOFAClient()
+            flag = client.init_conf_from_cache()
         elif engine == "Quake":
             if inputstr is None or inputstr.strip() == "":
                 querystr = moduleQuery
             else:
                 querystr = f"{moduleQuery} AND {inputstr}"
             client = Quake()
+            flag = client.init_conf_from_cache()
         else:
             context = data_return(304, {}, NetworkSearch_MSG_ZH.get(304), NetworkSearch_MSG_EN.get(304))
             return context
 
-        flag = client.init_conf_from_cache()
         if flag is not True:
             context = data_return(301, {}, NetworkSearch_MSG_ZH.get(301), NetworkSearch_MSG_EN.get(301))
             return context

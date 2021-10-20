@@ -29,14 +29,11 @@ class Quake:
 
     def init_conf_from_cache(self):
         conf = Xcache.get_quake_conf()
-        if conf is None:
+        if conf.get("alive") is not True:
             return False
         else:
-            if conf.get("alive") is not True:
-                return False
-            else:
-                self.key = conf.get("key")
-                return True
+            self.key = conf.get("key")
+            return True
 
     def get_userinfo(self):
         api_full_url = f"{self.base_url}{self.user_info_url}"

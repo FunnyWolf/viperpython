@@ -41,7 +41,7 @@ class PostModule(PostPythonModule):
         # 将msf服务器的exe写入viper本地
         old_exe = self.get_fileoption_filename()
         self.log_info(f"将 {old_exe} 写入临时目录", f"Write {old_exe} to a temporary directory")
-        old_exe_binary_data = self.read_from_loot(old_exe)
+        old_exe_binary_data = FileMsf.read_msf_file(old_exe)
         if old_exe_binary_data is None:
             self.log_error(f"{old_exe} 文件不存在", f"{old_exe} does not exist")
             return
@@ -67,7 +67,7 @@ class PostModule(PostPythonModule):
         self.log_info("清理临时文件", "Clean up temporary files")
         File.clean_tmp_dir()
 
-        if self.write_to_loot(output_finename, output_bin):
+        if FileMsf.write_msf_file(output_finename, output_bin, msf=False):
             self.log_good(f"签名完成,新文件名 : {output_finename}",
                           f"The signature is completed, New file name: {output_finename}")
         else:

@@ -3,7 +3,6 @@
 # @Date  : 2021/2/25
 # @Desc  :
 
-from Core.Handle.setting import Settings
 from Lib.api import data_return
 from Lib.configs import Socks_MSG_ZH, RPC_JOB_API_REQ, Socks_MSG_EN
 from Lib.msfmodule import MSFModule
@@ -16,7 +15,6 @@ class Socks(object):
 
     @staticmethod
     def list_msf_socks():
-        lhost = Settings.get_lhost()
         socks_list = []
         infos = Job.list_msfrpc_jobs()
         if infos is None:
@@ -29,7 +27,6 @@ class Socks(object):
                 if datastore is not None:
                     onesocks4a = {'ID': jobid,
                                   "type": "msf_socks4a",
-                                  "lhost": lhost,
                                   "port": datastore.get("SRVPORT"),
                                   'datastore': datastore}
                     socks_list.append(onesocks4a)
@@ -38,7 +35,6 @@ class Socks(object):
                 if datastore is not None:
                     onesocks4a = {'ID': jobid,
                                   "type": "msf_socks5",
-                                  "lhost": lhost,
                                   "port": datastore.get("SRVPORT"),
                                   'datastore': datastore}
                     socks_list.append(onesocks4a)

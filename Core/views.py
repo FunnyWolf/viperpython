@@ -88,7 +88,8 @@ class HostView(BaseView):
 class HostInfoView(BaseView):
     def list(self, request, **kwargs):
         ipaddress = request.query_params.get('ipaddress', None)
-        context = HostInfo.list(ipaddress)
+        host_info = HostInfo.list(ipaddress)
+        context = data_return(200, host_info, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return Response(context)
 
 

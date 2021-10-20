@@ -29,15 +29,12 @@ class FOFAClient:
 
     def init_conf_from_cache(self):
         conf = Xcache.get_fofa_conf()
-        if conf is None:
+        if conf.get("alive") is not True:
             return False
         else:
-            if conf.get("alive") is not True:
-                return False
-            else:
-                self.email = conf.get("email")
-                self.key = conf.get("key")
-                return True
+            self.email = conf.get("email")
+            self.key = conf.get("key")
+            return True
 
     def get_userinfo(self):
         api_full_url = "%s%s" % (self.base_url, self.login_api_url)

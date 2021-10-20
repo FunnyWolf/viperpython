@@ -680,6 +680,8 @@ class Xcache(object):
     @staticmethod
     def get_telegram_conf():
         conf = cache.get(Xcache.XCACHE_TELEGRAM_CONFIG)
+        if conf is None:
+            conf = {"token": None, "chat_id": [], "proxy": None, "alive": False}
         return conf
 
     @staticmethod
@@ -690,6 +692,8 @@ class Xcache(object):
     @staticmethod
     def get_dingding_conf():
         conf = cache.get(Xcache.XCACHE_DINGDING_CONFIG)
+        if conf is None:
+            conf = {"access_token": None, "keyword": None, "alive": False}
         return conf
 
     @staticmethod
@@ -700,6 +704,8 @@ class Xcache(object):
     @staticmethod
     def get_serverchan_conf():
         conf = cache.get(Xcache.XCACHE_SERVERCHAN_CONFIG)
+        if conf is None:
+            conf = {"sendkey": None, "alive": False}
         return conf
 
     @staticmethod
@@ -711,7 +717,7 @@ class Xcache(object):
     def get_fofa_conf():
         conf = cache.get(Xcache.XCACHE_FOFA_CONFIG)
         if conf is None:
-            return {"email": None, "key": None, "alive": False}
+            conf = {"email": None, "key": None, "alive": False}
         return conf
 
     @staticmethod

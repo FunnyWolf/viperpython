@@ -42,6 +42,7 @@ from Lib.notice import Notice
 from Lib.sessionlib import (
     SessionLib as Session,
 )
+from Msgrpc.Handle.filemsf import FileMsf
 
 __all__ = [
     "PostMSFRawModule",
@@ -70,6 +71,7 @@ __all__ = [
     "Mingw",
     "Gcc",
     "File",
+    "FileMsf",
     "TAG2TYPE",
     "UACLevel",
     "RegType",
