@@ -422,17 +422,9 @@ class _CommonModule(object):
             return payload
 
     def get_handler_config(self):
-        """货物handler详细配置信息"""
+        """获取handler详细配置信息"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         return handler_config
-
-    def generate_shellcode(self):
-        """通过监听配置生成shellcode"""
-        handler_config = self.param(HANDLER_OPTION.get('name'))
-        if handler_config is None:
-            return None
-        shellcode = Payload.generate_shellcode(mname=handler_config.get("PAYLOAD"), opts=handler_config)
-        return shellcode
 
     def generate_payload(self, format):
         """通过监听配置生成指定格式的payload"""

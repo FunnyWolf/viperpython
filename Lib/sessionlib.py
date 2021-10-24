@@ -3,20 +3,17 @@
 # @Date  : 2021/2/26
 # @Desc  :
 import json
-import os
 import time
 
 from Lib.External.geoip import Geoip
 from Lib.External.qqwry import qqwry
-from Lib.configs import RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ, RPC_SESSION_OPER_LONG_REQ, \
-    RPC_RUN_MODULE_LONG
+from Lib.configs import RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ, RPC_SESSION_OPER_LONG_REQ
 from Lib.log import logger
 from Lib.method import Method
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 from Lib.rpcclient import RpcClient
 from Lib.xcache import Xcache
-from Msgrpc.Handle.filemsf import FileMsf
 
 
 class SessionLib(object):
@@ -84,6 +81,7 @@ class SessionLib(object):
         self.available = False
         self.info = None
         self.pid = 0
+
         # 更新基本信息
         self._set_base_info()
 
@@ -219,7 +217,7 @@ class SessionLib(object):
     @property
     def is_alive(self):
         """session是否可用"""
-        if int(time.time()) - self.last_checkin > 60 and self.user is None:
+        if int(time.time()) - self.last_checkin > 90 and self.user is None:
             return False
         else:
             return True
@@ -307,17 +305,3 @@ class SessionLib(object):
             return result
         except Exception as E:
             return {'status': False, "message": E, "data": None}
-
-    def download_file(self, filepath=None):
-        """返回下载的文件内容,二进制数据"""
-        opts = {'OPERATION': 'download', 'SESSION': self.sessionid, 'SESSION_FILE': filepath}
-        result = MSFModule.run_msf_module_realtime('post', 'multi/manage/file_system_operation_api', opts,
-                                                   timeout=RPC_RUN_MODULE_LONG)  # 后台运行
-        if result is None:
-            return None
-        filename = os.path.basename(filepath)
-        binary_data = FileMsf.read_msf_file(filename)
-        if binary_data is None:
-            return None
-        else:
-            return binary_data

@@ -17,7 +17,6 @@ class Notice(object):
 
     @staticmethod
     def send(content_cn=None, content_en=None, level=1):
-        # 无英文版的处理
         if content_en is None:
             content_en = content_cn
 
@@ -77,5 +76,5 @@ class Notice(object):
         rcon = RedisClient.get_result_connection()
         if rcon is None:
             return
-        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, f"中文:\n{content_cn}\n\nEnglish:\n{content_en}")
+        result = rcon.publish(VIPER_SEND_SMS_CHANNEL, f"{content_cn}\n\n{content_en}")
         logger.info(f"send_sms: {result}")

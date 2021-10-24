@@ -72,7 +72,7 @@ class FileMsf(object):
 
     @staticmethod
     def create(file=None):
-        result = FileMsf.upload_file_to_msf(file)
+        result = FileMsf.write_file_to_msf(file)
         if result is True:
             context = data_return(201, {}, FileMsf_MSG_ZH.get(201), FileMsf_MSG_EN.get(201))
         else:
@@ -113,7 +113,7 @@ class FileMsf(object):
             return []
 
     @staticmethod
-    def upload_file_to_msf(file=None):
+    def write_file_to_msf(file=None):
         try:
             filename = file.name
             filepath = File.safe_os_path_join(MSFLOOT, filename)

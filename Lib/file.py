@@ -27,6 +27,8 @@ class File(object):
     @staticmethod
     def safe_os_path_join(path, filename):
         filename = os.path.normpath(filename)
+        filename = filename.replace("\\\\", "")
+        filename = filename.replace("..", "")
         outpath = os.path.join(path, filename)
         if outpath.startswith(path):
             return outpath

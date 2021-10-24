@@ -286,8 +286,6 @@ class Xcache(object):
         key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{task_uuid}"
         cache.delete(key)
 
-    # XCACHE_BOT_MODULES_WAIT_LIST
-
     @staticmethod
     def pop_one_from_bot_wait():
         re_key = f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*"
