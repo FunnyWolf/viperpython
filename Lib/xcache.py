@@ -775,6 +775,8 @@ class Xcache(object):
     @staticmethod
     def get_lhost_config():
         cache_data = cache.get(Xcache.XCACHE_DEFAULT_LHOST_CONFIG)
+        if cache_data is None:
+            return {"lhost": None}
         return cache_data
 
     @staticmethod
