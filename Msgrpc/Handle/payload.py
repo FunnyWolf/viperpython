@@ -80,8 +80,8 @@ class Payload(object):
                                 f"Replace LPORT with OverrideLPORT:{opts['OverrideLPORT']}")
 
         # 处理SessionExpirationTimeout参数
-        if opts.get("SessionExpirationTimeout") is None or opts.get("SessionExpirationTimeout") < 3600 * 24 * 365:
-            opts["SessionExpirationTimeout"] = 3600 * 24 * 365
+        # if opts.get("SessionExpirationTimeout") is None or opts.get("SessionExpirationTimeout") < 3600 * 24 * 365:
+        #     opts["SessionExpirationTimeout"] = 3600 * 24 * 365
         # EXTENSIONS参数
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
             opts['EXTENSIONS'] = 'stdapi'
