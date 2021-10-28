@@ -79,9 +79,6 @@ class Payload(object):
             Notice.send_warning(f"将LPORT 替换为 OverrideLPORT:{opts['OverrideLPORT']}",
                                 f"Replace LPORT with OverrideLPORT:{opts['OverrideLPORT']}")
 
-        # 处理SessionExpirationTimeout参数
-        # if opts.get("SessionExpirationTimeout") is None or opts.get("SessionExpirationTimeout") < 3600 * 24 * 365:
-        #     opts["SessionExpirationTimeout"] = 3600 * 24 * 365
         # EXTENSIONS参数
         if "meterpreter_" in mname and opts.get('EXTENSIONS') is True:
             opts['EXTENSIONS'] = 'stdapi'

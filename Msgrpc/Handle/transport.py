@@ -114,7 +114,7 @@ class Transport(object):
         opts["proxy_user"] = handleropts.get("HttpProxyUser")
         opts["proxy_pass"] = handleropts.get("HttpProxyPass")
         opts["comm_timeout"] = handleropts.get("SessionCommunicationTimeout")
-        # opts["session_exp"] = handleropts.get("SessionExpirationTimeout")
+        opts["session_exp"] = handleropts.get("SessionExpirationTimeout")
         opts["retry_total"] = handleropts.get("SessionRetryTotal")
         opts["retry_wait"] = handleropts.get("SessionRetryWait")
         opts["cert"] = handleropts.get("HandlerSSLCert")
