@@ -95,7 +95,7 @@ class MSFModule(object):
         # result 数据格式
         # {'job_id': 3, 'uuid': 'dbcb2530-95b1-0137-5100-000c2966078a', 'module': b'\x80\ub.'}
 
-        if result.get("job_id") is None:
+        if result.get("uuid") is None:
             logger.warning(f"模块实例:{msf_module.NAME_ZH} uuid: {result.get('uuid')} 创建后台任务失败")
             Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败",
                                 f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task")
