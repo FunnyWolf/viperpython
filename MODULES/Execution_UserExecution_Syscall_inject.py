@@ -47,7 +47,7 @@ NOTE: for better evasion ratio, use high SLEEP values"""
         if "x64" not in payload:
             return False, "选择handler错误,请选择x64类型监听", "Select the handler error, please select the handler of x64"
         self.set_payload_by_handler()
-        self.set_msf_option("SLEEP", self.param("SLEEP"))
+        self.set_msf_option("SLEEP", self.param("SLEEP") * 1000)
         return True, None
 
     def callback(self, status, message, data):
