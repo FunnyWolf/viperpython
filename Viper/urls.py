@@ -4,7 +4,7 @@ from rest_framework import routers
 from Core.views import BaseAuthView, CurrentUserView, NoticesView, SettingView, HostView, HostInfoView
 from Core.views import NetworkSearchView
 from Lib.montior import MainMonitor
-from Msgrpc.views import LazyLoaderView, LazyLoaderInterfaceView
+from Msgrpc.views import LazyLoaderView, LazyLoaderInterfaceView, CollectSandBoxInterfaceView, CollectSandBoxView
 from Msgrpc.views import ServiceStatusView, PayloadView, JobView, HandlerView, SessionView, SessionIOView, RouteView
 from Msgrpc.views import SocksView, TransportView, FileMsfView, FileSessionView, PortFwdView, HostFileView
 from Msgrpc.views import WebDeliveryView
@@ -35,6 +35,7 @@ router.register(r'api/v1/msgrpc/transport', TransportView, basename="Transport")
 router.register(r'api/v1/msgrpc/filemsf', FileMsfView, basename="FileMsfView")
 router.register(r'api/v1/msgrpc/filesession', FileSessionView, basename="FileSessionView")
 router.register(r'api/v1/msgrpc/lazyloader', LazyLoaderView, basename="LazyLoaderView")
+router.register(r'api/v1/msgrpc/collectsandbox', CollectSandBoxView, basename="CollectSandBoxView")
 
 router.register(r'api/v1/postlateral/portservice', PortServiceView, basename="PortServiceView")
 router.register(r'api/v1/postlateral/credential', CredentialView, basename="CredentialView")
@@ -49,6 +50,7 @@ router.register(r'api/v1/postmodule/postmoduleauto', PostModuleAutoView,
 # 无需认证的api
 router.register(r'api/v1/d', HostFileView, basename="HostFileView")
 router.register(r'api/v1/c', LazyLoaderInterfaceView, basename="LazyLoaderInterfaceView")
+router.register(r'api/v1/a', CollectSandBoxInterfaceView, basename="CollectSandBoxInterfaceView")
 
 urlpatterns = [
     url(r'^', include(router.urls)),

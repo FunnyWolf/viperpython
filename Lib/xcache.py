@@ -80,6 +80,10 @@ class Xcache(object):
 
     XCACHE_MSFRPC_ERROR_LOG = "XCACHE_MSFRPC_ERROR_LOG"
 
+    XCACHE_CHECKSANDBOX_CACHE = "XCACHE_CHECKSANDBOX_CACHE"
+
+    XCACHE_CHECKSANDBOX_TAG_CACHE = "XCACHE_CHECKSANDBOX_TAG_CACHE"
+
     def __init__(self):
         pass
 
@@ -873,6 +877,51 @@ class Xcache(object):
     def del_lazyloader_by_uuid(loader_uuid):
         key = f"{Xcache.XCACHE_LAZYLOADER_CACHE}_{loader_uuid}"
         cache.delete(key)
+        return True
+
+    @staticmethod
+    def list_checksandbox():
+        data = cache.get(Xcache.XCACHE_CHECKSANDBOX_CACHE)
+        if data is None:
+            return []
+        else:
+            result = []
+            for ipaddress in data:
+                result.append({"ipaddress": ipaddress, "updateTime": data[ipaddress]})
+            return result
+
+    @staticmethod
+    def add_to_checksandbox(ipaddress, updatetime):
+        olddata = cache.get(Xcache.XCACHE_CHECKSANDBOX_CACHE)
+        if olddata is None:
+            data = {ipaddress: updatetime}
+        else:
+            olddata[ipaddress] = updatetime
+            data = olddata
+        cache.set(Xcache.XCACHE_CHECKSANDBOX_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def del_checksandbox(ipaddress):
+        data = cache.get(Xcache.XCACHE_CHECKSANDBOX_CACHE)
+        if data is None:
+            return False
+        else:
+            data.pop(ipaddress)
+            cache.set(Xcache.XCACHE_CHECKSANDBOX_CACHE, data, None)
+            return True
+
+    @staticmethod
+    def get_checksandbox_tag():
+        data = cache.get(Xcache.XCACHE_CHECKSANDBOX_TAG_CACHE)
+        if data is None:
+            return "user"
+        else:
+            return data
+
+    @staticmethod
+    def update_checksandbox_tag(tag):
+        cache.set(Xcache.XCACHE_CHECKSANDBOX_TAG_CACHE, tag, None)
         return True
 
     @staticmethod

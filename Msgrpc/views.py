@@ -12,6 +12,7 @@ from Lib.baseview import BaseView
 from Lib.configs import *
 from Lib.log import logger
 from Lib.notice import Notice
+from Msgrpc.Handle.collectsandbox import CollectSandBox
 from Msgrpc.Handle.filemsf import FileMsf
 from Msgrpc.Handle.filesession import FileSession
 from Msgrpc.Handle.handler import Handler
@@ -509,6 +510,38 @@ class LazyLoaderView(BaseView):
         return Response(context)
 
 
+class CollectSandBoxView(BaseView):
+    def list(self, request, **kwargs):
+        """查询数据库中的信息"""
+
+        tag = request.query_params.get('tag', None)
+        if tag is not None:
+            context = CollectSandBox.list_tag()
+            return Response(context)
+        else:
+            context = CollectSandBox.list()
+            return Response(context)
+
+    def update(self, request, pk=None, **kwargs):
+        try:
+            tag = request.data.get('tag', None)
+            context = CollectSandBox.update(tag)
+            return Response(context)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+            return Response(context)
+
+    def destroy(self, request, pk=None, **kwargs):
+        try:
+            ipaddress = request.query_params.get('ipaddress', None)
+            context = CollectSandBox.destory(ipaddress)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+
 class LazyLoaderInterfaceView(BaseView):
     permission_classes = (AllowAny,)  # 无需认证
 
@@ -518,4 +551,17 @@ class LazyLoaderInterfaceView(BaseView):
         loader_uuid = request.query_params.get('u', None)
         ipaddress = request.META.get("HTTP_X_REAL_IP")
         context = LazyLoader.list_interface(req, loader_uuid, ipaddress)
+        return HttpResponse(context)
+
+
+class CollectSandBoxInterfaceView(BaseView):
+    permission_classes = (AllowAny,)  # 无需认证
+
+    def list(self, request, **kwargs):
+        logger.error(request.META)
+        ipaddress = request.META.get("REMOTE_ADDR")
+        if ipaddress is None:
+            import random
+            ipaddress = f"10.10.10.{random.randint(0, 255)}"
+        context = CollectSandBox.list_interface(request.query_params, ipaddress)
         return HttpResponse(context)
