@@ -55,7 +55,7 @@ class File(object):
                     f.seek(0)
                     f.truncate()
         try:
-            with open("/root/.msf4/log/framework.log", "r+", encoding="utf-8") as f:
+            with open("/root/.msf4/logs/framework.log", "r+", encoding="utf-8") as f:
                 f.seek(0)
                 f.truncate()
         except Exception as E:
@@ -71,7 +71,7 @@ class File(object):
                 log_file = os.path.join(settings.BASE_DIR, 'Docker', 'log', file)
                 new_zip.write(log_file, arcname=file, compress_type=zipfile.ZIP_DEFLATED)
         try:
-            new_zip.write("/root/.msf4/log/framework.log", arcname="framework.log", compress_type=zipfile.ZIP_DEFLATED)
+            new_zip.write("/root/.msf4/logs/framework.log", arcname="framework.log", compress_type=zipfile.ZIP_DEFLATED)
         except Exception as E:
             pass
         new_zip.close()
