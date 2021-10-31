@@ -57,7 +57,6 @@ class IPFilter(object):
     def is_allow(ip):
         # 总开关检查
         if Xcache.get_ipfilter_switch_cache() is not True:
-            Notice.send_success(f"[过滤器关闭] [放行] {ip}", f"[Filter close] [Pass] {ip}")
             return True
 
         # ip有效性检查
@@ -115,7 +114,7 @@ class IPFilter(object):
     def is_allow_for_check(ip):
         # 总开关检查
         if Xcache.get_ipfilter_switch_cache() is not True:
-            return True, f"[过滤器关闭] [放行] {ip}", f"[Filter close] [Pass] {ip}"
+            return True, f"[防火墙关闭] [放行] {ip}", f"[Firewall close] [Pass] {ip}"
 
         # ip有效性检查
         try:

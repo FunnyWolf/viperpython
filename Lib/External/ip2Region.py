@@ -250,16 +250,11 @@ class Ip2Region(object):
             return None
 
     def get_geo_str(self, ipaddress):
-        try:
-            data = self.btreeSearch(ipaddress)
-            data = data["region"].decode('utf-8')
-            country = data.split("|")[0]
-            province = data.split("|")[2]
-            city = data.split("|")[3]
-            isp = data.split("|")[4]
-            return " ".join([country, province, city, isp])
-        except Exception as E:
-            return None
+        result = self.get_geo(ipaddress)
+        if result is None:
+            return result
+        else:
+            return " ".join(result)
 
 
 dbFile = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'ip2region.db')

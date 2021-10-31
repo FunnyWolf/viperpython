@@ -442,7 +442,7 @@ class HeartBeat(object):
                 one_session['tunnel_peer_locate_zh'] = ip2region.get_geo_str(
                     session_info.get('tunnel_peer').split(":")[0])
                 one_session['tunnel_peer_locate_en'] = geoip2_interface.get_geo_str(
-                    session_info.get('tunnel_peer').split(":")[0])
+                    session_info.get('tunnel_peer').split(":")[0], "en")
 
                 one_session['via_exploit'] = session_info.get('via_exploit')
                 one_session['via_payload'] = session_info.get('via_payload')
