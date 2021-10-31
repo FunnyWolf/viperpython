@@ -90,12 +90,12 @@ class IPFilter(object):
             return False
 
         # 云主机黑名单
-        if IPFilter.in_cloud_blacklist(ip):
+        if IPFilter.in_cloud_blacklist(geo_list):
             Notice.send_warning(f"[屏蔽云厂商IP] [屏蔽] {ip}", f"[Cloud blacklist] [Block] {ip}")
             return False
 
         # geo 黑名单
-        if IPFilter.in_geo_blacklist(ip):
+        if IPFilter.in_geo_blacklist(geo_list):
             Notice.send_warning(f"[地理位置黑名单] [屏蔽] {ip}", f"[Geographic Blacklist] [Block] {ip}")
             return False
 
@@ -140,11 +140,11 @@ class IPFilter(object):
             return False, f"[屏蔽沙箱IP] [屏蔽] {ip}", f"[Sandbox blacklist] [Block] {ip}"
 
         # 云主机黑名单
-        if IPFilter.in_cloud_blacklist(ip):
+        if IPFilter.in_cloud_blacklist(geo_list):
             return False, f"[屏蔽云厂商IP] [屏蔽] {ip}", f"[Cloud blacklist] [Block] {ip}"
 
         # geo 黑名单
-        if IPFilter.in_geo_blacklist(ip):
+        if IPFilter.in_geo_blacklist(geo_list):
             return False, f"[地理位置黑名单] [屏蔽] {ip}", f"[Geographic Blacklist] [Block] {ip}"
 
         # reuslt = geoip2_interface.get_geo(ip)
