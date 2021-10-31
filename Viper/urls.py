@@ -7,7 +7,7 @@ from Lib.montior import MainMonitor
 from Msgrpc.views import LazyLoaderView, LazyLoaderInterfaceView, CollectSandBoxInterfaceView, CollectSandBoxView
 from Msgrpc.views import ServiceStatusView, PayloadView, JobView, HandlerView, SessionView, SessionIOView, RouteView
 from Msgrpc.views import SocksView, TransportView, FileMsfView, FileSessionView, PortFwdView, HostFileView
-from Msgrpc.views import WebDeliveryView
+from Msgrpc.views import WebDeliveryView, IPFilterView
 from PostLateral.views import PortServiceView, CredentialView, VulnerabilityView
 from PostModule.views import PostModuleConfigView, PostModuleActuatorView, PostModuleResultView
 from PostModule.views import PostModuleResultHistoryView, PostModuleAutoView
@@ -36,6 +36,7 @@ router.register(r'api/v1/msgrpc/filemsf', FileMsfView, basename="FileMsfView")
 router.register(r'api/v1/msgrpc/filesession', FileSessionView, basename="FileSessionView")
 router.register(r'api/v1/msgrpc/lazyloader', LazyLoaderView, basename="LazyLoaderView")
 router.register(r'api/v1/msgrpc/collectsandbox', CollectSandBoxView, basename="CollectSandBoxView")
+router.register(r'api/v1/msgrpc/ipfilter', IPFilterView, basename="IPFilterView")
 
 router.register(r'api/v1/postlateral/portservice', PortServiceView, basename="PortServiceView")
 router.register(r'api/v1/postlateral/credential', CredentialView, basename="CredentialView")

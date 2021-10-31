@@ -5,8 +5,9 @@
 import json
 import time
 
-from Lib.External.geoip import Geoip
-from Lib.External.qqwry import qqwry
+from Lib.External.geoip import geoip2_interface
+# from Lib.External.qqwry import qqwry
+from Lib.External.ip2Region import ip2region
 from Lib.configs import RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ, RPC_SESSION_OPER_LONG_REQ
 from Lib.log import logger
 from Lib.method import Method
@@ -138,8 +139,9 @@ class SessionLib(object):
         self.last_checkin = info.get('last_checkin') // 10 * 10
         self.fromnow = (int(time.time()) - info.get('last_checkin')) // 10 * 10
         self.tunnel_peer_ip = info.get('tunnel_peer').split(":")[0]
-        self.tunnel_peer_locate_zh = qqwry.get_location(info.get('tunnel_peer').split(":")[0])
-        self.tunnel_peer_locate_en = Geoip.get_city(info.get('tunnel_peer').split(":")[0])
+        # self.tunnel_peer_locate_zh = qqwry.get_location(info.get('tunnel_peer').split(":")[0])
+        self.tunnel_peer_locate_zh = ip2region.get_geo_str(info.get('tunnel_peer').split(":")[0])
+        self.tunnel_peer_locate_en = geoip2_interface.get_geo_str(info.get('tunnel_peer').split(":")[0], "en")
         self.load_powershell = info.get('load_powershell')
         self.load_python = info.get('load_python')
 

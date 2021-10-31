@@ -16,6 +16,7 @@ from Msgrpc.Handle.collectsandbox import CollectSandBox
 from Msgrpc.Handle.filemsf import FileMsf
 from Msgrpc.Handle.filesession import FileSession
 from Msgrpc.Handle.handler import Handler
+from Msgrpc.Handle.ipfilter import IPFilter
 from Msgrpc.Handle.job import Job
 from Msgrpc.Handle.lazyloader import LazyLoader
 from Msgrpc.Handle.payload import Payload
@@ -508,6 +509,23 @@ class LazyLoaderView(BaseView):
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
+
+
+class IPFilterView(BaseView):
+    def list(self, request, **kwargs):
+        """查询数据库中的信息"""
+        ip = request.query_params.get('ip', None)
+        context = IPFilter.list(ip)
+        return Response(context)
+
+    def update(self, request, pk=None, **kwargs):
+        try:
+            context = IPFilter.update(request.data)
+            return Response(context)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+            return Response(context)
 
 
 class CollectSandBoxView(BaseView):

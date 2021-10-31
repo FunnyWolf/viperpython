@@ -20,6 +20,7 @@ from Lib.log import logger
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 from Lib.redisclient import RedisClient
+from Lib.rpcserver import RPCServer
 from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
 from PostModule.Handle.postmoduleauto import PostModuleAuto
@@ -102,6 +103,10 @@ class MainMonitor(object):
                                    trigger='interval',
                                    seconds=1, id='run_bot_wait_list')
 
+        # msfrpc调用
+        self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_msf_rpc_thread')
         # 恢复上次运行保存的监听
         self.MainScheduler.add_job(func=Handler.recovery_cache_last_handler,
                                    trigger='date',
@@ -221,3 +226,7 @@ class MainMonitor(object):
         for message in ps.listen():
             if message:
                 logger.warning(f"不应获取非空message {message}")
+
+    @staticmethod
+    def sub_msf_rpc_thread():
+        RPCServer().run()

@@ -245,6 +245,22 @@ HostFile_MSG_ZH = {
 HostFile_MSG_EN = {
     304: "The requested file does not exist",
 }
+IPFilter_MSG_ZH = {
+    201: "更新配置成功",
+    202: "放行",
+    203: "更新权限信息成功",
+
+    302: "屏蔽",
+    304: "输入参数错误",
+}
+IPFilter_MSG_EN = {
+    201: "Update config successfully",
+    202: "Pass",
+    203: "Successfully updated session information",
+
+    302: "Block",
+    304: "Input parameter error",
+}
 
 Session_MSG_ZH = {
     201: "删除权限成功",

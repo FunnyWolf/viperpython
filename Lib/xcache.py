@@ -84,6 +84,15 @@ class Xcache(object):
 
     XCACHE_CHECKSANDBOX_TAG_CACHE = "XCACHE_CHECKSANDBOX_TAG_CACHE"
 
+    XCACHE_IPFILTER_SWITCH_CACHE = "XCACHE_IPFILTER_SWITCH_CACHE"
+    XCACHE_IPFILTER_DIY_WHITELIST_CACHE = "XCACHE_IPFILTER_DIY_WHITELIST_CACHE"
+    XCACHE_IPFILTER_DIY_BLACKLIST_CACHE = "XCACHE_IPFILTER_DIY_BLACKLIST_CACHE"
+    XCACHE_IPFILTER_CLOUD_BLACKLIST_CACHE = "XCACHE_IPFILTER_CLOUD_BLACKLIST_CACHE"
+    XCACHE_IPFILTER_SANDBOX_BLACKLIST_CACHE = "XCACHE_IPFILTER_SANDBOX_BLACKLIST_CACHE"
+    XCACHE_IPFILTER_SANDBOX_BLACKLIST_DATA_CACHE = "XCACHE_IPFILTER_SANDBOX_BLACKLIST_DATA_CACHE"
+    XCACHE_IPFILTER_GEO_WHITELIST_CACHE = "XCACHE_IPFILTER_GEO_WHITELIST_CACHE"
+    XCACHE_IPFILTER_GEO_BLACKLIST_CACHE = "XCACHE_IPFILTER_GEO_BLACKLIST_CACHE"
+
     def __init__(self):
         pass
 
@@ -968,3 +977,98 @@ class Xcache(object):
     def get_asn_reader_cache(ip):
         cache_data = cache.get(f"{Xcache.XCACHE_GEOIP_ASNREADER}:{ip}")
         return cache_data
+
+    @staticmethod
+    def get_ipfilter_switch_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_SWITCH_CACHE)
+        if cache_data is None:
+            cache.set(Xcache.XCACHE_IPFILTER_SWITCH_CACHE, False, None)
+            return False
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_switch_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_SWITCH_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def get_ipfilter_diy_whitelist_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_DIY_WHITELIST_CACHE)
+        if cache_data is None:
+            return []
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_diy_whitelist_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_DIY_WHITELIST_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def get_ipfilter_diy_blacklist_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_DIY_BLACKLIST_CACHE)
+        if cache_data is None:
+            return []
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_diy_blacklist_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_DIY_BLACKLIST_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def set_ipfilter_cloud_blacklist_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_CLOUD_BLACKLIST_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def get_ipfilter_cloud_blacklist_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_CLOUD_BLACKLIST_CACHE)
+        if cache_data is None:
+            return False
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_sandbox_blacklist_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_SANDBOX_BLACKLIST_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def get_ipfilter_sandbox_blacklist_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_SANDBOX_BLACKLIST_CACHE)
+        if cache_data is None:
+            return False
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_sandbox_blacklist_data_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_SANDBOX_BLACKLIST_DATA_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def get_ipfilter_sandbox_blacklist_data_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_SANDBOX_BLACKLIST_DATA_CACHE)
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_geo_blacklist_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_GEO_BLACKLIST_CACHE, data, None)
+        return True
+
+    @staticmethod
+    def get_ipfilter_geo_blacklist_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_GEO_BLACKLIST_CACHE)
+        if cache_data is None:
+            return []
+        return cache_data
+
+    @staticmethod
+    def get_ipfilter_geo_whitelist_cache():
+        cache_data = cache.get(Xcache.XCACHE_IPFILTER_GEO_WHITELIST_CACHE)
+        if cache_data is None:
+            return []
+        return cache_data
+
+    @staticmethod
+    def set_ipfilter_geo_whitelist_cache(data):
+        cache.set(Xcache.XCACHE_IPFILTER_GEO_WHITELIST_CACHE, data, None)
+        return True
