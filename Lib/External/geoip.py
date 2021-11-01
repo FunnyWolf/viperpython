@@ -26,21 +26,34 @@ class Geoip2(object):
                 return ["内网IP", "", "", "本地"]
             else:
                 return ["Intranet", "", "", "Local"]
+
         try:
-            country = response.country.names[lang]
+            country = response.country.get(lang)
         except Exception as E:
-            country = response.country.names["en"]
-        response = self.city_reader.city(ip)
+            try:
+                country = response.country.get("en")
+            except Exception as E:
+                country = ""
+
         try:
-            city = response.city.names[lang]
+            city = self.city_reader.city(ip).city.names.get(lang)
         except Exception as E:
-            city = response.city.names["en"]
+            try:
+                city = self.city_reader.city(ip).city.names.get("en")
+            except Exception as E:
+                city = ""
         try:
-            province = response.subdivisions.most_specific.names[lang]
+            province = self.city_reader.city(ip).subdivisions.most_specific.names.get(lang)
         except Exception as E:
-            province = response.subdivisions.most_specific.names["en"]
-        response = self.asn_reader.asn(ip)
-        isp = response.autonomous_system_organization
+            try:
+                province = self.city_reader.city(ip).subdivisions.most_specific.names.get("en")
+            except Exception as E:
+                province = ""
+
+        try:
+            isp = self.asn_reader.asn(ip).autonomous_system_organization
+        except Exception as E:
+            isp = ""
         return [country, province, city, isp]
 
     def get_geo_str(self, ip, lang="zh-CN"):

@@ -29,7 +29,6 @@ class IPFilter(object):
             result["cloud_blacklist"] = Xcache.get_ipfilter_cloud_blacklist_cache()
             result["sandbox_blacklist"] = Xcache.get_ipfilter_sandbox_blacklist_cache()
             result["geo_blacklist"] = Xcache.get_ipfilter_geo_blacklist_cache()
-            result["geo_whitelist"] = Xcache.get_ipfilter_geo_whitelist_cache()
             result["diy_whitelist"] = "\n".join(IPFilter.get_diy_whitelist())
             result["diy_blacklist"] = "\n".join(IPFilter.get_diy_blacklist())
             context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
@@ -68,10 +67,12 @@ class IPFilter(object):
 
         # 查询geo信息
         geo_list = ip2region.get_geo(ip)
-        geo_str = " ".join(geo_list)
         if geo_list is None:
             geo_list = geoip2_interface.get_geo(ip)
             geo_str = " ".join(geo_list)
+        else:
+            geo_str = " ".join(geo_list)
+
         Notice.send_info(f"[{geo_str}] {ip}", f"[{geoip2_interface.get_geo_str(ip, 'en')}] {ip}")
 
         # 自定义白名单

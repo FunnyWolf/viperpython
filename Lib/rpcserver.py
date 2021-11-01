@@ -40,7 +40,11 @@ class RPCServer(object):
 
     def function_map(self, function, kwargs):
         if function == "IPFilter.is_allow":
-            return IPFilter.is_allow(**kwargs)
+            try:
+                return IPFilter.is_allow(**kwargs)
+            except Exception as E:
+                logger.exception(E)
+                return None
         else:
             logger.error(f"未知的rpc调用: {function}")
             return None
