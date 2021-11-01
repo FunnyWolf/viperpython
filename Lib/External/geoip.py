@@ -28,30 +28,44 @@ class Geoip2(object):
                 return ["Intranet", "", "", "Local"]
 
         try:
-            country = response.country.get(lang)
+            country = response.country.names.get(lang)
+            if country is None:
+                country = ""
         except Exception as E:
             try:
-                country = response.country.get("en")
+                country = response.country.names.get("en")
+                if country is None:
+                    country = ""
             except Exception as E:
                 country = ""
 
         try:
             city = self.city_reader.city(ip).city.names.get(lang)
+            if city is None:
+                city = ""
         except Exception as E:
             try:
                 city = self.city_reader.city(ip).city.names.get("en")
+                if city is None:
+                    city = ""
             except Exception as E:
                 city = ""
         try:
             province = self.city_reader.city(ip).subdivisions.most_specific.names.get(lang)
+            if province is None:
+                province = ""
         except Exception as E:
             try:
                 province = self.city_reader.city(ip).subdivisions.most_specific.names.get("en")
+                if province is None:
+                    province = ""
             except Exception as E:
                 province = ""
 
         try:
             isp = self.asn_reader.asn(ip).autonomous_system_organization
+            if isp is None:
+                isp = ""
         except Exception as E:
             isp = ""
         return [country, province, city, isp]
