@@ -2,7 +2,6 @@
 # @File  : montior.py
 # @Date  : 2021/2/25
 # @Desc  :
-import datetime
 import logging
 import random
 import socket
@@ -43,7 +42,8 @@ class MainMonitor(object):
             return
         # 获取缓存监听
         handler_list = Xcache.get_cache_handlers()
-
+        # 加载历史监听
+        Handler.recovery_cache_last_handler(handler_list)
         # Xcache初始化部分
         Xcache.init_xcache_on_start()
         # 加载模块配置信息
@@ -107,19 +107,18 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
                                    trigger='interval',
                                    seconds=1, id='sub_msf_rpc_thread')
-        # 恢复上次运行保存的监听
-        self.MainScheduler.add_job(func=Handler.recovery_cache_last_handler,
-                                   trigger='date',
-                                   next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10),
-                                   args=[handler_list],
-                                   id='recovery_cache_last_handler')
+        # # 恢复上次运行保存的监听
+        # self.MainScheduler.add_job(func=Handler.recovery_cache_last_handler,
+        #                            trigger='date',
+        #                            next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10),
+        #                            args=[handler_list],
+        #                            id='recovery_cache_last_handler')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
         self.MainScheduler.start()
         logger.warning("后台服务启动成功")
-        Notice.send_success(f"后台服务启动成功,10秒后开始加载历史监听.",
-                            "Background service is started successfully,history handler start to load after 10 seconds.")
+        Notice.send_success(f"后台服务启动成功.", "Background service is started successfully.")
 
     @staticmethod
     def run_bot_wait_list():

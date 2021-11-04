@@ -117,7 +117,7 @@ class Handler(object):
                 break
             else:
                 Notice.send_warning(f"MSFRPC服务尚未启动,等待10秒", "MSFRPC service has not been started yet, wait 10 seconds")
-                time.sleep(10)
+                time.sleep(3)
 
         for one_handler in cache_handlers:
             opts = one_handler
