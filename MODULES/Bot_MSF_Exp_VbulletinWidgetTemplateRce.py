@@ -51,5 +51,7 @@ class PostModule(BotMSFModule):
         if "The target is vulnerable." in module_output:
             self.log_good("检测到网站存在CVE-2020-17496漏洞,执行payload",
                           "A CVE-2020-17496 vulnerability was detected on the website, and the payload was executed")
+            return True
         else:
             self.log_error("网站不存在漏洞", "The website does not have vulnerabilities")
+            return False
