@@ -57,8 +57,10 @@ class Quake:
         format_results = []
         if postresult.get("message") == 'Successful.':
             data = postresult.get("data")
+            i = 0
             for onedict in data:
                 one_line = {
+                    "index": i,
                     "ip": onedict.get('ip'),
                     "port": onedict.get('port'),
                     "protocol": onedict.get('service').get('name'),
@@ -66,6 +68,7 @@ class Quake:
                     "as_organization": onedict.get('location').get('isp'),
                 }
                 format_results.append(one_line)
+                i += 1
             return True, format_results
         else:
             return False, postresult.get("message")

@@ -56,11 +56,13 @@ class FOFAClient:
         format_results = []
         if data.get("error") is False:
             results = data.get("results")
+            i = 0
             for result in results:
-                format_result = {}
+                format_result = {"index": i}
                 for field, value in zip(self.fields, result):
                     format_result[field] = value
                 format_results.append(format_result)
+                i += 1
             return True, format_results
         else:
             return False, data.get("errmsg")

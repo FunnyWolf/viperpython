@@ -456,6 +456,10 @@ class _CommonModule(object):
         filepath = FileMsf.write_msf_file(filename, bytedata, msf=msf)
         return filepath
 
+    def get_lhost(self):
+        cache_data = Xcache.get_lhost_config()
+        return cache_data.get("lhost")
+
     # 功能函数
     # 功能函数
 

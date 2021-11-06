@@ -32,6 +32,10 @@ class NetworkSearch(object):
                 querystr = f"{moduleQuery} AND {inputstr}"
             client = Quake()
             flag = client.init_conf_from_cache()
+        elif engine == "Debug":
+            data = NetworkSearch.get_test_data()
+            context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
+            return context
         else:
             context = data_return(304, {}, NetworkSearch_MSG_ZH.get(304), NetworkSearch_MSG_EN.get(304))
             return context
@@ -39,14 +43,12 @@ class NetworkSearch(object):
         if flag is not True:
             context = data_return(301, {}, NetworkSearch_MSG_ZH.get(301), NetworkSearch_MSG_EN.get(301))
             return context
-
         try:
             flag, data = client.get_data(query_str=querystr, page=page, size=size)
             if flag is not True:
                 context = data_return(303, {"errmsg": data}, NetworkSearch_MSG_ZH.get(303),
                                       NetworkSearch_MSG_EN.get(303))
             else:
-                data.extend(NetworkSearch.get_test_data())
                 context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
 
@@ -61,6 +63,15 @@ class NetworkSearch(object):
         """生成测试数据"""
         data = [
             {
+                "index": 0,
+                "ip": "127.0.0.1",
+                "port": 22,
+                "protocol": "ssh",
+                "country_name": "viper",
+                "as_organization": "viper test",
+            },
+            {
+                "index": 1,
                 "ip": "127.0.0.1",
                 "port": 2222,
                 "protocol": "ssh",
@@ -68,23 +79,26 @@ class NetworkSearch(object):
                 "as_organization": "viper test",
             },
             {
-                "ip": "127.0.0.1",
-                "port": 8888,
+                "index": 2,
+                "ip": Xcache.get_lhost_config().get("lhost"),
+                "port": 22,
                 "protocol": "ssh",
                 "country_name": "viper",
                 "as_organization": "viper test",
             },
             {
-                "ip": "192.168.146.130",
-                "port": 2222,
-                "protocol": "ssh",
+                "index": 3,
+                "ip": Xcache.get_lhost_config().get("lhost"),
+                "port": 80,
+                "protocol": "http",
                 "country_name": "viper",
                 "as_organization": "viper test",
             },
             {
-                "ip": "192.168.146.130",
-                "port": 8888,
-                "protocol": "ssh",
+                "index": 4,
+                "ip": Xcache.get_lhost_config().get("lhost"),
+                "port": 443,
+                "protocol": "https",
                 "country_name": "viper",
                 "as_organization": "viper test",
             },

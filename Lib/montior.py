@@ -107,12 +107,6 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
                                    trigger='interval',
                                    seconds=1, id='sub_msf_rpc_thread')
-        # # 恢复上次运行保存的监听
-        # self.MainScheduler.add_job(func=Handler.recovery_cache_last_handler,
-        #                            trigger='date',
-        #                            next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10),
-        #                            args=[handler_list],
-        #                            id='recovery_cache_last_handler')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
