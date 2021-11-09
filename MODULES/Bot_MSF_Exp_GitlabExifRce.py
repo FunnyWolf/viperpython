@@ -8,7 +8,7 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(BotMSFModule):
-    NAME_ZH = "Gitlab ExifTool RCE new"
+    NAME_ZH = "Gitlab ExifTool RCE"
     DESC_ZH = "此模块利用GitLab Community Edition（CE）和Enterprise Edition（EE）中未经验证的文件上载和命令注入漏洞进行攻击.\n" \
               "补丁版本为13.10.3、13.9.6和13.8.8.利用此漏洞将导致以git用户身份执行命令.\n" \
               "建议linux类型payload"

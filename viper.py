@@ -247,16 +247,6 @@ def stop_services():
             stdout=devNull,
             stderr=devNull
         )
-        # subprocess.Popen(
-        #     "kill -9 $(ps aux | grep puma | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-        #     stdout=devNull,
-        #     stderr=devNull
-        # )
-        # subprocess.Popen(
-        #     "rm /root/puma.pid", shell=True,
-        #     stdout=devNull,
-        #     stderr=devNull
-        # )
     except Exception as E:
         pass
 
