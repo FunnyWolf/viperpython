@@ -65,7 +65,7 @@ class WebDelivery(object):
                                                    timeout=RPC_JOB_API_REQ)
         if isinstance(result, dict) is not True or result.get('job_id') is None:
             opts['ID'] = None
-            context = data_return(301, opts, WebDelivery_MSG_ZH.get(301), WebDelivery_MSG_EN.get(301))
+            context = data_return(307, opts, WebDelivery_MSG_ZH.get(307), WebDelivery_MSG_EN.get(307))
         else:
             job_id = int(result.get('job_id'))
             if Job.is_msf_job_alive(job_id):
