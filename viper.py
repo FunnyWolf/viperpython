@@ -161,10 +161,8 @@ def start_services():
         client.close()
     except Exception as err:
         print("[*] 启动msfrpcd服务")
-        res = subprocess.Popen(
-            f"nohup puma -b tcp://127.0.0.1:{msgrpc_port} -e production --pidfile /root/viper/puma.pid "
-            f"--redirect-stdout {LOGDIR}/puma.log --redirect-stderr {LOGDIR}/puma.log /root/metasploit-framework/msf-json-rpc.ru &",
-            shell=True,
+        result = subprocess.run(
+            ["service", "puma", "start"],
             stdout=devNull,
             stderr=devNull
         )
@@ -244,22 +242,21 @@ def stop_services():
 
     try:
         print("[*] 关闭msfrpcd服务")
-        subprocess.run(
-            ["/sbin/start-stop-daemon", "--quiet", "--stop", "--retry", "QUIT/5", "--pidfile",
-             "/root/puma.pid"],
+        result = subprocess.run(
+            ["service", "puma", "stop"],
             stdout=devNull,
             stderr=devNull
         )
-        subprocess.Popen(
-            "kill -9 $(ps aux | grep puma | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
-        subprocess.Popen(
-            "rm /root/puma.pid", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+        # subprocess.Popen(
+        #     "kill -9 $(ps aux | grep puma | tr -s ' '| cut -d ' ' -f 2)", shell=True,
+        #     stdout=devNull,
+        #     stderr=devNull
+        # )
+        # subprocess.Popen(
+        #     "rm /root/puma.pid", shell=True,
+        #     stdout=devNull,
+        #     stderr=devNull
+        # )
     except Exception as E:
         pass
 
@@ -339,8 +336,12 @@ def gen_random_token():
         print("[*] 重启redis服务")
         result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
         result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
+        result = subprocess.run(["service", "redis-server", "stop"], stdout=devNull)
+        time.sleep(3)
         result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
         result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
+        result = subprocess.run(["service", "redis-server", "start"], stdout=devNull)
+        print("[*] 重启redis完成")
     except Exception as E:
         pass
 

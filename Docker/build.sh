@@ -41,12 +41,16 @@ rm -rf /usr/local/share/*
 
 
 # mkdir
-
 mkdir -p /root/viper/Docker/module
 mkdir -p /root/viper/Docker/log
 mkdir -p /root/viper/Docker/db
 mkdir -p /root/viper/Docker/nginxconfig
 mkdir -p /root/viper/STATICFILES/TMP
+
+# service
+cp /root/viper/Docker/puma /etc/init.d/puma
+chmod 755 /etc/init.d/puma
+dos2unix /etc/init.d/puma
 
 # history
 history -c
