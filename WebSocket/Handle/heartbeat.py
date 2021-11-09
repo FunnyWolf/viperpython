@@ -8,10 +8,9 @@ import json
 import time
 
 from Core.Handle.host import Host
-from Lib.External.geoip import geoip2_interface
-from Lib.External.ip2Region import ip2region
 # from Lib.External.qqwry import qqwry
 from Lib.configs import RPC_FRAMEWORK_API_REQ
+from Lib.ipgeo import IPGeo
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -436,13 +435,12 @@ class HeartBeat(object):
                 one_session['session_host'] = session_info.get('session_host')
                 one_session['tunnel_local'] = session_info.get('tunnel_local')
                 one_session['tunnel_peer'] = session_info.get('tunnel_peer')
-                one_session['tunnel_peer_ip'] = session_info.get('tunnel_peer').split(":")[0]
 
-                # one_session['tunnel_peer_locate_zh'] = qqwry.get_location(session_info.get('tunnel_peer').split(":")[0])
-                one_session['tunnel_peer_locate_zh'] = ip2region.get_geo_str(
-                    session_info.get('tunnel_peer').split(":")[0])
-                one_session['tunnel_peer_locate_en'] = geoip2_interface.get_geo_str(
-                    session_info.get('tunnel_peer').split(":")[0], "en")
+                tunnel_peer_ip = session_info.get('tunnel_peer').split(":")[0]
+                one_session['tunnel_peer_ip'] = tunnel_peer_ip
+
+                one_session['tunnel_peer_locate_zh'] = IPGeo.get_ip_geo_str(tunnel_peer_ip, "zh-CN")
+                one_session['tunnel_peer_locate_en'] = IPGeo.get_ip_geo_str(tunnel_peer_ip, "en-US")
 
                 one_session['via_exploit'] = session_info.get('via_exploit')
                 one_session['via_payload'] = session_info.get('via_payload')

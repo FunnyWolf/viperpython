@@ -8,10 +8,9 @@ import os
 from django.conf import settings
 
 # from Lib.External.qqwry import qqwry
-from Lib.External.geoip import geoip2_interface
-from Lib.External.ip2Region import ip2region
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, CODE_MSG_EN, IPFilter_MSG_EN, IPFilter_MSG_ZH
+from Lib.ipgeo import IPGeo
 from Lib.notice import Notice
 from Lib.xcache import Xcache
 
@@ -66,14 +65,10 @@ class IPFilter(object):
             return True
 
         # 查询geo信息
-        geo_list = ip2region.get_geo(ip)
-        if geo_list is None:
-            geo_list = geoip2_interface.get_geo(ip)
-            geo_str = " ".join(geo_list)
-        else:
-            geo_str = " ".join(geo_list)
-
-        Notice.send_info(f"[{geo_str}] {ip}", f"[{geoip2_interface.get_geo_str(ip, 'en')}] {ip}")
+        geo_list = IPGeo.get_ip_geo(ip, "zh-CN")
+        geo_str_zh = IPGeo.get_ip_geo_str(ip, "zh-CN")
+        geo_str_en = IPGeo.get_ip_geo_str(ip, "en-US")
+        Notice.send_info(f"[{geo_str_zh}] {ip}", f"[{geo_str_en}] {ip}")
 
         # 自定义白名单
         if IPFilter.in_diy_whitelist(ip):
@@ -100,9 +95,9 @@ class IPFilter(object):
             Notice.send_warning(f"[地理位置黑名单] [屏蔽] {ip}", f"[Geographic Blacklist] [Block] {ip}")
             return False
 
-        # reuslt = geoip2_interface.get_geo(ip)
+        # reuslt = geoip2_instance.get_geo(ip)
         # print(reuslt)
-        # reuslt = ip2region.get_geo(ip)
+        # reuslt = ip2region_instance.get_geo(ip)
         # print(reuslt)
 
         # reuslt = qqwry.get_location(ip)
@@ -124,9 +119,7 @@ class IPFilter(object):
             return True, f"[非IPv4地址] [放行] {ip}", f"[Not IPv4 Address] [Pass] {ip}"
 
         # 查询geo信息
-        geo_list = ip2region.get_geo(ip)
-        if geo_list is None:
-            geo_list = geoip2_interface.get_geo(ip)
+        geo_list = IPGeo.get_ip_geo(ip, "zh-CN")
 
         # 自定义白名单
         if IPFilter.in_diy_whitelist(ip):
@@ -148,9 +141,9 @@ class IPFilter(object):
         if IPFilter.in_geo_blacklist(geo_list):
             return False, f"[地理位置黑名单] [屏蔽] {ip}", f"[Geographic Blacklist] [Block] {ip}"
 
-        # reuslt = geoip2_interface.get_geo(ip)
+        # reuslt = geoip2_instance.get_geo(ip)
         # print(reuslt)
-        # reuslt = ip2region.get_geo(ip)
+        # reuslt = ip2region_instance.get_geo(ip)
         # print(reuslt)
         # reuslt = qqwry.get_location(ip)
         # print(reuslt)

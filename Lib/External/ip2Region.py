@@ -249,14 +249,7 @@ class Ip2Region(object):
         except Exception as E:
             return None
 
-    def get_geo_str(self, ipaddress):
-        result = self.get_geo(ipaddress)
-        if result is None:
-            return result
-        else:
-            return " ".join(result)
-
 
 dbFile = os.path.join(settings.BASE_DIR, 'STATICFILES', 'STATIC', 'ip2region.db')
 
-ip2region = Ip2Region(dbFile)
+ip2region_instance = Ip2Region(dbFile)

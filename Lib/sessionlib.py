@@ -5,10 +5,8 @@
 import json
 import time
 
-from Lib.External.geoip import geoip2_interface
-# from Lib.External.qqwry import qqwry
-from Lib.External.ip2Region import ip2region
 from Lib.configs import RPC_FRAMEWORK_API_REQ, RPC_SESSION_OPER_SHORT_REQ, RPC_SESSION_OPER_LONG_REQ
+from Lib.ipgeo import IPGeo
 from Lib.log import logger
 from Lib.method import Method
 from Lib.msfmodule import MSFModule
@@ -139,9 +137,9 @@ class SessionLib(object):
         self.last_checkin = info.get('last_checkin') // 10 * 10
         self.fromnow = (int(time.time()) - info.get('last_checkin')) // 10 * 10
         self.tunnel_peer_ip = info.get('tunnel_peer').split(":")[0]
-        # self.tunnel_peer_locate_zh = qqwry.get_location(info.get('tunnel_peer').split(":")[0])
-        self.tunnel_peer_locate_zh = ip2region.get_geo_str(info.get('tunnel_peer').split(":")[0])
-        self.tunnel_peer_locate_en = geoip2_interface.get_geo_str(info.get('tunnel_peer').split(":")[0], "en")
+        tunnel_peer_ip = info.get('tunnel_peer').split(":")[0]
+        self.tunnel_peer_locate_zh = IPGeo.get_ip_geo_str(tunnel_peer_ip, "zh-CN")
+        self.tunnel_peer_locate_en = IPGeo.get_ip_geo_str(tunnel_peer_ip, "en-US")
         self.load_powershell = info.get('load_powershell')
         self.load_python = info.get('load_python')
 

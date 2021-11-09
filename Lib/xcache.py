@@ -64,6 +64,8 @@ class Xcache(object):
     XCACHE_GEOIP_CITYREADER = "XCACHE_GEOIP_CITYREADER"
     XCACHE_GEOIP_ASNREADER = "XCACHE_GEOIP_ASNREADER"
 
+    XCACHE_GEOIP_DATA = "XCACHE_GEOIP_DATA"
+
     XCACHE_DEFAULT_LHOST_CONFIG = "XCACHE_DEFAULT_LHOST_CONFIG"
 
     XCACHE_SESSIONIO_CACHE = "XCACHE_SESSIONIO_CACHE"
@@ -966,6 +968,16 @@ class Xcache(object):
     @staticmethod
     def get_city_reader_cache(ip):
         cache_data = cache.get(f"{Xcache.XCACHE_GEOIP_CITYREADER}:{ip}")
+        return cache_data
+
+    @staticmethod
+    def set_geoip_data(key, cache_data):
+        cache.set(f"{Xcache.XCACHE_GEOIP_DATA}:{key}", cache_data, 3600)
+        return True
+
+    @staticmethod
+    def get_geoip_data(key):
+        cache_data = cache.get(f"{Xcache.XCACHE_GEOIP_DATA}:{key}")
         return cache_data
 
     @staticmethod

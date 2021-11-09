@@ -5,10 +5,8 @@
 
 import ipaddress
 
-from Lib.External.geoip import geoip2_interface
-from Lib.External.ip2Region import ip2region
-# from Lib.External.qqwry import qqwry
 from Lib.ModuleAPI import *
+from Lib.ipgeo import IPGeo
 
 
 class PostModule(PostMSFPowershellModule):
@@ -71,9 +69,9 @@ class PostModule(PostMSFPowershellModule):
                 self.log_error("获取信息错误", "Get output error")
                 self.log_raw(data)
                 return
-            # locate_zh = qqwry.get_location(data)
-            locate_zh = ip2region.get_geo_str(data)
-            locate_en = geoip2_interface.get_geo_str(data, "en")
+
+            locate_zh = IPGeo.get_ip_geo_str(data, "zh-CN")
+            locate_en = IPGeo.get_ip_geo_str(data, "en-US")
 
             self.log_good(f"出口IP: {data}", f"Outbound IP: {data}")
             self.log_good(f"地理位置: {locate_zh}", f"Location: {locate_en}")

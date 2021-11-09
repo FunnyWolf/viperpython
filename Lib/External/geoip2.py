@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File  : geoip.py
+# @File  : geoip2.py
 # @Date  : 2021/2/25
 # @Desc  :
 import os
@@ -30,7 +30,7 @@ class Geoip2(object):
         try:
             country = response.country.names.get(lang)
             if country is None:
-                country = ""
+                raise KeyError
         except Exception as E:
             try:
                 country = response.country.names.get("en")
@@ -42,7 +42,7 @@ class Geoip2(object):
         try:
             city = self.city_reader.city(ip).city.names.get(lang)
             if city is None:
-                city = ""
+                raise KeyError
         except Exception as E:
             try:
                 city = self.city_reader.city(ip).city.names.get("en")
@@ -53,7 +53,7 @@ class Geoip2(object):
         try:
             province = self.city_reader.city(ip).subdivisions.most_specific.names.get(lang)
             if province is None:
-                province = ""
+                raise KeyError
         except Exception as E:
             try:
                 province = self.city_reader.city(ip).subdivisions.most_specific.names.get("en")
@@ -70,8 +70,5 @@ class Geoip2(object):
             isp = ""
         return [country, province, city, isp]
 
-    def get_geo_str(self, ip, lang="zh-CN"):
-        return " ".join(self.get_geo(ip, lang))
 
-
-geoip2_interface = Geoip2()
+geoip2_instance = Geoip2()
