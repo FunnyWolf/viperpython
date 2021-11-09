@@ -20,7 +20,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1560"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1560/003/"]
     README = ["https://www.yuque.com/vipersec/module/nf83mz"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionStr(name='INPUTDIR', tag_zh="压缩目录", desc_zh="需要压缩的目录",

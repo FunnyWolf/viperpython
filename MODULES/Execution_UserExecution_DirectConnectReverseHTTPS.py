@@ -22,7 +22,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/ttxxip"]
     REFERENCES = [""]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

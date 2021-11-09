@@ -166,9 +166,8 @@ class PostModuleActuator(object):
                                     f"Module:{post_module_intent.NAME_ZH} IP:{ipport.get('ip')} check function run exception")
                 continue
 
-            tmp_self_uuid = str(uuid.uuid1())
             req = {
-                'uuid': tmp_self_uuid,
+                'uuid': str(uuid.uuid1()),
                 'group_uuid': group_uuid,
                 'broker': post_module_intent.MODULE_BROKER,
                 'module': post_module_intent,

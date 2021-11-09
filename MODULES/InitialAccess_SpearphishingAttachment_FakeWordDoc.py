@@ -21,7 +21,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/smihrw"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1566/001/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

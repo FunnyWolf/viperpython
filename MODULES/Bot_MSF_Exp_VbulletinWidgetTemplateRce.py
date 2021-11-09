@@ -18,7 +18,7 @@ class PostModule(BotMSFModule):
     MODULETYPE = TAG2TYPE.Bot_MSF_Exp
     README = ["https://www.yuque.com/vipersec/module/qp8b51"]
     REFERENCES = ["https://blog.exploitee.rs/2020/exploiting-vbulletin-a-tale-of-patch-fail/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     SEARCH = {
         "FOFA": 'icon_hash="-601665621"',
         "Quake": 'favicon:"c1f20852dd1caf078f49de77a2de8e3f"',

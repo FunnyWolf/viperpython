@@ -19,7 +19,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1055"]  # ATTCK向量
     REFERENCES = ["https://www.yuque.com/vipersec/module/urdpn7"]
     README = ["https://www.yuque.com/funnywolfdoc/viperdoc/rdtnla"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([

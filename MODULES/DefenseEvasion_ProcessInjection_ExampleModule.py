@@ -17,7 +17,7 @@ class PostModule(PostMSFCSharpModule):
     ATTCK = ["T1003"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/hrg50h"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

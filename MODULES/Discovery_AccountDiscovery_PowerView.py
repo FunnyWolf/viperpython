@@ -19,7 +19,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     ATTCK = ["T1087"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/wk90cy"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1087/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionEnum(name='action',
                    tag_zh="选项", desc_zh="可以选择获取所有用户或管理员组用户",

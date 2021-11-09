@@ -20,7 +20,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/hncv58"]
     REFERENCES = ["https://idiotc4t.com/code-and-dll-process-injection/untitled"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

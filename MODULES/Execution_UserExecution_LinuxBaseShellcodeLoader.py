@@ -28,7 +28,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/bkcs3p"]
     REFERENCES = ["https://astr0baby.wordpress.com/2019/04/23/metasploit-payloads-evasion-against-linux-av/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

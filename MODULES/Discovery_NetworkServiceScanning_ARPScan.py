@@ -23,7 +23,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1046"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/pf9z8a"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1046/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionIPAddressRange(name='address_range',

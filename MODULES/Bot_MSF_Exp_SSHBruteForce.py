@@ -17,7 +17,7 @@ class PostModule(BotMSFModule):
     MODULETYPE = TAG2TYPE.Bot_MSF_Exp
     README = ["https://www.yuque.com/vipersec/module/wgviok"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1193/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     SEARCH = {
         "FOFA": 'protocol="SSH"',
         "Quake": 'service:"SSH"',

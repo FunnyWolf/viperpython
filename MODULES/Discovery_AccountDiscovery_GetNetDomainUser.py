@@ -19,7 +19,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     ATTCK = ["T1087"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/ozet21"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1087/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)
@@ -44,18 +44,18 @@ class PostModule(PostMSFPowershellFunctionModule):
                     try:
                         for one in powershell_json_output:
                             self.log_good(
-                                f"用户:{one.get('name')} 显示名称:{one.get('displayname')} 域内标识:{one.get('userprincipalname')} 账户控制:{one.get('useraccountcontrol')}\n" \
-                                f"最后登录时间:{one.get('lastlogon')} 账户更改时间:{one.get('whenchanged')} 最后设置密码时间:{one.get('pwdlastset')} 账户创建时间:{one.get('whencreated')}",
-                                f"User: {one.get('name')} Display name: {one.get('displayname')} Domain ID: {one.get('userprincipalname')} Account control: {one.get('useraccountcontrol ')}\n" \
+                                f"用户:{one.get('name')} 显示名称:{one.get('displayname')} 域内标识:{one.get('userprincipalname')} 账户控制:{one.get('useraccountcontrol')}\n"
+                                f"最后登录时间:{one.get('lastlogon')} 账户更改时间:{one.get('whenchanged')} 最后设置密码时间:{one.get('pwdlastset')} 账户创建时间:{one.get('whencreated')}"
+                                f"User: {one.get('name')} Display name: {one.get('displayname')} Domain ID: {one.get('userprincipalname')} Account control: {one.get('useraccountcontrol ')}\n"
                                 f"Last login time: {one.get('lastlogon')} Account change time: {one.get('whenchanged')} Last password setting time: {one.get('pwdlastset')} Account creation time: {one.get('whencreated')}")
                     except Exception as E:
                         pass
                 elif isinstance(powershell_json_output, dict):
                     one = powershell_json_output
                     self.log_good(
-                        f"用户:{one.get('name')} 显示名称:{one.get('displayname')} 域内标识:{one.get('userprincipalname')} 账户控制:{one.get('useraccountcontrol')}\n" \
+                        f"用户:{one.get('name')} 显示名称:{one.get('displayname')} 域内标识:{one.get('userprincipalname')} 账户控制:{one.get('useraccountcontrol')}\n"
                         f"最后登录时间:{one.get('lastlogon')} 账户更改时间:{one.get('whenchanged')} 最后设置密码时间:{one.get('pwdlastset')} 账户创建时间:{one.get('whencreated')}",
-                        f"User: {one.get('name')} Display name: {one.get('displayname')} Domain ID: {one.get('userprincipalname')} Account control: {one.get('useraccountcontrol ')}\n" \
+                        f"User: {one.get('name')} Display name: {one.get('displayname')} Domain ID: {one.get('userprincipalname')} Account control: {one.get('useraccountcontrol ')}\n"
                         f"Last login time: {one.get('lastlogon')} Account change time: {one.get('whenchanged')} Last password setting time: {one.get('pwdlastset')} Account creation time: {one.get('whencreated')}")
                 else:
                     self.log_error("脚本无有效输出", "Script has no valid output")

@@ -23,7 +23,7 @@ class PostModule(PostMSFRawModule):
     PLATFORM = ["Windows"]  # 平台
     PERMISSIONS = ["User", "Administrator", "SYSTEM"]  # 所需权限
     ATTCK = ["T1050"]  # ATTCK向量
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     README = ["https://www.yuque.com/vipersec/module/pixh1u"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
     OPTIONS = register_options([

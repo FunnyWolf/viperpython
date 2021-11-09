@@ -21,7 +21,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1553"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/pry6ph"]
     REFERENCES = ["http://www.slideshare.net/ChrisJohnRiley/ssl-certificate-impersonation-for-shits-andgiggles"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([

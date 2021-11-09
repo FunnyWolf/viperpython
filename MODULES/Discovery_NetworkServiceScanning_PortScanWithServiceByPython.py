@@ -24,7 +24,7 @@ class PostModule(PostMSFPythonWithParamsModule):
     ATTCK = ["T1046"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/yeqo4o"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1046/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionText(name='ipstr',

@@ -20,7 +20,7 @@ class PostModule(PostPythonModule):
     README = ["https://www.yuque.com/vipersec/module/lekesi"]
     REFERENCES = ["https://www.yuque.com/vipersec/blog/lb8f2m",
                   "https://console.cloud.tencent.com/apigateway/service?rid=1"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     REQUIRE_SESSION = False
     OPTIONS = register_options([

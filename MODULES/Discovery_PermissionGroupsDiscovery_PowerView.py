@@ -20,7 +20,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     ATTCK = ["T1069"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/bu4ozg"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1069/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionEnum(name='action',
                    tag_zh="选项", desc_zh="可以选择获取Session所在域信任信息及林信任信息",

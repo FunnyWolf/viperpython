@@ -23,7 +23,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1003"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/"]
     README = ["https://www.yuque.com/vipersec/module/wkqgqd"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

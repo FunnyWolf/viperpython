@@ -22,7 +22,7 @@ class PostModule(PostMSFExecPEModule):
     ATTCK = ["T1081"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1081/", "https://github.com/moonD4rk/HackBrowserData"]
     README = ["https://www.yuque.com/vipersec/module/tzbot0"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = []
 

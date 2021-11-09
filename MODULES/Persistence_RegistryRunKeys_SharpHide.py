@@ -21,7 +21,7 @@ class PostModule(PostMSFCSharpModule):
     ATTCK = ["T1037"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/npl2d8"]
     REFERENCES = ["https://github.com/outflanknl/SharpHide"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionEnum(name='action',

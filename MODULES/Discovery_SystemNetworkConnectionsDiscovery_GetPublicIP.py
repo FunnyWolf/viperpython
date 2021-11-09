@@ -29,7 +29,7 @@ class PostModule(PostMSFPowershellModule):
     README = ["https://www.yuque.com/vipersec/module/rd1nie"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1016/001/",
                   "https://ifconfig.me"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionInt(name='timeout',

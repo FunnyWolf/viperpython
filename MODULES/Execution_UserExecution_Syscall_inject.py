@@ -25,7 +25,7 @@ NOTE: for better evasion ratio, use high SLEEP values"""
     ATTCK = ["T1081"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1059/"]
     README = ["https://www.yuque.com/vipersec/module/gkm65g"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionHander(),
         OptionInt(name='SLEEP',

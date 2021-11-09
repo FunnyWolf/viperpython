@@ -27,7 +27,7 @@ class PostModule(PostMSFCSharpModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/dkneiv"]
     REFERENCES = ["https://k8gege.org/Ladon/", "https://github.com/k8gege/Ladon"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionStr(name='args',

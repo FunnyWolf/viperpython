@@ -22,7 +22,7 @@ class PostModule(PostMSFCSharpModule):
     REFERENCES = ["https://attack.mitre.org/techniques/T1003/",
                   "https://github.com/QAX-A-Team/BrowserGhost"]
     README = ["https://www.yuque.com/vipersec/module/ynbyqg"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(sessionid, ipaddress, custom_param)

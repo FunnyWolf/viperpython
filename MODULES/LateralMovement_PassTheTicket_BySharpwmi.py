@@ -23,7 +23,7 @@ class PostModule(PostMSFCSharpModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/pkxmyw"]
     REFERENCES = ["https://github.com/viper-sec/sharpwmi"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionStr(name='host',
                   tag_zh="目标IP", desc_zh="横向移动目标的IP地址",

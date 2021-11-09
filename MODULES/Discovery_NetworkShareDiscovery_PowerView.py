@@ -19,7 +19,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     ATTCK = ["T1135"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/dc5npu"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1135/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionStr(name='ComputerName',
                   tag_zh="主机名", desc_zh="需要查询的主机名,如未输入则查询本机共享",

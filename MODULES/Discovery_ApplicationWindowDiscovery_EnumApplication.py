@@ -20,7 +20,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1010"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/rgfmz8"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1010/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     REQUIRE_SESSION = True
     OPTIONS = []
 

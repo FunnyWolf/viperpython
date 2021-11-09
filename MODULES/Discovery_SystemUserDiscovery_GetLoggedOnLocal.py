@@ -23,7 +23,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     ATTCK = ["T1033"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/mc9ze2"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1033/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionStr(name='ComputerName',

@@ -22,7 +22,7 @@ class PostModule(PostMSFPowershellFunctionModule):
     ATTCK = ["T1135"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/mhgwsv"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1135/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionStr(name='host',
                   tag_zh="目标IP", desc_zh="横向移动目标的IP地址",

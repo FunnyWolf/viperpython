@@ -23,7 +23,7 @@ class PostModule(PostMSFPythonModule):
     ATTCK = ["T1055"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/qxfra8"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1050/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionFileEnum(ext=['py', 'pyc']),

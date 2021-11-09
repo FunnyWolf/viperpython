@@ -19,7 +19,7 @@ class PostModule(BotMSFModule):
     MODULETYPE = TAG2TYPE.Bot_MSF_Exp
     README = ["https://www.yuque.com/vipersec/module/klnhmx"]
     REFERENCES = [""]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     SEARCH = {
         "FOFA": 'app:"gitlab"',
         "Quake": 'app:"gitlab"',

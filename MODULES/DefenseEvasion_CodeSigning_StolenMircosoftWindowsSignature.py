@@ -22,7 +22,7 @@ class PostModule(PostPythonModule):
     ATTCK = ["T1116"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/hfdahb"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1116/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionFileEnum(ext=['exe']),

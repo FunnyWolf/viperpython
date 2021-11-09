@@ -21,7 +21,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/do11qd"]
     REFERENCES = ["https://pentestlab.blog/2020/02/24/parent-pid-spoofing/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

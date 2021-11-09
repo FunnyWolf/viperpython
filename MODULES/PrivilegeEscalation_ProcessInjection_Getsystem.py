@@ -21,7 +21,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1055"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/delftb"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1088/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionEnum(name='TECHNIQUE',
                    tag_zh="提权技术", desc_zh="选择提权技术,默认使用所有可利用方法",

@@ -22,7 +22,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/pf9ko7"]
     REFERENCES = ["https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

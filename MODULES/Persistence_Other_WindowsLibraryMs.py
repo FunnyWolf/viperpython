@@ -23,7 +23,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = [""]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/rqqo3g"]
     REFERENCES = ["https://blog.f-secure.com/abusing-windows-library-files-for-persistence/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([

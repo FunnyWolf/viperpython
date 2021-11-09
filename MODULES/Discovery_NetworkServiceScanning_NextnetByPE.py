@@ -25,7 +25,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1560"]  # ATTCK向量
     REFERENCES = ["https://attack.mitre.org/techniques/T1560/003/", "https://github.com/hdm/nextnet"]
     README = ["https://www.yuque.com/vipersec/module/dtmof0"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
     REQUIRE_SESSION = True
     OPTIONS = register_options([
         OptionStr(name='IPADDRESS',

@@ -71,9 +71,11 @@ class MSFModule(object):
                 msf_module._store_result_in_history()  # 存储到历史记录
             except Exception as E:
                 logger.error(E)
-
-        Notice.send_success(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 执行完成",
-                            f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} run finish")
+            Notice.send_success(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 执行成功",
+                                f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} run success")
+        else:
+            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 执行完成",
+                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} run finish")
 
     @staticmethod
     def putin_msf_module_job_queue(msf_module=None):

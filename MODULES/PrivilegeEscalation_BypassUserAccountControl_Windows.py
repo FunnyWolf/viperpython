@@ -34,7 +34,7 @@ class PostModule(PostPythonModule):
     ATTCK = ["T1088"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/ygddsl"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1088/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionEnum(name='module_select',

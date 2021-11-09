@@ -22,7 +22,7 @@ class PostModule(PostPythonModule):
     ATTCK = []  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/hzc0xk"]
     REFERENCES = ["https://docs.microsoft.com/zh-cn/windows/win32/procthread/using-the-thread-pool-functions"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),

@@ -21,7 +21,7 @@ class PostModule(PostPythonModule):
     README = ["https://www.yuque.com/vipersec/module/gsz9lt"]
     REFERENCES = ["https://github.com/gh0stkey/RGPerson",
                   "https://attack.mitre.org/techniques/T1585/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     REQUIRE_SESSION = False
     OPTIONS = []

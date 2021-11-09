@@ -27,7 +27,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1137"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/ruk0ms"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1137/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     REQUIRE_SESSION = True
     OPTIONS = register_options([

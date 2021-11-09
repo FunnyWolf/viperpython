@@ -23,7 +23,7 @@ class PostModule(PostMSFRawModule):
     ATTCK = ["T1053"]  # ATTCK向量
     README = ["https://www.yuque.com/vipersec/module/iprzfo"]
     REFERENCES = ["https://attack.mitre.org/techniques/T1053/"]
-    AUTHOR = "Viper"
+    AUTHOR = ["Viper"]
 
     OPTIONS = register_options([
         OptionHander(),
