@@ -408,6 +408,7 @@ WebDelivery_MSG_ZH = {
     302: "新建WebDelivery失败",
     303: "输入参数错误",
     306: "端口已占用",
+    307: "Target和载荷不匹配",
 }
 
 WebDelivery_MSG_EN = {
@@ -418,6 +419,7 @@ WebDelivery_MSG_EN = {
     302: "Failed to create new WebDelivery",
     303: "Input parameter error",
     306: "Port is occupied",
+    307: "Target and Payload do not match",
 }
 
 Job_MSG_ZH = {
