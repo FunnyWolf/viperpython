@@ -120,6 +120,7 @@ class Settings(object):
 
                 context = data_return(203, data, Setting_MSG_ZH.get(203), Setting_MSG_EN.get(203))
                 return context
+
         elif kind == "serverchan":
             sendkey = setting.get("sendkey")
             if Settings._check_serverchan_aliveable(sendkey) is not True:

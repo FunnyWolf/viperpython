@@ -14,7 +14,7 @@ from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
 
 class PostModuleConfigView(BaseView):
     def list(self, request, **kwargs):
-        loadpath = request.query_params.get('loadpath', None)
+        loadpath = request.query_params.get('loadpath')
 
         context = PostModuleConfig.list(loadpath=loadpath)
         return Response(context)
@@ -26,13 +26,13 @@ class PostModuleConfigView(BaseView):
 
 class PostModuleActuatorView(BaseView):
     def create(self, request, **kwargs):
-        moduletype = request.data.get('moduletype', None)
+        moduletype = request.data.get('moduletype')
         if moduletype is None:  # 默认模块
             try:
-                sessionid = int(request.data.get('sessionid', None))
-                ipaddress = request.data.get('ipaddress', None)
-                loadpath = str(request.data.get('loadpath', None))
-                custom_param = str(request.data.get('custom_param', None))
+                sessionid = int(request.data.get('sessionid'))
+                ipaddress = request.data.get('ipaddress')
+                loadpath = request.data.get('loadpath')
+                custom_param = request.data.get('custom_param')
                 context = PostModuleActuator.create_post(loadpath=loadpath,
                                                          sessionid=sessionid,
                                                          ipaddress=ipaddress,
@@ -43,9 +43,9 @@ class PostModuleActuatorView(BaseView):
             return Response(context)
         elif moduletype == "Bot":
             try:
-                ipportlist = request.data.get('ipportlist', None)
-                loadpath = str(request.data.get('loadpath', None))
-                custom_param = str(request.data.get('custom_param', None))
+                ipportlist = request.data.get('ipportlist')
+                loadpath = request.data.get('loadpath')
+                custom_param = request.data.get('custom_param')
                 context = PostModuleActuator.create_bot(ipportlist=ipportlist,
                                                         loadpath=loadpath,
                                                         custom_param=custom_param)
@@ -61,8 +61,8 @@ class PostModuleActuatorView(BaseView):
 class PostModuleResultView(BaseView):
     def list(self, request, **kwargs):
         try:
-            ipaddress = request.query_params.get('ipaddress', None)
-            loadpath = str(request.query_params.get('loadpath', None))
+            ipaddress = request.query_params.get('ipaddress')
+            loadpath = request.query_params.get('loadpath')
             context = PostModuleResult.list(ipaddress=ipaddress, loadpath=loadpath)
         except Exception as E:
             logger.error(E)
@@ -92,8 +92,8 @@ class PostModuleAutoView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            loadpath = str(request.data.get('loadpath', None))
-            custom_param = str(request.data.get('custom_param', None))
+            loadpath = request.data.get('loadpath')
+            custom_param = request.data.get('custom_param')
             context = PostModuleAuto.create(loadpath=loadpath,
                                             custom_param=custom_param)
         except Exception as E:
@@ -103,7 +103,7 @@ class PostModuleAutoView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            module_uuid = request.query_params.get('_module_uuid', None)
+            module_uuid = request.query_params.get('_module_uuid')
             context = PostModuleAuto.destory(module_uuid=module_uuid)
         except Exception as E:
             logger.error(E)

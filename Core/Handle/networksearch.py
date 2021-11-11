@@ -43,24 +43,25 @@ class NetworkSearch(object):
         if flag is not True:
             context = data_return(301, {}, NetworkSearch_MSG_ZH.get(301), NetworkSearch_MSG_EN.get(301))
             return context
+
         try:
             flag, data = client.get_data(query_str=querystr, page=page, size=size)
-            if flag is not True:
-                context = data_return(303, {"errmsg": data}, NetworkSearch_MSG_ZH.get(303),
-                                      NetworkSearch_MSG_EN.get(303))
-            else:
-                context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
-            return context
-
         except Exception as E:
             logger.exception(E)
             context = data_return(303, {"errmsg": NetworkSearch_MSG_EN.get(303)}, NetworkSearch_MSG_ZH.get(303),
                                   NetworkSearch_MSG_EN.get(303))
             return context
 
+        if flag is not True:
+            context = data_return(303, {"errmsg": data}, NetworkSearch_MSG_ZH.get(303),
+                                  NetworkSearch_MSG_EN.get(303))
+        else:
+            context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
+        return context
+
     @staticmethod
     def get_test_data():
-        """生成测试数据"""
+        """生成debug数据"""
         data = [
             {
                 "index": 0,

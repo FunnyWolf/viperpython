@@ -13,7 +13,7 @@ from PostLateral.Handle.vulnerability import Vulnerability
 class PortServiceView(BaseView):
     def list(self, request, **kwargs):
         try:
-            ipaddress = request.query_params.get('ipaddress', None)
+            ipaddress = request.query_params.get('ipaddress')
             context = PortService.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
@@ -22,8 +22,8 @@ class PortServiceView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            ipaddress = request.query_params.get('ipaddress', None)
-            port = int(request.query_params.get('port', None))
+            ipaddress = request.query_params.get('ipaddress')
+            port = int(request.query_params.get('port'))
             context = PortService.destory(ipaddress=ipaddress, port=port)
         except Exception as E:
             logger.error(E)
@@ -42,10 +42,10 @@ class CredentialView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            username = str(request.data.get('username', ""))
-            password = str(request.data.get('password', ""))
-            windows_domain = request.data.get('windows-domain', None)
-            windows_type = request.data.get('windows-type', None)
+            username = request.data.get('username')
+            password = request.data.get('password')
+            windows_domain = request.data.get('windows-domain')
+            windows_type = request.data.get('windows-type')
             if windows_domain and windows_type:
                 # windows类型凭证
                 tag = {'domain': windows_domain, 'type': windows_type}
@@ -64,8 +64,8 @@ class CredentialView(BaseView):
     def update(self, request, pk=None, **kwargs):
 
         try:
-            cid = int(request.data.get('id', None))
-            desc = request.data.get('desc', None)
+            cid = int(request.data.get('id'))
+            desc = request.data.get('desc')
             context = Credential.update(cid, desc)
         except Exception as E:
             logger.error(E)
@@ -74,7 +74,7 @@ class CredentialView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            cid = int(request.query_params.get('id', None))
+            cid = int(request.query_params.get('id'))
             context = Credential.destory(cid=cid)
         except Exception as E:
             logger.error(E)
@@ -85,7 +85,7 @@ class CredentialView(BaseView):
 class VulnerabilityView(BaseView):
     def list(self, request, **kwargs):
         try:
-            ipaddress = request.query_params.get('ipaddress', None)
+            ipaddress = request.query_params.get('ipaddress')
             context = Vulnerability.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
@@ -94,7 +94,7 @@ class VulnerabilityView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            vid = int(request.query_params.get('id', None))
+            vid = int(request.query_params.get('id'))
             context = Vulnerability.destory(vid=vid)
         except Exception as E:
             logger.error(E)

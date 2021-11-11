@@ -33,8 +33,8 @@ from Msgrpc.Handle.webdelivery import WebDelivery
 class PayloadView(BaseView):
     def create(self, request, **kwargs):
         try:
-            mname = str(request.data.get('mname', None))
-            opts = request.data.get('opts', None)
+            mname = request.data.get('mname')
+            opts = request.data.get('opts')
             if isinstance(opts, str):
                 opts = json.loads(opts)
 
@@ -55,11 +55,11 @@ class JobView(BaseView):
     def destroy(self, request, pk=None, **kwargs):
         try:
             try:
-                job_id = int(request.query_params.get('job_id', None))
+                job_id = int(request.query_params.get('job_id'))
             except Exception as _:
                 job_id = None
-            task_uuid = request.query_params.get('uuid', None)
-            broker = request.query_params.get('broker', None)
+            task_uuid = request.query_params.get('uuid')
+            broker = request.query_params.get('broker')
             context = Job.destroy_adv_job(task_uuid=task_uuid, job_id=job_id, broker=broker)
         except Exception as E:
             logger.error(E)
@@ -75,7 +75,7 @@ class HandlerView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            opts = request.data.get('opts', None)
+            opts = request.data.get('opts')
             if isinstance(opts, str):
                 opts = json.loads(opts)
             context = Handler.create(opts)
@@ -86,7 +86,7 @@ class HandlerView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            jobid = int(request.query_params.get('jobid', None))
+            jobid = int(request.query_params.get('jobid'))
             context = Handler.destroy(jobid)
         except Exception as E:
             logger.error(E)
@@ -115,7 +115,7 @@ class WebDeliveryView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            jobid = int(request.query_params.get('jobid', None))
+            jobid = int(request.query_params.get('jobid'))
             context = WebDelivery.destroy(jobid)
         except Exception as E:
             logger.error(E)
@@ -126,9 +126,9 @@ class WebDeliveryView(BaseView):
 class SessionIOView(BaseView):
     def create(self, request, **kwargs):
         try:
-            ipaddress = request.data.get('ipaddress', None)
-            sessionid = int(request.data.get('sessionid', None))
-            user_input = str(request.data.get('input', ""))
+            ipaddress = request.data.get('ipaddress')
+            sessionid = int(request.data.get('sessionid'))
+            user_input = request.data.get('input', "")
             context = SessionIO.create(ipaddress, sessionid, user_input)
         except Exception as E:
             logger.error(E)
@@ -137,8 +137,8 @@ class SessionIOView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            ipaddress = request.data.get('ipaddress', None)
-            sessionid = int(request.data.get('sessionid', None))
+            ipaddress = request.data.get('ipaddress')
+            sessionid = int(request.data.get('sessionid'))
             context = SessionIO.update(ipaddress, sessionid)
         except Exception as E:
             logger.error(E)
@@ -147,7 +147,7 @@ class SessionIOView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            ipaddress = request.query_params.get('ipaddress', None)
+            ipaddress = request.query_params.get('ipaddress')
             context = SessionIO.destroy(ipaddress)
         except Exception as E:
             logger.error(E)
@@ -158,7 +158,7 @@ class SessionIOView(BaseView):
 class SessionView(BaseView):
     def list(self, request, **kwargs):
         try:
-            sessionid = int(request.query_params.get('sessionid', None))
+            sessionid = int(request.query_params.get('sessionid'))
             context = Session.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
@@ -167,7 +167,7 @@ class SessionView(BaseView):
 
     def update(self, request, **kwargs):
         try:
-            sessionid = int(request.data.get('sessionid', None))
+            sessionid = int(request.data.get('sessionid'))
             context = Session.update(sessionid=sessionid)
             return Response(context)
         except Exception as E:
@@ -178,7 +178,7 @@ class SessionView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            sessionid = int(request.query_params.get('sessionid', None))
+            sessionid = int(request.query_params.get('sessionid'))
             context = Session.destroy(sessionid)
         except Exception as E:
             logger.error(E)
@@ -189,7 +189,7 @@ class SessionView(BaseView):
 class RouteView(BaseView):
     def list(self, request, **kwargs):
         try:
-            sessionid = int(request.query_params.get('sessionid', None))
+            sessionid = int(request.query_params.get('sessionid'))
             context = Route.list(sessionid=sessionid)
         except Exception as E:
             logger.exception(E)
@@ -198,9 +198,9 @@ class RouteView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            subnet = request.data.get('subnet', None)
-            netmask = request.data.get('netmask', None)
-            sessionid = int(request.data.get('sessionid', None))
+            subnet = request.data.get('subnet')
+            netmask = request.data.get('netmask')
+            sessionid = int(request.data.get('sessionid'))
             autoroute = request.data.get('autoroute', False)
             context = Route.create(subnet=subnet, netmask=netmask, sessionid=sessionid, autoroute=autoroute)
         except Exception as E:
@@ -210,9 +210,9 @@ class RouteView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            subnet = str(request.query_params.get('subnet', None))
-            netmask = str(request.query_params.get('netmask', None))
-            sessionid = int(request.query_params.get('sessionid', None))
+            subnet = request.query_params.get('subnet')
+            netmask = request.query_params.get('netmask')
+            sessionid = int(request.query_params.get('sessionid'))
             context = Route.destory(subnet=subnet, netmask=netmask, sessionid=sessionid)
         except Exception as E:
             logger.error(E)
@@ -224,7 +224,7 @@ class SocksView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            socks_type = request.data.get('type', None)
+            socks_type = request.data.get('type')
             port = int(request.data.get('port', -1))
             context = Socks.create(socks_type=socks_type, port=port)
         except Exception as E:
@@ -234,8 +234,8 @@ class SocksView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            socks_type = str(request.query_params.get('type', None))
-            jobid = str(request.query_params.get('ID', None))
+            socks_type = request.query_params.get('type')
+            jobid = request.query_params.get('ID')
             context = Socks.destory(socks_type=socks_type, jobid=jobid)
         except Exception as E:
             logger.error(E)
@@ -246,7 +246,7 @@ class SocksView(BaseView):
 class PortFwdView(BaseView):
     def list(self, request, **kwargs):
         try:
-            sessionid = int(request.query_params.get('sessionid', None))
+            sessionid = int(request.query_params.get('sessionid'))
             context = PortFwd.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
@@ -255,22 +255,22 @@ class PortFwdView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            lport = int(request.data.get('lport', None))
+            lport = int(request.data.get('lport'))
         except Exception as _:
             lport = None
         try:
-            rport = int(request.data.get('rport', None))
+            rport = int(request.data.get('rport'))
         except Exception as _:
             rport = None
         try:
-            sessionid = int(request.data.get('sessionid', None))
+            sessionid = int(request.data.get('sessionid'))
         except Exception as _:
             sessionid = None
 
         try:
-            portfwdtype = request.data.get('type', None)
-            lhost = request.data.get('lhost', None)
-            rhost = request.data.get('rhost', None)
+            portfwdtype = request.data.get('type')
+            lhost = request.data.get('lhost')
+            rhost = request.data.get('rhost')
             context = PortFwd.create(portfwdtype=portfwdtype,
                                      lhost=lhost, lport=lport, rhost=rhost, rport=rport,
                                      sessionid=sessionid)
@@ -281,21 +281,21 @@ class PortFwdView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            rport = int(request.query_params.get('rport', None))
+            rport = int(request.query_params.get('rport'))
         except Exception as _:
             rport = None
         try:
-            lport = int(request.query_params.get('lport', None))
+            lport = int(request.query_params.get('lport'))
         except Exception as _:
             lport = None
         try:
-            sessionid = int(request.query_params.get('sessionid', None))
+            sessionid = int(request.query_params.get('sessionid'))
         except Exception as _:
             sessionid = None
         try:
-            lhost = request.query_params.get('lhost', None)
-            rhost = request.query_params.get('rhost', None)
-            portfwdtype = str(request.query_params.get('type', None))
+            lhost = request.query_params.get('lhost')
+            rhost = request.query_params.get('rhost')
+            portfwdtype = request.query_params.get('type')
             context = PortFwd.destory(portfwdtype=portfwdtype,
                                       rport=rport, lport=lport,
                                       lhost=lhost, rhost=rhost,
@@ -309,7 +309,7 @@ class PortFwdView(BaseView):
 class TransportView(BaseView):
     def list(self, request, **kwargs):
         try:
-            sessionid = int(request.query_params.get('sessionid', None))
+            sessionid = int(request.query_params.get('sessionid'))
             context = Transport.list(sessionid=sessionid)
         except Exception as E:
             logger.error(E)
@@ -319,8 +319,8 @@ class TransportView(BaseView):
     def create(self, request, **kwargs):
 
         try:
-            handler = request.data.get('handler', None)
-            sessionid = int(request.data.get('sessionid', None))
+            handler = request.data.get('handler')
+            sessionid = int(request.data.get('sessionid'))
             context = Transport.create(sessionid=sessionid, handler=handler)
         except Exception as E:
             logger.error(E)
@@ -330,9 +330,9 @@ class TransportView(BaseView):
     def update(self, request, pk=None, **kwargs):
         """更新后台host信息到数据库"""
         try:
-            action = request.data.get('action', None)
+            action = request.data.get('action')
             sleep = int(request.data.get('sleep', 0))
-            sessionid = int(request.data.get('sessionid', None))
+            sessionid = int(request.data.get('sessionid'))
             context = Transport.update(sessionid=sessionid, action=action, sleep=sleep)
         except Exception as E:
             logger.error(E)
@@ -354,7 +354,7 @@ class HostFileView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         try:
-            enfilename = request.query_params.get('en', None)
+            enfilename = request.query_params.get('en')
             filename = FileMsf.decrypt_file_name(enfilename)
             if filename is None:
                 context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
@@ -384,8 +384,8 @@ class FileMsfView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         try:
-            filename = request.query_params.get('name', None)
-            action = request.query_params.get('action', None)
+            filename = request.query_params.get('name')
+            action = request.query_params.get('action')
             context = FileMsf.list(filename, action)
             if isinstance(context, dict):
                 return Response(context)
@@ -408,7 +408,7 @@ class FileMsfView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            filename = str(request.query_params.get('name', None))
+            filename = request.query_params.get('name')
             context = FileMsf.destory(filename)
         except Exception as E:
             logger.error(E)
@@ -420,11 +420,11 @@ class FileSessionView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
         try:
-            operation = request.query_params.get('operation', None)
-            sessionid = int(request.query_params.get('sessionid', None))
-            filepath = request.query_params.get('filepath', None)
-            dirpath = request.query_params.get('dirpath', None)
-            arg = request.query_params.get('arg', None)
+            operation = request.query_params.get('operation')
+            sessionid = int(request.query_params.get('sessionid'))
+            filepath = request.query_params.get('filepath')
+            dirpath = request.query_params.get('dirpath')
+            arg = request.query_params.get('arg')
             context = FileSession.list(sessionid=sessionid, filepath=filepath, dirpath=dirpath, operation=operation,
                                        arg=arg)
         except Exception as E:
@@ -434,10 +434,10 @@ class FileSessionView(BaseView):
 
     def create(self, request, **kwargs):
         try:
-            operation = request.data.get('operation', None)
-            sessionid = int(request.data.get('sessionid', None))
-            dirpath = request.data.get('dirpath', None)
-            filename = request.data.get('filename', None)
+            operation = request.data.get('operation')
+            sessionid = int(request.data.get('sessionid'))
+            dirpath = request.data.get('dirpath')
+            filename = request.data.get('filename')
             context = FileSession.create(sessionid=sessionid, filename=filename, dirpath=dirpath, operation=operation)
             return Response(context)
         except Exception as E:
@@ -447,9 +447,9 @@ class FileSessionView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            sessionid = int(request.data.get('sessionid', None))
-            filepath = request.data.get('filepath', None)
-            filedata = request.data.get('filedata', None)
+            sessionid = int(request.data.get('sessionid'))
+            filepath = request.data.get('filepath')
+            filedata = request.data.get('filedata')
             context = FileSession.update(sessionid=sessionid, filepath=filepath, filedata=filedata)
             return Response(context)
         except Exception as E:
@@ -459,10 +459,10 @@ class FileSessionView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            operation = request.query_params.get('operation', None)
-            sessionid = int(request.query_params.get('sessionid', None))
-            filepath = request.query_params.get('filepath', None)
-            dirpath = request.query_params.get('dirpath', None)
+            operation = request.query_params.get('operation')
+            sessionid = int(request.query_params.get('sessionid'))
+            filepath = request.query_params.get('filepath')
+            dirpath = request.query_params.get('dirpath')
             context = FileSession.destory(sessionid=sessionid, filepath=filepath, dirpath=dirpath, operation=operation)
         except Exception as E:
             logger.error(E)
@@ -481,7 +481,7 @@ class LazyLoaderView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
 
-        sourcecode = request.query_params.get('sourcecode', None)
+        sourcecode = request.query_params.get('sourcecode')
         if sourcecode is not None:
             response = LazyLoader.source_code()
             return response
@@ -491,9 +491,9 @@ class LazyLoaderView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            loader_uuid = request.data.get('uuid', None)
-            field = request.data.get('field', None)
-            data = request.data.get('data', None)
+            loader_uuid = request.data.get('uuid')
+            field = request.data.get('field')
+            data = request.data.get('data')
             context = LazyLoader.update(loader_uuid, field, data)
             return Response(context)
         except Exception as E:
@@ -503,7 +503,7 @@ class LazyLoaderView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            loader_uuid = request.query_params.get('uuid', None)
+            loader_uuid = request.query_params.get('uuid')
             context = LazyLoader.destory(loader_uuid)
         except Exception as E:
             logger.error(E)
@@ -514,7 +514,7 @@ class LazyLoaderView(BaseView):
 class IPFilterView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
-        ip = request.query_params.get('ip', None)
+        ip = request.query_params.get('ip')
         context = IPFilter.list(ip)
         return Response(context)
 
@@ -532,7 +532,7 @@ class CollectSandBoxView(BaseView):
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
 
-        tag = request.query_params.get('tag', None)
+        tag = request.query_params.get('tag')
         if tag is not None:
             context = CollectSandBox.list_tag()
             return Response(context)
@@ -542,7 +542,7 @@ class CollectSandBoxView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            tag = request.data.get('tag', None)
+            tag = request.data.get('tag')
             context = CollectSandBox.update(tag)
             return Response(context)
         except Exception as E:
@@ -552,7 +552,7 @@ class CollectSandBoxView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            ipaddress = request.query_params.get('ipaddress', None)
+            ipaddress = request.query_params.get('ipaddress')
             context = CollectSandBox.destory(ipaddress)
         except Exception as E:
             logger.error(E)
@@ -565,8 +565,8 @@ class LazyLoaderInterfaceView(BaseView):
 
     def list(self, request, **kwargs):
         """查询数据库中的信息"""
-        req = request.query_params.get('c', None)
-        loader_uuid = request.query_params.get('u', None)
+        req = request.query_params.get('c')
+        loader_uuid = request.query_params.get('u')
         ipaddress = request.META.get("HTTP_X_REAL_IP")
         context = LazyLoader.list_interface(req, loader_uuid, ipaddress)
         return HttpResponse(context)

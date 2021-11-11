@@ -32,8 +32,8 @@ class NoticesView(BaseView):
 
     def create(self, request, pk=None, **kwargs):
         try:
-            content = str(request.data.get('content', None))
-            userkey = str(request.data.get('userkey', "0"))
+            content = request.data.get('content')
+            userkey = request.data.get('userkey', "0")
             context = Notice.send_userinput(content=content, userkey=userkey)
             context = data_return(200, context, Notice_MSG_ZH.get(200), Notice_MSG_EN.get(200))
         except Exception as E:
@@ -58,9 +58,9 @@ class HostView(BaseView):
 
     def update(self, request, pk=None, **kwargs):
         try:
-            ipaddress = request.data.get('ipaddress', None)
-            tag = str(request.data.get('tag', None))
-            comment = request.data.get('comment', None)
+            ipaddress = request.data.get('ipaddress')
+            tag = request.data.get('tag')
+            comment = request.data.get('comment')
             context = Host.update(ipaddress, tag, comment)
         except Exception as E:
             logger.error(E)
@@ -69,7 +69,7 @@ class HostView(BaseView):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            ipaddress_str = request.data.get('ipaddress', None)
+            ipaddress_str = request.data.get('ipaddress')
             # 多个
             if "," in ipaddress_str:
                 ipaddress_list = []
@@ -87,7 +87,7 @@ class HostView(BaseView):
 
 class HostInfoView(BaseView):
     def list(self, request, **kwargs):
-        ipaddress = request.query_params.get('ipaddress', None)
+        ipaddress = request.query_params.get('ipaddress')
         host_info = HostInfo.list(ipaddress)
         context = data_return(200, host_info, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return Response(context)
@@ -95,12 +95,12 @@ class HostInfoView(BaseView):
 
 class NetworkSearchView(BaseView):
     def list(self, request, **kwargs):
-        cmdtype = request.query_params.get('cmdtype', None)
+        cmdtype = request.query_params.get('cmdtype')
         if cmdtype is None or cmdtype != "list_config":
             try:
-                engine = request.query_params.get('engine', None)
-                moduleQuery = request.query_params.get('moduleQuery', None)
-                inputstr = request.query_params.get('inputstr', None)
+                engine = request.query_params.get('engine')
+                moduleQuery = request.query_params.get('moduleQuery')
+                inputstr = request.query_params.get('inputstr')
                 page = int(request.query_params.get('page', 1))
                 size = int(request.query_params.get('size', 100))
                 context = NetworkSearch.list_search(engine=engine,
@@ -126,7 +126,7 @@ class BaseAuthView(ModelViewSet, UpdateAPIView, DestroyAPIView):
                          "token": "forguest"}
 
         # 检查是否为diypassword
-        password = request.data.get('password', None)
+        password = request.data.get('password')
         if password == "diypassword":
             context = data_return(302, null_response, BASEAUTH_MSG_ZH.get(302), BASEAUTH_MSG_EN.get(302))
             return Response(context)
@@ -173,7 +173,7 @@ class CurrentUserView(BaseView):
 
 class SettingView(BaseView):
     def list(self, request, **kwargs):
-        kind = str(request.query_params.get('kind', None))
+        kind = request.query_params.get('kind')
         context = Settings.list(kind=kind)
         if isinstance(context, dict):
             return Response(context)
@@ -182,8 +182,8 @@ class SettingView(BaseView):
 
     def create(self, request, pk=None, **kwargs):
         """更新host信息到数据库"""
-        kind = str(request.data.get('kind', None))
-        tag = str(request.data.get('tag', None))
-        setting = request.data.get('setting', None)
+        kind = request.data.get('kind')
+        tag = request.data.get('tag')
+        setting = request.data.get('setting')
         context = Settings.create(kind=kind, tag=tag, setting=setting)
         return Response(context)
