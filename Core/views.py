@@ -98,9 +98,9 @@ class NetworkSearchView(BaseView):
         cmdtype = request.query_params.get('cmdtype', None)
         if cmdtype is None or cmdtype != "list_config":
             try:
-                engine = str(request.query_params.get('engine', None))
-                moduleQuery = str(request.query_params.get('moduleQuery', None))
-                inputstr = str(request.query_params.get('inputstr', None))
+                engine = request.query_params.get('engine', None)
+                moduleQuery = request.query_params.get('moduleQuery', None)
+                inputstr = request.query_params.get('inputstr', None)
                 page = int(request.query_params.get('page', 1))
                 size = int(request.query_params.get('size', 100))
                 context = NetworkSearch.list_search(engine=engine,
