@@ -13,7 +13,7 @@ from Lib.xcache import Xcache
 
 class BaseAuth(TokenAuthentication):
     def authenticate_credentials(self, key=None):
-        # 搜索缓存的user
+        # 搜索缓存的user token
         cache_user = Xcache.alive_token(key)
         if cache_user:
             return cache_user, key
@@ -28,7 +28,7 @@ class BaseAuth(TokenAuthentication):
         if not token.user.is_active:
             raise exceptions.AuthenticationFailed()
 
-        # token超时
+        # token超时清理
         time_now = datetime.datetime.now()
         if token.created < time_now - datetime.timedelta(minutes=EXPIRE_MINUTES):
             token.delete()

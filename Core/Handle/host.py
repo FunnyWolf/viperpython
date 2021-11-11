@@ -4,8 +4,6 @@
 # @Desc  :
 import ipaddress as ipaddr
 
-from django.db import transaction
-
 from Core.models import HostModel
 from Core.serializers import HostSerializer
 from Lib.api import data_return
@@ -28,10 +26,11 @@ class Host(object):
 
     @staticmethod
     def list():
+        """获取msfsocks页面所有信息"""
         hosts = Host.list_hosts()
         route_list = Route.list_route()
         socks_list = Socks.list_msf_socks()
-        portfwds = PortFwd.list_portfwd()
+        portfwd_list = PortFwd.list_portfwd()
         for host in hosts:
             ipaddress = host.get('ipaddress')
             # 端口信息
@@ -45,7 +44,7 @@ class Host(object):
             else:
                 host['route'] = {'type': 'DIRECT', 'data': None}
 
-        result = {'hosts': hosts, 'routes': route_list, 'socks': socks_list, 'portfwds': portfwds, }
+        result = {'hosts': hosts, 'routes': route_list, 'socks': socks_list, 'portfwds': portfwd_list, }
 
         context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
@@ -64,11 +63,12 @@ class Host(object):
         if source is not None:
             Edge.create_edge(source=source, target=ipaddress, type=linktype, data=data)
 
-        defaultdict = {'ipaddress': ipaddress, }  # 没有主机数据时新建
+        # 没有主机数据时新建
+        defaultdict = {'ipaddress': ipaddress, }
         try:
             model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
         except Exception as E:
-            # ip地址重复
+            # ip地址重复,清理旧数据并新建新主机
             HostModel.objects.filter(ipaddress=ipaddress).delete()
             model = HostModel.objects.create(ipaddress=ipaddress)
         result = HostSerializer(model, many=False).data
@@ -88,23 +88,14 @@ class Host(object):
     def update_host(ipaddress=None, tag=None, comment=None):
         # 没有此主机数据时新建
         defaultdict = {'ipaddress': ipaddress, 'tag': tag, 'comment': comment}
-        model, created = HostModel.objects.get_or_create(ipaddress=ipaddress, defaults=defaultdict)
-        if created is True:
-            result = HostSerializer(model, many=False).data
-            # 新建后直接返回
-            return result
-        # 有历史数据
-        with transaction.atomic():
-            try:
-                model = HostModel.objects.select_for_update().get(ipaddress=ipaddress)
-                model.tag = tag
-                model.comment = comment
-                model.save()
-                result = HostSerializer(model, many=False).data
-                return result
-            except Exception as E:
-                logger.error(E)
-                return None
+        try:
+            model, created = HostModel.objects.update_or_create(ipaddress=ipaddress, defaults=defaultdict)
+        except Exception as E:
+            # ip地址重复,清理旧数据并新建新主机
+            HostModel.objects.filter(ipaddress=ipaddress).delete()
+            model = HostModel.objects.create(defaultdict)
+        result = HostSerializer(model, many=False).data
+        return result
 
     @staticmethod
     def destory_single(ipaddress=None):

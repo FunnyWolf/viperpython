@@ -11,7 +11,7 @@ from Lib.xcache import Xcache
 
 
 class NetworkSearch(object):
-    """网络搜索引擎"""
+    """网络测绘工具搜索(Quake,FOFA)"""
 
     def __init__(self):
         pass
