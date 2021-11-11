@@ -40,7 +40,7 @@ class _CommonModule(object):
     NAME_ZH = "基础模块"  # 模块名
     DESC_ZH = "基础描述"  # 描述
     NAME_EN = "Base module"  # 模块名
-    DESC_EN = "Base desc_zh"  # 描述
+    DESC_EN = "Base desc"  # 描述
     WARN_ZH = None  # 警告信息
     WARN_EN = None  # 警告信息
 

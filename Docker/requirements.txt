@@ -17,4 +17,4 @@ pyyaml
 chardet
 qqwry-py3
 #donut-shellcode
-#geoip2
+geoip2
