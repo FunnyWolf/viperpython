@@ -43,7 +43,6 @@ class HeartBeat(object):
 
         # 任务队列长度
         task_queue_length = Xcache.get_module_task_length()
-        moduleoptions = PostModuleConfig.get_dynamic_option()
         module_options = PostModuleConfig.list_dynamic_option()
         result = {
             'hosts_sorted_update': True,
@@ -59,7 +58,6 @@ class HeartBeat(object):
             'jobs': jobs,
             'bot_wait_list_update': True,
             'bot_wait_list': bot_wait_list,
-            'module_option': moduleoptions,
             'module_options_update': True,
             'module_options': module_options,
         }
@@ -140,9 +138,6 @@ class HeartBeat(object):
             Xcache.set_heartbeat_cache_bot_wait_list(bot_wait_list)
             result["bot_wait_list_update"] = True
             result["bot_wait_list"] = bot_wait_list
-
-        # module option
-        result["module_option"] = PostModuleConfig.get_dynamic_option()
 
         # module_options 列表
         module_options = PostModuleConfig.list_dynamic_option()

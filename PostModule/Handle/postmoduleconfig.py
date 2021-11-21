@@ -9,7 +9,6 @@ import time
 from django.conf import settings
 
 from Lib.Module.configs import TAG2TYPE, HANDLER_OPTION, CREDENTIAL_OPTION, FILE_OPTION
-from Lib.Module.option import OptionHander, OptionFileEnum, OptionCredentialEnum
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, PostModuleConfig_MSG_ZH, CODE_MSG_EN, PostModuleConfig_MSG_EN
 from Lib.log import logger
@@ -354,63 +353,7 @@ class PostModuleConfig(object):
                 option['enum_list'] = tmp_enum_list
         return one_module_config
 
-    @staticmethod
-    def get_dynamic_option():
-        """处理handler及凭证等动态变化参数,返回处理后参数列表"""
-        option_dict = {}
 
-        # handler处理
-        optionHandler = OptionHander(required=True).to_dict()
-        optionHandler['enum_list'] = Handler.list_handler_config()
-        if len(optionHandler['enum_list']) == 1:  # 只有一个监听
-            optionHandler['default'] = optionHandler['enum_list'][0].get("value")
-
-        option_dict[HANDLER_OPTION.get("name")] = optionHandler
-
-        # 文件处理
-        optionFileEnum = OptionFileEnum(required=True).to_dict()
-        files = FileMsf.list_msf_files()
-        tmp_enum_list = []
-        for file in files:
-            import json
-            # {
-            #     "filename": "test",
-            #     "filesize": 0,
-            #     "mtime": 1552273961
-            # },
-            name = file.get("name")
-            if len(file.get("name").split(".")) > 1:
-                ext = file.get("name").split(".")[-1]
-            else:
-                ext = None
-            size = FileSession.get_size_in_nice_string(file.get('size'))
-            mtime = file.get("mtime")
-            style_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime))
-            tag_zh = f"文件: {name}\t\t大小: {size}\t\t修改时间: {style_time}"
-            tag_en = f"File: {name}\t\tSize: {size}\t\tMTime: {style_time}"
-            value = json.dumps(file)
-            tmp_enum_list.append({'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value, 'mark': ext})
-        optionFileEnum['enum_list'] = tmp_enum_list
-
-        option_dict[FILE_OPTION.get("name")] = optionFileEnum
-
-        # 凭证处理
-        optionCredentialEnum = OptionCredentialEnum(required=True).to_dict()
-        credentials = Credential.list_credential()
-        tmp_enum_list = []
-        for credential in credentials:
-            try:
-                tag_zh = f"用户: {credential.get('username')}  密码: {credential.get('password')}  标签: {credential.get('tag')}"
-                tag_en = f"User: {credential.get('username')}  Password: {credential.get('password')}  Tag: {credential.get('tag')}"
-                import json
-                value = json.dumps(credential)
-                tmp_enum_list.append(
-                    {'tag_zh': tag_zh, 'tag_en': tag_en, 'value': value, 'mark': credential.get("password_type")})
-            except Exception as E:
-                logger.warning(E)
-        optionCredentialEnum['enum_list'] = tmp_enum_list
-        option_dict[CREDENTIAL_OPTION.get("name")] = optionCredentialEnum
-        return option_dict
 
     @staticmethod
     def get_module_name_by_loadpath(loadpath=None):
