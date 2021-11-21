@@ -201,7 +201,7 @@ class HeartBeatView(WebsocketConsumer):
 
     def send_message(self, event):
         message = event['message']
-        data = {}
+        data = ""
         try:
             data: str = json.dumps(message, skipkeys=True)
         except Exception as E:
