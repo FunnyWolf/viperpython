@@ -17,23 +17,19 @@ class NetworkSearch(object):
         pass
 
     @staticmethod
-    def list_search(engine, moduleQuery, inputstr, page=1, size=100):
+    def list_search(engine, inputstr, page=1, size=100):
         if engine == "FOFA":
-            if inputstr is None or inputstr.strip() == "":
-                querystr = moduleQuery
-            else:
-                querystr = f"{moduleQuery} && {inputstr}"
+            inputstr = inputstr.lower()
+            inputstr = inputstr.replace(" and ", " && ")
+            inputstr = inputstr.replace(" or ", " || ")
+            inputstr = inputstr.replace("=", ":")
             client = FOFAClient()
             flag = client.init_conf_from_cache()
         elif engine == "Quake":
-            if inputstr is None or inputstr.strip() == "":
-                querystr = moduleQuery
-            else:
-                querystr = f"{moduleQuery} AND {inputstr}"
             client = Quake()
             flag = client.init_conf_from_cache()
         elif engine == "Debug":
-            data = NetworkSearch.get_test_data()
+            data = NetworkSearch.get_debug_data()
             context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
             return context
         else:
@@ -43,9 +39,8 @@ class NetworkSearch(object):
         if flag is not True:
             context = data_return(301, {}, NetworkSearch_MSG_ZH.get(301), NetworkSearch_MSG_EN.get(301))
             return context
-
         try:
-            flag, data = client.get_data(query_str=querystr, page=page, size=size)
+            flag, data = client.get_data(query_str=inputstr, page=page, size=size)
         except Exception as E:
             logger.exception(E)
             context = data_return(303, {"errmsg": NetworkSearch_MSG_EN.get(303)}, NetworkSearch_MSG_ZH.get(303),
@@ -60,7 +55,7 @@ class NetworkSearch(object):
         return context
 
     @staticmethod
-    def get_test_data():
+    def get_debug_data():
         """生成debug数据"""
         data = [
             {
@@ -104,6 +99,17 @@ class NetworkSearch(object):
                 "as_organization": "viper test",
             },
         ]
+
+        for i in range(5, 100):
+            data.append({
+                "index": i,
+                "ip": Xcache.get_lhost_config().get("lhost"),
+                "port": 443,
+                "protocol": "https",
+                "country_name": "viper",
+                "as_organization": "viper test",
+            })
+
         return data
 
     @staticmethod

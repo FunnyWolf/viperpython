@@ -99,12 +99,10 @@ class NetworkSearchView(BaseView):
         if cmdtype is None or cmdtype != "list_config":
             try:
                 engine = request.query_params.get('engine')
-                moduleQuery = request.query_params.get('moduleQuery')
                 inputstr = request.query_params.get('inputstr')
                 page = int(request.query_params.get('page', 1))
                 size = int(request.query_params.get('size', 100))
                 context = NetworkSearch.list_search(engine=engine,
-                                                    moduleQuery=moduleQuery,
                                                     inputstr=inputstr,
                                                     page=page, size=size)
             except Exception as E:
