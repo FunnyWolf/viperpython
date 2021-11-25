@@ -13,7 +13,7 @@ class PostModule(BotMSFModule):
               "补丁版本为13.10.3、13.9.6和13.8.8.利用此漏洞将导致以git用户身份执行命令.\n" \
               "建议linux类型payload"
 
-    NAME_EN = "GitLab Unauthenticated Remote ExifTool Command Injection"
+    NAME_EN = "Gitlab ExifTool RCE"
     DESC_EN = "This module exploits an unauthenticated file upload and command injection vulnerability in GitLab Community Edition (CE) and Enterprise Edition (EE).\n" \
               "The patched versions are 13.10.3, 13.9.6, and 13.8.8. Exploitation will result in command execution as the git user."
     MODULETYPE = TAG2TYPE.Bot_MSF_Exp
