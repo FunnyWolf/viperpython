@@ -116,7 +116,7 @@ class Handler(object):
             if rpcstatus.get('json_rpc').get("status"):
                 break
             else:
-                Notice.send_warning(f"MSFRPC服务尚未启动,等待10秒", "MSFRPC service has not been started yet, wait 10 seconds")
+                Notice.send_warning(f"MSFRPC服务尚未启动,等待3秒", "MSFRPC service has not been started yet, wait 3 seconds")
                 time.sleep(3)
 
         for one_handler in cache_handlers:
