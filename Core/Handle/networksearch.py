@@ -22,7 +22,7 @@ class NetworkSearch(object):
             inputstr = inputstr.lower()
             inputstr = inputstr.replace(" and ", " && ")
             inputstr = inputstr.replace(" or ", " || ")
-            inputstr = inputstr.replace("=", ":")
+            inputstr = inputstr.replace(":", "=")
             client = FOFAClient()
             flag = client.init_conf_from_cache()
         elif engine == "Quake":
