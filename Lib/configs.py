@@ -578,3 +578,6 @@ RPC_RUN_MODULE_LONG = 120  # 涉及Session操作类请求
 # lang
 CN = "zh-CN"
 EN = "en-US"
+
+# viper config
+VIPER_IP = "255.255.255.255"

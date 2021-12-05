@@ -11,6 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+from Core.Handle.host import Host
 from Core.Handle.setting import Settings
 from Lib.Module.moduletemplate import BROKER
 from Lib.configs import *
@@ -40,14 +41,18 @@ class MainMonitor(object):
         except socket.error:
             logger.warning("MainMonitor 已经启动,请勿重复启动")
             return
-        # 获取缓存监听
-        handler_list = Xcache.get_cache_handlers()
+        # 初始化配置
+        try:
+            Host.init_on_start()
+        except Exception as E:
+            logger.exception(E)
+
         # 加载历史监听
+        handler_list = Xcache.get_cache_handlers()
         Handler.recovery_cache_last_handler(handler_list)
         # Xcache初始化部分
         Xcache.init_xcache_on_start()
         # 加载模块配置信息
-
         PostModuleConfig.load_all_modules_config()
 
         # 关闭apscheduler的警告
