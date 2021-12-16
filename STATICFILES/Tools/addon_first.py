@@ -176,7 +176,10 @@ class Log4jAddon(object):
             "LEVEL": level,
             "DATA": data,
         })
-        result = self.rcon.publish_data(senddata)
+        try:
+            result = self.rcon.publish_data(senddata)
+        except Exception as E:
+            pass
 
     def payload_list(self, req_uuid):
         dnslog_base = self.rcon.rpc_call("Setting.dnslog_base")
@@ -202,6 +205,12 @@ class Log4jAddon(object):
                 req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 payloads = self.payload_list(req_uuid)
 
+                data = {
+                    "method": "GET",
+                    "url": flow.request.pretty_url,
+                }
+                self.send_data(req_uuid, data)
+
                 for payload in payloads:
 
                     for key in flow.request.query:
@@ -211,17 +220,20 @@ class Log4jAddon(object):
                     # 每个payload发送一次
                     ctx.master.commands.call("replay.client", [flow])
 
-                data = {
-                    "method": "GET",
-                    "url": flow.request.pretty_url,
-                }
-                self.send_data(req_uuid, data)
+
         elif flow.request.method == "POST":
             if flow.request.urlencoded_form:
 
                 flow = flow.copy()
                 req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 payloads = self.payload_list(req_uuid)
+
+                data = {
+                    "method": "POST",
+                    "url": flow.request.pretty_url,
+                    "urlencoded_form": dict(flow.request.urlencoded_form),
+                }
+                self.send_data(req_uuid, data)
 
                 for payload in payloads:
 
@@ -233,18 +245,20 @@ class Log4jAddon(object):
                     # 每个payload发送一次
                     ctx.master.commands.call("replay.client", [flow])
 
-                data = {
-                    "method": "POST",
-                    "url": flow.request.pretty_url,
-                    "urlencoded_form": dict(flow.request.urlencoded_form),
-                }
-                self.send_data(req_uuid, data)
+
 
             elif flow.request.multipart_form:
 
                 flow = flow.copy()
                 req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 payloads = self.payload_list(req_uuid)
+
+                data = {
+                    "method": "POST",
+                    "url": flow.request.pretty_url,
+                    "multipart_form": dict(flow.request.multipart_form),
+                }
+                self.send_data(req_uuid, data)
 
                 for payload in payloads:
 
@@ -256,12 +270,7 @@ class Log4jAddon(object):
                     # 每个payload发送一次
                     ctx.master.commands.call("replay.client", [flow])
 
-                data = {
-                    "method": "POST",
-                    "url": flow.request.pretty_url,
-                    "multipart_form": dict(flow.request.multipart_form),
-                }
-                self.send_data(req_uuid, data)
+
 
             else:
                 if is_json(flow.request.content):
@@ -269,6 +278,13 @@ class Log4jAddon(object):
                     flow = flow.copy()
                     req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                     payloads = self.payload_list(req_uuid)
+
+                    data = {
+                        "method": "POST",
+                        "url": flow.request.pretty_url,
+                        "json": flow.request.text,
+                    }
+                    self.send_data(req_uuid, data)
 
                     for payload in payloads:
                         old_dict = json.loads(flow.request.text)
@@ -279,13 +295,6 @@ class Log4jAddon(object):
 
                         # 每个payload发送一次
                         ctx.master.commands.call("replay.client", [flow])
-
-                    data = {
-                        "method": "POST",
-                        "url": flow.request.pretty_url,
-                        "json": flow.request.text,
-                    }
-                    self.send_data(req_uuid, data)
 
 
 ## main
