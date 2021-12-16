@@ -13,6 +13,7 @@ import time
 LOCALHOST = "127.0.0.1"
 redis_port = 60004
 msgrpc_port = 60005
+mitmproxy_port = 28888
 LOGDIR = "/root/viper/Docker/log"
 devNull = open(os.devnull, 'w')
 
@@ -225,6 +226,22 @@ def start_services():
             stderr=devNull
         )
 
+    # mitmproxy
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1)
+        client.connect((LOCALHOST, mitmproxy_port))
+        print("[+] proxy运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动proxy服务")
+        res = subprocess.Popen(
+            f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/addon_first.py --ssl-insecure -p {mitmproxy_port} &",
+            shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+
     for i in range(6):
         time.sleep(5)
         if check_services():
@@ -289,6 +306,17 @@ def stop_services():
         )
     except Exception as E:
         pass
+
+    try:
+        print("[*] 关闭proxy服务")
+        subprocess.Popen(
+            "kill -9 $(ps aux | grep mitmdump | tr -s ' '| cut -d ' ' -f 2)", shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+    except Exception as E:
+        pass
+
     time.sleep(5)
     check_services()
 
