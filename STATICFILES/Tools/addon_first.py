@@ -52,21 +52,42 @@ class RedisClient(object):
             ctx.log.error(E)
 
     def publish_data(self, data):
-        result = self.rcon.publish(VIPER_RPC_UUID_JSON_DATA, data)
+        if self.rcon is None:
+            try:
+                self.rcon = redis.Redis.from_url(url=f"{get_redis_url()}5")
+            except Exception as E:
+                self.rcon = None
+                ctx.log.error(E)
+        try:
+            result = self.rcon.publish(VIPER_RPC_UUID_JSON_DATA, data)
+        except Exception as E:
+            self.rcon = None
 
     def rpc_call(self, method_name, timeout=100, **kwargs):
+        if self.rcon is None:
+            try:
+                self.rcon = redis.Redis.from_url(url=f"{get_redis_url()}5")
+            except Exception as E:
+                self.rcon = None
+                ctx.log.error(E)
+
         message_queue = "rpcviper"
         function_call = {'function': method_name, 'kwargs': kwargs}
         response_queue = f"{message_queue}:rpc:{random_str(32)}"
         rpc_request = {'function_call': function_call, 'response_queue': response_queue}
         rpc_raw_request = json.dumps(rpc_request)
-        self.rcon.rpush(message_queue, rpc_raw_request)
-        message_queue, rpc_raw_response = self.rcon.blpop(response_queue, timeout)
-        if rpc_raw_response is None:
-            self.rcon.lrem(message_queue, 0, rpc_raw_request)
-            return
-        rpc_response = json.loads(rpc_raw_response.decode())
-        return rpc_response
+
+        try:
+            self.rcon.rpush(message_queue, rpc_raw_request)
+            message_queue, rpc_raw_response = self.rcon.blpop(response_queue, timeout)
+            if rpc_raw_response is None:
+                self.rcon.lrem(message_queue, 0, rpc_raw_request)
+                return
+            rpc_response = json.loads(rpc_raw_response.decode())
+            return rpc_response
+        except Exception as E:
+            self.rcon = None
+            ctx.log.error(E)
 
 
 # common
@@ -87,7 +108,7 @@ class JsonReplace(object):
         if isinstance(dic, dict):
             return self.replace_dict(dic, changeData)  # 传入数据的value值是字典，则直接调用自身，将value作为字典传进来
         elif isinstance(dic, list):
-            return self.replace_dict(dic, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
+            return self.replace_list(dic, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
         elif isinstance(dic, str):
             return changeData
         elif isinstance(dic, bytes):
@@ -108,6 +129,8 @@ class JsonReplace(object):
             elif isinstance(value, list):
                 dic[key] = self.replace_list(value, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
             elif isinstance(value, str):
+                if "password" in key.lower() or "passwd" in key.lower():
+                    continue
                 dic[key] = changeData
             elif isinstance(value, bytes):
                 dic[key] = changeData.encode()
@@ -220,7 +243,6 @@ class Log4jAddon(object):
                     # 每个payload发送一次
                     ctx.master.commands.call("replay.client", [flow])
 
-
         elif flow.request.method == "POST":
             if flow.request.urlencoded_form:
 
@@ -238,14 +260,16 @@ class Log4jAddon(object):
                 for payload in payloads:
 
                     for key in flow.request.urlencoded_form:
+                        # password passwd特殊处理
+                        if "password" in key.lower() or "passwd" in key.lower():
+                            continue
+
                         flow.request.urlencoded_form[key] = payload
 
                     flow.request.headers[self.get_header()] = payload
 
                     # 每个payload发送一次
                     ctx.master.commands.call("replay.client", [flow])
-
-
 
             elif flow.request.multipart_form:
 
@@ -263,14 +287,15 @@ class Log4jAddon(object):
                 for payload in payloads:
 
                     for key in flow.request.multipart_form:
+                        # password passwd特殊处理
+                        if "password" in key.lower() or "passwd" in key.lower():
+                            continue
                         flow.request.multipart_form[key] = payload
 
                     flow.request.headers[self.get_header()] = payload
 
                     # 每个payload发送一次
                     ctx.master.commands.call("replay.client", [flow])
-
-
 
             else:
                 if is_json(flow.request.content):
