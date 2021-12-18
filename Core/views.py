@@ -12,6 +12,7 @@ from Core.Handle.host import Host
 from Core.Handle.hostinfo import HostInfo
 from Core.Handle.networksearch import NetworkSearch
 from Core.Handle.setting import Settings
+from Core.Handle.uuidjson import UUIDJson
 from Lib.api import data_return
 from Lib.baseview import BaseView
 from Lib.configs import *
@@ -90,6 +91,22 @@ class HostInfoView(BaseView):
         ipaddress = request.query_params.get('ipaddress')
         host_info = HostInfo.list(ipaddress)
         context = data_return(200, host_info, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
+        return Response(context)
+
+
+class UUIDJsonView(BaseView):
+    def list(self, request, **kwargs):
+        uuid = request.query_params.get('uuid')
+        data = UUIDJson.list(uuid)
+        context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
+        return Response(context)
+
+    def destroy(self, request, pk=None, **kwargs):
+        try:
+            context = UUIDJson.destory()
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
 

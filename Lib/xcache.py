@@ -52,6 +52,8 @@ class Xcache(object):
     XCACHE_DINGDING_CONFIG = "XCACHE_DINGDING_CONFIG"
     XCACHE_SERVERCHAN_CONFIG = "XCACHE_SERVERCHAN_CONFIG"
     XCACHE_FOFA_CONFIG = "XCACHE_FOFA_CONFIG"
+    XCACHE_DNSLOG_CONFIG = "XCACHE_DNSLOG_CONFIG"
+
     XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
 
@@ -94,6 +96,8 @@ class Xcache(object):
     XCACHE_IPFILTER_SANDBOX_BLACKLIST_DATA_CACHE = "XCACHE_IPFILTER_SANDBOX_BLACKLIST_DATA_CACHE"
     XCACHE_IPFILTER_GEO_WHITELIST_CACHE = "XCACHE_IPFILTER_GEO_WHITELIST_CACHE"
     XCACHE_IPFILTER_GEO_BLACKLIST_CACHE = "XCACHE_IPFILTER_GEO_BLACKLIST_CACHE"
+
+    XCACHE_UUID_JSON_CACHE = "XCACHE_UUID_JSON_CACHE"
 
     def __init__(self):
         pass
@@ -759,6 +763,18 @@ class Xcache(object):
         return conf
 
     @staticmethod
+    def set_dnslog_conf(conf):
+        cache.set(Xcache.XCACHE_DNSLOG_CONFIG, conf, None)
+        return True
+
+    @staticmethod
+    def get_dnslog_conf():
+        conf = cache.get(Xcache.XCACHE_DNSLOG_CONFIG)
+        if conf is None:
+            conf = {"dnslog_base": None}
+        return conf
+
+    @staticmethod
     def set_session_count(count):
         cache.set(Xcache.XCACHE_SESSION_LIST, count, None)
         return True
@@ -1084,3 +1100,38 @@ class Xcache(object):
     def set_ipfilter_geo_whitelist_cache(data):
         cache.set(Xcache.XCACHE_IPFILTER_GEO_WHITELIST_CACHE, data, None)
         return True
+
+    @staticmethod
+    def list_uuid_json():
+        re_key = f"{Xcache.XCACHE_UUID_JSON_CACHE}_*"
+        keys = cache.keys(re_key)
+        reqs = []
+        for key in keys:
+            req = cache.get(key)
+            reqs.append(req)
+        return reqs
+
+    @staticmethod
+    def get_uuid_json_by_uuid(data_uuid):
+        key = f"{Xcache.XCACHE_UUID_JSON_CACHE}_{data_uuid}"
+        data = cache.get(key)
+        return data
+
+    @staticmethod
+    def set_uuid_json_by_uuid(data_uuid, data):
+        key = f"{Xcache.XCACHE_UUID_JSON_CACHE}_{data_uuid}"
+        cache.set(key, data, None)
+        return True
+
+    @staticmethod
+    def del_uuid_json_by_uuid(data_uuid):
+        key = f"{Xcache.XCACHE_UUID_JSON_CACHE}_{data_uuid}"
+        cache.delete(key)
+        return True
+
+    @staticmethod
+    def del_uuid_json():
+        re_key = f"{Xcache.XCACHE_UUID_JSON_CACHE}_*"
+        keys = cache.keys(re_key)
+        for key in keys:
+            req = cache.delete(key)

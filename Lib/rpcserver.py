@@ -6,6 +6,7 @@ import json
 
 from Lib.log import logger
 from Lib.redisclient import RedisClient
+from Lib.xcache import Xcache
 from Msgrpc.Handle.ipfilter import IPFilter
 
 
@@ -45,6 +46,10 @@ class RPCServer(object):
             except Exception as E:
                 logger.exception(E)
                 return None
+        elif function == "Setting.dnslog_base":
+            conf = Xcache.get_dnslog_conf()
+            dnslog_base = conf.get("dnslog_base")
+            return dnslog_base
         else:
             logger.error(f"未知的rpc调用: {function}")
             return None

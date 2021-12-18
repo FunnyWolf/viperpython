@@ -58,6 +58,8 @@ class Settings(object):
             conf = Xcache.get_postmodule_auto_conf()
         elif kind == "handlerconf":
             conf = Handler.list_handler_config()
+        elif kind == "dnslog":
+            conf = Xcache.get_dnslog_conf()
         elif kind == "downloadlog":  # 下载日志文件
             zip_file_path = File.zip_logs()
             with open(zip_file_path, "rb+") as f:
@@ -193,7 +195,12 @@ class Settings(object):
                                 f"Set the lhost successfully, the current lhost: {setting.get('lhost')}")
             context = data_return(205, setting, Setting_MSG_ZH.get(205), Setting_MSG_EN.get(205))
             return context
-
+        elif kind == "dnslog":
+            Xcache.set_dnslog_conf(setting)
+            Notice.send_success(f"设置DNSLOG成功,当前DNSLOG: {setting.get('dnslog_base')}",
+                                f"Set the dnslog successfully, the current dnslog: {setting.get('dnslog_base')}")
+            context = data_return(205, setting, Setting_MSG_ZH.get(211), Setting_MSG_EN.get(211))
+            return context
         elif kind == "postmoduleautoconf":
             new_conf = Xcache.set_postmodule_auto_conf(setting)
             Notice.send_success(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")

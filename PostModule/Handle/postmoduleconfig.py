@@ -10,7 +10,7 @@ from django.conf import settings
 
 from Lib.Module.configs import TAG2TYPE, HANDLER_OPTION, CREDENTIAL_OPTION, FILE_OPTION
 from Lib.api import data_return
-from Lib.configs import CODE_MSG_ZH, PostModuleConfig_MSG_ZH, CODE_MSG_EN, PostModuleConfig_MSG_EN
+from Lib.configs import CODE_MSG_ZH, PostModuleConfig_MSG_ZH, CODE_MSG_EN, PostModuleConfig_MSG_EN, VIPER_IP
 from Lib.log import logger
 from Lib.notice import Notice
 from Lib.xcache import Xcache
@@ -364,11 +364,10 @@ class PostModuleConfig(object):
             return None
 
     @staticmethod
-    def get_post_module_intent(loadpath, sessionid=-1, ipaddress="255.255.255.255", custom_param=None):
+    def get_post_module_intent(loadpath, sessionid=-1, ipaddress=VIPER_IP, custom_param=None):
+        """获取一个模块实例"""
         if custom_param is None:
             custom_param = {}
-        """获取一个模块实例"""
-        # 获取模块实例
         try:
             class_intent = importlib.import_module(loadpath)
             post_module_intent = class_intent.PostModule(sessionid, ipaddress, custom_param)

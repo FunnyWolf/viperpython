@@ -11,7 +11,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+from Core.Handle.host import Host
 from Core.Handle.setting import Settings
+from Core.Handle.uuidjson import UUIDJson
 from Lib.Module.moduletemplate import BROKER
 from Lib.configs import *
 from Lib.file import File
@@ -40,14 +42,18 @@ class MainMonitor(object):
         except socket.error:
             logger.warning("MainMonitor 已经启动,请勿重复启动")
             return
-        # 获取缓存监听
-        handler_list = Xcache.get_cache_handlers()
+        # 初始化配置
+        try:
+            Host.init_on_start()
+        except Exception as E:
+            logger.exception(E)
+
         # 加载历史监听
+        handler_list = Xcache.get_cache_handlers()
         Handler.recovery_cache_last_handler(handler_list)
         # Xcache初始化部分
         Xcache.init_xcache_on_start()
         # 加载模块配置信息
-
         PostModuleConfig.load_all_modules_config()
 
         # 关闭apscheduler的警告
@@ -107,6 +113,11 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
                                    trigger='interval',
                                    seconds=1, id='sub_msf_rpc_thread')
+
+        # uuid json 调用
+        self.MainScheduler.add_job(func=self.sub_rpc_uuid_json_thread, max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_rpc_uuid_json_thread')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
@@ -216,6 +227,18 @@ class MainMonitor(object):
             return
         ps = rcon.pubsub(ignore_subscribe_messages=True)
         ps.subscribe(**{MSF_RPC_LOG_CHANNEL: MSFModule.store_log_from_sub})
+        for message in ps.listen():
+            if message:
+                logger.warning(f"不应获取非空message {message}")
+
+    @staticmethod
+    def sub_rpc_uuid_json_thread():
+        """这个函数必须以线程的方式运行,监控外部rpc发送的redis消息,获取任务结果"""
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{VIPER_RPC_UUID_JSON_DATA: UUIDJson.store_data_from_sub})
         for message in ps.listen():
             if message:
                 logger.warning(f"不应获取非空message {message}")

@@ -7,7 +7,7 @@ import ipaddress as ipaddr
 from Core.models import HostModel
 from Core.serializers import HostSerializer
 from Lib.api import data_return
-from Lib.configs import CODE_MSG_ZH, Host_MSG_ZH, Host_MSG_EN, CODE_MSG_EN
+from Lib.configs import CODE_MSG_ZH, Host_MSG_ZH, Host_MSG_EN, CODE_MSG_EN, VIPER_IP
 from Lib.log import logger
 from Lib.xcache import Xcache
 from Msgrpc.Handle.portfwd import PortFwd
@@ -23,6 +23,11 @@ class Host(object):
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def init_on_start():
+        if HostModel.objects.filter(ipaddress=VIPER_IP).exists() is not True:
+            HostModel.objects.create(ipaddress=VIPER_IP)
 
     @staticmethod
     def list():
@@ -118,7 +123,7 @@ class Host(object):
     def destory_host(ipaddress=None):
         # 删除相关缓存信息
         # 255.255.255.255 特殊处理
-        if ipaddress == "255.255.255.255":
+        if ipaddress == VIPER_IP:
             return False
 
         # 删除缓存的session命令行结果

@@ -9,7 +9,7 @@ import time
 
 from Core.Handle.host import Host
 # from Lib.External.qqwry import qqwry
-from Lib.configs import RPC_FRAMEWORK_API_REQ
+from Lib.configs import RPC_FRAMEWORK_API_REQ, VIPER_IP
 from Lib.ipgeo import IPGeo
 from Lib.log import logger
 from Lib.method import Method
@@ -171,7 +171,7 @@ class HeartBeat(object):
 
         def add_session_to_255(hosts, session):
             for host in hosts:
-                if host.get('ipaddress') == "255.255.255.255":
+                if host.get('ipaddress') == VIPER_IP:
                     host["session"].append(session)
 
         hosts = Host.list_hosts()
@@ -189,7 +189,7 @@ class HeartBeat(object):
 
             # 确保每个session成功后都会添加edge
             if session.get("available"):
-                Edge.create_edge(source="255.255.255.255",
+                Edge.create_edge(source=VIPER_IP,
                                  target=session_host,
                                  type="online",
                                  data={"payload": "/".join(session.get("via_payload").split("/")[1:])})
@@ -273,7 +273,7 @@ class HeartBeat(object):
 
         for host in hosts:
             ipaddress = host.get("ipaddress")
-            if ipaddress == "255.255.255.255":
+            if ipaddress == VIPER_IP:
                 continue
             filter_sessions = filter_session_by_ipaddress(ipaddress, sessions)
 
@@ -335,7 +335,7 @@ class HeartBeat(object):
                         ipnetwork = ipaddr.ip_network(f"{route.get('subnet')}/{route.get('netmask')}", strict=False)
                         for host_in in hosts:
                             ipaddress_in = host_in.get("ipaddress")
-                            if ipaddress_in == "255.255.255.255" or ipaddress_in == ipaddress:
+                            if ipaddress_in == VIPER_IP or ipaddress_in == ipaddress:
                                 continue
                             if ipaddr.ip_address(ipaddress_in) in ipnetwork:
                                 edge_data = {
