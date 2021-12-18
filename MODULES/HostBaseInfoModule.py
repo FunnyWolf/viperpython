@@ -57,7 +57,10 @@ class PostModule(PostMSFRawModule):
                     try:
                         ip = remote_addr.split(":")[0]
                         if ipaddr.ip_address(ip).is_private:
-                            private_ipaddress.append(one)
+                            if ipaddr.ip_address(ip).is_loopback or ipaddr.ip_address(ip).is_unspecified:
+                                pass
+                            else:
+                                private_ipaddress.append(one)
                         else:
                             if ipaddr.ip_address(ip).is_loopback or ipaddr.ip_address(ip).is_unspecified:
                                 pass

