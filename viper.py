@@ -236,7 +236,7 @@ def start_services():
     except Exception as err:
         print("[*] 启动proxy服务")
         res = subprocess.Popen(
-            f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/addon_first.py --ssl-insecure -p {mitmproxy_port} &",
+            f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} &",
             shell=True,
             stdout=devNull,
             stderr=devNull

@@ -48,9 +48,9 @@ class ProxyRequest(object):
                 url = f"{self.scheme}://{self.host_header}/{new_path}"
                 result = requests.get(url, headers=self.headers, params=self.query)
                 if log:
-                    logger.info(f"{self.method} URL:{url}")
-                    logger.info(f"HEADERS:{self.headers}")
-                    logger.info(f"QUERY:{self.query}")
+                    logger.warning(f"{self.method} URL:{url}")
+                    logger.warning(f"HEADERS:{self.headers}")
+                    logger.warning(f"QUERY:{self.query}")
                 return result
             except Exception as E:
                 logger.exception(E)
@@ -63,9 +63,9 @@ class ProxyRequest(object):
                                            headers=self.headers,
                                            data=self.urlencoded_form)
                     if log:
-                        logger.info(f"{self.method} URL:{self.pretty_url}")
-                        logger.info(f"HEADERS:{self.headers}")
-                        logger.info(f"DATA:{self.urlencoded_form}")
+                        logger.warning(f"{self.method} URL:{self.pretty_url}")
+                        logger.warning(f"HEADERS:{self.headers}")
+                        logger.warning(f"DATA:{self.urlencoded_form}")
                     return result
                 except Exception as E:
                     logger.exception(E)
@@ -78,9 +78,9 @@ class ProxyRequest(object):
                                                headers=self.headers,
                                                json=json.loads(self.text))
                         if log:
-                            logger.info(f"{self.method} URL:{self.pretty_url}")
-                            logger.info(f"HEADERS:{self.headers}")
-                            logger.info(f"JSON:{json.loads(self.text)}")
+                            logger.warning(f"{self.method} URL:{self.pretty_url}")
+                            logger.warning(f"HEADERS:{self.headers}")
+                            logger.warning(f"JSON:{json.loads(self.text)}")
                         return result
                     except Exception as E:
                         logger.exception(E)
