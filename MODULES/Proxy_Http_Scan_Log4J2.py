@@ -112,7 +112,7 @@ class PostModule(ProxyHttpScanModule):
               "If the dnslog is filled in as IP: port, the corresponding IP: port will be connected in the payload using LDAP protocol, and then the UUID will be passed to identify the request\n" \
               "Payload contains a payload that bypasses the WAF\n"
     MODULETYPE = TAG2TYPE.Proxy_Http_Scan
-    README = [""]
+    README = ["https://www.yuque.com/vipersec/blog/lgrqm4", "https://www.yuque.com/vipersec/blog/sn2x39"]
     REFERENCES = [""]
     AUTHOR = ["Viper"]
     OPTIONS = register_options([
