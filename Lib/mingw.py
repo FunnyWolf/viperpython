@@ -8,7 +8,7 @@ import subprocess
 from django.conf import settings
 
 from CONFIG import DEBUG
-from Lib.api import get_random_str
+from Lib.api import random_str
 from Lib.configs import STATIC_STORE_PATH
 from Lib.file import File
 from Lib.log import logger
@@ -27,7 +27,7 @@ class Mingw(object):
         self.strip_syms = True
         self.link_script = None
 
-        self._filename = get_random_str(8)
+        self._filename = random_str(8)
         self._c_src_file = os.path.join(File.tmp_dir(), f"{self._filename}.c")
         self._cpp_src_file = os.path.join(File.tmp_dir(), f"{self._filename}.cpp")
         self._exe_file = os.path.join(File.tmp_dir(), f"{self._filename}.exe")

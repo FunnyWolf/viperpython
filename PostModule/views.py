@@ -10,6 +10,7 @@ from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
 from PostModule.Handle.postmoduleresult import PostModuleResult
 from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
+from PostModule.Handle.proxyhttpscan import ProxyHttpScan
 
 
 class PostModuleConfigView(BaseView):
@@ -105,6 +106,36 @@ class PostModuleAutoView(BaseView):
         try:
             module_uuid = request.query_params.get('_module_uuid')
             context = PostModuleAuto.destory(module_uuid=module_uuid)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+
+class ProxyHttpScanView(BaseView):
+    def list(self, request, **kwargs):
+        try:
+            context = ProxyHttpScan.list()
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+    def create(self, request, **kwargs):
+        try:
+            loadpath = request.data.get('loadpath')
+            custom_param = request.data.get('custom_param')
+            context = ProxyHttpScan.create(loadpath=loadpath,
+                                           custom_param=custom_param)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+    def destroy(self, request, pk=None, **kwargs):
+        try:
+            module_uuid = request.query_params.get('_module_uuid')
+            context = ProxyHttpScan.destory(module_uuid=module_uuid)
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))

@@ -2,13 +2,27 @@
 # @File  : api.py
 # @Date  : 2021/2/25
 # @Desc  :
+import json
 import random
 import string
 
 
-def get_random_str(len):
+def random_str(len):
     value = ''.join(random.sample(string.ascii_letters + string.digits, len))
     return value
+
+
+def random_int(num):
+    """生成随机字符串"""
+    return random.randint(1, num)
+
+
+def is_json(data):
+    try:
+        json.loads(data)
+        return True
+    except Exception as E:
+        return False
 
 
 def data_return(code=500, data=None,

@@ -365,6 +365,17 @@ class _CommonModule(object):
                             opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
                                                         "tag_en": option.get("tag_en"),
                                                         "data": self._custom_param.get(key)[0:30]}
+                        if option.get("type") == "bool":
+                            if self._custom_param.get(key):
+                                data = "True"
+                            elif self._custom_param.get(key) is None:
+                                data = "None"
+                            else:
+                                data = "False"
+
+                            opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
+                                                        "tag_en": option.get("tag_en"),
+                                                        "data": data}
                     except Exception as E:
                         logger.exception(E)
 
@@ -521,6 +532,24 @@ class _CommonModule(object):
         """生成随机字符串"""
         salt = ''.join(random.sample(string.ascii_letters, num))
         return salt
+
+
+class ProxyHttpScanModule(_CommonModule):
+    MODULE_BROKER = BROKER.proxy_http_scan_module
+    MODULETYPE = TAG2TYPE.Proxy_Http_Scan
+
+    def __init__(self, custom_param):
+        super().__init__(custom_param)  # 父类无需入参
+
+        # 设置内部参数
+        self._custom_param = custom_param  # 前端传入的参数信息
+
+    def callback(self, request, response, data=None):
+        """后台运行模块回调函数"""
+        logger.warning(self._custom_param)
+        logger.warning(request)
+        logger.warning(response)
+        logger.warning(data)
 
 
 class _BotCommonModule(_CommonModule):

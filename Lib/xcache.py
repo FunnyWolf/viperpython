@@ -80,6 +80,10 @@ class Xcache(object):
 
     XCACHE_POSTMODULE_AUTO_CONF = "XCACHE_POSTMODULE_AUTO_CONF"
 
+    XCACHE_PROXY_HTTP_SCAN_CONF = "XCACHE_PROXY_HTTP_SCAN_CONF"
+
+    XCACHE_PROXY_HTTP_SCAN_DICT = "XCACHE_PROXY_HTTP_SCAN_DICT"
+
     XCACHE_TOKEN = "XCACHE_TOKEN"
 
     XCACHE_MSFRPC_ERROR_LOG = "XCACHE_MSFRPC_ERROR_LOG"
@@ -102,6 +106,7 @@ class Xcache(object):
     def __init__(self):
         pass
 
+    ### postmodule_auto
     @staticmethod
     def get_postmodule_auto_dict():
         """获取自动化模块配置字典"""
@@ -111,12 +116,22 @@ class Xcache(object):
         return result
 
     @staticmethod
-    def add_postmodule_auto_list(module_uuid, loadpath, custom_param):
+    def add_postmodule_auto_dict(module_uuid, loadpath, custom_param):
         """新增一个自动化模块配置到有序字典"""
         result = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_LIST)
         if result is None:
             result = {}
         result[module_uuid] = {"loadpath": loadpath, "custom_param": custom_param}
+        cache.set(Xcache.XCACHE_POSTMODULE_AUTO_LIST, result, None)
+        return True
+
+    @staticmethod
+    def delete_postmodule_auto_dict(module_uuid):
+        """从字典中删除一个自动化模块配置"""
+        result = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_LIST)
+        if result is None:
+            result = {}
+        result.pop(module_uuid)
         cache.set(Xcache.XCACHE_POSTMODULE_AUTO_LIST, result, None)
         return True
 
@@ -142,15 +157,55 @@ class Xcache(object):
             return {"flag": False, "interval": 1, "max_session": 3}
         return conf
 
+    ### postmodule_auto
+
+    ### proxy_http_scan
     @staticmethod
-    def delete_postmodule_auto_list(module_uuid):
+    def get_proxy_http_scan_dict():
+        """获取自动化模块配置字典"""
+        result = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT)
+        if result is None:
+            return {}
+        return result
+
+    @staticmethod
+    def add_proxy_http_scan_dict(module_uuid, loadpath, custom_param):
+        """新增一个自动化模块配置到有序字典"""
+        result = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT)
+        if result is None:
+            result = {}
+        result[module_uuid] = {"loadpath": loadpath, "custom_param": custom_param}
+        cache.set(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT, result, None)
+        return True
+
+    @staticmethod
+    def delete_proxy_http_scan_dict(module_uuid):
         """从字典中删除一个自动化模块配置"""
-        result = cache.get(Xcache.XCACHE_POSTMODULE_AUTO_LIST)
+        result = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT)
         if result is None:
             result = {}
         result.pop(module_uuid)
-        cache.set(Xcache.XCACHE_POSTMODULE_AUTO_LIST, result, None)
+        cache.set(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT, result, None)
         return True
+
+    @staticmethod
+    def set_proxy_http_scan_conf(conf):
+        old_conf = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_CONF)
+
+        if old_conf is None:
+            old_conf = {"flag": False}
+        old_conf.update(conf)
+        cache.set(Xcache.XCACHE_PROXY_HTTP_SCAN_CONF, old_conf, None)
+        return old_conf
+
+    @staticmethod
+    def get_proxy_http_scan_conf():
+        conf = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_CONF)
+        if conf is None:
+            return {"flag": False}
+        return conf
+
+    ### proxy_http_scan
 
     @staticmethod
     def init_xcache_on_start():

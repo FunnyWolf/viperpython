@@ -71,6 +71,7 @@ class BROKER(object):
     post_python_job = 'post_python_job'  # 多模块配合
     post_msf_job = 'post_msf_job'  # 后台运行的模块
     bot_msf_module = 'bot_msf_module'  # 后台运行的模块
+    proxy_http_scan_module = 'proxy_http_scan_module'  # 后台运行的模块
 
 
 class TAG2TYPE(object):
@@ -79,6 +80,9 @@ class TAG2TYPE(object):
     """
     example = 'example'  # '样例模块',
     internal = 'internal'  # 内部模块(不提供可视化输出,用于内部的模块)
+
+    # 代理扫描模块
+    Proxy_Http_Scan = "Proxy_Http_Scan"  # 基于msf的扫描模块
 
     # 全网扫描类型模块
     Bot_MSF_Scan = "Bot_MSF_Scan"  # 基于msf的扫描模块
