@@ -2,6 +2,7 @@
 # @File  : __init__.py.py
 # @Date  : 2020/11/4
 # @Desc  :
+from Core.Handle.uuidjson import UUIDJson
 from Lib.Module.configs import (
     TAG2TYPE, UACLevel, RegType,
 )
@@ -18,6 +19,7 @@ from Lib.Module.moduletemplate import (
     PostMSFPowershellFunctionModule,
     PostMSFExecPEModule,
     BotMSFModule,
+    ProxyHttpScanModule,
 )
 from Lib.Module.msfmodule import (
     MsfModule
@@ -54,6 +56,7 @@ __all__ = [
     "PostMSFPowershellFunctionModule",
     "PostMSFExecPEModule",
     "BotMSFModule",
+    "ProxyHttpScanModule",
     "register_options",
     "OptionHander",
     "OptionIPAddressRange",
@@ -76,4 +79,5 @@ __all__ = [
     "UACLevel",
     "RegType",
     "HostInfo",
+    "UUIDJson",
 ]

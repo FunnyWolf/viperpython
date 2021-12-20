@@ -9,7 +9,7 @@ from Msgrpc.views import ServiceStatusView, PayloadView, JobView, HandlerView, S
 from Msgrpc.views import SocksView, TransportView, FileMsfView, FileSessionView, PortFwdView, HostFileView
 from Msgrpc.views import WebDeliveryView, IPFilterView
 from PostLateral.views import PortServiceView, CredentialView, VulnerabilityView
-from PostModule.views import PostModuleConfigView, PostModuleActuatorView, PostModuleResultView
+from PostModule.views import PostModuleConfigView, PostModuleActuatorView, PostModuleResultView, ProxyHttpScanView
 from PostModule.views import PostModuleResultHistoryView, PostModuleAutoView
 
 router = routers.DefaultRouter()
@@ -49,6 +49,8 @@ router.register(r'api/v1/postmodule/postmoduleresulthistory', PostModuleResultHi
                 basename="PostModuleResultHistoryView")
 router.register(r'api/v1/postmodule/postmoduleauto', PostModuleAutoView,
                 basename="PostModuleAutoView")
+router.register(r'api/v1/postmodule/proxyhttpscan', ProxyHttpScanView,
+                basename="ProxyHttpScanView")
 # 无需认证的api
 router.register(r'api/v1/d', HostFileView, basename="HostFileView")
 router.register(r'api/v1/c', LazyLoaderInterfaceView, basename="LazyLoaderInterfaceView")

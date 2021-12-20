@@ -26,6 +26,7 @@ from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
 from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
+from PostModule.Handle.proxyhttpscan import ProxyHttpScan
 from WebSocket.Handle.console import Console
 from WebSocket.Handle.heartbeat import HeartBeat
 
@@ -118,6 +119,11 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=self.sub_rpc_uuid_json_thread, max_instances=1,
                                    trigger='interval',
                                    seconds=1, id='sub_rpc_uuid_json_thread')
+
+        # proxyhttp 调用
+        self.MainScheduler.add_job(func=self.sub_proxy_http_scan_thread, max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_proxy_http_scan_thread')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
@@ -239,6 +245,18 @@ class MainMonitor(object):
             return
         ps = rcon.pubsub(ignore_subscribe_messages=True)
         ps.subscribe(**{VIPER_RPC_UUID_JSON_DATA: UUIDJson.store_data_from_sub})
+        for message in ps.listen():
+            if message:
+                logger.warning(f"不应获取非空message {message}")
+
+    @staticmethod
+    def sub_proxy_http_scan_thread():
+        """这个函数必须以线程的方式运行,监控外部rpc发送的redis消息,获取任务结果"""
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{VIPER_PROXY_HTTP_SCAN_DATA: ProxyHttpScan.store_request_response_from_sub})
         for message in ps.listen():
             if message:
                 logger.warning(f"不应获取非空message {message}")

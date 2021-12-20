@@ -56,6 +56,8 @@ class Settings(object):
             conf = Xcache.get_sessionmonitor_conf()
         elif kind == "postmoduleautoconf":
             conf = Xcache.get_postmodule_auto_conf()
+        elif kind == "proxyhttpscanconf":
+            conf = Xcache.get_proxy_http_scan_conf()
         elif kind == "handlerconf":
             conf = Handler.list_handler_config()
         elif kind == "dnslog":
@@ -205,6 +207,11 @@ class Settings(object):
             new_conf = Xcache.set_postmodule_auto_conf(setting)
             Notice.send_success(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")
             context = data_return(209, new_conf, Setting_MSG_ZH.get(209), Setting_MSG_EN.get(209))
+            return context
+        elif kind == "proxyhttpscanconf":
+            new_conf = Xcache.set_proxy_http_scan_conf(setting)
+            Notice.send_success(f"设置被动扫描配置成功", "Passive HTTP Scanning is set successfully")
+            context = data_return(211, new_conf, Setting_MSG_ZH.get(211), Setting_MSG_EN.get(211))
             return context
         else:
             context = data_return(301, {}, Setting_MSG_ZH.get(301), Setting_MSG_EN.get(301))

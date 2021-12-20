@@ -146,6 +146,22 @@ PostModuleAuto_MSG_EN = {
     306: "Failed to create new automatic configuration",
 }
 
+ProxyHttpScan_MSG_ZH = {
+    201: "新建被动扫描配置成功",
+    204: "删除被动扫描配置成功",
+
+    304: "删除被动扫描配置失败",
+    306: "新建被动扫描配置失败",
+}
+
+ProxyHttpScan_MSG_EN = {
+    201: "Create Passive scanning configuration succeeded",
+    204: "The Passive scanning configuration is deleted successfully",
+
+    304: "Failed to delete Passive scanning configuration",
+    306: "Failed to create new Passive scanning configuration",
+}
+
 PostModuleConfig_MSG_ZH = {
     201: "重新加载所有模块成功",
 }
@@ -177,7 +193,8 @@ Setting_MSG_ZH = {
     208: "设置360Quake API成功",
     209: "设置自动编排配置成功",
     210: "下载日志文件成功",
-    211: "设置DNSLOG成功",
+    211: "设置被动扫描配置成功",
+
     301: "未知配置类型",
     302: "解析配置参数失败",
     303: "输入的Telegram配置不可用,请检查token是否正确且网络可以访问telegram",
@@ -198,7 +215,7 @@ Setting_MSG_EN = {
     208: "Successfully set up 360Quake API",
     209: "The automatic arrangement configuration is set successfully",
     210: "Download logfile success",
-    211: "Set DNSLOG success",
+    211: "Set Passive scanning conf success",
     301: "Unknown configuration type",
     302: "Failed to parse configuration parameters",
     303: "The entered Telegram configuration is not available, please check whether the token is correct and the network can access telegram",
@@ -569,6 +586,8 @@ VIPER_SEND_SMS_CHANNEL = "VIPER_SEND_SMS_CHANNEL"
 VIPER_POSTMODULE_AUTO_CHANNEL = "VIPER_POSTMODULE_AUTO_CHANNEL"
 
 VIPER_RPC_UUID_JSON_DATA = "VIPER_RPC_UUID_JSON_DATA"
+
+VIPER_PROXY_HTTP_SCAN_DATA = "VIPER_PROXY_HTTP_SCAN_DATA"
 
 PAYLOAD_LOADER_STORE_PATH = "STATICFILES/STATIC/SHELLCODELOADER/"
 

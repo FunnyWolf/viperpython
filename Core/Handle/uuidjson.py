@@ -42,6 +42,23 @@ class UUIDJson(object):
             return False
 
     @staticmethod
+    def store_uuid_json(uuid_json_dict):
+        try:
+            uuid = uuid_json_dict.get("UUID")
+            tag = uuid_json_dict.get("TAG")
+            level = uuid_json_dict.get("LEVEL")
+            # data = uuid_json_dict.get("DATA")
+            uuid_json_dict["UPDATETIME"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            if level in ["WARNING", "ERROR"]:
+                Notice.send_warning(f"RPCMSG: TAG:{tag} - LEVEL:{level} - UUID:{uuid}",
+                                    f"RPCMSG: TAG:{tag} - LEVEL:{level} - UUID:{uuid}")
+            Xcache.set_uuid_json_by_uuid(uuid, uuid_json_dict)
+        except Exception as E:
+            logger.error(E)
+            return False
+
+    @staticmethod
     def destory():
         context = data_return(202, {}, UUID_JSON_MSG_ZH.get(202), UUID_JSON_MSG_EN.get(202))
         return context
