@@ -100,19 +100,26 @@ class Payload(object):
 
 
 class PostModule(ProxyHttpScanModule):
-    NAME_ZH = "Log4j"
-    DESC_ZH = "Log4j scan"
+    NAME_ZH = "Log4j2 CVE-2021-44228 扫描"
+    DESC_ZH = "插件会将http请求中GET参数/POST参数/JSON参数中字符串替换为payload" \
+              "如果选择了`扫描headers`,插件会将headers中的参数值替换为payload" \
+              "如果DNSLOG填写为IP:PORT,Payload中则会使用LDAP协议连接对应IP:PORT,然后传递UUID用于识别请求" \
+              "payload包含绕过WAF的payload"
 
-    NAME_EN = "Log4j"
-    DESC_EN = "Log4j scan"
+    NAME_EN = "Log4j CVE-2021-44228 Scan"
+    DESC_EN = "插件会将http请求中GET参数/POST参数/JSON参数中字符串替换为payload" \
+              "如果选择了`扫描headers`,插件会将headers中的参数值替换为payload" \
+              "如果DNSLOG填写为IP:PORT,Payload中则会使用LDAP协议连接对应IP:PORT,然后传递UUID用于识别请求" \
+              "payload包含绕过WAF的payload"
     MODULETYPE = TAG2TYPE.Proxy_Http_Scan
     README = [""]
     REFERENCES = [""]
     AUTHOR = ["Viper"]
     OPTIONS = register_options([
         OptionStr(name='DNSLOG',
-                  tag_zh="DNSLOG主域名", desc_zh="DNSLog主域名,例如:9fppts.ceye.io",
-                  tag_en="DNSLOG Domain", desc_en="DNSLog Domain,e.g.:9fppts.ceye.io"),
+                  tag_zh="DNSLOG/LDAPServer", desc_zh="DNSLog主域名,例如:9fppts.ceye.io,或LDAP服务器,例如:192.168.146.130:1339",
+                  tag_en="DNSLOG/LDAPServer",
+                  desc_en="DNSLog Domain,e.g.:9fppts.ceye.io,or LDAP server,e.g.:192.168.146.130:1339"),
         OptionBool(name='ScanHeader',
                    tag_zh="扫描Headers", desc_zh="是否在Headers中添加payload",
                    tag_en="Scan Headers", desc_en="Add payload to http headers")

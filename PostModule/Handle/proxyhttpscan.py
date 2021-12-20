@@ -44,10 +44,8 @@ class ProxyRequest(object):
         if self.method == "GET":
 
             try:
-                if len(self.path_components) > 0:
-                    url = f"{self.scheme}://{self.host_header}/{self.path_components[0]}"
-                else:
-                    url = f"{self.scheme}://{self.host_header}/"
+                new_path = "/".join(self.path_components)
+                url = f"{self.scheme}://{self.host_header}/{new_path}"
                 result = requests.get(url, headers=self.headers, params=self.query)
                 return result
             except Exception as E:
