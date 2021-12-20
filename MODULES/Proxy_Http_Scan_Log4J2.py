@@ -101,16 +101,16 @@ class Payload(object):
 
 class PostModule(ProxyHttpScanModule):
     NAME_ZH = "Log4j2 CVE-2021-44228 扫描"
-    DESC_ZH = "插件会将http请求中GET参数/POST参数/JSON参数中字符串替换为payload" \
-              "如果选择了`扫描headers`,插件会将headers中的参数值替换为payload" \
-              "如果DNSLOG填写为IP:PORT,Payload中则会使用LDAP协议连接对应IP:PORT,然后传递UUID用于识别请求" \
-              "payload包含绕过WAF的payload"
+    DESC_ZH = "插件会将http请求中GET参数/POST参数/JSON参数中字符串替换为payload\n" \
+              "如果选择了`扫描headers`,插件会将headers中的参数值替换为payload\n" \
+              "如果DNSLOG填写为IP:PORT,Payload中则会使用LDAP协议连接对应IP:PORT,然后传递UUID用于识别请求\n" \
+              "payload包含绕过WAF的payload\n"
 
     NAME_EN = "Log4j CVE-2021-44228 Scan"
-    DESC_EN = "插件会将http请求中GET参数/POST参数/JSON参数中字符串替换为payload" \
-              "如果选择了`扫描headers`,插件会将headers中的参数值替换为payload" \
-              "如果DNSLOG填写为IP:PORT,Payload中则会使用LDAP协议连接对应IP:PORT,然后传递UUID用于识别请求" \
-              "payload包含绕过WAF的payload"
+    DESC_EN = "The plug-in will replace the string in the get parameter / post parameter / JSON parameter in the HTTP request with payload\n" \
+              "If scan headers is selected, the plug-in will replace the parameter value in headers with payload\n" \
+              "If the dnslog is filled in as IP: port, the corresponding IP: port will be connected in the payload using LDAP protocol, and then the UUID will be passed to identify the request\n" \
+              "Payload contains a payload that bypasses the WAF\n"
     MODULETYPE = TAG2TYPE.Proxy_Http_Scan
     README = [""]
     REFERENCES = [""]
@@ -122,7 +122,10 @@ class PostModule(ProxyHttpScanModule):
                   desc_en="DNSLog Domain,e.g.:9fppts.ceye.io,or LDAP server,e.g.:192.168.146.130:1339"),
         OptionBool(name='ScanHeader',
                    tag_zh="扫描Headers", desc_zh="是否在Headers中添加payload",
-                   tag_en="Scan Headers", desc_en="Add payload to http headers")
+                   tag_en="Scan Headers", desc_en="Add payload to http headers"),
+        OptionBool(name='LogRequest',
+                   tag_zh="打印请求日志", desc_zh="打印Http请求到日志中",
+                   tag_en="Log Request", desc_en="Log http requests to logfile")
     ])
 
     def __init__(self, custom_param):
@@ -161,6 +164,7 @@ class PostModule(ProxyHttpScanModule):
     def callback(self, request: ProxyRequest, response: ProxyResponse, data=None):
         # data,额外需要传输的数据
         # 调用父类函数存储结果(必须调用)
+        log_flag = self.param("LogRequest")
         req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
         payloads = self.payload_list(req_uuid)
         uuid_data = {
@@ -181,7 +185,7 @@ class PostModule(ProxyHttpScanModule):
                 for payload in payloads:
                     for key in request.query:
                         request.query[key] = payload
-                    result = request.send()
+                    result = request.send(log=log_flag)
         elif request.method == "POST":
             if request.urlencoded_form:
 
@@ -194,7 +198,7 @@ class PostModule(ProxyHttpScanModule):
                 for payload in payloads:
                     for key in request.urlencoded_form:
                         request.urlencoded_form[key] = payload
-                    result = request.send()
+                    result = request.send(log=log_flag)
             else:
                 if is_json(request.text):
                     uuid_data["DATA"] = {
@@ -207,7 +211,7 @@ class PostModule(ProxyHttpScanModule):
                         old_dict = json.loads(request.text)
                         new_dict = JsonReplace().replace_inter(old_dict, payload)
                         request.text = json.dumps(new_dict)
-                        result = request.send()
+                        result = request.send(log=log_flag)
 
         if self.param("ScanHeader"):
             req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
@@ -225,5 +229,5 @@ class PostModule(ProxyHttpScanModule):
             for payload in payloads:
                 for key in request.headers:
                     request.headers[key] = payload
-                result = request.send()
+                result = request.send(log=log_flag)
         return True

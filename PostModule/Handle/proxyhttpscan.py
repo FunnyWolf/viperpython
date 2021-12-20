@@ -40,13 +40,17 @@ class ProxyRequest(object):
         self.url = request.get("url")
         self.urlencoded_form = request.get("urlencoded_form")
 
-    def send(self):
+    def send(self, log=False):
         if self.method == "GET":
 
             try:
                 new_path = "/".join(self.path_components)
                 url = f"{self.scheme}://{self.host_header}/{new_path}"
                 result = requests.get(url, headers=self.headers, params=self.query)
+                if log:
+                    logger.info(f"{self.method} URL:{url}")
+                    logger.info(f"HEADERS:{self.headers}")
+                    logger.info(f"QUERY:{self.query}")
                 return result
             except Exception as E:
                 logger.exception(E)
@@ -58,6 +62,10 @@ class ProxyRequest(object):
                     result = requests.post(self.pretty_url,
                                            headers=self.headers,
                                            data=self.urlencoded_form)
+                    if log:
+                        logger.info(f"{self.method} URL:{self.pretty_url}")
+                        logger.info(f"HEADERS:{self.headers}")
+                        logger.info(f"DATA:{self.urlencoded_form}")
                     return result
                 except Exception as E:
                     logger.exception(E)
@@ -69,6 +77,10 @@ class ProxyRequest(object):
                         result = requests.post(self.pretty_url,
                                                headers=self.headers,
                                                json=json.loads(self.text))
+                        if log:
+                            logger.info(f"{self.method} URL:{self.pretty_url}")
+                            logger.info(f"HEADERS:{self.headers}")
+                            logger.info(f"JSON:{json.loads(self.text)}")
                         return result
                     except Exception as E:
                         logger.exception(E)
@@ -147,6 +159,10 @@ class ProxyHttpScan(object):
         except Exception as E:
             logger.exception(E)
             return False
+
+        conf = Xcache.get_proxy_http_scan_conf()
+        if conf.get("flag") is not True:
+            return
 
         proxy_http_scan_dict = Xcache.get_proxy_http_scan_dict()
         for module_uuid in proxy_http_scan_dict:

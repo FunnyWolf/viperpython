@@ -60,5 +60,6 @@ class UUIDJson(object):
 
     @staticmethod
     def destory():
+        Xcache.del_uuid_json()
         context = data_return(202, {}, UUID_JSON_MSG_ZH.get(202), UUID_JSON_MSG_EN.get(202))
         return context

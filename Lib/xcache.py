@@ -191,7 +191,6 @@ class Xcache(object):
     @staticmethod
     def set_proxy_http_scan_conf(conf):
         old_conf = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_CONF)
-
         if old_conf is None:
             old_conf = {"flag": False}
         old_conf.update(conf)
