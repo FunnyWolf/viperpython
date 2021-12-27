@@ -17,6 +17,7 @@ from Lib.xcache import Xcache
 
 class ProxyRequest(object):
     def __init__(self, request):
+        # proxy request参数
         self.content = request.get("content")
         self.cookies = request.get("cookies")
         self.headers = request.get("headers")
@@ -40,17 +41,33 @@ class ProxyRequest(object):
         self.url = request.get("url")
         self.urlencoded_form = request.get("urlencoded_form")
 
-    def send(self, log=False):
+        # requests参数
+        self.log = False
+        self.timeout = 3.0
+
+    def copy(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def send(self):
         if self.method == "GET":
 
             try:
                 new_path = "/".join(self.path_components)
                 url = f"{self.scheme}://{self.host_header}/{new_path}"
-                result = requests.get(url, headers=self.headers, params=self.query)
-                if log:
+                result = requests.get(url,
+                                      headers=self.headers,
+                                      params=self.query,
+                                      timeout=self.timeout)
+
+                if self.log:
                     logger.warning(f"{self.method} URL:{url}")
                     logger.warning(f"HEADERS:{self.headers}")
                     logger.warning(f"QUERY:{self.query}")
+                    logger.warning(f"RESULT:{result.status_code}  {result.text}")
+
                 return result
             except Exception as E:
                 logger.exception(E)
@@ -61,11 +78,16 @@ class ProxyRequest(object):
                 try:
                     result = requests.post(self.pretty_url,
                                            headers=self.headers,
-                                           data=self.urlencoded_form)
-                    if log:
+                                           data=self.urlencoded_form,
+                                           timeout=self.timeout
+                                           )
+
+                    if self.log:
                         logger.warning(f"{self.method} URL:{self.pretty_url}")
                         logger.warning(f"HEADERS:{self.headers}")
                         logger.warning(f"DATA:{self.urlencoded_form}")
+                        logger.warning(f"RESULT:{result.status_code}  {result.text}")
+
                     return result
                 except Exception as E:
                     logger.exception(E)
@@ -76,11 +98,15 @@ class ProxyRequest(object):
                     try:
                         result = requests.post(self.pretty_url,
                                                headers=self.headers,
-                                               json=json.loads(self.text))
-                        if log:
+                                               json=json.loads(self.text),
+                                               timeout=self.timeout)
+
+                        if self.log:
                             logger.warning(f"{self.method} URL:{self.pretty_url}")
                             logger.warning(f"HEADERS:{self.headers}")
                             logger.warning(f"JSON:{json.loads(self.text)}")
+                            logger.warning(f"RESULT:{result.status_code}  {result.text}")
+
                         return result
                     except Exception as E:
                         logger.exception(E)
