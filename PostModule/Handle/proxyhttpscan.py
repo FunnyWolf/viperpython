@@ -69,6 +69,13 @@ class ProxyRequest(object):
                     logger.warning(f"RESULT:{result.status_code}  {result.text}")
 
                 return result
+
+            except requests.ReadTimeout as _:
+                logger.warning(f"{self.method} URL:{self.pretty_url}")
+                logger.warning(f"HEADERS:{self.headers}")
+                logger.warning(f"DATA:{self.urlencoded_form}")
+                logger.warning(f"socket.timeout")
+
             except Exception as E:
                 logger.exception(E)
 
@@ -87,8 +94,12 @@ class ProxyRequest(object):
                         logger.warning(f"HEADERS:{self.headers}")
                         logger.warning(f"DATA:{self.urlencoded_form}")
                         logger.warning(f"RESULT:{result.status_code}  {result.text}")
-
                     return result
+                except requests.ReadTimeout as _:
+                    logger.warning(f"{self.method} URL:{self.pretty_url}")
+                    logger.warning(f"HEADERS:{self.headers}")
+                    logger.warning(f"DATA:{self.urlencoded_form}")
+                    logger.warning(f"requests.ReadTimeout")
                 except Exception as E:
                     logger.exception(E)
 
@@ -108,6 +119,11 @@ class ProxyRequest(object):
                             logger.warning(f"RESULT:{result.status_code}  {result.text}")
 
                         return result
+                    except requests.ReadTimeout as _:
+                        logger.warning(f"{self.method} URL:{self.pretty_url}")
+                        logger.warning(f"HEADERS:{self.headers}")
+                        logger.warning(f"DATA:{self.urlencoded_form}")
+                        logger.warning(f"socket.timeout")
                     except Exception as E:
                         logger.exception(E)
 
