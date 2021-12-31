@@ -19,6 +19,7 @@ from Lib.Module.moduletemplate import (
     PostMSFPowershellFunctionModule,
     PostMSFExecPEModule,
     BotMSFModule,
+    BotPythonModule,
     ProxyHttpScanModule,
 )
 from Lib.Module.msfmodule import (
@@ -56,6 +57,7 @@ __all__ = [
     "PostMSFPowershellFunctionModule",
     "PostMSFExecPEModule",
     "BotMSFModule",
+    "BotPythonModule",
     "ProxyHttpScanModule",
     "register_options",
     "OptionHander",

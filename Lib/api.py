@@ -5,6 +5,7 @@
 import json
 import random
 import string
+import uuid
 
 
 def random_str(len):
@@ -23,6 +24,11 @@ def is_json(data):
         return True
     except Exception as E:
         return False
+
+
+def get_one_uuid_str():
+    uuid_str = str(uuid.uuid1()).replace('-', "")[0:16]
+    return uuid_str
 
 
 def data_return(code=500, data=None,

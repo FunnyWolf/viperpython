@@ -67,11 +67,12 @@ FILE_OPTION = {
 
 
 class BROKER(object):
-    empty = 'empty'  # 多模块配合
-    post_python_job = 'post_python_job'  # 多模块配合
-    post_msf_job = 'post_msf_job'  # 后台运行的模块
-    bot_msf_module = 'bot_msf_module'  # 后台运行的模块
-    proxy_http_scan_module = 'proxy_http_scan_module'  # 后台运行的模块
+    empty = 'empty'
+    post_python_job = 'post_python_job'
+    post_msf_job = 'post_msf_job'
+    bot_msf_module = 'bot_msf_module'
+    bot_python_module = 'bot_python_module'
+    proxy_http_scan_module = 'proxy_http_scan_module'
 
 
 class TAG2TYPE(object):

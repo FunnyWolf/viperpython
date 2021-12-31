@@ -3,6 +3,8 @@ import socketserver
 import threading
 import time
 
+uuid_list = []
+
 
 class Serializer():
     """
@@ -83,6 +85,11 @@ class LDAPHandler(socketserver.BaseRequestHandler):
         if len(query) < 10:
             return
         query_name = query[9:9 + query[8:][0]].decode()
+        if query_name not in uuid_list:
+            uuid_list.append(query_name)
+        else:
+            self.request.close()
+            return
         print(f"IP: {self.request.getpeername()[0]}  UUID: {query_name}")
 
         response = LDAPResponse(query_name, {
@@ -92,7 +99,7 @@ class LDAPHandler(socketserver.BaseRequestHandler):
         self.request.sendall(response.serialize())
 
         time.sleep(0.5)
-
+        query = self.request.recv(8096)
         self.request.close()
 
 

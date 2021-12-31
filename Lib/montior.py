@@ -15,6 +15,7 @@ from Core.Handle.host import Host
 from Core.Handle.setting import Settings
 from Core.Handle.uuidjson import UUIDJson
 from Lib.Module.moduletemplate import BROKER
+from Lib.botmodule import BotModule
 from Lib.configs import *
 from Lib.file import File
 from Lib.log import logger
@@ -146,7 +147,9 @@ class MainMonitor(object):
         broker = req.get("broker")
         module_intent = req.get("module")
         if broker == BROKER.bot_msf_module:
-            MSFModule.run_msf_module_bot(module_intent)
+            BotModule.run_msf_module(module_intent)
+        elif broker == BROKER.bot_python_module:
+            BotModule.run_python_module(module_intent)
         else:
             logger.error("unknow broker")
 

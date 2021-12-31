@@ -5,14 +5,13 @@
 import json
 import os
 import time
-import uuid
 from urllib import parse
 from wsgiref.util import FileWrapper
 
 from django.conf import settings
 from django.http import HttpResponse
 
-from Lib.api import data_return
+from Lib.api import data_return, get_one_uuid_str
 from Lib.configs import CODE_MSG_ZH, STATIC_STORE_PATH, LazyLoader_MSG_ZH, CODE_MSG_EN, LazyLoader_MSG_EN
 from Lib.log import logger
 from Lib.xcache import Xcache
@@ -95,7 +94,7 @@ class LazyLoader(object):
         null_cmd = "N"
         if loader_uuid is None:  # 首次请求
             if req == "u":
-                loader_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+                loader_uuid = get_one_uuid_str()
                 context = f"{loader_uuid}"
             else:
                 context = f"{null_cmd}"

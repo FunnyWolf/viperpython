@@ -162,7 +162,8 @@ class ProxyHttpScan(object):
                 one_result["opts"] = module_intent._get_human_opts()
             except Exception as E:
                 logger.warning(E)
-                one_result["opts"] = {}
+                Xcache.delete_proxy_http_scan_dict(module_uuid)
+                continue
 
             result_list.append(one_result)
         context = data_return(200, result_list, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))

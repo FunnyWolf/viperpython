@@ -554,6 +554,7 @@ class ProxyHttpScanModule(_CommonModule):
 
 class _BotCommonModule(_CommonModule):
     """bot模块基础模板"""
+    SEARCH = ''
 
     def __init__(self, ip, port, protocol, custom_param):
         super().__init__(custom_param)  # 父类无需入参
@@ -570,10 +571,21 @@ class _BotCommonModule(_CommonModule):
         return self._ip
 
 
+class BotPythonModule(_BotCommonModule):
+    """bot msf模块(全网扫描)基础模板"""
+    MODULE_BROKER = BROKER.bot_python_module
+
+    def __init__(self, ip, port, protocol, custom_param):
+        super().__init__(ip, port, protocol, custom_param)  # 父类无需入参
+
+    def run(self):
+        """后台运行模块回调函数"""
+        self.log_error("模块中未实现run函数", "The run function is not implemented in the module")
+
+
 class BotMSFModule(_BotCommonModule):
     """bot msf模块(全网扫描)基础模板"""
     MODULE_BROKER = BROKER.bot_msf_module
-    SEARCH = ''
 
     def __init__(self, ip, port, protocol, custom_param):
         super().__init__(ip, port, protocol, custom_param)  # 父类无需入参

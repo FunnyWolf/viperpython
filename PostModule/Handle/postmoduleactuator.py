@@ -8,7 +8,7 @@ import time
 import uuid
 
 from Lib.Module.configs import BROKER
-from Lib.api import data_return
+from Lib.api import data_return, get_one_uuid_str
 from Lib.apsmodule import aps_module
 from Lib.configs import PostModuleActuator_MSG_ZH, PostModuleActuator_MSG_EN
 from Lib.log import logger
@@ -124,7 +124,7 @@ class PostModuleActuator(object):
             custom_param = {}
 
         # 获取模块实例
-        group_uuid = str(uuid.uuid1()).replace('-', "")
+        group_uuid = get_one_uuid_str()
         class_intent = importlib.import_module(loadpath)
         for ipport in ipportlist:
             post_module_intent = class_intent.PostModule(ip=ipport.get("ip"),

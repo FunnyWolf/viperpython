@@ -87,8 +87,9 @@ class LDAPHandler(socketserver.BaseRequestHandler):
     Malicious query handler.
     """
 
-    def __init__(self, ):
-        pass
+    def __init__(self, uuid_list, unrepeat):
+        self.uuid_list = uuid_list
+        self.unrepeat = unrepeat
 
     def __call__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -101,6 +102,13 @@ class LDAPHandler(socketserver.BaseRequestHandler):
         if len(query) < 10:
             return
         query_name = query[9:9 + query[8:][0]].decode()
+        if self.unrepeat:
+            if query_name in self.uuid_list:
+                self.request.close()
+                return
+            else:
+                self.uuid_list.append(query_name)
+
         Notice.send_success(f"LDAP IP: {self.request.getpeername()[0]}  UUID: {query_name}")
         response = LDAPResponse(query_name, {
             "objectClass": "javaNamingReference",
@@ -116,16 +124,19 @@ class LDAPHandler(socketserver.BaseRequestHandler):
 class LDAPServer(threading.Thread):
     '''LDAPServer'''
 
-    def __init__(self, host="0.0.0.0", port=-1, ):
+    def __init__(self, host="0.0.0.0", port=-1, unrepeat=True):
         '''Create a new SOCKS4 proxy on the specified port'''
 
         self._host = host
         self._port = port
         self.server = None
+        self.uuid_list = []
+        self.unrepeat = unrepeat
         threading.Thread.__init__(self)
 
     def run(self):
-        with socketserver.TCPServer((self._host, self._port), LDAPHandler()) as self.server:
+        with socketserver.TCPServer((self._host, self._port),
+                                    LDAPHandler(uuid_list=self.uuid_list, unrepeat=self.unrepeat)) as self.server:
             self.server.serve_forever()
 
     def stop(self):
@@ -153,6 +164,12 @@ class PostModule(PostPythonModule):
                   tag_en="Listen Port",
                   desc_en="Port to start LDAP service locally",
                   ),
+        OptionBool(name='unrepeat',
+                   tag_zh="去重", desc_zh="不显示重复UUID",
+                   tag_en="Unrepeat",
+                   desc_en="Do not display duplicate UUIDs",
+                   default=True,
+                   ),
     ])
 
     def __init__(self, sessionid, hid, custom_param):
@@ -164,7 +181,7 @@ class PostModule(PostPythonModule):
         return True, None
 
     def run(self):
-        ldapserver_t = LDAPServer(port=self.param("listenport"))
+        ldapserver_t = LDAPServer(port=self.param("listenport"), unrepeat=self.param("unrepeat"))
         ldapserver_t.setDaemon(True)
         ldapserver_t.start()
         while self.exit_flag is not True:

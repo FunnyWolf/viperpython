@@ -4,11 +4,11 @@
 # @Desc  :
 import copy
 import time
-import uuid
 
 from django.core.cache import cache
 
 from CONFIG import DEBUG
+from Lib.api import get_one_uuid_str
 from Lib.configs import EXPIRE_MINUTES
 from Lib.log import logger
 
@@ -873,7 +873,7 @@ class Xcache(object):
     def get_aes_key():
         conf = cache.get(Xcache.XCACHE_AES_KEY)
         if conf is None:
-            tmp_self_uuid = str(uuid.uuid1()).replace('-', "")[0:16]
+            tmp_self_uuid = get_one_uuid_str()
             cache.set(Xcache.XCACHE_AES_KEY, tmp_self_uuid, None)
             return tmp_self_uuid
         else:
