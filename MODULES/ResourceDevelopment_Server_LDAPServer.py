@@ -1,7 +1,25 @@
-import argparse
+# -*- coding: utf-8 -*-
+# @File  : PostMulitMsfBypassUAC.py
+# @Date  : 2019/3/15
+# @Desc  :
+
 import socketserver
+
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import threading
+
 import time
+
+try:
+    import requests
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+except Exception as E:
+    import urllib3
+
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from Lib.ModuleAPI import *
 
 
 class Serializer():
@@ -83,8 +101,7 @@ class LDAPHandler(socketserver.BaseRequestHandler):
         if len(query) < 10:
             return
         query_name = query[9:9 + query[8:][0]].decode()
-        print(f"IP: {self.request.getpeername()[0]}  UUID: {query_name}")
-
+        Notice.send_success(f"LDAP IP: {self.request.getpeername()[0]}  UUID: {query_name}")
         response = LDAPResponse(query_name, {
             "objectClass": "javaNamingReference",
             "javaFactory": "hello"
@@ -115,11 +132,44 @@ class LDAPServer(threading.Thread):
         self.server.shutdown()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="All-In-One Log4JRCE by alexandre-lavoie")
-    parser.add_argument("--ldap_port", "-p", help="The local port to run the LDAP server.", type=int, default=1387)
-    args = parser.parse_args()
-    socketserver.TCPServer.allow_reuse_address = True
-    print(f"Run LDAP Server on port : {args.ldap_port}")
-    with socketserver.TCPServer(("0.0.0.0", args.ldap_port), LDAPHandler()) as server:
-        server.serve_forever()
+class PostModule(PostPythonModule):
+    NAME_ZH = "LDAP服务器"
+    DESC_ZH = "启动简易的LDAP服务器,用于接受LDAP回连信息\n"
+
+    NAME_EN = "LDAP Server"
+    DESC_EN = "Start a simple LDAP server to accept LDAP connection back information.\n"
+    MODULETYPE = TAG2TYPE.Resource_Development
+
+    ATTCK = ["T1583.006"]  # ATTCK向量
+    README = ["https://www.yuque.com/vipersec/module/pgtssa"]
+    REFERENCES = [""]
+    AUTHOR = ["Viper"]
+
+    REQUIRE_SESSION = False
+
+    OPTIONS = register_options([
+        OptionInt(name='listenport',
+                  tag_zh="监听端口", desc_zh="本地启动LDAP服务的端口",
+                  tag_en="Listen Port",
+                  desc_en="Port to start LDAP service locally",
+                  ),
+    ])
+
+    def __init__(self, sessionid, hid, custom_param):
+        super().__init__(sessionid, hid, custom_param)
+        self.session = None
+
+    def check(self):
+        """执行前的检查函数"""
+        return True, None
+
+    def run(self):
+        ldapserver_t = LDAPServer(port=self.param("listenport"))
+        ldapserver_t.setDaemon(True)
+        ldapserver_t.start()
+        while self.exit_flag is not True:
+            try:
+                time.sleep(1)
+            except Exception as E:
+                break
+        ldapserver_t.stop()

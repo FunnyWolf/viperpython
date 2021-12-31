@@ -95,7 +95,7 @@ class APSModule(object):
     def store_executed_result(task_uuid=None):
         req = Xcache.get_module_task_by_uuid(task_uuid=task_uuid)
         if req is None:
-            logger.warning("缓存中无对应实例,可能已经模块已经中途退出")
+            logger.warning("缓存中无对应实例,模块已中途退出")
             return False
         module_common_instance = req.get("module")
 
