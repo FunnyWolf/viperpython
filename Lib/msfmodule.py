@@ -133,8 +133,8 @@ class MSFModule(object):
             logger.error(E)
 
         Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
-        Notice.send_success(f"模块: {module_intent.NAME_ZH} {module_intent._target_str} 执行完成",
-                            f"Module: <{module_intent.NAME_EN}> {module_intent._target_str} run finish")
+        Notice.send_info(f"模块: {module_intent.NAME_ZH} {module_intent._target_str} 执行完成",
+                         f"Module: <{module_intent.NAME_EN}> {module_intent._target_str} run finish")
 
     @staticmethod
     def store_monitor_from_sub(message=None):

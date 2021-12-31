@@ -123,7 +123,7 @@ class Transport(object):
         result_flag = RpcClient.call(Method.SessionMeterpreterTransportAdd, [sessionid, opts],
                                      timeout=RPC_SESSION_OPER_SHORT_REQ)
         if result_flag:
-            Notice.send_success(f"新增传输 SID:{sessionid}", f"Add transport:{sessionid}")
+            Notice.send_info(f"新增传输 SID:{sessionid}", f"Add transport:{sessionid}")
 
             context = data_return(201, {}, TRANSPORT_MSG_ZH.get(201), TRANSPORT_MSG_EN.get(201))
             return context

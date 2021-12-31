@@ -130,7 +130,7 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
         self.MainScheduler.start()
         logger.warning("后台服务启动成功")
-        Notice.send_success(f"后台服务启动成功.", "Background service is started successfully.")
+        Notice.send_info(f"后台服务启动完成.", "Background service is started.")
 
     @staticmethod
     def run_bot_wait_list():

@@ -72,7 +72,7 @@ class IPFilter(object):
 
         # 自定义白名单
         if IPFilter.in_diy_whitelist(ip):
-            Notice.send_success(f"[自定义白名单] [放行] {ip}", f"[Custom whitelist] [Pass] {ip}")
+            Notice.send_info(f"[自定义白名单] [放行] {ip}", f"[Custom whitelist] [Pass] {ip}")
             return True
 
         # 自定义黑名单
@@ -103,7 +103,7 @@ class IPFilter(object):
         # reuslt = qqwry.get_location(ip)
         # print(reuslt)
         # 最终返回
-        Notice.send_success(f"[检查结束] [放行] {ip}", f"[Check finish] [Pass] {ip}")
+        Notice.send_info(f"[检查结束] [放行] {ip}", f"[Check finish] [Pass] {ip}")
         return True
 
     @staticmethod

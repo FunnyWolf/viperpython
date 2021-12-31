@@ -102,7 +102,7 @@ class Settings(object):
                     context = data_return(303, data, Setting_MSG_ZH.get(303), Setting_MSG_EN.get(303))
                     return context
                 else:
-                    Notice.send_success("设置Telegram通知成功", "Set Telegram notification successfully")
+                    Notice.send_info("设置Telegram通知成功", "Set Telegram notification successfully")
                     data = {"token": token, "chat_id": chat_id, "proxy": proxy, "alive": True}
                     Xcache.set_telegram_conf(data)
                     context = data_return(202, data, Setting_MSG_ZH.get(202), Setting_MSG_EN.get(202))
@@ -118,7 +118,7 @@ class Settings(object):
                 context = data_return(304, data, Setting_MSG_ZH.get(304), Setting_MSG_EN.get(304))
                 return context
             else:
-                Notice.send_success("设置DingDing通知成功", "Set DingDing notification successfully")
+                Notice.send_info("设置DingDing通知成功", "Set DingDing notification successfully")
                 data = {"access_token": access_token, "keyword": keyword, "alive": True}
                 Xcache.set_dingding_conf(data)
 
@@ -133,7 +133,7 @@ class Settings(object):
                 context = data_return(305, data, Setting_MSG_ZH.get(305), Setting_MSG_EN.get(305))
                 return context
             else:
-                Notice.send_success("设置Server酱通知成功", "Set ServerChan notification successfully")
+                Notice.send_info("设置Server酱通知成功", "Set ServerChan notification successfully")
                 data = {"sendkey": sendkey, "alive": True}
                 Xcache.set_serverchan_conf(data)
 
@@ -151,7 +151,7 @@ class Settings(object):
                 context = data_return(306, data, Setting_MSG_ZH.get(306), Setting_MSG_EN.get(306))
                 return context
             else:
-                Notice.send_success("设置FOFA API成功", "Set FOFA API successfully")
+                Notice.send_info("设置FOFA API成功", "Set FOFA API successfully")
                 data = {"email": email, "key": key, "alive": True}
                 Xcache.set_fofa_conf(data)
                 context = data_return(206, data, Setting_MSG_ZH.get(206), Setting_MSG_EN.get(206))
@@ -167,7 +167,7 @@ class Settings(object):
                 context = data_return(307, data, Setting_MSG_ZH.get(307), Setting_MSG_EN.get(307))
                 return context
             else:
-                Notice.send_success("设置360Quake API成功", "Set 360Quake API successfully")
+                Notice.send_info("设置360Quake API成功", "Set 360Quake API successfully")
                 data = {"key": key, "alive": True}
                 Xcache.set_quake_conf(data)
                 context = data_return(208, data, Setting_MSG_ZH.get(208), Setting_MSG_EN.get(208))
@@ -180,7 +180,7 @@ class Settings(object):
             if flag:
                 msg = "Session监控功能已打开"
                 msg_en = "Session monitor function is turned on"
-                Notice.send_success(msg, msg_en)
+                Notice.send_info(msg, msg_en)
                 Notice.send_sms(msg, msg_en)
             else:
                 msg = "Session监控功能已关闭"
@@ -193,24 +193,24 @@ class Settings(object):
 
         elif kind == "lhost":
             Xcache.set_lhost_config(setting)
-            Notice.send_success(f"设置回连地址成功,当前回连地址: {setting.get('lhost')}",
-                                f"Set the lhost successfully, the current lhost: {setting.get('lhost')}")
+            Notice.send_info(f"设置回连地址成功,当前回连地址: {setting.get('lhost')}",
+                             f"Set the lhost successfully, the current lhost: {setting.get('lhost')}")
             context = data_return(205, setting, Setting_MSG_ZH.get(205), Setting_MSG_EN.get(205))
             return context
         elif kind == "dnslog":
             Xcache.set_dnslog_conf(setting)
-            Notice.send_success(f"设置DNSLOG成功,当前DNSLOG: {setting.get('dnslog_base')}",
-                                f"Set the dnslog successfully, the current dnslog: {setting.get('dnslog_base')}")
+            Notice.send_info(f"设置DNSLOG成功,当前DNSLOG: {setting.get('dnslog_base')}",
+                             f"Set the dnslog successfully, the current dnslog: {setting.get('dnslog_base')}")
             context = data_return(205, setting, Setting_MSG_ZH.get(211), Setting_MSG_EN.get(211))
             return context
         elif kind == "postmoduleautoconf":
             new_conf = Xcache.set_postmodule_auto_conf(setting)
-            Notice.send_success(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")
+            Notice.send_info(f"设置自动编排配置成功", "Automatic arrangement configuration is set successfully")
             context = data_return(209, new_conf, Setting_MSG_ZH.get(209), Setting_MSG_EN.get(209))
             return context
         elif kind == "proxyhttpscanconf":
             new_conf = Xcache.set_proxy_http_scan_conf(setting)
-            Notice.send_success(f"设置被动扫描配置成功", "Passive HTTP Scanning is set successfully")
+            Notice.send_info(f"设置被动扫描配置成功", "Passive HTTP Scanning is set successfully")
             context = data_return(211, new_conf, Setting_MSG_ZH.get(211), Setting_MSG_EN.get(211))
             return context
         else:

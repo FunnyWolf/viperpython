@@ -102,8 +102,8 @@ class APSModule(object):
         # 存储运行结果
         try:
             module_common_instance._store_result_in_history()
-            Notice.send_success(f"模块: {module_common_instance.NAME_ZH} {module_common_instance._target_str} 执行完成",
-                                f"Module: <{module_common_instance.NAME_EN}> {module_common_instance._target_str} start running")
+            Notice.send_info(f"模块: {module_common_instance.NAME_ZH} {module_common_instance._target_str} 执行完成",
+                             f"Module: <{module_common_instance.NAME_EN}> {module_common_instance._target_str} start running")
             logger.warning(f"多模块实例执行完成:{module_common_instance.NAME_ZH}")
             Xcache.del_module_task_by_uuid(task_uuid=task_uuid)  # 清理缓存信息
             return True

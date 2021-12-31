@@ -48,13 +48,13 @@ class Session(object):
             try:
                 result = RpcClient.call(Method.SessionStop, params, timeout=RPC_SESSION_OPER_SHORT_REQ)
                 if result is None:  # 删除超时
-                    Notice.send_success(f"{Session_MSG_ZH.get(202)} SID: {sessionid}",
-                                        f"{Session_MSG_EN.get(202)} SID: {sessionid}")
+                    Notice.send_info(f"{Session_MSG_ZH.get(202)} SID: {sessionid}",
+                                     f"{Session_MSG_EN.get(202)} SID: {sessionid}")
                     context = data_return(202, {}, Session_MSG_ZH.get(202), Session_MSG_EN.get(202))
                     return context
                 elif result.get('result') == 'success':
-                    Notice.send_success(f"{Session_MSG_ZH.get(201)} SID: {sessionid}",
-                                        f"{Session_MSG_EN.get(201)} SID: {sessionid}")
+                    Notice.send_info(f"{Session_MSG_ZH.get(201)} SID: {sessionid}",
+                                     f"{Session_MSG_EN.get(201)} SID: {sessionid}")
                     context = data_return(201, {}, Session_MSG_ZH.get(201), Session_MSG_EN.get(201))
                     return context
                 else:
