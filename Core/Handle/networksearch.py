@@ -28,10 +28,6 @@ class NetworkSearch(object):
         elif engine == "Quake":
             client = Quake()
             flag = client.init_conf_from_cache()
-        elif engine == "Debug":
-            data = NetworkSearch.get_debug_data()
-            context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
-            return context
         else:
             context = data_return(304, {}, NetworkSearch_MSG_ZH.get(304), NetworkSearch_MSG_EN.get(304))
             return context
@@ -53,64 +49,6 @@ class NetworkSearch(object):
         else:
             context = data_return(200, data, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
-
-    @staticmethod
-    def get_debug_data():
-        """生成debug数据"""
-        data = [
-            {
-                "index": 0,
-                "ip": "127.0.0.1",
-                "port": 22,
-                "protocol": "ssh",
-                "country_name": "viper",
-                "as_organization": "viper test",
-            },
-            {
-                "index": 1,
-                "ip": "127.0.0.1",
-                "port": 2222,
-                "protocol": "ssh",
-                "country_name": "viper",
-                "as_organization": "viper test",
-            },
-            {
-                "index": 2,
-                "ip": Xcache.get_lhost_config().get("lhost"),
-                "port": 22,
-                "protocol": "ssh",
-                "country_name": "viper",
-                "as_organization": "viper test",
-            },
-            {
-                "index": 3,
-                "ip": Xcache.get_lhost_config().get("lhost"),
-                "port": 80,
-                "protocol": "http",
-                "country_name": "viper",
-                "as_organization": "viper test",
-            },
-            {
-                "index": 4,
-                "ip": Xcache.get_lhost_config().get("lhost"),
-                "port": 443,
-                "protocol": "https",
-                "country_name": "viper",
-                "as_organization": "viper test",
-            },
-        ]
-
-        for i in range(5, 100):
-            data.append({
-                "index": i,
-                "ip": Xcache.get_lhost_config().get("lhost"),
-                "port": 443,
-                "protocol": "https",
-                "country_name": "viper",
-                "as_organization": "viper test",
-            })
-
-        return data
 
     @staticmethod
     def list_engine():
