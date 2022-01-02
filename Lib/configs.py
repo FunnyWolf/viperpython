@@ -194,6 +194,7 @@ Setting_MSG_ZH = {
     209: "设置自动编排配置成功",
     210: "下载日志文件成功",
     211: "设置被动扫描配置成功",
+    212: "设置Zoomeye API成功",
 
     301: "未知配置类型",
     302: "解析配置参数失败",
@@ -202,6 +203,7 @@ Setting_MSG_ZH = {
     305: "输入的Server酱SendKey不可用,请检查SendKey是否正确",
     306: "输入的FOFA配置不可用,请检查email及key是否正确",
     307: "输入的360Quake配置不可用,请检查key是否正确",
+    308: "输入的Zoomeye配置不可用,请检查key是否正确",
 }
 
 Setting_MSG_EN = {
@@ -216,6 +218,8 @@ Setting_MSG_EN = {
     209: "The automatic arrangement configuration is set successfully",
     210: "Download logfile success",
     211: "Set Passive scanning conf success",
+    212: "Successfully set up Zoomeye API",
+
     301: "Unknown configuration type",
     302: "Failed to parse configuration parameters",
     303: "The entered Telegram configuration is not available, please check whether the token is correct and the network can access telegram",
@@ -223,6 +227,7 @@ Setting_MSG_EN = {
     305: "The entered ServerChan SendKey is not available, please check whether the SendKey is correct",
     306: "The entered FOFA configuration is not available, please check if the email and key are correct",
     307: "The entered 360Quake configuration is not available, please check if the key is correct",
+    308: "The entered Zoomeye configuration is not available, please check if the key is correct",
 }
 
 NetworkSearch_MSG_ZH = {

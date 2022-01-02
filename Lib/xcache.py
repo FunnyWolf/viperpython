@@ -55,6 +55,7 @@ class Xcache(object):
     XCACHE_DNSLOG_CONFIG = "XCACHE_DNSLOG_CONFIG"
 
     XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
+    XCACHE_ZOOMEYE_CONFIG = "XCACHE_ZOOMEYE_CONFIG"
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
 
     XCACHE_SESSION_LIST = "XCACHE_SESSION_LIST"
@@ -799,7 +800,19 @@ class Xcache(object):
     def get_quake_conf():
         conf = cache.get(Xcache.XCACHE_QUAKE_CONFIG)
         if conf is None:
-            return {"key": None, "alive": True}
+            return {"key": None, "alive": False}
+        return conf
+
+    @staticmethod
+    def set_zoomeye_conf(conf):
+        cache.set(Xcache.XCACHE_ZOOMEYE_CONFIG, conf, None)
+        return True
+
+    @staticmethod
+    def get_zoomeye_conf():
+        conf = cache.get(Xcache.XCACHE_ZOOMEYE_CONFIG)
+        if conf is None:
+            return {"key": None, "alive": False}
         return conf
 
     @staticmethod

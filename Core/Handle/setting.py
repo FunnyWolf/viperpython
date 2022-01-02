@@ -14,6 +14,7 @@ from Lib.External.fofaclient import FOFAClient
 from Lib.External.quake import Quake
 from Lib.External.serverchan import ServerChan
 from Lib.External.telegram import Telegram
+from Lib.External.zoomeyeapi import ZoomeyeAPI
 from Lib.api import data_return
 from Lib.configs import Setting_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, Setting_MSG_EN
 from Lib.file import File
@@ -52,6 +53,8 @@ class Settings(object):
             conf = Xcache.get_fofa_conf()
         elif kind == "Quake":
             conf = Xcache.get_quake_conf()
+        elif kind == "Zoomeye":
+            conf = Xcache.get_zoomeye_conf()
         elif kind == "sessionmonitor":
             conf = Xcache.get_sessionmonitor_conf()
         elif kind == "postmoduleautoconf":
@@ -172,6 +175,23 @@ class Settings(object):
                 Xcache.set_quake_conf(data)
                 context = data_return(208, data, Setting_MSG_ZH.get(208), Setting_MSG_EN.get(208))
                 return context
+
+        elif kind == "Zoomeye":
+            key = setting.get("key").strip()
+            client = ZoomeyeAPI()
+            client.set_key(key)
+            if client.is_alive() is not True:
+                data = {"key": key, "alive": False}
+                Xcache.set_zoomeye_conf(data)
+                context = data_return(308, data, Setting_MSG_ZH.get(308), Setting_MSG_EN.get(308))
+                return context
+            else:
+                Notice.send_info("设置Zoomeye API成功", "Set Zoomeye API successfully")
+                data = {"key": key, "alive": True}
+                Xcache.set_zoomeye_conf(data)
+                context = data_return(212, data, Setting_MSG_ZH.get(212), Setting_MSG_EN.get(212))
+                return context
+
 
         elif kind == "sessionmonitor":
             flag = setting.get("flag")
