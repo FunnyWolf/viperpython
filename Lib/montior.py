@@ -106,10 +106,15 @@ class MainMonitor(object):
                                    trigger='interval',
                                    seconds=1, id='sub_postmodule_auto_handle_thread')
 
-        # bot 运行测试线程
-        self.MainScheduler.add_job(func=self.run_bot_wait_list, max_instances=1,
+        # msf bot 运行测试线程
+        self.MainScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
                                    trigger='interval',
-                                   seconds=1, id='run_bot_wait_list')
+                                   seconds=1, id='run_msf_bot_thread')
+
+        # python bot 运行测试线程
+        self.MainScheduler.add_job(func=self.run_python_bot_thread, max_instances=5,
+                                   trigger='interval',
+                                   seconds=1, id='run_python_bot_thread')
 
         # msfrpc调用
         self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
@@ -133,25 +138,26 @@ class MainMonitor(object):
         Notice.send_info(f"后台服务启动完成.", "Background service is started.")
 
     @staticmethod
-    def run_bot_wait_list():
-
-        # 检查当前任务数量是否大于3个
+    def run_msf_bot_thread():
+        # 检查当前MSF任务数量是否大于3个
         task_queue_length = Xcache.get_module_task_length()
-        if task_queue_length >= 3:
+        if task_queue_length >= 5:
             return
 
-        req = Xcache.pop_one_from_bot_wait()
+        req = Xcache.pop_one_from_bot_wait(BROKER.bot_msf_module)
         if req is None:
             return
 
-        broker = req.get("broker")
         module_intent = req.get("module")
-        if broker == BROKER.bot_msf_module:
-            BotModule.run_msf_module(module_intent)
-        elif broker == BROKER.bot_python_module:
-            BotModule.run_python_module(module_intent)
-        else:
-            logger.error("unknow broker")
+        BotModule.run_msf_module(module_intent)
+
+    @staticmethod
+    def run_python_bot_thread():
+        req = Xcache.pop_one_from_bot_wait(BROKER.bot_python_module)
+        if req is None:
+            return
+        module_intent = req.get("module")
+        BotModule.run_python_module(module_intent)
 
     @staticmethod
     def sub_heartbeat_thread():

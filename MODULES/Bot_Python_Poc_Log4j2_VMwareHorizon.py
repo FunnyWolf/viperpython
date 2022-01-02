@@ -70,14 +70,18 @@ class PostModule(BotPythonModule):
         for payload in payloads:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-                "Connection": "keep-alive",
+                "Connection": "close",
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 "Accept-Language": payload,
                 'Accept-Encoding': 'gzip',
             }
             try:
-                result = requests.get(url=url, headers=headers, verify=False, timeout=self.param("timeout"))
+                result = requests.get(url=url, headers=headers, verify=False, timeout=self.param("TIMEOUT"))
             except requests.ReadTimeout as _:
+                pass
+            except requests.ConnectTimeout as _:
+                pass
+            except requests.ConnectionError as _:
                 pass
             except Exception as E:
                 logger.exception(E)

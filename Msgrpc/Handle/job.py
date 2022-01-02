@@ -177,7 +177,7 @@ class Job(object):
                 else:
                     context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))
                     return context
-            elif broker == BROKER.bot_msf_module:
+            elif broker == BROKER.bot_msf_module or broker == BROKER.bot_python_module:
                 flag = Xcache.del_bot_wait_by_group_uuid(task_uuid)
                 if flag is not True:
                     context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))

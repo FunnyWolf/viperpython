@@ -360,15 +360,14 @@ class Xcache(object):
         cache.delete(key)
 
     @staticmethod
-    def pop_one_from_bot_wait():
-        re_key = f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*"
-        keys = cache.keys(re_key)
-
+    def pop_one_from_bot_wait(broker):
+        keys = cache.keys(f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*")
         for key in keys:
             req = cache.get(key)
             if req is not None:
-                cache.delete(key)
-                return req
+                if req.get("broker") == broker:
+                    cache.delete(key)
+                    return req
         return None
 
     @staticmethod
