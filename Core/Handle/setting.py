@@ -192,7 +192,6 @@ class Settings(object):
                 context = data_return(212, data, Setting_MSG_ZH.get(212), Setting_MSG_EN.get(212))
                 return context
 
-
         elif kind == "sessionmonitor":
             flag = setting.get("flag")
             Xcache.set_sessionmonitor_conf({"flag": flag})

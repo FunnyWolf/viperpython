@@ -34,7 +34,7 @@ from WebSocket.Handle.heartbeat import HeartBeat
 
 class MainMonitor(object):
     def __init__(self):
-        self.MainScheduler = BackgroundScheduler()
+        pass
 
     def start(self):
         try:
@@ -106,16 +106,6 @@ class MainMonitor(object):
                                    trigger='interval',
                                    seconds=1, id='sub_postmodule_auto_handle_thread')
 
-        # msf bot 运行测试线程
-        self.MainScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='run_msf_bot_thread')
-
-        # python bot 运行测试线程
-        self.MainScheduler.add_job(func=self.run_python_bot_thread, max_instances=5,
-                                   trigger='interval',
-                                   seconds=1, id='run_python_bot_thread')
-
         # msfrpc调用
         self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
                                    trigger='interval',
@@ -134,6 +124,20 @@ class MainMonitor(object):
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
         self.MainScheduler.start()
+
+        #
+        self.BotScheduler = BackgroundScheduler()
+        # msf bot 运行测试线程
+        self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
+                                  trigger='interval',
+                                  seconds=1, id='run_msf_bot_thread')
+
+        # python bot 运行测试线程
+        self.BotScheduler.add_job(func=self.run_python_bot_thread, max_instances=3,
+                                  trigger='interval',
+                                  seconds=1, id='run_python_bot_thread')
+        self.BotScheduler.start()
+
         logger.warning("后台服务启动成功")
         Notice.send_info(f"后台服务启动完成.", "Background service is started.")
 
