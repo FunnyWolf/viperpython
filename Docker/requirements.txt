@@ -18,3 +18,4 @@ chardet
 qqwry-py3
 #donut-shellcode
 geoip2
+dnslib
