@@ -40,6 +40,7 @@ from Lib.Module.option import (
 )
 from Lib.file import File
 from Lib.gcc import Gcc
+from Lib.ipgeo import IPGeo
 from Lib.mingw import Mingw
 from Lib.notice import Notice
 from Lib.sessionlib import (
@@ -82,4 +83,5 @@ __all__ = [
     "RegType",
     "HostInfo",
     "UUIDJson",
+    "IPGeo",
 ]
