@@ -48,6 +48,9 @@ class DnsLogger():
                 except:
                     source_ip = "127.0.0.1"
 
+                locate_zh = IPGeo.get_ip_geo_str(source_ip, "zh-CN")
+                locate_en = IPGeo.get_ip_geo_str(source_ip, "en-US")
+
                 msg = None
                 prefix = udomain.group(1)
                 if len(prefix) == 16:
@@ -56,9 +59,13 @@ class DnsLogger():
                         msg = "RPCMSG"
 
                 if msg:
-                    Notice.send_success(f"{domain[:-1]}   {source_ip}   {QTYPE[request.q.qtype]}   {msg}")
+                    Notice.send_success(
+                        content_cn=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_zh} {msg}",
+                        content_en=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_en} {msg}")
                 else:
-                    Notice.send_warning(f"{domain[:-1]}   {source_ip}   {QTYPE[request.q.qtype]}")
+                    Notice.send_warning(
+                        content_cn=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_zh}",
+                        content_en=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_en}")
 
     def log_send(self, handler, data):
         pass
