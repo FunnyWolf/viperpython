@@ -15,9 +15,10 @@ from Lib.ModuleAPI import *
 
 
 class DnsLogger():
-    def __init__(self, DNS_DOMAIN):
+    def __init__(self, DNS_DOMAIN, MIN_SUBDOMAIN_LENGTH):
         super().__init__()
         self.DNS_DOMAIN = DNS_DOMAIN
+        self.MIN_SUBDOMAIN_LENGTH = MIN_SUBDOMAIN_LENGTH
 
     def log_data(self, dnsobj):
         pass
@@ -53,19 +54,20 @@ class DnsLogger():
 
                 msg = None
                 prefix = udomain.group(1)
-                if len(prefix) == 16:
-                    data = UUIDJson.list(prefix)
-                    if data is not None:
-                        msg = "RPCMSG"
+                if len(prefix) >= self.MIN_SUBDOMAIN_LENGTH:
+                    if len(prefix) == 16:
+                        data = UUIDJson.list(prefix)
+                        if data is not None:
+                            msg = "RPCMSG"
 
-                if msg:
-                    Notice.send_success(
-                        content_cn=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_zh} {msg}",
-                        content_en=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_en} {msg}")
-                else:
-                    Notice.send_warning(
-                        content_cn=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_zh}",
-                        content_en=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_en}")
+                    if msg:
+                        Notice.send_success(
+                            content_cn=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_zh} {msg}",
+                            content_en=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_en} {msg}")
+                    else:
+                        Notice.send_warning(
+                            content_cn=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_zh}",
+                            content_en=f"{domain[:-1]} {QTYPE[request.q.qtype]} {source_ip} {locate_en}")
 
     def log_send(self, handler, data):
         pass
@@ -170,6 +172,13 @@ class PostModule(PostPythonModule):
                   tag_en="Viper server IP",
                   desc_en="The IP address of the Viper server must be used with the 'Viper server domain'",
                   ),
+        OptionInt(name='MIN_SUBDOMAIN_LENGTH',
+                  tag_zh="最短域名长度",
+                  default=0,
+                  desc_zh="DNSLOG接收的最短域名长度,例如如果设置为4,则333.a.com不会显示,4444.a.com则会显示,该配置项主要用于屏蔽互联网DNS扫描器.(建议小于16)",
+                  tag_en="Minimum domain name length",
+                  desc_en="The shortest domain name length received by dnslog. For example, if it is set to 4, then 333.a.com will not be displayed, 4444.a.com will be displayed. This configuration item is mainly used to shield the Internet DNS scanner",
+                  ),
 
     ])
 
@@ -196,7 +205,7 @@ class PostModule(PostPythonModule):
                                 DNS_DOMAIN=self.param("DNS_DOMAIN"),
                                 ADMIN_DOMAIN=self.param("ADMIN_DOMAIN"),
                                 SERVER_IP=self.param("SERVER_IP"))
-        logger = DnsLogger(DNS_DOMAIN=self.param("DNS_DOMAIN"))
+        logger = DnsLogger(DNS_DOMAIN=self.param("DNS_DOMAIN"), MIN_SUBDOMAIN_LENGTH=self.param("MIN_SUBDOMAIN_LENGTH"))
 
         udp_server = DNSServer(resolver, port=53, address='0.0.0.0', logger=logger)
         udp_server.start_thread()
