@@ -86,7 +86,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-
+Test/
 
 parts/
 sdist/

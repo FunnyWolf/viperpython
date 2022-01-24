@@ -210,9 +210,6 @@ class PostModule(PostPythonModule):
         udp_server = DNSServer(resolver, port=53, address='0.0.0.0', logger=logger)
         udp_server.start_thread()
 
-        # print("Starting Zone Resolver (%s:%d) [%s]" % ("*", 53, "UDP"))
-        # Notice.send_info(f'LDAPServer: {lhost}:{self.param("listenport")}')
-
         while self.exit_flag is not True:
             try:
                 time.sleep(1)
