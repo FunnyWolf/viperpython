@@ -841,16 +841,11 @@ class Xcache(object):
         return conf
 
     @staticmethod
-    def set_session_count(count):
-        cache.set(Xcache.XCACHE_SESSION_LIST, count, None)
-        return True
-
-    @staticmethod
-    def get_session_count():
-        conf = cache.get(Xcache.XCACHE_SESSION_LIST)
-        if conf is None:
-            return 0
-        return conf
+    def get_session_list():
+        sessions_dict = cache.get(Xcache.XCACHE_SESSION_LIST)
+        if sessions_dict is None:
+            return {}
+        return sessions_dict
 
     @staticmethod
     def update_session_list(sessions):

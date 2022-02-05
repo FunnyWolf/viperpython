@@ -390,7 +390,6 @@ class HeartBeat(object):
                                                              "LHOST": datastore.get("LHOST"),
                                                              "RHOST": datastore.get("RHOST")}
 
-        sessions_available_count = 0
         sessions = []
         session_info_dict = RpcClient.call(Method.SessionList, timeout=RPC_FRAMEWORK_API_REQ)
         if session_info_dict is None:
@@ -504,7 +503,6 @@ class HeartBeat(object):
 
                 # session监控统计信息
                 sessionhosts.append(session_info.get('session_host'))
-                sessions_available_count += 1
 
         def session_host_key(item):
             try:

@@ -41,8 +41,8 @@ class Settings(object):
                     pem_files.append(name)
 
             lhostconf = Xcache.get_lhost_config()
-
-            conf = {'lhost': lhostconf.get("lhost"), "pem_files": pem_files}
+            session_dict = Xcache.get_session_list()
+            conf = {'lhost': lhostconf.get("lhost"), "pem_files": pem_files, "sessions": session_dict}
         elif kind == "telegram":
             conf = Xcache.get_telegram_conf()
         elif kind == "dingding":
