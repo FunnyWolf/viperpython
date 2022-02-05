@@ -240,9 +240,10 @@ class _CommonModule(object):
     # 模块输出相关函数
     # 模块输出相关函数
     def log_table(self, data_zh, data_en):
-        if data_zh is None:
+        if data_zh is None or len(data_zh) == 0:
             return
-
+        if data_en is None or len(data_en) == 0:
+            return
         columns_zh = []
         for key in data_zh[0]:
             columns_zh.append({"title": key, "dataIndex": key})
