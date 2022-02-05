@@ -267,9 +267,15 @@ class _CommonModule(object):
         result_format = {"type": "info", "data_zh": data_zh, "data_en": data_en}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
 
+    def log_success(self, data_zh, data_en=None):
+        self.log_good(self, data_zh, data_en)
+
     def log_good(self, data_zh, data_en=None):
         result_format = {"type": "good", "data_zh": data_zh, "data_en": data_en}
         Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+
+    def log_warn(self, data_zh, data_en=None):
+        self.log_warning(data_zh, data_en)
 
     def log_warning(self, data_zh, data_en=None):
         result_format = {"type": "warning", "data_zh": data_zh, "data_en": data_en}
