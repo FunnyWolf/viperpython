@@ -71,6 +71,7 @@ class SessionLib(object):
         self.tunnel_peer_ip = None
         self.tunnel_peer_locate_zh = None
         self.tunnel_peer_locate_en = None
+        self.comm_channel_session = None
         self.via_exploit = None
         self.via_payload = None
         self.route = []
@@ -127,6 +128,8 @@ class SessionLib(object):
         self.target_host = info.get('target_host')
         self.tunnel_local = info.get('tunnel_local')
         self.tunnel_peer = info.get('tunnel_peer')
+        self.comm_channel_session = info.get('comm_channel_session')
+
         self.exploit_uuid = info.get('exploit_uuid')
 
         self.via_exploit = info.get('via_exploit')

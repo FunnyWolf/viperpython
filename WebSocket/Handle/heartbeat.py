@@ -292,17 +292,7 @@ class HeartBeat(object):
                     sid = session.get("id")
                     platform = session.get("platform")
                     payload = "/".join(session.get("via_payload").split("/")[1:])
-                    # 主机节点连接到viper节点
-                    edge = {
-                        "source": '255.255.255.255',
-                        "target": ipaddress,
-                        "data": {
-                            "type": 'session',
-                            "payload": short_payload(payload),
-                        },
-                    }
-                    if edge not in edges:
-                        edges.append(edge)
+                    comm_channel_session = session.get("comm_channel_session")
 
                     # 加入session节点
                     sesison_node_id = f"SID - {sid}"
@@ -327,6 +317,49 @@ class HeartBeat(object):
                     }
                     if edge_data not in edges:
                         edges.append(edge_data)
+
+                    if comm_channel_session is None:
+                        # 主机节点连接到viper节点
+                        edge = {
+                            "source": '255.255.255.255',
+                            "target": ipaddress,
+                            "data": {
+                                "type": 'session',
+                                "payload": short_payload(payload),
+                            },
+                        }
+                        if edge not in edges:
+                            edges.append(edge)
+                    else:
+                        # 查看是否存在online类型的edge
+                        online_edge_list = Edge.list_edge(target=ipaddress, type="online")
+                        for online_edge in online_edge_list:
+                            edge_data = {
+                                "source": '255.255.255.255',
+                                "target": ipaddress,
+                                "data": {
+                                    "type": 'online',
+                                    "payload": short_payload(online_edge.get("data").get("payload")),
+                                },
+                            }
+                            if edge_data not in edges:
+                                edges.append(edge_data)
+                                break  # 不存在session的主机只取一个payload即可
+
+                        # comm_channel_session 类型边
+                        source_sesison_node_id = f"SID - {comm_channel_session}"
+
+                        edge = {
+                            "source": source_sesison_node_id,
+                            "target": sesison_node_id,
+                            "data": {
+                                "type": 'comm',
+                                "payload": short_payload(payload),
+                                "sessionid": comm_channel_session,
+                            },
+                        }
+                        if edge not in edges:
+                            edges.append(edge)
 
                     # route edge
                     routes = session.get("routes")
@@ -427,15 +460,20 @@ class HeartBeat(object):
 
                 one_session['type'] = session_info.get('type')
                 one_session['session_host'] = session_info.get('session_host')
-                one_session['tunnel_local'] = session_info.get('tunnel_local')
-                one_session['tunnel_peer'] = session_info.get('tunnel_peer')
 
-                tunnel_peer_ip = session_info.get('tunnel_peer').split(":")[0]
+                tunnel_local = session_info.get('tunnel_local').replace("::ffff:", "")
+                one_session['tunnel_local'] = tunnel_local
+
+                tunnel_peer = session_info.get('tunnel_peer').replace("::ffff:", "")
+                one_session['tunnel_peer'] = tunnel_peer
+
+                tunnel_peer_ip = tunnel_peer.split(":")[0]
                 one_session['tunnel_peer_ip'] = tunnel_peer_ip
 
                 one_session['tunnel_peer_locate_zh'] = IPGeo.get_ip_geo_str(tunnel_peer_ip, "zh-CN")
                 one_session['tunnel_peer_locate_en'] = IPGeo.get_ip_geo_str(tunnel_peer_ip, "en-US")
 
+                one_session['comm_channel_session'] = session_info.get('comm_channel_session')
                 one_session['via_exploit'] = session_info.get('via_exploit')
                 one_session['via_payload'] = session_info.get('via_payload')
 
