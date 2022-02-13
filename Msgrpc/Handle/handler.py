@@ -52,6 +52,7 @@ class Handler(object):
                     z.update(one_handler)
                     one_handler = z
                     handlers.append(one_handler)
+        # 缓存当前监听配置
         Xcache.set_cache_handlers(handlers)
         # 获取虚拟监听
         virtual_handlers = Xcache.get_virtual_handlers()
@@ -121,6 +122,10 @@ class Handler(object):
 
         for one_handler in cache_handlers:
             opts = one_handler
+            # session通讯监听使用虚拟监听方式添加
+            if opts.get("ReverseListenerComm") is not None:
+                opts['VIRTUALHANDLER'] = True
+
             connext = Handler.create(opts)
             code = connext.get("code")
             payload = opts.get('PAYLOAD')
