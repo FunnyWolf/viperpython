@@ -43,7 +43,7 @@ class SessionLib(object):
         self.integrity = None
 
         # PINFO
-        self.pid = -1
+        self.pid = None
         self.pname = None
         self.ppath = None
         self.puser = None
@@ -80,7 +80,6 @@ class SessionLib(object):
         self.exploit_uuid = None
         self.available = False
         self.info = None
-        self.pid = 0
 
         # 更新基本信息
         self._set_base_info()
