@@ -184,7 +184,7 @@ void directRun() {
 	// CREATE_NO_WINDOW = 0x08000000
 	if (CreateProcess(szPath, szcmd, NULL, NULL, TRUE, 0x08000000, NULL,
 		NULL, &startup_info, &process_information) == 0) {
-		return;
+
 	}
 
 	SelfDelete();
