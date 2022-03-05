@@ -94,6 +94,8 @@ class Payload(object):
                 opts["Format"] = 'py'
             elif "php" in mname:
                 opts["Format"] = 'raw'
+            elif "android" in mname:
+                opts["Format"] = 'raw'
             else:
                 context = data_return(306, {}, Payload_MSG_ZH.get(306), Payload_MSG_EN.get(306))
                 return context
@@ -244,7 +246,9 @@ class Payload(object):
                 context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
                 return context
             byteresult = base64.b64decode(result.get('payload'))
-            if file_suffix.get(opts.get("Format")) is None:
+            if "android" in mname:
+                filename = f"{int(time.time())}.apk"
+            elif file_suffix.get(opts.get("Format")) is None:
                 filename = f"{int(time.time())}"
             else:
                 filename = f"{int(time.time())}.{file_suffix.get(opts.get('Format'))}"
