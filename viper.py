@@ -11,7 +11,6 @@ import subprocess
 import time
 
 LOCALHOST = "127.0.0.1"
-redis_port = 60004
 msgrpc_port = 60005
 mitmproxy_port = 28888
 LOGDIR = "/root/viper/Docker/log"
@@ -23,24 +22,27 @@ def random_str(num):
     return salt
 
 
-def get_nginx_port():
+def get_nginx_port(false_exit=True):
     with open("/root/viper/Docker/nginxconfig/viper.conf") as f:
         data = f.read()
         result = re.search(r'{}'.format("listen (\d+);"), data)
         if result is None:
             print("viper.conf is not right,can not find like 'listen XXXXX;'")
-            exit(1)
+            if false_exit:
+                exit(1)
         else:
             if len(result.groups()) < 1:
                 print("viper.conf is not right,can not find like 'listen XXXXX;'")
-                exit(1)
+                if false_exit:
+                    exit(1)
             else:
                 try:
                     nginx_port = int(result.group(1))
                     return nginx_port
                 except Exception as E:
                     print("viper.conf is not right,can not find like 'listen XXXXX;'")
-                    exit(1)
+                    if false_exit:
+                        exit(1)
 
 
 def restart_nginx():
@@ -55,7 +57,7 @@ def restart_nginx():
         try:
             nginx_port = get_nginx_port()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.settimeout(1)
+            client.settimeout(0.1)
             client.connect((LOCALHOST, nginx_port))
             print("[+] nginx运行中")
             client.close()
@@ -75,20 +77,10 @@ def check_services():
     all_start = True
     print("-------------- 检查服务状态 ----------------")
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-    redis_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    redis_client.settimeout(1)
-    try:
-        redis_client.connect((LOCALHOST, redis_port))
-        print("[+] redis运行中")
-        redis_client.close()
-    except Exception as _:
-        all_start = False
-        print("[x] redis未启动")
-    finally:
-        redis_client.close()
 
+    # nginx
     nginx_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    nginx_client.settimeout(1)
+    nginx_client.settimeout(0.1)
     try:
         nginx_client.connect((LOCALHOST, nginx_port))
         print("[+] nginx运行中")
@@ -99,8 +91,22 @@ def check_services():
     finally:
         nginx_client.close()
 
+    # 检查redis
+    redis_addr = '/var/run/redis/redis-server.sock'
+    redis_client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    try:
+        redis_client.connect(redis_addr)
+        print("[+] redis运行中")
+        redis_client.close()
+    except Exception as _:
+        all_start = False
+        print("[x] redis未启动")
+    finally:
+        redis_client.close()
+
+    # 检查msfrpc
     msf_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    msf_client.settimeout(1)
+    msf_client.settimeout(0.1)
     try:
         msf_client.connect((LOCALHOST, msgrpc_port))
         print("[+] msfrpcd运行中")
@@ -111,18 +117,20 @@ def check_services():
     finally:
         msf_client.close()
 
+    # 检查uwsgi
     uwsgi_addr = '/root/viper/uwsgi.sock'
     viper_client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
         viper_client.connect(uwsgi_addr)
-        print("[+] VIPER主服务运行中")
+        print("[+] uwsgi运行中")
         viper_client.close()
     except Exception as _:
         all_start = False
-        print("[x] VIPER主服务未启动")
+        print("[x] uwsgi未启动")
     finally:
         viper_client.close()
 
+    # 检查daphne
     daphne_addr = '/root/viper/daphne.sock'
     daphne_client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
@@ -137,12 +145,32 @@ def check_services():
     return all_start
 
 
+def check_nginx():
+    nginx_port = get_nginx_port(false_exit=False)
+    if nginx_port is None:
+        return False
+
+    # nginx
+    nginx_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    nginx_client.settimeout(0.1)
+    try:
+        nginx_client.connect((LOCALHOST, nginx_port))
+        print("[+] nginx运行中")
+        start_flag = True
+    except Exception as _:
+        start_flag = False
+        print("[x] nginx未启动")
+    finally:
+        nginx_client.close()
+    return start_flag
+
+
 def start_services():
     # redis
     try:
+        redis_addr = '/var/run/redis/redis-server.sock'
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.settimeout(1)
-        client.connect((LOCALHOST, redis_port))
+        client.connect(redis_addr)
         print("[+] redis运行中")
         client.close()
     except Exception as err:
@@ -156,7 +184,7 @@ def start_services():
     # msfrpcd
     try:
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.settimeout(1)
+        client.settimeout(0.1)
         client.connect((LOCALHOST, msgrpc_port))
         print("[+] msfrpcd运行中")
         client.close()
@@ -210,6 +238,22 @@ def start_services():
             stderr=devNull
         )
 
+    # mitmproxy
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(0.1)
+        client.connect((LOCALHOST, mitmproxy_port))
+        print("[+] proxy运行中")
+        client.close()
+    except Exception as err:
+        print("[*] 启动proxy服务")
+        res = subprocess.Popen(
+            f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} &",
+            shell=True,
+            stdout=devNull,
+            stderr=devNull
+        )
+
     # nginx
     try:
         nginx_port = get_nginx_port()
@@ -222,22 +266,6 @@ def start_services():
         print("[*] 启动nginx服务")
         result = subprocess.run(
             ["service", "nginx", "start"],
-            stdout=devNull,
-            stderr=devNull
-        )
-
-    # mitmproxy
-    try:
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.settimeout(1)
-        client.connect((LOCALHOST, mitmproxy_port))
-        print("[+] proxy运行中")
-        client.close()
-    except Exception as err:
-        print("[*] 启动proxy服务")
-        res = subprocess.Popen(
-            f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} &",
-            shell=True,
             stdout=devNull,
             stderr=devNull
         )
@@ -407,7 +435,7 @@ if __name__ == '__main__':
         exit(0)
 
     if action is not None and action.lower() == "healthcheck":
-        if check_services():
+        if check_nginx():
             exit(0)
         else:
             exit(1)
@@ -449,8 +477,7 @@ if __name__ == '__main__':
 
             # 不要删除这个死循环,此循环是确保docker-compose后台运行基础
             while True:
-                time.sleep(30)
-                check_services()
+                time.sleep(60)
 
         elif action.lower() == "start":
             # 启动服务
