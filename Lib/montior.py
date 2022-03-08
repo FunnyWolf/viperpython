@@ -53,8 +53,10 @@ class MainMonitor(object):
         # 加载历史监听
         handler_list = Xcache.get_cache_handlers()
         Handler.recovery_cache_last_handler(handler_list)
+
         # Xcache初始化部分
         Xcache.init_xcache_on_start()
+
         # 加载模块配置信息
         PostModuleConfig.load_all_modules_config()
 

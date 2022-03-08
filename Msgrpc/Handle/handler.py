@@ -12,7 +12,6 @@ from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
-from Msgrpc.Handle.servicestatus import ServiceStatus
 
 
 class Handler(object):
@@ -112,35 +111,21 @@ class Handler(object):
     @staticmethod
     def recovery_cache_last_handler(cache_handlers):
         # 检测msfrpc是不是可用了
-        while True:
-            rpcstatus = ServiceStatus.update_service_status()
-            if rpcstatus.get('json_rpc').get("status"):
-                break
-            else:
-                Notice.send_warning(f"MSFRPC服务尚未启动,等待3秒", "MSFRPC service has not been started yet, wait 3 seconds")
-                time.sleep(3)
-
         for one_handler in cache_handlers:
             opts = one_handler
-            # session通讯监听使用虚拟监听方式添加
-            if opts.get("ReverseListenerComm") is not None:
-                opts['VIRTUALHANDLER'] = True
-
+            opts['VIRTUALHANDLER'] = True
+            opts["Backup"] = True
             connext = Handler.create(opts)
             code = connext.get("code")
             payload = opts.get('PAYLOAD')
             port = opts.get('LPORT')
             if code == 201:
-                Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 加载成功",
-                                 f"History handler Payload:{payload} Port:{port} load successfully")
-            elif code in [301]:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,端口已占用",
-                                    f"History handler Payload:{payload} Port:{port} load failed,Port is using")
+                Notice.send_info(f"历史监听 Payload:{payload} Port:{port} 备份成功",
+                                 f"History handler Payload:{payload} Port:{port} backup successfully")
             else:
-                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 加载失败,返回值：{code}",
+                Notice.send_warning(f"历史监听 Payload:{payload} Port:{port} 备份失败,返回值：{code}",
                                     f"History handler Payload:{payload} Port:{port} load failed,Return code：{code}")
             time.sleep(1)
-        Notice.send_info("所有历史监听加载完成", "All history handlers has loaded")
 
     @staticmethod
     def create(opts=None):
@@ -151,6 +136,11 @@ class Handler(object):
             opts = Handler.create_virtual_handler(opts)
             context = data_return(201, opts, Handler_MSG_ZH.get(201), Handler_MSG_EN.get(201))
         else:
+            # 清理参数
+            try:
+                opts.pop("Backup")
+            except Exception as _:
+                pass
             # 真正的监听
             # 处理代理相关参数
             if opts.get("proxies_proto") == "Direct" or opts.get("proxies_proto") is None:
