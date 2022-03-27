@@ -13,8 +13,8 @@
 
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/local/bin/puma
-
+DAEMON=/root/.rbenv/shims/puma
+MALLOC_ARENA_MAX=2
 NAME=puma
 DESC=puma
 
