@@ -197,6 +197,8 @@ class PostModule(PostPythonModule):
         # 设置参数
         flag = self.set_payload_by_handler()
         self.opts['TECHNIQUE'] = 'PSH'
+        self.opts['AllowNoCleanup'] = True
+
         host_arch = self.session.arch
         if host_arch == 'x64':
             self.opts['target'] = 1
