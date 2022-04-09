@@ -140,10 +140,15 @@ class OptionInt(_Option):
                  tag_zh=None, desc_zh=None,
                  tag_en=None, desc_en=None,
                  required=False, default=None,
+                 min=None, max=None,
                  length=6):
         super().__init__(type='integer', name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en, desc_en=desc_en,
                          required=required,
                          default=default,
+                         extra_data={
+                             "MIN": min,
+                             "MAX": max
+                         },
                          length=length)
 
 
