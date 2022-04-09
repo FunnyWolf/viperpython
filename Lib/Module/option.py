@@ -146,8 +146,8 @@ class OptionInt(_Option):
                          required=required,
                          default=default,
                          extra_data={
-                             "MIN": min,
-                             "MAX": max
+                             "min": min,
+                             "max": max
                          },
                          length=length)
 
