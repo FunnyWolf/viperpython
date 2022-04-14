@@ -23,14 +23,10 @@ except Exception as E:
     from SocketServer import ThreadingTCPServer
     import ConfigParser as conp
 import time
+import requests
+import urllib3
 
-try:
-    import requests
-    from requests.packages.urllib3.exceptions import InsecureRequestWarning
-except Exception as E:
-    import urllib3
-
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 global globalClientCenter
 

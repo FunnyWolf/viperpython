@@ -4,11 +4,11 @@
 # @Desc  :
 
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from Lib.xcache import Xcache
-
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class Quake:

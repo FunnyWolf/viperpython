@@ -12,13 +12,6 @@ import threading
 
 import time
 
-try:
-    import requests
-    from requests.packages.urllib3.exceptions import InsecureRequestWarning
-except Exception as E:
-    import urllib3
-
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from Lib.ModuleAPI import *
 
 
