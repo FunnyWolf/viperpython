@@ -18,7 +18,7 @@ class FOFAClient:
     def __init__(self):
         self.email = None
         self.key = None
-        self.base_url = "https://fofa.so"
+        self.base_url = "https://fofa.info"
         self.search_api_url = "/api/v1/search/all"
         self.login_api_url = "/api/v1/info/my"
         self.fields = ["ip", "port", "protocol", "country_name", "as_organization"]
