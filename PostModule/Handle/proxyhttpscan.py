@@ -148,17 +148,15 @@ class ProxyHttpScan(object):
     @staticmethod
     def list():
         result_list = []
-
         proxy_http_scan_dict = Xcache.get_proxy_http_scan_dict()
-
         for module_uuid in proxy_http_scan_dict:
             one_result = proxy_http_scan_dict.get(module_uuid)
+            module_intent = one_result.pop("module")
+            loadpath = one_result.get("loadpath")
+
             one_result["_module_uuid"] = module_uuid
-            loadpath = proxy_http_scan_dict.get(module_uuid).get("loadpath")
             one_result["moduleinfo"] = Xcache.get_moduleconfig(loadpath)
             try:
-                class_intent = importlib.import_module(loadpath)
-                module_intent = class_intent.PostModule(custom_param=json.loads(one_result["custom_param"]))
                 one_result["opts"] = module_intent._get_human_opts()
             except Exception as E:
                 logger.warning(E)
@@ -173,7 +171,14 @@ class ProxyHttpScan(object):
     def create(loadpath, custom_param):
         module_uuid = str(uuid.uuid1())
 
-        if Xcache.add_proxy_http_scan_dict(module_uuid, loadpath, custom_param):
+        try:
+            class_intent = importlib.import_module(loadpath)
+            module_intent = class_intent.PostModule(custom_param=json.loads(custom_param))
+        except Exception as E:
+            context = data_return(306, {}, ProxyHttpScan_MSG_ZH.get(306), ProxyHttpScan_MSG_EN.get(306))
+            return context
+
+        if Xcache.add_proxy_http_scan_dict(module_uuid, loadpath, custom_param, module_intent):
             context = data_return(201, {}, ProxyHttpScan_MSG_ZH.get(201), ProxyHttpScan_MSG_EN.get(201))
             return context
         else:
@@ -210,14 +215,7 @@ class ProxyHttpScan(object):
         proxy_http_scan_dict = Xcache.get_proxy_http_scan_dict()
         for module_uuid in proxy_http_scan_dict:
             one_result = proxy_http_scan_dict.get(module_uuid)
-            loadpath = one_result.get("loadpath")
-            try:
-                class_intent = importlib.import_module(loadpath)
-                module_intent = class_intent.PostModule(custom_param=json.loads(one_result.get("custom_param")))
-            except Exception as E:
-                logger.exception(E)
-                continue
-
+            module_intent = one_result.get("module")
             try:
                 module_intent.callback(request=ProxyRequest(request_data), response=ProxyResponse(response_data),
                                        data=data)

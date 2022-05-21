@@ -170,12 +170,12 @@ class Xcache(object):
         return result
 
     @staticmethod
-    def add_proxy_http_scan_dict(module_uuid, loadpath, custom_param):
+    def add_proxy_http_scan_dict(module_uuid, loadpath, custom_param, module_intent):
         """新增一个自动化模块配置到有序字典"""
         result = cache.get(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT)
         if result is None:
             result = {}
-        result[module_uuid] = {"loadpath": loadpath, "custom_param": custom_param}
+        result[module_uuid] = {"loadpath": loadpath, "custom_param": custom_param, "module": module_intent}
         cache.set(Xcache.XCACHE_PROXY_HTTP_SCAN_DICT, result, None)
         return True
 
