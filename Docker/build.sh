@@ -35,6 +35,7 @@ rm -rf /usr/local/lib/python3.9/test
 # clean metasploit-framework
 rm -rf /root/metasploit-framework/external/*
 rm -rf /root/metasploit-framework/documentation/*
+rm -rf /root/metasploit-framework/docs/*
 rm -rf /root/metasploit-framework/spec/*
 rm -rf /root/metasploit-framework/docker/*
 rm -rf /root/metasploit-framework/test/*
