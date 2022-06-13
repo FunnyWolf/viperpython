@@ -137,6 +137,24 @@ class MSFModule(object):
                          f"Module: <{module_intent.NAME_EN}> {module_intent._target_str} run finish")
 
     @staticmethod
+    def store_heartbeat_data_from_sub(message=None):
+        """处理msf模块发送的data信息pub_json_data"""
+        body = message.get('data')
+        try:
+            return_dict = json.loads(body)
+            data = return_dict.get("data")
+
+            result_jobs = data.get("jobs")
+            Xcache.set_msf_job_cache(result_jobs)
+
+            result_sessions = data.get("sessions")
+            Xcache.set_msf_sessions_cache(result_sessions)
+
+        except Exception as E:
+            logger.error(E)
+            return False
+
+    @staticmethod
     def store_monitor_from_sub(message=None):
         """处理msf模块发送的data信息pub_json_data"""
         body = message.get('data')

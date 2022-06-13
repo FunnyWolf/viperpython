@@ -64,6 +64,14 @@ class MainMonitor(object):
         log = logging.getLogger('apscheduler.scheduler')
         log.setLevel(logging.ERROR)
 
+        # msfheartbeat数据监听线程
+        self.HeartBeatScheduler = BackgroundScheduler()
+        self.HeartBeatScheduler.add_job(func=self.sub_msf_heartbeat_data_thread,
+                                        max_instances=1,
+                                        trigger='interval',
+                                        seconds=1, id='sub_msf_heartbeat_data_thread')
+        self.HeartBeatScheduler.start()
+
         self.MainScheduler = BackgroundScheduler()
 
         # msf模块result数据监听线程
@@ -224,6 +232,18 @@ class MainMonitor(object):
             return
         ps = rcon.pubsub(ignore_subscribe_messages=True)
         ps.subscribe(**{MSF_RPC_DATA_CHANNEL: MSFModule.store_monitor_from_sub})
+        for message in ps.listen():
+            if message:
+                logger.warning(f"不应获取非空message {message}")
+
+    @staticmethod
+    def sub_msf_heartbeat_data_thread():
+        """这个函数必须以线程的方式运行,监控msf发送的redis消息"""
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{MSF_RPC_HEARTBEAT_CHANNEL: MSFModule.store_heartbeat_data_from_sub})
         for message in ps.listen():
             if message:
                 logger.warning(f"不应获取非空message {message}")

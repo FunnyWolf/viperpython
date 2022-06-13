@@ -23,7 +23,7 @@ class Job(object):
     def list_jobs():
         """获取后台任务列表,包括msf任务及本地多模块任务"""
 
-        msf_jobs_dict = Job.list_msfrpc_jobs_no_cache()
+        msf_jobs_dict = Job.list_msfrpc_jobs()
         if msf_jobs_dict is None:  # msfrpc临时异常
             uncheck = True  # 跳过任务检查
             msf_jobs_dict = {}
@@ -110,30 +110,15 @@ class Job(object):
         return reqs_temp
 
     @staticmethod
-    def list_msfrpc_jobs_no_cache():
-        infos = {}
-        try:
-            result = RpcClient.call(Method.JobList, timeout=RPC_FRAMEWORK_API_REQ)
-            Xcache.set_msf_job_cache(result)
-            if result is None:
-                infos = {}
-            else:
-                infos = result
-        except Exception as E:
-            logger.error(E)
-        return infos
-
-    @staticmethod
     def list_msfrpc_jobs():
         infos = Xcache.get_msf_job_cache()
         return infos
 
     @staticmethod
     def is_msf_job_alive(job_id):
-        time.sleep(0.5)
+        time.sleep(1)
         try:
-            result = RpcClient.call(Method.JobList, timeout=RPC_FRAMEWORK_API_REQ)
-            Xcache.set_msf_job_cache(result)
+            result = Xcache.get_msf_job_cache()
             if result is None:
                 return False
             else:

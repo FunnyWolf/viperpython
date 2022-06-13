@@ -48,6 +48,8 @@ class Xcache(object):
 
     XCACHE_MSF_JOB_CACHE = "XCACHE_MSF_JOB_CACHE"
 
+    XCACHE_MSF_SESSIONS_CACHE = "XCACHE_MSF_SESSIONS_CACHE"
+
     XCACHE_TELEGRAM_CONFIG = "XCACHE_TELEGRAM_CONFIG"
     XCACHE_DINGDING_CONFIG = "XCACHE_DINGDING_CONFIG"
     XCACHE_SERVERCHAN_CONFIG = "XCACHE_SERVERCHAN_CONFIG"
@@ -314,6 +316,16 @@ class Xcache(object):
     @staticmethod
     def set_msf_job_cache(msfjobs):
         cache.set(Xcache.XCACHE_MSF_JOB_CACHE, msfjobs, None)
+        return True
+
+    @staticmethod
+    def get_msf_sessions_cache():
+        result = cache.get(Xcache.XCACHE_MSF_SESSIONS_CACHE)
+        return result
+
+    @staticmethod
+    def set_msf_sessions_cache(sessions):
+        cache.set(Xcache.XCACHE_MSF_SESSIONS_CACHE, sessions, None)
         return True
 
     @staticmethod
