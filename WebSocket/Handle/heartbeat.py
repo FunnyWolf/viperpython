@@ -9,12 +9,10 @@ import time
 
 from Core.Handle.host import Host
 # from Lib.External.qqwry import qqwry
-from Lib.configs import RPC_FRAMEWORK_API_REQ, VIPER_IP
+from Lib.configs import VIPER_IP
 from Lib.ipgeo import IPGeo
 from Lib.log import logger
-from Lib.method import Method
 from Lib.notice import Notice
-from Lib.rpcclient import RpcClient
 from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
 from PostLateral.Handle.edge import Edge
@@ -424,7 +422,9 @@ class HeartBeat(object):
                                                              "RHOST": datastore.get("RHOST")}
 
         sessions = []
-        session_info_dict = RpcClient.call(Method.SessionList, timeout=RPC_FRAMEWORK_API_REQ)
+        # session_info_dict = RpcClient.call(Method.SessionList, timeout=RPC_FRAMEWORK_API_REQ)
+        session_info_dict = Xcache.get_msf_sessions_cache()
+
         if session_info_dict is None:
             return []
 
