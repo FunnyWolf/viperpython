@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from rest_framework import routers
 
 from Core.views import BaseAuthView, CurrentUserView, NoticesView, SettingView, HostView, HostInfoView, UUIDJsonView
@@ -57,7 +57,7 @@ router.register(r'api/v1/c', LazyLoaderInterfaceView, basename="LazyLoaderInterf
 router.register(r'api/v1/a', CollectSandBoxInterfaceView, basename="CollectSandBoxInterfaceView")
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    re_path(r'^', include(router.urls)),
 ]
 
 MainMonitor().start()
