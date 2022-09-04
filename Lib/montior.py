@@ -10,6 +10,7 @@ import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from tzlocal import get_localzone
 
 from Core.Handle.host import Host
 from Core.Handle.setting import Settings
@@ -63,16 +64,16 @@ class MainMonitor(object):
         # 关闭apscheduler的警告
         log = logging.getLogger('apscheduler.scheduler')
         log.setLevel(logging.ERROR)
-
+        local_tz = get_localzone()
         # msfheartbeat数据监听线程
-        self.HeartBeatScheduler = BackgroundScheduler()
+        self.HeartBeatScheduler = BackgroundScheduler(timezone=str(local_tz))
         self.HeartBeatScheduler.add_job(func=self.sub_msf_heartbeat_data_thread,
                                         max_instances=1,
                                         trigger='interval',
                                         seconds=1, id='sub_msf_heartbeat_data_thread')
         self.HeartBeatScheduler.start()
 
-        self.MainScheduler = BackgroundScheduler()
+        self.MainScheduler = BackgroundScheduler(timezone=str(local_tz))
 
         # msf模块result数据监听线程
         self.MainScheduler.add_job(func=self.sub_msf_module_result_thread,
@@ -136,7 +137,7 @@ class MainMonitor(object):
         self.MainScheduler.start()
 
         #
-        self.BotScheduler = BackgroundScheduler()
+        self.BotScheduler = BackgroundScheduler(timezone=str(local_tz))
         # msf bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
                                   trigger='interval',

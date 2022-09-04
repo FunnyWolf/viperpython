@@ -9,6 +9,7 @@ import uuid
 from apscheduler.events import EVENT_JOB_ADDED, EVENT_JOB_REMOVED, EVENT_JOB_MODIFIED, EVENT_JOB_EXECUTED, \
     EVENT_JOB_ERROR, EVENT_JOB_MISSED, EVENT_JOB_SUBMITTED, EVENT_JOB_MAX_INSTANCES
 from apscheduler.schedulers.background import BackgroundScheduler
+from tzlocal import get_localzone
 
 from Lib.log import logger
 from Lib.notice import Notice
@@ -23,7 +24,8 @@ class APSModule(object):
     _instance_lock = threading.Lock()
 
     def __init__(self):
-        self.ModuleJobsScheduler = BackgroundScheduler()
+        local_tz = get_localzone()
+        self.ModuleJobsScheduler = BackgroundScheduler(timezone=str(local_tz))
         self.ModuleJobsScheduler.add_listener(self.deal_result)
         self.ModuleJobsScheduler.start()
 
