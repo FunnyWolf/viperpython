@@ -165,7 +165,7 @@ def check_nginx():
     return start_flag
 
 
-def start_services():
+def start_services(newpassword=None):
     # redis
     try:
         redis_addr = '/var/run/redis/redis-server.sock'
@@ -247,13 +247,25 @@ def start_services():
         client.close()
     except Exception as err:
         print("[*] 启动proxy服务")
-        res = subprocess.Popen(
-            f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} &",
-            shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
-
+        if newpassword is not None:
+            res = subprocess.Popen(
+                f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} --proxyauth root:{newpassword} --set block_global=false&",
+                shell=True,
+                stdout=devNull,
+                stderr=devNull
+            )
+            print(f"[+] Mitmproxy: http://vpsip:28888")
+            print(f"[+] root:{newpassword}")
+        else:
+            newpassword = random_str(10)
+            res = subprocess.Popen(
+                f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} --proxyauth root:{newpassword} --set block_global=false&",
+                shell=True,
+                stdout=devNull,
+                stderr=devNull
+            )
+            print(f"[+] mitmproxy: http://vpsip:28888")
+            print(f"[+] root:{newpassword}")
     # nginx
     try:
         nginx_port = get_nginx_port()
@@ -421,7 +433,8 @@ def init_copy_file():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
-    parser.add_argument('action', nargs='?', metavar='start/stop/check/init/restartnginx', help="启动/停止/检测 VIPER服务",
+    parser.add_argument('action', nargs='?', metavar='start/stop/check/init/restartnginx',
+                        help="启动/停止/检测 VIPER服务",
                         type=str)
     parser.add_argument('-pw', metavar='newpassword', help="修改root密码")
 
@@ -473,7 +486,7 @@ if __name__ == '__main__':
             gen_random_token()
 
             # 启动服务
-            start_services()
+            start_services(newpassword)
 
             # 不要删除这个死循环,此循环是确保docker-compose后台运行基础
             while True:
@@ -481,7 +494,7 @@ if __name__ == '__main__':
 
         elif action.lower() == "start":
             # 启动服务
-            start_services()
+            start_services(newpassword)
         elif action.lower() == "stop":
             stop_services()
             exit(0)
