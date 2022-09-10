@@ -190,12 +190,10 @@ def start_services(newpassword=None):
         client.close()
     except Exception as err:
         print("[*] 启动msfrpcd服务")
-        result = subprocess.Popen(
-            f"thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address {LOCALHOST} --port {msgrpc_port} --environment production --daemonize start",
-            shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+        os.chdir("/root/metasploit-framework/")
+        cmd = f"thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address {LOCALHOST} --port {msgrpc_port} --environment production --daemonize start"
+        result = subprocess.Popen(cmd, shell=True)
+        print(result)
     # daphne
     try:
         serverAddr = '/root/viper/daphne.sock'
