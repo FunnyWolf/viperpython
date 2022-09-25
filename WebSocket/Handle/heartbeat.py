@@ -516,7 +516,7 @@ class HeartBeat(object):
                 try:
                     one_session['isadmin'] = advanced_info.get("sysinfo").get("IsAdmin")
                     if session_info.get('platform').lower().startswith('linux'):
-                        if "uid=0" in one_session['info'].lower():
+                        if "uid=0" in one_session['info'].lower() or "root" in one_session['info'].lower():
                             one_session['isadmin'] = True
                 except Exception as _:
                     one_session['isadmin'] = None
