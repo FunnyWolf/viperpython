@@ -183,6 +183,21 @@ class _CommonModule(object):
         new_zip.close()
         return True
 
+    def write_zip_loader_shellcode_project(self, filename, loader_filename=None, loader_data=None, shellcode_file=None,
+                                           shellcode_data=None):
+
+        projectfile = os.path.join(File.loot_dir(), filename)
+        new_zip = zipfile.ZipFile(projectfile, 'w')
+
+        readme = os.path.join(self.module_data_dir, "readme.md")
+        new_zip.write(readme, arcname="readme.md", compress_type=zipfile.ZIP_DEFLATED)
+
+        new_zip.writestr(zinfo_or_arcname=loader_filename, data=loader_data, compress_type=zipfile.ZIP_DEFLATED)
+        new_zip.writestr(zinfo_or_arcname=shellcode_file, data=shellcode_data, compress_type=zipfile.ZIP_DEFLATED)
+
+        new_zip.close()
+        return True
+
     # 新增数据相关函数
     # 新增数据相关函数
 
@@ -491,9 +506,9 @@ class _CommonModule(object):
             if int(octet) > 255:
                 raise ValueError
         return (int(octets[0]) << 24) + \
-               (int(octets[1]) << 16) + \
-               (int(octets[2]) << 8) + \
-               (int(octets[3]))
+            (int(octets[1]) << 16) + \
+            (int(octets[2]) << 8) + \
+            (int(octets[3]))
 
     def str_to_ips(self, ipstr):
         """字符串转ip地址列表"""

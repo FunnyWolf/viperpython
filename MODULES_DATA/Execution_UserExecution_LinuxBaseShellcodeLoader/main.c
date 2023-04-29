@@ -83,5 +83,5 @@ int main(int argc, char **argv)
     memcpy(ptr,buf,memory_allocation);
     void (*fp)() = (void (*)())ptr;
     fp();
-    printf ("\n[-] Exploit failed \n");
+    printf ("\n[-] Start failed \n");
 }
