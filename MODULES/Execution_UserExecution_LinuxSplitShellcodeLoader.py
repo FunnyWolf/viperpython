@@ -58,7 +58,6 @@ class PostModule(PostPythonModule):
         else:
             arch = "x64"
         binbytes = gcc.compile_c(arch=arch)
-        binbytes = b"123123"
         shellcode_file = "config.ini"
         loader_filename = f"change_name_{int(time.time())}.elf"
 
