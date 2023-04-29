@@ -91,7 +91,7 @@ class Payload(object):
             elif "java" in mname:
                 opts["Format"] = 'jar'
             elif "python" in mname:
-                opts["Format"] = 'py'
+                opts["Format"] = 'py-diy'
             elif "php" in mname:
                 opts["Format"] = 'raw'
             elif "android" in mname:
@@ -193,6 +193,17 @@ class Payload(object):
                     return context
                 byteresult = base64.b64decode(result.get('payload'))
                 filename = f"{int(time.time())}.elf"
+        elif opts.get("Format") == "py-diy":
+            opts["Format"] = "raw"
+            result = MSFModule.run_msf_module_realtime(module_type="payload", mname=mname, opts=opts,
+                                                       timeout=RPC_FRAMEWORK_API_REQ)
+            if result is None:
+                context = data_return(305, {}, Payload_MSG_ZH.get(305), Payload_MSG_EN.get(305))
+                return context
+            byteresult = base64.b64decode(result.get('payload'))
+            byteresult = f"python -c \"{byteresult.decode('utf-8')}\""
+            filename = f"{int(time.time())}.txt"
+
         else:
             file_suffix = {
                 "asp": "asp",
