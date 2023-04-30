@@ -237,7 +237,8 @@ class FileSession(object):
 
     @staticmethod
     def update(sessionid, filepath, filedata):
-        opts = {'OPERATION': 'update_file', 'SESSION': sessionid, 'SESSION_FILE': filepath, 'FILE_DATA': filedata}
+        opts = {'OPERATION': 'update_file', 'SESSION': sessionid, 'SESSION_FILE': filepath,
+                'FILE_DATA': base64.b64encode(filedata.encode('utf-8')).decode('utf-8')}
         result = MSFModule.run_msf_module_realtime('post', 'multi/manage/file_system_operation_api', opts,
                                                    runasjob=True,
                                                    timeout=RPC_SESSION_OPER_LONG_REQ)
