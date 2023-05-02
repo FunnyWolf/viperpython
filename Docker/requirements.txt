@@ -1,11 +1,12 @@
+django==3.2.6
+channels==3.0.4
+attrs==23.1.0
 requests
 apscheduler
-django
 djangorestframework
 redis
 django-redis
 rsa
-channels
 daphne
 channels_redis
 python-telegram-bot
@@ -20,3 +21,4 @@ qqwry-py3
 geoip2
 dnslib
 zoomeye
+asgi_redis
