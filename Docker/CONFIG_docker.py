@@ -16,7 +16,6 @@ JSON_RPC_IP = '127.0.0.1'
 JSON_RPC_PORT = 60005
 JSON_RPC_URL = f"http://{JSON_RPC_IP}:{JSON_RPC_PORT}/api/v1/json-rpc"
 RPC_TOKEN = get_token()
-MSFDIR = "/root/.msf4/"
 
 REDIS_URL = f"unix://:{RPC_TOKEN}@/var/run/redis/redis-server.sock?db="
 
@@ -40,4 +39,3 @@ CHANNEL_LAYERS = {
         },
     },
 }
-MSFLOOTTRUE = "/root/.msf4/loot"  # 为了调试
