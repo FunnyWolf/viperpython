@@ -53,6 +53,7 @@ class IPFilter(object):
 
     @staticmethod
     def is_allow(ip):
+        Notice.send_info(f"[新Session连接] {ip}", f"[New Session Connection] {ip}")
         # 总开关检查
         if Xcache.get_ipfilter_switch_cache() is not True:
             return True
