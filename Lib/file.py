@@ -3,13 +3,16 @@
 # @Date  : 2021/4/1
 # @Desc  :
 import os
+import re
 import shutil
 import time
 import zipfile
+from pathlib import PurePosixPath
 
 from django.conf import settings
 
 from Lib.configs import MSFLOOT
+from Lib.log import logger
 
 TMP_DIR = os.path.join(settings.BASE_DIR, 'STATICFILES', 'TMP')
 
@@ -76,3 +79,38 @@ class File(object):
             pass
         new_zip.close()
         return ziplog_path
+
+    @staticmethod
+    def tran_win_path_to_unix_path(path=None):
+        """处理成linux路径"""
+        tmppath = path.replace('\\\\', '/').replace('\\', '/')
+
+        if re.match("^/[a-zA-Z]:/", tmppath) is not None:
+            tmppath = tmppath[1:]
+
+        # 只支持最后加/..和/../
+        if tmppath.startswith('/'):  # linux路径
+            if tmppath.endswith('/..') or tmppath.endswith('/../'):
+                parts = PurePosixPath(tmppath).parent.parent.parts
+                if len(parts) == 1:
+                    tmppath = '/'
+                elif len(parts) == 0:
+                    tmppath = '/'
+                else:
+                    tmppath = "/".join(parts)
+
+        else:
+            if tmppath.endswith('/..') or tmppath.endswith('/../'):
+                parts = PurePosixPath(tmppath).parent.parent.parts
+                if len(parts) == 1:
+                    tmppath = parts[0] + '/'
+                elif len(parts) == 0:
+                    tmppath = '/'
+                else:
+                    tmppath = "/".join(parts)
+
+        tmppath = tmppath.replace('//', '/')
+        if tmppath == '' or tmppath is None:
+            logger.log_warning('输入错误字符', "Typing wrong characters")
+            tmppath = '/'
+        return tmppath
