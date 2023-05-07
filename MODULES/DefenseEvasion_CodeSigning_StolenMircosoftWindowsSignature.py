@@ -67,7 +67,7 @@ class PostModule(PostPythonModule):
         self.log_info("清理临时文件", "Clean up temporary files")
         File.clean_tmp_dir()
 
-        if FileMsf.write_msf_file(output_finename, output_bin, msf=False):
+        if FileMsf.write_msf_file(output_finename, output_bin):
             self.log_good(f"签名完成,新文件名 : {output_finename}",
                           f"The signature is completed, New file name: {output_finename}")
         else:

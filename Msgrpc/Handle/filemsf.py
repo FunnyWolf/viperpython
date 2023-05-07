@@ -9,7 +9,6 @@ from urllib import parse
 
 from django.http import HttpResponse
 
-from CONFIG import MSFLOOTTRUE
 from Lib.aescrypt import Aescrypt
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, FileMsf_MSG_ZH, MSFLOOT, CODE_MSG_EN, FileMsf_MSG_EN
@@ -126,11 +125,11 @@ class FileMsf(object):
             return False
 
     @staticmethod
-    def write_msf_file(filename=None, data=None, msf=True):
+    def write_msf_file(filename=None, data=None):
         filepath = File.safe_os_path_join(MSFLOOT, filename)
         with open(filepath, "wb+") as f:
             f.write(data)
-        return FileMsf.get_absolute_path(filename, msf=msf)
+        return FileMsf.get_absolute_path(filename)
 
     @staticmethod
     def read_msf_file(filename=None):
@@ -173,10 +172,7 @@ class FileMsf(object):
             return None
 
     @staticmethod
-    def get_absolute_path(filename, msf=False):
+    def get_absolute_path(filename):
         """获取loot目录文件的绝对路径,msf表示是不是msf模块使用此路径"""
-        if msf:
-            filepath = f"{MSFLOOTTRUE}/{filename}"
-        else:
-            filepath = File.safe_os_path_join(MSFLOOT, filename)
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
         return filepath

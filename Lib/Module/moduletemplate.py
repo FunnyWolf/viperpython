@@ -18,7 +18,6 @@ from ipaddress import summarize_address_range, IPv4Network, IPv4Address
 
 from jinja2 import Environment, FileSystemLoader
 
-from CONFIG import MSFLOOTTRUE
 from Core.Handle.host import Host
 from Lib.Module.configs import BROKER, TAG2TYPE, FILE_OPTION, HANDLER_OPTION, CACHE_HANDLER_OPTION, CREDENTIAL_OPTION
 from Lib.Module.configs import MODULE_DATA_DIR
@@ -118,18 +117,14 @@ class _CommonModule(object):
         fileinfo = self.param(FILE_OPTION.get('name'))
         return fileinfo
 
-    def get_fileoption_filepath(self, msf=False):
+    def get_fileoption_filepath(self):
         """获取选项中的文件绝对路径"""
         file = self.param(FILE_OPTION.get('name'))
         if file is None:
             return None
 
         filename = file.get("name")
-        if msf:
-            filepath = File.safe_os_path_join(MSFLOOTTRUE, filename)
-            filepath = filepath.replace("\\", "/")
-        else:
-            filepath = File.safe_os_path_join(MSFLOOT, filename)
+        filepath = File.safe_os_path_join(MSFLOOT, filename)
         return filepath
 
     def get_fileoption_filename(self):
@@ -478,7 +473,7 @@ class _CommonModule(object):
 
         return bytedata
 
-    def generate_bypass_exe_file(self, template, msf=True):
+    def generate_bypass_exe_file(self, template):
         """通过监听配置生成exe,返回exe文件路径"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
         if handler_config is None:
@@ -486,7 +481,7 @@ class _CommonModule(object):
         bytedata = Payload.generate_bypass_exe(mname=handler_config.get("PAYLOAD"), opts=handler_config,
                                                template=template)
         filename = f"tmp_{int(time.time())}.exe"
-        filepath = FileMsf.write_msf_file(filename, bytedata, msf=msf)
+        filepath = FileMsf.write_msf_file(filename, bytedata)
         return filepath
 
     def get_lhost(self):

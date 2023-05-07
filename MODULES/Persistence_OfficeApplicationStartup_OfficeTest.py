@@ -54,7 +54,7 @@ class PostModule(PostMSFRawModule):
             return False, "选择handler错误,请选择windows平台的监听", "Select the handler error, please select the handler of the windows platform"
         self.set_payload_by_handler()
 
-        filepath = self.get_fileoption_filepath(msf=True)
+        filepath = self.get_fileoption_filepath()
         if filepath is None:  # 根据监听进行持久化
             exe_filepath = self.generate_bypass_exe_file(template="REVERSE_HEX_BASE")
         else:

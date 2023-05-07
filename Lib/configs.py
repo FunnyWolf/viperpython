@@ -2,7 +2,6 @@
 # @File  : configs.py
 # @Date  : 2019/1/11
 # @Desc  : 存储viper通用的配置信息
-from CONFIG import MSFDIR
 
 CODE_MSG_ZH = {
     200: '服务器成功返回请求的数据',
@@ -603,7 +602,7 @@ STATIC_STORE_PATH = "STATICFILES/STATIC/"
 # meterpreter prompt
 METERPRETER_PROMPT = "meterpreter > "
 SHELL_PROMPT = "shell > "
-MSFLOOT = MSFDIR + "loot"
+MSFLOOT = "/root/.msf4/loot"
 
 # timeout
 RPC_FRAMEWORK_API_REQ = 15  # 框架类请求
