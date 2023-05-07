@@ -64,14 +64,14 @@ class MainMonitor(object):
         log = logging.getLogger('apscheduler.scheduler')
         log.setLevel(logging.ERROR)
         # msfheartbeat数据监听线程
-        self.HeartBeatScheduler = BackgroundScheduler()
+        self.HeartBeatScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
         self.HeartBeatScheduler.add_job(func=self.sub_msf_heartbeat_data_thread,
                                         max_instances=1,
                                         trigger='interval',
                                         seconds=1, id='sub_msf_heartbeat_data_thread')
         self.HeartBeatScheduler.start()
 
-        self.MainScheduler = BackgroundScheduler()
+        self.MainScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
 
         # msf模块result数据监听线程
         self.MainScheduler.add_job(func=self.sub_msf_module_result_thread,
@@ -135,7 +135,7 @@ class MainMonitor(object):
         self.MainScheduler.start()
 
         #
-        self.BotScheduler = BackgroundScheduler()
+        self.BotScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
         # msf bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
                                   trigger='interval',
