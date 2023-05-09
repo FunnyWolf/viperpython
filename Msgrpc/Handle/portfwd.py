@@ -11,12 +11,21 @@ from Lib.method import Method
 from Lib.msfmodule import MSFModule
 from Lib.notice import Notice
 from Lib.rpcclient import RpcClient
+from Lib.xcache import Xcache
 
 
 class PortFwd(object):
     @staticmethod
     def list(sessionid=None):
         result_list = PortFwd.list_portfwd()
+        default_lhost = Xcache.get_lhost_config().get("lhost")
+        tmplist = []
+        for one in result_list:
+            if one.get('type') == "Forward":
+                tip = f"Hacker -> {default_lhost}:{one.get('lport')} => {one.get('rhost')}:{one.get('rport')}"
+            else:
+                tip = f"Payload -> {one.get('rhost')}:{one.get('rport')} => {one.get('lhost')}:{one.get('lport')}"
+            one['tip'] = tip
         if sessionid is None or sessionid == -1:
 
             context = data_return(200, result_list, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
