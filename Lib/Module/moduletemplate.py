@@ -319,8 +319,8 @@ class _CommonModule(object):
                                                  loadpath=self.__module__)
 
         flag = Xcache.add_module_result_history(
-            sessionid=self._sessionid,
             ipaddress=self.host_ipaddress,
+            sessionid=self._sessionid,
             loadpath=self.__module__,
             opts=self._get_human_opts(),
             update_time=module_result.get("update_time"),

@@ -459,7 +459,7 @@ class Xcache(object):
         return result[::-1]
 
     @staticmethod
-    def add_module_result_history(sessionid=None, ipaddress=None, loadpath=None, opts=None, update_time=0, result=""):
+    def add_module_result_history(ipaddress=None, sessionid=None, loadpath=None, opts=None, update_time=0, result=""):
         if opts is None:
             opts = []
         one_result = {
