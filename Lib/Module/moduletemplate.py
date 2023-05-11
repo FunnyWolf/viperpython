@@ -141,7 +141,7 @@ class _CommonModule(object):
         """返回模块实例的标识"""
         if self._sessionid is not None and self._sessionid != -1:
             return f"SID: {self._sessionid}"
-        elif self._ipaddress is not None and self._ipaddress != -1:
+        elif self._ipaddress is not None:
             return f"IP: {self.host_ipaddress}"
         elif self._ip is not None:
             return f"IP: {self.host_ipaddress}"
@@ -318,11 +318,13 @@ class _CommonModule(object):
         module_result = Xcache.get_module_result(ipaddress=self.host_ipaddress,
                                                  loadpath=self.__module__)
 
-        flag = Xcache.add_module_result_history(ipaddress=self.host_ipaddress,
-                                                loadpath=self.__module__,
-                                                opts=self._get_human_opts(),
-                                                update_time=module_result.get("update_time"),
-                                                result=module_result.get("result"))
+        flag = Xcache.add_module_result_history(
+            sessionid=self._sessionid,
+            ipaddress=self.host_ipaddress,
+            loadpath=self.__module__,
+            opts=self._get_human_opts(),
+            update_time=module_result.get("update_time"),
+            result=module_result.get("result"))
         return flag
 
     def _get_human_opts(self):
@@ -963,7 +965,7 @@ class PostMSFPythonWithParamsModule(_PostMSFModuleCommon):
     def set_script_param(self, key, value):
         """设置脚本参数"""
         self.script_params[key] = value
-        tmpstr = base64.b64encode(bytes(json.dumps(self.script_params), encoding="utf8")).decode('ascii')
+        tmpstr = base64.b64encode(json.dumps(self.script_params).encode("utf-8")).decode("utf-8")
         self.opts['PARAMS'] = tmpstr
 
     def set_script_timeout(self, timeout):

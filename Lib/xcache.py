@@ -459,14 +459,17 @@ class Xcache(object):
         return result[::-1]
 
     @staticmethod
-    def add_module_result_history(ipaddress=None, loadpath=None, opts=None, update_time=0, result=""):
+    def add_module_result_history(sessionid=None, ipaddress=None, loadpath=None, opts=None, update_time=0, result=""):
         if opts is None:
             opts = []
-        one_result = {"ipaddress": ipaddress,
-                      "loadpath": loadpath,
-                      "opts": opts,
-                      "update_time": update_time,
-                      "result": result}
+        one_result = {
+            'sessionid': sessionid,
+            "ipaddress": ipaddress,
+            "loadpath": loadpath,
+            "opts": opts,
+            "update_time": update_time,
+            "result": result
+        }
         old_result = cache.get(Xcache.XCACHE_MODULES_RESULT_HISTORY)
         if old_result is None:
             cache.set(Xcache.XCACHE_MODULES_RESULT_HISTORY, [one_result], None)
