@@ -40,6 +40,8 @@ class PortFwd(object):
             return []
         else:
             default_lhost = Xcache.get_lhost_config().get("lhost")
+            if default_lhost is None:
+                default_lhost = "vps_ip"
             for one in result_list:
                 if one.get('type') == "Forward":
                     tip = f"Hacker -> {default_lhost}:{one.get('lport')} => {one.get('rhost')}:{one.get('rport')}"
