@@ -53,8 +53,8 @@ class MSFModule(object):
 
         if result.get("uuid") is None:
             logger.warning(f"模块实例:{msf_module.NAME_ZH} uuid: {result.get('uuid')} 创建后台任务失败")
-            Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 创建后台任务失败",
-                                f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} failed to create task")
+            Notice.send_warning(f"模块: {msf_module.NAME_ZH} {msf_module.target_str} 创建后台任务失败",
+                                f"Module: <{msf_module.NAME_EN}> {msf_module.target_str} failed to create task")
             return False
         else:
             logger.warning(f"模块实例放入列表:{msf_module.NAME_ZH} job_id: {result.get('job_id')} uuid: {result.get('uuid')}")
@@ -69,8 +69,8 @@ class MSFModule(object):
                 'job_id': result.get("job_id"),
             }
             Xcache.create_module_task(req)
-            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module._target_str} 开始执行",
-                             f"Module: <{msf_module.NAME_EN}> {msf_module._target_str} start running")
+            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module.target_str} 开始执行",
+                             f"Module: <{msf_module.NAME_EN}> {msf_module.target_str} start running")
             return True
 
     @staticmethod
@@ -133,8 +133,8 @@ class MSFModule(object):
             logger.error(E)
 
         Xcache.del_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))  # 清理缓存信息
-        Notice.send_info(f"模块: {module_intent.NAME_ZH} {module_intent._target_str} 执行完成",
-                         f"Module: <{module_intent.NAME_EN}> {module_intent._target_str} run finish")
+        Notice.send_info(f"模块: {module_intent.NAME_ZH} {module_intent.target_str} 执行完成",
+                         f"Module: <{module_intent.NAME_EN}> {module_intent.target_str} run finish")
 
     @staticmethod
     def store_heartbeat_data_from_sub(message=None):
