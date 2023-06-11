@@ -137,7 +137,7 @@ class _CommonModule(object):
             return filename
 
     @property
-    def _target_str(self):
+    def target_str(self):
         """返回模块实例的标识"""
         if self._sessionid is not None and self._sessionid != -1:
             return f"SID: {self._sessionid}"
