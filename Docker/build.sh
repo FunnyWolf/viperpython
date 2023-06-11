@@ -22,6 +22,7 @@ rm -rf /root/viper/STATICFILES/TMP/*
 cd /root/metasploit-framework
 find . -name *.py -exec dos2unix {} \;
 find . -name *.py -exec chmod 755 {} \;
+cp /root/metasploit-framework/data/meterpreter/meterpreter.py /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/metasploit-payloads-*/data/meterpreter/
 
 # clean install cache
 rm -rf /root/.cache/*
