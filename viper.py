@@ -404,6 +404,34 @@ def gen_random_token():
         pass
 
 
+def upgrade_version_adapt():
+    """版本升级适配代码"""
+
+    # 升级到1.6.0
+    if os.path.exists("/root/viper/Docker/nginxconfig/gencert.sh"):  # 表示为1.5.30 版本之前
+        # 拷贝默认nginx配置,防止nginx起不来
+        try:
+            src_file = "/root/viper/Docker/nginxconfig_default/viper_default.conf"
+            target_path = "/root/viper/Docker/nginxconfig/viper.conf"
+            shutil.copy(src_file, target_path)
+        except Exception as _:
+            pass
+
+        # 清理无用的证书文件
+        try:
+            unuse_files = ["ca.crt", "ca.key", "ca.srl",
+                           "client.crt", "client.csr", "client.key", "client.pfx",
+                           "gencert.sh", "server.csr"]
+
+            for one in unuse_files:
+                try:
+                    os.remove(f"/root/viper/Docker/nginxconfig/{one}")
+                except Exception as _:
+                    pass
+        except Exception as _:
+            pass
+
+
 def init_copy_file():
     if not os.path.exists("/root/viper/Docker/db/db.sqlite3"):
         src_file = "/root/viper/Docker/db_empty.sqlite3"
@@ -437,6 +465,7 @@ def init_copy_file():
     except shutil.SameFileError:
         pass
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
     parser.add_argument('action', nargs='?', metavar='start/stop/check/init/restartnginx',
@@ -458,6 +487,8 @@ if __name__ == '__main__':
             exit(0)
         else:
             exit(1)
+    # 升级适配代码
+    upgrade_version_adapt()
 
     # 初始化系统初始文件 必须在修改密码之前,确保数据库文件已经初始化
     init_copy_file()
