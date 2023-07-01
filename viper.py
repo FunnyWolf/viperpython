@@ -423,13 +423,19 @@ def init_copy_file():
                 shutil.copy(src_file, target_path)
 
     # 强制替换
-    src_file = "/root/viper/Docker/nginxconfig_default/gencert.sh"
-    target_file = "/root/viper/Docker/nginxconfig/gencert.sh"
+    src_file = "/root/viper/Docker/nginxconfig_default/nobody.sh"
+    target_file = "/root/viper/Docker/nginxconfig/nobody.sh"
     try:
         shutil.copy(src_file, target_file)
     except shutil.SameFileError:
         pass
 
+    src_file = "/root/viper/Docker/nginxconfig_default/viper_default.conf"
+    target_file = "/root/viper/Docker/nginxconfig/viper_default.conf"
+    try:
+        shutil.copy(src_file, target_file)
+    except shutil.SameFileError:
+        pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
