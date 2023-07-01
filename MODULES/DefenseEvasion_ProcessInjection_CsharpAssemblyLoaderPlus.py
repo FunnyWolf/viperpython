@@ -47,13 +47,15 @@ class PostModule(PostMSFRawModule):
                    tag_zh="结束进程", desc_zh="执行完成后结束C#进程",
                    tag_en="Kill process", desc_en="Kill the C# process after the execution is complete",
                    default=True),
-        OptionEnum(name="Signature",
-                   tag_zh="入口函数", desc_zh="C#程序的入口函数",
-                   tag_en="Entry function", desc_en="C# program entry function",
-                   default="Main(string[])",
+        OptionEnum(name="TECHNIQUE",
+                   tag_zh="注入技术", desc_zh="C#程序注入的进程执行技术",
+                   tag_en="Technique for executing assembly", desc_en="Technique for executing assembly",
+                   default="SELF",
                    enum_list=[
-                       {'tag_zh': "Main()", 'tag_en': "Main()", 'value': "Main()"},
-                       {'tag_zh': "Main(string[])", 'tag_en': "Main(string[])", 'value': "Main(string[])"},
+                       {'tag_zh': "注入Session进程", 'tag_en': "Inject Session Process", 'value': "SELF"},
+                       {'tag_zh': "注入指定进程", 'tag_en': "Inject Assign Process", 'value': "INJECT"},
+                       {'tag_zh': "启动进程并注入", 'tag_en': "Spawn A Process And Inject",
+                        'value': "SPAWN_AND_INJECT"},
                    ]),
 
         OptionStr(name='PROCESS',
@@ -62,8 +64,8 @@ class PostModule(PostMSFRawModule):
                   length=6, default="notepad.exe",
                   ),
         OptionInt("PID",
-                  tag_zh="PID", desc_zh="注入的进程pid(0表示新建进程)",
-                  tag_en="PID", desc_en="The injected process pid (0 means a new process)",
+                  tag_zh="PID", desc_zh="注入的进程pid",
+                  tag_en="PID", desc_en="The injected process pid",
                   default=0),
         OptionInt("PPID",
                   tag_zh="PPID", desc_zh="新建进程时,伪装的PPID(父进程id)",
@@ -86,7 +88,7 @@ class PostModule(PostMSFRawModule):
         if exe_file is None:
             return False, "请选择执行exe文件,文件后缀必须为exe", "Please choose to execute the exe file, the file suffix must be exe"
         else:
-            self.set_msf_option(key='ASSEMBLY', value=exe_file)
+            self.set_msf_option(key='DOTNET_EXE', value=exe_file)
 
         arguments = self.param("ARGUMENTS")
         if arguments is None:
@@ -98,8 +100,8 @@ class PostModule(PostMSFRawModule):
         kill = self.param("KILL")
         self.set_msf_option(key='KILL', value=kill)
 
-        Signature = self.param("Signature")
-        self.set_msf_option(key='Signature', value=Signature)
+        TECHNIQUE = self.param("TECHNIQUE")
+        self.set_msf_option(key='TECHNIQUE', value=TECHNIQUE)
 
         PID = self.param("PID")
         PPID = self.param("PPID")
