@@ -305,9 +305,16 @@ class HeartBeat(object):
                     })
 
                     # 主机节点连接到session节点
+                    if "reverse" in payload:
+                        source = sesison_node_id
+                        target = ipaddress
+                    else:
+                        source = ipaddress
+                        target = sesison_node_id
+
                     edge_data = {
-                        "source": ipaddress,
-                        "target": sesison_node_id,
+                        "source": source,
+                        "target": target,
                         "data": {
                             "type": 'session',
                             "payload": short_payload(payload),
@@ -318,9 +325,16 @@ class HeartBeat(object):
 
                     if comm_channel_session is None:
                         # 主机节点连接到viper节点
+                        if "reverse" in payload:
+                            source = ipaddress
+                            target = '255.255.255.255'
+                        else:
+                            source = '255.255.255.255'
+                            target = ipaddress
+
                         edge = {
-                            "source": '255.255.255.255',
-                            "target": ipaddress,
+                            "source": source,
+                            "target": target,
                             "data": {
                                 "type": 'session',
                                 "payload": short_payload(payload),
@@ -332,9 +346,17 @@ class HeartBeat(object):
                         # 查看是否存在online类型的edge
                         online_edge_list = Edge.list_edge(target=ipaddress, type="online")
                         for online_edge in online_edge_list:
+
+                            if "reverse" in online_edge.get("data").get("payload"):
+                                source = ipaddress
+                                target = '255.255.255.255'
+                            else:
+                                source = '255.255.255.255'
+                                target = ipaddress
+
                             edge_data = {
-                                "source": '255.255.255.255',
-                                "target": ipaddress,
+                                "source": source,
+                                "target": target,
                                 "data": {
                                     "type": 'online',
                                     "payload": short_payload(online_edge.get("data").get("payload")),
@@ -347,9 +369,16 @@ class HeartBeat(object):
                         # comm_channel_session 类型边
                         source_sesison_node_id = f"SID - {comm_channel_session}"
 
+                        if "reverse" in payload:
+                            source = sesison_node_id
+                            target = source_sesison_node_id
+                        else:
+                            source = source_sesison_node_id
+                            target = sesison_node_id
+
                         edge = {
-                            "source": source_sesison_node_id,
-                            "target": sesison_node_id,
+                            "source": source,
+                            "target": target,
                             "data": {
                                 "type": 'comm',
                                 "payload": short_payload(payload),
