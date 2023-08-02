@@ -353,18 +353,11 @@ class HeartBeat(object):
                     else:
                         # 查看是否存在online类型的edge
                         online_edge_list = Edge.list_edge(target=ipaddress, type="online")
+                        online_edge_list.extend(Edge.list_edge(source=ipaddress, type="online"))
                         for online_edge in online_edge_list:
-
-                            if "reverse" in online_edge.get("data").get("payload"):
-                                source = ipaddress
-                                target = VIPER_IP
-                            else:
-                                source = VIPER_IP
-                                target = ipaddress
-
                             edge_data = {
-                                "source": source,
-                                "target": target,
+                                "source": online_edge.get("source"),
+                                "target": online_edge.get("target"),
                                 "data": {
                                     "type": 'online',
                                     "payload": short_payload(online_edge.get("data").get("payload")),
@@ -428,10 +421,11 @@ class HeartBeat(object):
 
                 # 查看是否存在online类型的edge
                 online_edge_list = Edge.list_edge(target=ipaddress, type="online")
+                online_edge_list.extend(Edge.list_edge(source=ipaddress, type="online"))
                 for online_edge in online_edge_list:
                     edge_data = {
-                        "source": VIPER_IP,
-                        "target": ipaddress,
+                        "source": online_edge.get("source"),
+                        "target": online_edge.get("target"),
                         "data": {
                             "type": 'online',
                             "payload": short_payload(online_edge.get("data").get("payload")),
@@ -440,6 +434,7 @@ class HeartBeat(object):
                     if edge_data not in edges:
                         edges.append(edge_data)
                         break  # 不存在session的主机只取一个payload即可
+
         network_data = {"nodes": nodes, "edges": edges}
         return hosts, network_data
 
