@@ -187,10 +187,18 @@ class HeartBeat(object):
 
             # 确保每个session成功后都会添加edge
             if session.get("available"):
-                Edge.create_edge(source=VIPER_IP,
-                                 target=session_host,
+                payload = "/".join(session.get("via_payload").split("/")[1:])
+                if "reverse" in payload:
+                    source = session_host
+                    target = VIPER_IP
+                else:
+                    source = VIPER_IP
+                    target = session_host
+
+                Edge.create_edge(source=source,
+                                 target=target,
                                  type="online",
-                                 data={"payload": "/".join(session.get("via_payload").split("/")[1:])})
+                                 data={"payload": payload})
 
             for host in hosts:
                 if session_host == host.get('ipaddress'):
@@ -247,7 +255,7 @@ class HeartBeat(object):
         # 获取nodes数据
         nodes = [
             {
-                "id": '255.255.255.255',
+                "id": VIPER_IP,
                 "data": {
                     "type": 'viper',
                 },
@@ -327,9 +335,9 @@ class HeartBeat(object):
                         # 主机节点连接到viper节点
                         if "reverse" in payload:
                             source = ipaddress
-                            target = '255.255.255.255'
+                            target = VIPER_IP
                         else:
-                            source = '255.255.255.255'
+                            source = VIPER_IP
                             target = ipaddress
 
                         edge = {
@@ -349,9 +357,9 @@ class HeartBeat(object):
 
                             if "reverse" in online_edge.get("data").get("payload"):
                                 source = ipaddress
-                                target = '255.255.255.255'
+                                target = VIPER_IP
                             else:
-                                source = '255.255.255.255'
+                                source = VIPER_IP
                                 target = ipaddress
 
                             edge_data = {
@@ -422,7 +430,7 @@ class HeartBeat(object):
                 online_edge_list = Edge.list_edge(target=ipaddress, type="online")
                 for online_edge in online_edge_list:
                     edge_data = {
-                        "source": '255.255.255.255',
+                        "source": VIPER_IP,
                         "target": ipaddress,
                         "data": {
                             "type": 'online',
