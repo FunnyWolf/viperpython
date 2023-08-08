@@ -191,7 +191,10 @@ def start_services(newpassword=None):
     except Exception as err:
         print("[*] 启动msfrpcd服务")
         # clean old thin.pid
-        os.remove("/root/tmp/pids/thin.pid")
+        try:
+            os.remove("/root/tmp/pids/thin.pid")
+        except:
+            pass
         os.chdir("/root/metasploit-framework/")
         cmd = f"thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address {LOCALHOST} --port {msgrpc_port} --environment production --daemonize start"
         result = subprocess.Popen(cmd, shell=True)
