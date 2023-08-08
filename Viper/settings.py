@@ -121,8 +121,9 @@ LOGGING = {
             'formatter': 'standard',
         },
         'file': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
+            'formatter': 'standard',
             'filename': os.path.join(settings.BASE_DIR, 'Docker', 'log', 'viperpython.log'),
         },
 

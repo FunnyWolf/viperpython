@@ -44,7 +44,7 @@ class RpcClient(object):
             if Xcache.msfrpc_error_send():
                 Notice.send_warning(f"渗透服务连接失败,请检查MSFRPC状态",
                                     "MSFRPC service connection failed, please check MSFRPC status")
-                logger.warning(f'msf连接失败,检查 {JSON_RPC_URL} 是否可用')
+                logger.warning(f'msf连接失败,检查 {JSON_RPC_URL} 不可用')
                 logger.warning(f'json_data: {json_data}')
                 logger.exception(e)
             return None
