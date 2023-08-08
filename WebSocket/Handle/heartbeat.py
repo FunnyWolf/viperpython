@@ -452,7 +452,11 @@ class HeartBeat(object):
                                                              "LPORT": datastore.get("LPORT"),
                                                              "LHOST": datastore.get("LHOST"),
                                                              "RHOST": datastore.get("RHOST")}
-
+        else:
+            if Xcache.msfrpc_error_send():
+                Notice.send_warning(f"渗透服务心跳超时",
+                                    "MSFRPC service heartbeat timeout")
+                logger.warning(f'渗透服务心跳超时')
         sessions = []
         # session_info_dict = RpcClient.call(Method.SessionList, timeout=RPC_FRAMEWORK_API_REQ)
         session_info_dict = Xcache.get_msf_sessions_cache()
