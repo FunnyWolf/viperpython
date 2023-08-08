@@ -41,12 +41,12 @@ class Job(object):
                 continue
             else:
                 # 清除失效的任务
-                if int(time.time()) - req.get("time") >= 30:
+                if int(time.time()) - req.get("time") >= 5:
                     logger.error(f"清除失效的任务: {req.get('module').NAME_ZH}")
                     logger.error(req)
                     Xcache.del_module_task_by_uuid(req.get("uuid"))
                 else:
-                    # 如果创建时间不足30秒,则等待callback处理数据
+                    # 如果创建时间不足5秒,则等待callback处理数据
                     req["moduleinfo"] = PostModuleSerializer(req.get("module"), many=False).data
                     req["moduleinfo"]['_custom_param'] = Job._deal_dynamic_param(req["moduleinfo"]['_custom_param'])
                     req.pop("module")

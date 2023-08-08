@@ -91,6 +91,8 @@ class Xcache(object):
 
     XCACHE_MSFRPC_ERROR_LOG = "XCACHE_MSFRPC_ERROR_LOG"
 
+    XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG = "XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG"
+
     XCACHE_CHECKSANDBOX_CACHE = "XCACHE_CHECKSANDBOX_CACHE"
 
     XCACHE_CHECKSANDBOX_TAG_CACHE = "XCACHE_CHECKSANDBOX_TAG_CACHE"
@@ -315,7 +317,7 @@ class Xcache(object):
 
     @staticmethod
     def set_msf_job_cache(msfjobs):
-        cache.set(Xcache.XCACHE_MSF_JOB_CACHE, msfjobs, None)
+        cache.set(Xcache.XCACHE_MSF_JOB_CACHE, msfjobs, 3)
         return True
 
     @staticmethod
@@ -325,7 +327,7 @@ class Xcache(object):
 
     @staticmethod
     def set_msf_sessions_cache(sessions):
-        cache.set(Xcache.XCACHE_MSF_SESSIONS_CACHE, sessions, None)
+        cache.set(Xcache.XCACHE_MSF_SESSIONS_CACHE, sessions, 3)
         return True
 
     @staticmethod
@@ -1056,6 +1058,15 @@ class Xcache(object):
             return False
         else:
             cache.set(Xcache.XCACHE_MSFRPC_ERROR_LOG, True, 30)  # 10秒计时周期
+            return True
+
+    @staticmethod
+    def msfrpc_heartbeat_error_send():
+        flag = cache.get(Xcache.XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG)
+        if flag:
+            return False
+        else:
+            cache.set(Xcache.XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG, True, 30)  # 10秒计时周期
             return True
 
     @staticmethod
