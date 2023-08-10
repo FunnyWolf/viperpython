@@ -31,9 +31,14 @@ bundle install
 
 # update rex-core /rex-socket
 
-mv -r /root/rex-core /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-core-*/
-mv -r /root/rex-socket /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-socket-*/
+cp -r /root/rex-core/lib /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-core-*/
+rm -rf /root/rex-core
+cp -r /root/rex-socket/lib /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-socket-*/
+rm -rf /root/rex-socket
 
+# clean .git
+rm -rf /root/viper/.git
+rm -rf /root/metasploit-framework/.git
 
 # clean install cache
 rm -rf /root/.cache/*
