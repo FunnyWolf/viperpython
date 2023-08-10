@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 cd /root/viper/
 mv ./Docker/CONFIG_docker.py CONFIG.py
 chmod 755 viper.py
@@ -23,6 +24,17 @@ cd /root/metasploit-framework
 find . -name *.py -exec dos2unix {} \;
 find . -name *.py -exec chmod 755 {} \;
 
+# update gem
+bundle install
+gem clean
+bundle install
+
+# update rex-core /rex-socket
+
+mv -r /root/rex-core /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-core-*/
+mv -r /root/rex-socket /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-socket-*/
+
+
 # clean install cache
 rm -rf /root/.cache/*
 rm -rf /root/.bundle/cache
@@ -41,7 +53,6 @@ rm -rf /root/metasploit-framework/docker/*
 rm -rf /root/metasploit-framework/test/*
 rm -rf /usr/local/share/*
 
-
 # mkdir
 mkdir -p /root/viper/Docker/module
 mkdir -p /root/viper/Docker/log
@@ -56,4 +67,4 @@ dos2unix /etc/init.d/puma
 
 # history
 history -c
-echo > /root/.bash_history
+echo >/root/.bash_history
