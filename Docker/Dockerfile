@@ -6,7 +6,7 @@ COPY viperjs/dist /root/viper/dist/
 COPY rex-core /root/rex-core/
 COPY rex-socket /root/rex-socket/
 
-RUN ["./root/viper/Docker/build.sh"]
+RUN ["chmod a+x /root/viper/Docker/build.sh && ./root/viper/Docker/build.sh"]
 
 ENTRYPOINT ["viper", "init","-pw"]
 
