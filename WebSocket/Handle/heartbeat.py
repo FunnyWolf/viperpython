@@ -453,7 +453,7 @@ class HeartBeat(object):
                                                              "LHOST": datastore.get("LHOST"),
                                                              "RHOST": datastore.get("RHOST")}
         else:
-            if Xcache.msfrpc_error_send():
+            if Xcache.msfrpc_heartbeat_error_send():
                 Notice.send_warning(f"渗透服务心跳超时",
                                     "MSFRPC service heartbeat timeout")
                 logger.warning(f'渗透服务心跳超时')
