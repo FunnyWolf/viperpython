@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-cd /root/viper/
+cd /root/viper/ || exit
 mv ./Docker/CONFIG_docker.py CONFIG.py
 chmod 755 viper.py
-chmod 755 ./Tools/dns_server
-find . -type f -exec dos2unix {} \;
+chmod 755 ./STATICFILES/Tools/dns_server
+find . -type f -exec dos2unix {} \;>/dev/null 2>1
 
 # clean viper
 rm -rf /root/viper/*.lock
@@ -20,11 +20,14 @@ rm -rf /root/viper/STATICFILES/SOURCE/*
 rm -rf /root/viper/STATICFILES/TMP/*
 
 # format msf file
-cd /root/metasploit-framework
-find . -name *.py -exec dos2unix {} \;
-find . -name *.py -exec chmod 755 {} \;
+cd /root/metasploit-framework || exit
+find . -name *.py -exec dos2unix {} \;>/dev/null 2>1
+find . -name *.py -exec chmod 755 {} \;>/dev/null 2>1
 
 # update gem
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+cd /root/metasploit-framework || exit
 bundle install
 gem clean
 bundle install
