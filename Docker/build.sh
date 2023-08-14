@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# update geolite
+wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb -O /root/viper/STATICFILES/STATIC/GeoLite2-ASN.mmdb
+wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -O /root/viper/STATICFILES/STATIC/GeoLite2-City.mmdb
+wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb -O /root/viper/STATICFILES/STATIC/GeoLite2-Country.mmdb
+
 cd /root/viper/ || exit
 mv ./Docker/CONFIG_docker.py CONFIG.py
 chmod 755 viper.py
