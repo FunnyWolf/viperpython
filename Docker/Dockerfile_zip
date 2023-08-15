@@ -1,4 +1,4 @@
-FROM viper:latest
+FROM registry.cn-hongkong.aliyuncs.com/toys/viper-cicd:latest
 
 ENTRYPOINT ["viper", "init","-pw"]
 
