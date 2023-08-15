@@ -1,4 +1,4 @@
-FROM registry.cn-shenzhen.aliyuncs.com/toys/viper-base:latest
+FROM registry.cn-hongkong.aliyuncs.com/toys/viper-base:latest
 
 COPY viperpython /root/viper/
 COPY vipermsf /root/metasploit-framework/
