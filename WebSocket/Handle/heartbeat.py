@@ -183,7 +183,7 @@ class HeartBeat(object):
         for session in sessions:
             session_host = session.get("session_host")
             if session_host is None or session_host == "":
-                continue
+                session_host = VIPER_IP  # 未知的session_host,默认为viper的ip (shell session和未初始化的session)
 
             # 确保每个session成功后都会添加edge
             if session.get("available"):
