@@ -57,7 +57,8 @@ class MSFModule(object):
                                 f"Module: <{msf_module.NAME_EN}> {msf_module.target_str} failed to create task")
             return False
         else:
-            logger.warning(f"模块实例放入列表:{msf_module.NAME_ZH} job_id: {result.get('job_id')} uuid: {result.get('uuid')}")
+            logger.info(
+                f"模块实例放入列表:{msf_module.NAME_ZH} job_id: {result.get('job_id')} uuid: {result.get('uuid')}")
 
             # 放入请求队列
             msf_module._module_uuid = result.get("uuid")
@@ -69,7 +70,7 @@ class MSFModule(object):
                 'job_id': result.get("job_id"),
             }
             Xcache.create_module_task(req)
-            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module.target_str} 开始执行",
+            Notice.send_info(f"模块: {msf_module.NAME_ZH} {msf_module.target_str} 后台运行中",
                              f"Module: <{msf_module.NAME_EN}> {msf_module.target_str} start running")
             return True
 

@@ -21,5 +21,6 @@ class RedisClient(object):
             rcon = redis.Redis.from_url(url=f"{REDIS_URL}5")
             return rcon
         except Exception as E:
+            logger.warning("redis连接失败")
             logger.warning(E)
             return None

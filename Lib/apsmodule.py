@@ -56,7 +56,7 @@ class APSModule(object):
                 'job_id': None,
             }
             Xcache.create_module_task(req)
-            Notice.send_info(f"模块: {post_module_intent.NAME_ZH} {post_module_intent.target_str} 开始执行",
+            Notice.send_info(f"模块: {post_module_intent.NAME_ZH} {post_module_intent.target_str} 后台运行中",
                              f"Module: <{post_module_intent.NAME_EN}> {post_module_intent.target_str} running")
             return True
         except Exception as E:

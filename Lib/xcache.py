@@ -359,14 +359,8 @@ class Xcache(object):
     @staticmethod
     def create_module_task(req):
         """任务队列"""
-        for i in range(5):
-            key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{req.get('uuid')}"
-            cache.set(key, req, None)
-            if cache.get(key) is not None:
-                break
-            else:
-                logger.error("redis 缓存失败!")
-            time.sleep(0.5)
+        key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{req.get('uuid')}"
+        cache.set(key, req, None)
         return True
 
     @staticmethod
