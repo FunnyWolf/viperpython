@@ -64,8 +64,6 @@ class PostModuleActuator(object):
             if check_result is None:
                 pass
             else:
-                # 直接return true
-                flag = False
                 if len(check_result) == 1:
                     flag = check_result
                     msg_zh = msg_en = ""
@@ -74,7 +72,11 @@ class PostModuleActuator(object):
                     msg_en = msg_zh
                 elif len(check_result) == 3:
                     flag, msg_zh, msg_en = check_result
-
+                else:
+                    logger.warning(f"模块返回检查结果格式错误,check_result:{check_result}")
+                    context = data_return(307, {}, PostModuleActuator_MSG_ZH.get(307),
+                                          PostModuleActuator_MSG_EN.get(307))
+                    return context
                 if flag is not True:
                     # 如果检查未通过,返回未通过原因(msg)
                     context = data_return(405, {}, msg_zh, msg_en)

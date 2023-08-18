@@ -119,6 +119,7 @@ PostModuleActuator_MSG_ZH = {
     301: "模块前序检查失败,检查函数内部错误",
     305: "获取模块配置失败",
     306: "新建后台任务失败",
+    307: "新建后台任务失败",
 }
 
 PostModuleActuator_MSG_EN = {
@@ -127,6 +128,7 @@ PostModuleActuator_MSG_EN = {
     301: "Module pre-check failed, check function internal error",
     305: "Failed to get module configuration",
     306: "Failed to create a new background task",
+    307: "新建后台任务失败",
 }
 
 PostModuleAuto_MSG_ZH = {
