@@ -112,21 +112,21 @@ class MSFModule(object):
 
         # 调用回调函数
         try:
-            logger.warning(f"模块回调:{module_intent.NAME_ZH} "
-                           f"job_id: {msf_module_return_dict.get('job_id')} "
-                           f"uuid: {msf_module_return_dict.get('uuid')}")
             module_intent._clean_log()  # 清理历史结果
         except Exception as E:
             logger.error(E)
             return False
 
         try:
+            logger.info(f"模块回调:{module_intent.NAME_ZH} "
+                        f"job_id: {msf_module_return_dict.get('job_id')} "
+                        f"uuid: {msf_module_return_dict.get('uuid')}")
             module_intent.callback(status=msf_module_return_dict.get("status"),
                                    message=msf_module_return_dict.get("message"),
                                    data=msf_module_return_dict.get("data"))
         except Exception as E:
             Notice.send_exception(f"模块 {module_intent.NAME_ZH} 的回调函数callhack运行异常",
-                                  f"Module <{module_intent.NAME_EN}> Tcallback function run exception")
+                                  f"Module <{module_intent.NAME_EN}> callback function run exception")
             logger.error(E)
         try:
             module_intent._store_result_in_history()  # 存储到历史记录

@@ -311,9 +311,8 @@ class _CommonModule(object):
 
     def _store_result_in_history(self):
         """存储模块运行结果到历史记录"""
-        if self.MODULETYPE in [TAG2TYPE.internal]:
-            return None
-        # 处理参数
+        if self.MODULETYPE in [TAG2TYPE.internal]:  # 内部模块不存储
+            return True
 
         module_result = Xcache.get_module_result(ipaddress=self.host_ipaddress,
                                                  loadpath=self.__module__)
