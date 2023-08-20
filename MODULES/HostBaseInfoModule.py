@@ -111,11 +111,14 @@ class PostModule(PostMSFRawModule):
                                  "tag_zh": "AV", "desc_zh": avList_zh.get(key),
                                  "tag_en": "AV", "desc_en": avList_en.get(key)})
 
+            for one_key in key_list:
+                pattern = re.compile(one_key.get("re"))
+                one_key['pattern'] = pattern
             processes = data.get("PROCESSES")
             for process in processes:
                 name = process.get("name")
                 for one_key in key_list:
-                    if re.search(one_key.get("re"), name) is not None:
+                    if one_key['pattern'].search(name) is not None:
                         useful_processes.append(
                             {"tag_zh": one_key.get("tag_zh"), "desc_zh": one_key.get("desc_zh"),
                              "tag_en": one_key.get("tag_en"), "desc_en": one_key.get("desc_en"), "process": process})
