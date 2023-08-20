@@ -8,7 +8,8 @@ import time
 from Lib.Module.configs import HANDLER_OPTION, BROKER
 from Lib.api import data_return
 from Lib.apsmodule import aps_module
-from Lib.configs import Job_MSG_ZH, CODE_MSG_ZH, RPC_FRAMEWORK_API_REQ, Job_MSG_EN, CODE_MSG_EN
+from Lib.configs import Job_MSG_ZH, CODE_MSG_ZH, RPC_FRAMEWORK_API_REQ, Job_MSG_EN, CODE_MSG_EN, \
+    MSF_MODULE_CALLBACK_WAIT_SENCOND
 from Lib.log import logger
 from Lib.method import Method
 from Lib.notice import Notice
@@ -41,7 +42,7 @@ class Job(object):
                 continue
             else:
                 # 清除失效的任务
-                if int(time.time()) - req.get("time") >= 5:
+                if int(time.time()) - req.get("time") >= MSF_MODULE_CALLBACK_WAIT_SENCOND:
                     logger.error(f"清除失效的任务: {req.get('module').NAME_ZH}")
                     logger.error(req)
                     Xcache.del_module_task_by_uuid(req.get("uuid"))

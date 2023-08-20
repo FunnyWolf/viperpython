@@ -617,3 +617,5 @@ EN = "en-US"
 
 # viper config
 VIPER_IP = "255.255.255.255"
+
+MSF_MODULE_CALLBACK_WAIT_SENCOND = 30
