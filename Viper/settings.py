@@ -111,7 +111,7 @@ LOGGING = {
     },
     'formatters': {
         'standard': {
-            'format': '[%(levelname)s][%(asctime).19s][%(module)s][%(funcName)s][%(lineno)d][%(threadName)s] : %(message)s '
+            'format': '[%(levelname)s][%(asctime).19s][%(pathname)s][%(lineno)d][%(threadName)s] : %(message)s '
         },
     },
     'handlers': {
