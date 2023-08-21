@@ -89,7 +89,7 @@ class Xcache(object):
 
     XCACHE_TOKEN = "XCACHE_TOKEN"
 
-    XCACHE_MSFRPC_ERROR_LOG = "XCACHE_MSFRPC_ERROR_LOG"
+    XCACHE_MSFRPC_ALIVE = "XCACHE_MSFRPC_ALIVE"
 
     XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG = "XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG"
 
@@ -1041,18 +1041,17 @@ class Xcache(object):
             return False
 
     @staticmethod
-    def msfrpc_error_send():
-        flag = cache.get(Xcache.XCACHE_MSFRPC_ERROR_LOG)
-        if flag:
-            return False
-        else:
-            cache.set(Xcache.XCACHE_MSFRPC_ERROR_LOG, True, 30)  # 10秒计时周期
-            return True
+    def set_msfrpc_alive():
+        cache.set(Xcache.XCACHE_MSFRPC_ALIVE, True, 0.5 * 2)
+
+    @staticmethod
+    def get_msfrpc_alive():
+        return cache.get(Xcache.XCACHE_MSFRPC_ALIVE)
 
     @staticmethod
     def msfrpc_heartbeat_error_send():
         count = cache.get(Xcache.XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG)
-        if count:  
+        if count:
             count = count + 1
             if count >= 10:
                 count = 0
@@ -1061,7 +1060,7 @@ class Xcache(object):
             else:
                 cache.set(Xcache.XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG, True, 10)  # 10秒计时周期
                 return False
-        else: # 0 or None
+        else:  # 0 or None
             count = 1
             cache.set(Xcache.XCACHE_MSFRPC_HEARTBEAT_ERROR_LOG, count, 10)
             return False

@@ -163,6 +163,9 @@ class MSFModule(object):
             result_sessions = data.get("sessions")
             Xcache.set_msf_sessions_cache(result_sessions)
 
+            # 设置msfrpc存活状态
+            Xcache.set_msfrpc_alive()
+
         except Exception as E:
             logger.error(E)
             return False

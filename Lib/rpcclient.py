@@ -40,13 +40,29 @@ class RpcClient(object):
         json_data = json.dumps(data)
         try:
             r = req_session.post(JSON_RPC_URL, headers=_headers, data=json_data, timeout=(1.05, timeout))
+        except requests.Timeout as _:
+            if Xcache.get_msfrpc_alive():  # 如果msfrpc服务正常,但是请求超时,则发送超时警告
+                Notice.send_warning(f"MSFRPC请求执行超时",
+                                    "MSFRPC request execute timeout")
+                logger.warning(f'json_data: {json_data}')
+            else:  # 如果msfrpc服务不正常,则发送服务异常警告
+                Notice.send_warning(f"MSFRPC服务心跳中断",
+                                    "MSFRPC service abnormal")
+                logger.warning(f'msf连接失败,检查 {JSON_RPC_URL} 不可用')
+                logger.warning(f'json_data: {json_data}')
+            return None
         except Exception as e:
-            if Xcache.msfrpc_error_send():
-                Notice.send_warning(f"渗透服务连接失败,请检查MSFRPC状态",
+            if Xcache.get_msfrpc_alive():  # 如果msfrpc服务正常,但是请求超时,则发送超时警告
+                Notice.send_warning(f"MSFRPC服务请求异常",
                                     "MSFRPC service connection failed, please check MSFRPC status")
                 logger.warning(f'msf连接失败,检查 {JSON_RPC_URL} 不可用')
                 logger.warning(f'json_data: {json_data}')
                 logger.exception(e)
+            else:  # 如果msfrpc服务不正常,则发送服务异常警告
+                Notice.send_warning(f"MSFRPC服务心跳中断",
+                                    "MSFRPC service abnormal")
+                logger.warning(f'msf连接失败,检查 {JSON_RPC_URL} 不可用')
+                logger.warning(f'json_data: {json_data}')
             return None
         if r.status_code == 200:
             data_bytes = r.content
