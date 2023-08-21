@@ -36,9 +36,10 @@ cd /root/metasploit-framework || exit
 bundle install
 gem clean
 bundle install
+rm -rf ~/.rbenv/versions/3.*/lib/ruby/gems/3.*/cache/
+rm -rf ~/.rbenv/versions/3.0.5/share/
 
 # update rex-core /rex-socket
-
 cp -r /root/rex-core/lib /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-core-*/
 rm -rf /root/rex-core
 cp -r /root/rex-socket/lib /root/.rbenv/versions/3.*/lib/ruby/gems/3.*/gems/rex-socket-*/
