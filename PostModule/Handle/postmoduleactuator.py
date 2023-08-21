@@ -38,7 +38,8 @@ class PostModuleActuator(object):
             try:
                 custom_param = json.loads(custom_param)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(custom_param)
                 custom_param = {}
 
         # 获取模块实例
@@ -125,7 +126,8 @@ class PostModuleActuator(object):
         try:
             custom_param = json.loads(custom_param)
         except Exception as E:
-            logger.warning(E)
+            logger.exception(E)
+            logger.warning(custom_param)
             custom_param = {}
 
         # 获取模块实例

@@ -187,7 +187,11 @@ class PostModule(ProxyHttpScanModule):
                     }
                     UUIDJson.store_uuid_json(uuid_data)
                     for payload in payloads:
-                        old_dict = json.loads(request.text)
+                        try:
+                            old_dict = json.loads(request.text)
+                        except Exception as e:
+                            print(e)
+                            continue
                         new_dict = JsonReplace().replace_inter(old_dict, payload)
                         request.text = json.dumps(new_dict)
                         result = request.send()

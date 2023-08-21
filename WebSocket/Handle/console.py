@@ -182,5 +182,6 @@ class Console(object):
             )
 
         except Exception as E:
-            logger.error(E)
+            logger.exception(E)
+            logger.warning(body)
             return False

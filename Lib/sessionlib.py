@@ -109,6 +109,7 @@ class SessionLib(object):
             except Exception as E:
                 logger.warning(E)
                 logger.warning(f"更新Session信息失败,返回消息为{result}")
+                logger.warning(result)
                 Notice.send_warning("更新Session信息失败,请稍后重试",
                                     "Failed to update Session information, please try again later")
 
@@ -287,6 +288,7 @@ class SessionLib(object):
             result = json.loads(result)
             return result
         except Exception as E:
+            logger.warning(result)
             return {'status': False, "message": E, "data": None}
 
     def registry_enumkeys(self, key, view=0):
@@ -306,4 +308,5 @@ class SessionLib(object):
             result = json.loads(result)
             return result
         except Exception as E:
+            logger.warning(result)
             return {'status': False, "message": E, "data": None}

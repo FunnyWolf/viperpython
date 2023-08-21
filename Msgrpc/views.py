@@ -36,7 +36,11 @@ class PayloadView(BaseView):
             mname = request.data.get('mname')
             opts = request.data.get('opts')
             if isinstance(opts, str):
-                opts = json.loads(opts)
+                try:
+                    opts = json.loads(opts)
+                except Exception as E:
+                    logger.exception(E)
+                    logger.warning(opts)
 
             response = Payload.create(mname, opts)
 
@@ -80,7 +84,8 @@ class HandlerView(BaseView):
                 opts = json.loads(opts)
             context = Handler.create(opts)
         except Exception as E:
-            logger.error(E)
+            logger.exception(E)
+            logger.warning(request.data)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
@@ -109,7 +114,8 @@ class WebDeliveryView(BaseView):
             data["disablepayloadhandler"] = True
             context = WebDelivery.create(data)
         except Exception as E:
-            logger.error(E)
+            logger.exception(E)
+            logger.warning(request.data)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 

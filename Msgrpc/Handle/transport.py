@@ -67,7 +67,8 @@ class Transport(object):
         try:
             handleropts = json.loads(handler)
         except Exception as E:
-            logger.warning(E)
+            logger.exception(E)
+            logger.warning(handler)
             context = data_return(303, [], TRANSPORT_MSG_ZH.get(303), TRANSPORT_MSG_EN.get(303))
             return context
 

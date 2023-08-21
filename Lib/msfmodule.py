@@ -91,6 +91,7 @@ class MSFModule(object):
             msf_module_return_dict = json.loads(body)
         except Exception as E:
             logger.error(E)
+            logger.warning(body)
             return False
 
         # 获取对应模块实例
@@ -168,6 +169,7 @@ class MSFModule(object):
 
         except Exception as E:
             logger.error(E)
+            logger.warning(body)
             return False
 
     @staticmethod
@@ -178,6 +180,7 @@ class MSFModule(object):
             msf_module_return_dict = json.loads(body)
             req = Xcache.get_module_task_by_uuid(task_uuid=msf_module_return_dict.get("uuid"))
         except Exception as E:
+            logger.warning(body)
             logger.error(E)
             return False
 
@@ -220,4 +223,5 @@ class MSFModule(object):
             Notice.send(f"MSF >> {msf_module_logs_dict.get('content')}", level=msf_module_logs_dict.get("level"))
         except Exception as E:
             logger.error(E)
+            logger.warning(body)
             return False

@@ -63,7 +63,11 @@ class Job(object):
         import json
         if _custom_param.get(HANDLER_OPTION.get("name")) is not None:
             new_option = {}
-            old_option = json.loads(_custom_param.get(HANDLER_OPTION.get("name")))
+            try:
+                old_option = json.loads(_custom_param.get(HANDLER_OPTION.get("name")))
+            except Exception as E:
+                logger.exception(E)
+                logger.warning(_custom_param)
             new_option["PAYLOAD"] = old_option.get("PAYLOAD")
             new_option["LPORT"] = old_option.get("LPORT")
 

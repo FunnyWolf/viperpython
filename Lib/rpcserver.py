@@ -35,6 +35,7 @@ class RPCServer(object):
             except Exception as E:
                 logger.warning("请求解析失败")
                 logger.exception(E)
+                logger.warning(message)
                 continue
             rpc_response = self.function_map(function, kwargs)
             self.redis_server.rpush(response_queue, json.dumps(rpc_response))

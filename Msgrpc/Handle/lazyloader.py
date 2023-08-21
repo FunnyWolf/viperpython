@@ -56,7 +56,8 @@ class LazyLoader(object):
             try:
                 data = json.loads(data)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(data)
                 context = data_return(303, [], LazyLoader_MSG_ZH.get(303), LazyLoader_MSG_EN.get(303))
                 return context
 

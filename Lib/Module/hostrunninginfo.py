@@ -39,6 +39,7 @@ class HostRunningInfo(object):
                 return None
         except Exception as E:
             logger.warning(E)
+            logger.warning(result)
             return None
 
     @property

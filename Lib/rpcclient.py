@@ -72,7 +72,13 @@ class RpcClient(object):
             except UnicodeDecodeError as e:
                 data = data_bytes.decode('utf-8', 'ignore')
 
-            content = json.loads(data)
+            try:
+                content = json.loads(data)
+            except json.decoder.JSONDecodeError as e:
+                logger.error(e)
+                logger.warning(data)
+                return None
+
             if content.get('error') is not None:
                 logger.warning(f"错误码:{content.get('error').get('code')} 信息:{content.get('error').get('message')}")
                 Notice.send_exception(f"MSFRPC> {content.get('error').get('message')}",

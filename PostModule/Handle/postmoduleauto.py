@@ -36,7 +36,8 @@ class PostModuleAuto(object):
                                                                             one_result["custom_param"]))
                 one_result["opts"] = module_intent._get_human_opts()
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(one_result)
                 one_result["opts"] = {}
 
             result_list.append(one_result)
@@ -77,7 +78,8 @@ class PostModuleAuto(object):
         try:
             session = json.loads(session_json)
         except Exception as E:
-            logger.error(E)
+            logger.exception(E)
+            logger.warning(session_json)
             return False
 
         # 获取session配置

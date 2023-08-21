@@ -75,7 +75,8 @@ class PortFwd(object):
         try:
             result_dict = json.loads(result)
         except Exception as E:
-            logger.warning(E)
+            logger.exception(E)
+            logger.warning(result)
             context = data_return(301, [], PORTFWD_MSG_ZH.get(301), PORTFWD_MSG_EN.get(301))
             return context
         if result_dict.get('status') is True:
@@ -100,7 +101,8 @@ class PortFwd(object):
             try:
                 result_dict = json.loads(result)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(result)
                 context = data_return(302, [], PORTFWD_MSG_ZH.get(302), PORTFWD_MSG_EN.get(302))
                 return context
             if result_dict.get('status') is True:

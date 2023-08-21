@@ -651,7 +651,11 @@ class PostModule(PostMSFPythonWithParamsModule):
     def callback(self, status, message, data):
         if status:
             self.log_info("脚本执行完成", "Module operation completed")
-            return_data = json.loads(data)
+            try:
+                return_data = json.loads(data)
+            except Exception as E:
+                self.log_warning(data)
+                return False
             for one_config in return_data:
                 localuser = one_config.get("localuser")
                 clearpassword = one_config.get("clearpassword")

@@ -100,7 +100,8 @@ class PostModule(PostMSFRawModule):
                                      banner=tmpBanner,
                                      service=tmpService)
             except Exception as E:
-                pass
+                self.log_warning(oneline)
+                self.log_except(E, E)
 
         self.log_table(data_zh, data_en)
         self.log_raw("\n\n")

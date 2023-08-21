@@ -104,6 +104,7 @@ class _CommonModule(object):
                 return tmp_param
             except Exception as E:
                 logger.warning(E)
+                logger.warning(self._custom_param)
                 return None
 
         else:
@@ -700,6 +701,7 @@ class _PostMSFModuleCommon(_PostCommonModule):
         except Exception as E:
             logger.warning(E)
             logger.warning("解析powershell结果失败")
+            logger.warning(result_without_empty)
             return None
 
 

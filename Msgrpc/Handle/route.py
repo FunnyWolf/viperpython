@@ -71,7 +71,8 @@ class Route(object):
         try:
             result_dict = json.loads(result)
         except Exception as E:
-            logger.warning(E)
+            logger.exception(E)
+            logger.warning(result)
             context = data_return(306, [], Route_MSG_ZH.get(306), Route_MSG_EN.get(306))
             return context
         if result_dict.get('status') is True:
@@ -101,7 +102,8 @@ class Route(object):
         try:
             result_dict = json.loads(result)
         except Exception as E:
-            logger.warning(E)
+            logger.exception(E)
+            logger.warning(result)
             context = data_return(306, {}, Route_MSG_ZH.get(306), Route_MSG_EN.get(306))
             return context
 

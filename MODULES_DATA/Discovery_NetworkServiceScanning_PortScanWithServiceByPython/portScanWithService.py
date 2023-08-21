@@ -520,6 +520,7 @@ def get_script_param(key):
         dict_params = json.loads(base64.b64decode(input_str))
         return dict_params.get(key)
     except Exception as E:
+        print(E)
         return {}
 
 

@@ -24,6 +24,7 @@ class Domain(object):
         except Exception as E:
             logger.warning(E)
             logger.warning("解析powershell结果失败")
+            logger.warning(result_without_empty)
             return None
 
     def get_domain_controller(self):
@@ -53,6 +54,7 @@ class Domain(object):
             return result_json
         except Exception as E:
             logger.warning(E)
+            logger.warning(result)
             return None
 
     def find_local_admin_access(self):
@@ -70,6 +72,7 @@ class Domain(object):
             return result_json
         except Exception as E:
             logger.warning(E)
+            logger.warning(result)
             return None
 
     def get_domain_computers(self):

@@ -36,7 +36,8 @@ class FileSession(object):
             try:
                 result = json.loads(result)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(result)
                 context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
 
@@ -87,7 +88,8 @@ class FileSession(object):
             try:
                 result = json.loads(result)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(result)
                 context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
 
@@ -151,7 +153,8 @@ class FileSession(object):
                 try:
                     moduleresult = json.loads(moduleresult)
                 except Exception as E:
-                    logger.warning(E)
+                    logger.exception(E)
+                    logger.warning(moduleresult)
                     context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                     return context
 
@@ -178,7 +181,8 @@ class FileSession(object):
                 try:
                     moduleresult = json.loads(moduleresult)
                 except Exception as E:
-                    logger.warning(E)
+                    logger.exception(E)
+                    logger.warning(moduleresult)
                     context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                     return context
 
@@ -208,7 +212,8 @@ class FileSession(object):
             try:
                 result = json.loads(result)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(result)
                 context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
 
@@ -262,7 +267,8 @@ class FileSession(object):
             try:
                 result = json.loads(result)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(result)
                 context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
             if result.get('status') is not True:
@@ -283,7 +289,8 @@ class FileSession(object):
             try:
                 result = json.loads(result)
             except Exception as E:
-                logger.warning(E)
+                logger.exception(E)
+                logger.warning(result)
                 context = data_return(302, {}, FileSession_MSG_ZH.get(302), FileSession_MSG_EN.get(302))
                 return context
             if result.get('status') is not True:
