@@ -131,6 +131,10 @@ class Handler(object):
     def create(opts=None):
         # 所有的参数必须大写
         # opts = {'PAYLOAD': payload, 'LHOST': LHOST, 'LPORT': LPORT, 'RHOST': RHOST}
+
+        if opts.get('PayloadUUIDSeed') is None:
+            opts['PayloadUUIDSeed'] = str(uuid.uuid1())
+
         if opts.get('VIRTUALHANDLER') is True:  # 虚拟监听
             opts.pop('VIRTUALHANDLER')
             opts = Handler.create_virtual_handler(opts)
@@ -207,7 +211,7 @@ class Handler(object):
                 else:
                     if opts.get('ExitOnSession') is None:
                         opts['ExitOnSession'] = False
-                opts['PayloadUUIDSeed'] = str(uuid.uuid1())
+
             except Exception as E:
                 logger.error(E)
                 context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
