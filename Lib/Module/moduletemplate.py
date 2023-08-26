@@ -644,7 +644,7 @@ class _PostCommonModule(_CommonModule):
         try:
             raw_lines = raw_input.split(",")
         except Exception as E:
-            print(E)
+            logger.exception(E)
             return []
         ipaddress_list = []
         for line in raw_lines:
@@ -658,7 +658,7 @@ class _PostCommonModule(_CommonModule):
                             if ip.compressed not in ipaddress_list:
                                 ipaddress_list.append(ip.compressed)
                 except Exception as E:
-                    print(E)
+                    logger.exception(E)
             elif line == "":
                 continue
             else:
