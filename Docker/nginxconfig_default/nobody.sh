@@ -22,8 +22,19 @@ Gen_Cert(){
 
 
 
-Echo_c "输入Viper端口 [默认60000]" && read -r INPUTNGINXPORT
+Echo_c "输入Viper端口 [默认60000],回车直接回复到初始配置" && read -r INPUTNGINXPORT
 
+if [ -z "$INPUTNGINXPORT" ]; then
+    tee viper.conf <<-'EOF'
+listen 60000;
+location / {
+  root   /root/viper/dist;
+}
+EOF
+    Echo_c "重启Docker中的nginx服务"
+    docker exec -it viper-c bash -c "viper restartnginx"
+    exit
+fi
 
 if [ $INPUTNGINXPORT -gt 0 ] 2>/dev/null ;then
     Echo_c "使用端口号: $INPUTNGINXPORT"
@@ -32,7 +43,8 @@ else
     INPUTNGINXPORT=60000
 fi
 
-Echo_c "输入Nginx认证密码" && read -r INPUTNGINXPASS
+Echo_c "输入Nginx认证密码,回车直接清除密码" && read -r INPUTNGINXPASS
+
 Echo_c "Nginx认证用户名: root 密码: $INPUTNGINXPASS"
 Echo_c "写入密码到htpasswd"
 docker exec -it viper-c bash -c "htpasswd -bc /root/viper/Docker/nginxconfig/htpasswd root $INPUTNGINXPASS"
