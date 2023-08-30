@@ -192,7 +192,7 @@ def start_services(newpassword=None):
         print("[*] 启动msfrpcd服务")
         # clean old thin.pid
         try:
-            os.remove("/root/tmp/pids/thin.pid")
+            os.remove("/root/metasploit-framework/tmp/pids/thin.pid")
         except:
             pass
         os.chdir("/root/metasploit-framework/")
