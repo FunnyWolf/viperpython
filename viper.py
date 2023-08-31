@@ -507,7 +507,7 @@ if __name__ == '__main__':
         exit(0)
 
     if action is not None and action.lower() == "healthcheck":
-        if check_nginx():
+        if check_services():
             exit(0)
         else:
             exit(1)
