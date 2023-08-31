@@ -19,7 +19,7 @@ mitmproxy_port = 28888
 LOGDIR = "/root/viper/Docker/log"
 devNull = open(os.devnull, 'w')
 
-log_file = os.path.join(os.getcwd(), 'Docker/log/viper.log')
+log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Docker/log/viper.log')
 logger = logging.getLogger('viper')
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('[%(levelname)s][%(asctime)s][%(lineno)d] : %(message)s')
