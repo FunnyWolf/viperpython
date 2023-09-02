@@ -213,7 +213,8 @@ def start_services(newpassword=None):
         except:
             pass
         os.chdir("/root/metasploit-framework/")
-        cmd = f"thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address {LOCALHOST} --port {msgrpc_port} --environment production --daemonize start"
+        # thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address 127.0.0.1 --port 55553 --environment production --daemonize --threaded start
+        cmd = f"thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address {LOCALHOST} --port {msgrpc_port} --environment production --daemonize --threaded start"
         result = subprocess.Popen(cmd, shell=True)
         # cpulimitcmd = "cpulimit -e ruby -l 60 -b"
         # result = subprocess.Popen(cpulimitcmd, shell=True)
