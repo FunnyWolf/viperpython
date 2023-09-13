@@ -144,140 +144,91 @@ class PostModuleConfig(object):
         return context
 
     @staticmethod
+    def get_one_module_config(modulename, module_files_dir="MODULES"):
+        modulename = modulename.split(".")[0]
+        if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
+            return None
+        try:
+            class_intent = importlib.import_module(f'{module_files_dir}.{modulename}')
+            module_intent = class_intent.PostModule
+        except Exception as E:
+            logger.exception(E)
+            Notice.send_warning(f"加载模块:{module_files_dir}.{modulename} 失败",
+                                f"Load module:{module_files_dir}.{modulename} failed")
+            return None
+
+        try:
+            if isinstance(module_intent.ATTCK, str):
+                attck = [module_intent.ATTCK]
+            elif isinstance(module_intent.ATTCK, list):
+                attck = module_intent.ATTCK
+            else:
+                attck = []
+
+            if isinstance(module_intent.AUTHOR, str):
+                author = [module_intent.AUTHOR]
+            elif isinstance(module_intent.AUTHOR, list):
+                author = module_intent.AUTHOR
+            else:
+                author = []
+
+            one_module_config = {
+
+                "BROKER": module_intent.MODULE_BROKER,  # 处理器
+
+                "NAME_ZH": module_intent.NAME_ZH,
+                "DESC_ZH": module_intent.DESC_ZH,
+                "NAME_EN": module_intent.NAME_EN,
+                "DESC_EN": module_intent.DESC_EN,
+                "WARN_ZH": module_intent.WARN_ZH,
+                "WARN_EN": module_intent.WARN_EN,
+                "AUTHOR": author,
+                "REFERENCES": module_intent.REFERENCES,
+                "README": module_intent.README,
+
+                "MODULETYPE": module_intent.MODULETYPE,
+
+                "OPTIONS": module_intent.OPTIONS,
+                "loadpath": f'MODULES.{modulename}',
+
+                # post类配置
+                "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
+                "PLATFORM": module_intent.PLATFORM,
+                "PERMISSIONS": module_intent.PERMISSIONS,
+                "ATTCK": attck,
+
+                # bot类配置
+                "SEARCH": module_intent.SEARCH,
+
+            }
+            return one_module_config
+        except Exception as E:
+            logger.error(E)
+            return None
+
+    @staticmethod
     def load_all_modules_config():
         all_modules_config = []
         # viper 内置模块
         viper_module_count = 0
         modulenames = os.listdir(os.path.join(settings.BASE_DIR, 'MODULES'))
         for modulename in modulenames:
-            modulename = modulename.split(".")[0]
-            if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
-                continue
-
-            try:
-                class_intent = importlib.import_module(f'MODULES.{modulename}')
-                module_intent = class_intent.PostModule
-            except Exception as E:
-                logger.exception(E)
-                Notice.send_warning(f"加载内置模块:{modulename} 失败", f"Load built-in module:{modulename} failed")
-                continue
-
-            try:
-                if isinstance(module_intent.ATTCK, str):
-                    attck = [module_intent.ATTCK]
-                elif isinstance(module_intent.ATTCK, list):
-                    attck = module_intent.ATTCK
-                else:
-                    attck = []
-
-                if isinstance(module_intent.AUTHOR, str):
-                    author = [module_intent.AUTHOR]
-                elif isinstance(module_intent.AUTHOR, list):
-                    author = module_intent.AUTHOR
-                else:
-                    author = []
-
-                one_module_config = {
-
-                    "BROKER": module_intent.MODULE_BROKER,  # 处理器
-
-                    "NAME_ZH": module_intent.NAME_ZH,
-                    "DESC_ZH": module_intent.DESC_ZH,
-                    "NAME_EN": module_intent.NAME_EN,
-                    "DESC_EN": module_intent.DESC_EN,
-                    "WARN_ZH": module_intent.WARN_ZH,
-                    "WARN_EN": module_intent.WARN_EN,
-                    "AUTHOR": author,
-                    "REFERENCES": module_intent.REFERENCES,
-                    "README": module_intent.README,
-
-                    "MODULETYPE": module_intent.MODULETYPE,
-
-                    "OPTIONS": module_intent.OPTIONS,
-                    "loadpath": f'MODULES.{modulename}',
-
-                    # post类配置
-                    "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
-                    "PLATFORM": module_intent.PLATFORM,
-                    "PERMISSIONS": module_intent.PERMISSIONS,
-                    "ATTCK": attck,
-
-                    # bot类配置
-                    "SEARCH": module_intent.SEARCH,
-
-                }
+            one_module_config = PostModuleConfig.get_one_module_config(modulename, 'MODULES')
+            if one_module_config is not None:
                 all_modules_config.append(one_module_config)
                 viper_module_count += 1
-            except Exception as E:
-                logger.error(E)
-                continue
         logger.warning(f"内置模块加载完成,加载{viper_module_count}个模块")
         Notice.send_info(f"内置模块加载完成,加载{viper_module_count}个模块",
                          f"The built-in modules is loaded, {viper_module_count} modules has loaded")
+
         # 自定义模块
         diy_module_count = 0
         modulenames = os.listdir(os.path.join(settings.BASE_DIR, 'Docker', "module"))
         for modulename in modulenames:
-            modulename = modulename.split(".")[0]
-            if modulename == "__init__" or modulename == "__pycache__":  # __init__.py的特殊处理
-                continue
-            try:
-                class_intent = importlib.import_module(f'Docker.module.{modulename}')
-                importlib.reload(class_intent)
-                module_intent = class_intent.PostModule
-            except Exception as E:
-                logger.exception(E)
-                Notice.send_warning(f"加载自定义模块:{modulename} 失败", f"Load customize module:{modulename} failed")
-                continue
-            try:
-                if isinstance(module_intent.ATTCK, str):
-                    attck = [module_intent.ATTCK]
-                elif isinstance(module_intent.ATTCK, list):
-                    attck = [module_intent.ATTCK]
-                else:
-                    attck = []
-
-                if isinstance(module_intent.AUTHOR, str):
-                    author = [module_intent.AUTHOR]
-                elif isinstance(module_intent.AUTHOR, list):
-                    author = module_intent.AUTHOR
-                else:
-                    author = []
-
-                one_module_config = {
-
-                    "BROKER": module_intent.MODULE_BROKER,  # 处理器
-
-                    "NAME_ZH": module_intent.NAME_ZH,
-                    "DESC_ZH": module_intent.DESC_ZH,
-                    "NAME_EN": module_intent.NAME_EN,
-                    "DESC_EN": module_intent.DESC_EN,
-                    "WARN_ZH": module_intent.WARN_ZH,
-                    "WARN_EN": module_intent.WARN_EN,
-                    "AUTHOR": author,
-                    "REFERENCES": module_intent.REFERENCES,
-                    "README": module_intent.README,
-
-                    "MODULETYPE": module_intent.MODULETYPE,
-
-                    "OPTIONS": module_intent.OPTIONS,
-                    "loadpath": f'Docker.module.{modulename}',
-
-                    # post类配置
-                    "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
-                    "PLATFORM": module_intent.PLATFORM,
-                    "PERMISSIONS": module_intent.PERMISSIONS,
-                    "ATTCK": attck,
-
-                    # bot类配置
-                    "SEARCH": module_intent.SEARCH,
-
-                }
+            one_module_config = PostModuleConfig.get_one_module_config(modulename, 'Docker.module')
+            if one_module_config is not None:
                 all_modules_config.append(one_module_config)
                 diy_module_count += 1
-            except Exception as E:
-                logger.error(E)
-                continue
         logger.warning(f"自定义模块加载完成,加载{diy_module_count}个模块")
         Notice.send_info(f"自定义模块加载完成,加载{diy_module_count}个模块",
                          f"The customize modules is loaded, {diy_module_count} modules has loaded")

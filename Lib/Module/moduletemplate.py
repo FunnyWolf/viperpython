@@ -356,7 +356,6 @@ class _CommonModule(object):
                                                         "tag_en": option.get("tag_en"),
                                                         "data": json.dumps(new_params)}
 
-
                         elif key == FILE_OPTION.get("name"):
                             file_dict = json.loads(self._custom_param.get(key))
                             opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
@@ -401,8 +400,6 @@ class _CommonModule(object):
         return opts
 
     # 监听相关函数
-    # 监听相关函数
-
     def set_payload_by_handler(self):
         """通过handler参数设置msf模块的payload"""
         handler_config = self.param(HANDLER_OPTION.get('name'))
@@ -491,8 +488,6 @@ class _CommonModule(object):
         return cache_data.get("lhost")
 
     # 功能函数
-    # 功能函数
-
     @staticmethod
     def dqtoi(dq):
         """将字符串ip地址转换为int数字."""

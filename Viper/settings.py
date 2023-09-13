@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'Core',
     'PostModule',
     'PostLateral',
-
+    'WebDatabase',
 ]
 
 MIDDLEWARE = [
