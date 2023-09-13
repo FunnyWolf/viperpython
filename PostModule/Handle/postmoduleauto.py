@@ -99,6 +99,6 @@ class PostModuleAuto(object):
                                                      ipaddress=ipaddress,
                                                      custom_param=custom_param)
             if context.get('code') >= 300:  # 执行失败
-                Notice.send_warning(f"自动编排执行失败,SID: {sessionid} MSG: {context.get('message')}",
-                                    f"Failed to execute automation,SID: {sessionid} MSG: {context.get('message')}")
+                Notice.send_warning(f"自动编排执行失败,SID: {sessionid} MSG: {context.get('msg_zh')}",
+                                    f"Failed to execute automation,SID: {sessionid} MSG: {context.get('msg_en')}")
         return
