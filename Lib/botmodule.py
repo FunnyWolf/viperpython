@@ -37,7 +37,7 @@ class BotModule(object):
         # 清理历史结果
         try:
             logger.warning(f"模块回调:{msf_module.NAME_ZH}")
-            msf_module._clean_log()  # 清理历史结果
+            msf_module.clean_log()  # 清理历史结果
         except Exception as E:
             logger.error(E)
             return False
@@ -54,7 +54,7 @@ class BotModule(object):
         # 如果是积极结果,存储
         if flag:
             try:
-                msf_module._store_result_in_history()  # 存储到历史记录
+                msf_module.store_result_in_history()  # 存储到历史记录
             except Exception as E:
                 logger.error(E)
             Notice.send_success(f"模块: {msf_module.NAME_ZH} {msf_module.target_str} 执行成功",
@@ -70,7 +70,7 @@ class BotModule(object):
         # 清理历史结果
         try:
             logger.warning(f"模块执行:{python_module.NAME_ZH}")
-            python_module._clean_log()  # 清理历史结果
+            python_module.clean_log()  # 清理历史结果
         except Exception as E:
             logger.error(E)
             return False
@@ -87,7 +87,7 @@ class BotModule(object):
         # 如果是积极结果,存储
         if flag:
             try:
-                python_module._store_result_in_history()  # 存储到历史记录
+                python_module.store_result_in_history()  # 存储到历史记录
             except Exception as E:
                 logger.error(E)
             Notice.send_success(f"模块: {python_module.NAME_ZH} {python_module.target_str} 执行成功",

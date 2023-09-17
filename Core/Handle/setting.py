@@ -318,7 +318,7 @@ class Settings(object):
             return False
 
     @staticmethod
-    def _send_bot_msg(message=None):
+    def send_bot_msg(message=None):
         content = message.get('data')
         chardet_result = chardet.detect(content)
         try:

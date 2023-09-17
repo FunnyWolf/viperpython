@@ -33,6 +33,10 @@ from WebSocket.Handle.heartbeat import HeartBeat
 
 
 class MainMonitor(object):
+    BotScheduler: BackgroundScheduler
+    MainScheduler: BackgroundScheduler
+    HeartBeatScheduler: BackgroundScheduler
+
     def __init__(self):
         pass
 
@@ -63,78 +67,28 @@ class MainMonitor(object):
         # 关闭apscheduler的警告
         log = logging.getLogger('apscheduler.scheduler')
         log.setLevel(logging.ERROR)
-        # msfheartbeat数据监听线程
-        self.HeartBeatScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
-        self.HeartBeatScheduler.add_job(func=self.sub_msf_heartbeat_data_thread,
-                                        max_instances=1,
-                                        trigger='interval',
-                                        seconds=1, id='sub_msf_heartbeat_data_thread')
-        self.HeartBeatScheduler.start()
 
         self.MainScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
-
-        # msf模块result数据监听线程
-        self.MainScheduler.add_job(func=self.sub_msf_module_result_thread,
+        # sub 唯一线程
+        self.MainScheduler.add_job(func=self.subscribe_main_thread,
                                    max_instances=1,
                                    trigger='interval',
-                                   seconds=1, id='sub_msf_module_result_thread')
-
-        # msf模块data数据监听线程
-        self.MainScheduler.add_job(func=self.sub_msf_module_data_thread,
-                                   max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_msf_module_data_thread')
-
-        # msf console 输出数据监听线程
-        self.MainScheduler.add_job(func=self.sub_msf_console_print_thread,
-                                   max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_msf_console_print_thread')
-
-        # msf模块log数据监听线程
-        self.MainScheduler.add_job(func=self.sub_msf_module_log_thread,
-                                   max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_msf_module_log_thread')
-
+                                   seconds=1, id='subscribe_main_thread')
         # 心跳线程
         self.MainScheduler.add_job(func=self.sub_heartbeat_thread,
                                    max_instances=1,
                                    trigger='interval',
                                    seconds=1, id='sub_heartbeat_thread')
 
-        # send_sms线程
-        self.MainScheduler.add_job(func=self.sub_send_sms_thread,
-                                   max_instances=1,
+        # rpc call调用
+        self.MainScheduler.add_job(func=self.sub_rpc_call_thread, max_instances=1,
                                    trigger='interval',
-                                   seconds=1, id='sub_send_sms_thread')
-
-        # postmoduleauto处理线程
-        self.MainScheduler.add_job(func=self.sub_postmodule_auto_handle_thread,
-                                   max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_postmodule_auto_handle_thread')
-
-        # msfrpc调用
-        self.MainScheduler.add_job(func=self.sub_msf_rpc_thread, max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_msf_rpc_thread')
-
-        # uuid json 调用
-        self.MainScheduler.add_job(func=self.sub_rpc_uuid_json_thread, max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_rpc_uuid_json_thread')
-
-        # proxyhttp 调用
-        self.MainScheduler.add_job(func=self.sub_proxy_http_scan_thread, max_instances=1,
-                                   trigger='interval',
-                                   seconds=1, id='sub_proxy_http_scan_thread')
+                                   seconds=1, id='sub_rpc_call_thread')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
         self.MainScheduler.start()
 
-        #
         self.BotScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
         # msf bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
@@ -149,6 +103,28 @@ class MainMonitor(object):
 
         logger.warning("后台服务启动成功")
         Notice.send_info(f"后台服务启动完成.", "Background service is started.")
+
+    @staticmethod
+    def subscribe_main_thread():
+        """这个函数必须以线程的方式运行"""
+
+        rcon = RedisClient.get_result_connection()
+        if rcon is None:
+            return
+        ps = rcon.pubsub(ignore_subscribe_messages=True)
+        ps.subscribe(**{MSF_RPC_RESULT_CHANNEL: MSFModule.store_result_from_sub})
+        ps.subscribe(**{MSF_RPC_DATA_CHANNEL: MSFModule.handle_msfrpc_data})
+        ps.subscribe(**{MSF_RPC_HEARTBEAT_CHANNEL: MSFModule.handle_heartbeat_data})
+        ps.subscribe(**{MSF_RPC_LOG_CHANNEL: MSFModule.store_log_from_sub})
+        ps.subscribe(**{VIPER_POSTMODULE_AUTO_CHANNEL: PostModuleAuto.handle_task})
+        ps.subscribe(**{VIPER_SEND_SMS_CHANNEL: Settings.send_bot_msg})
+        ps.subscribe(**{MSF_RPC_CONSOLE_PRINT: Console.print_output_from_sub})
+        ps.subscribe(**{VIPER_RPC_UUID_JSON_DATA: UUIDJson.store_data_from_sub})
+        ps.subscribe(**{VIPER_PROXY_HTTP_SCAN_DATA: ProxyHttpScan.store_request_response_from_sub})
+
+        for message in ps.listen():
+            if message:
+                logger.warning(f"不应获取非空message {message}")
 
     @staticmethod
     def run_msf_bot_thread():
@@ -186,115 +162,5 @@ class MainMonitor(object):
         )
 
     @staticmethod
-    def sub_postmodule_auto_handle_thread():
-        """这个函数必须以线程的方式运行"""
-
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{VIPER_POSTMODULE_AUTO_CHANNEL: PostModuleAuto.handle_task})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_send_sms_thread():
-        """这个函数必须以线程的方式运行"""
-
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{VIPER_SEND_SMS_CHANNEL: Settings._send_bot_msg})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_msf_module_result_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息,获取job类任务推送的结果"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{MSF_RPC_RESULT_CHANNEL: MSFModule.store_result_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_msf_module_data_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{MSF_RPC_DATA_CHANNEL: MSFModule.store_monitor_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_msf_heartbeat_data_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{MSF_RPC_HEARTBEAT_CHANNEL: MSFModule.store_heartbeat_data_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_msf_console_print_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{MSF_RPC_CONSOLE_PRINT: Console.print_monitor_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_msf_module_log_thread():
-        """这个函数必须以线程的方式运行,监控msf发送的redis消息,获取job类任务推送的消息"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{MSF_RPC_LOG_CHANNEL: MSFModule.store_log_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_rpc_uuid_json_thread():
-        """这个函数必须以线程的方式运行,监控外部rpc发送的redis消息,获取任务结果"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{VIPER_RPC_UUID_JSON_DATA: UUIDJson.store_data_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_proxy_http_scan_thread():
-        """这个函数必须以线程的方式运行,监控外部rpc发送的redis消息,获取任务结果"""
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        ps = rcon.pubsub(ignore_subscribe_messages=True)
-        ps.subscribe(**{VIPER_PROXY_HTTP_SCAN_DATA: ProxyHttpScan.store_request_response_from_sub})
-        for message in ps.listen():
-            if message:
-                logger.warning(f"不应获取非空message {message}")
-
-    @staticmethod
-    def sub_msf_rpc_thread():
+    def sub_rpc_call_thread():
         RPCServer().run()

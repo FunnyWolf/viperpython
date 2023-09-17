@@ -306,11 +306,11 @@ class _CommonModule(object):
         result_format = result_format.strip()
         Xcache.set_module_result(self.host_ipaddress, self.loadpath, result_format)
 
-    def _clean_log(self):
+    def clean_log(self):
         flag = Xcache.del_module_result_by_ipaddress_and_loadpath(self.host_ipaddress, self.loadpath)
         return flag
 
-    def _store_result_in_history(self):
+    def store_result_in_history(self):
         """存储模块运行结果到历史记录"""
         if self.MODULETYPE in [TAG2TYPE.internal]:  # 内部模块不存储
             return True

@@ -113,7 +113,7 @@ class MSFModule(object):
 
         # 调用回调函数
         try:
-            module_intent._clean_log()  # 清理历史结果
+            module_intent.clean_log()  # 清理历史结果
             logger.info(f"模块clean_log:{module_intent.NAME_ZH} "
                         f"job_id: {msf_module_return_dict.get('job_id')} "
                         f"uuid: {msf_module_return_dict.get('uuid')}")
@@ -136,7 +136,7 @@ class MSFModule(object):
                                   f"Module <{module_intent.NAME_EN}> callback function run exception")
             logger.error(E)
         try:
-            module_intent._store_result_in_history()  # 存储到历史记录
+            module_intent.store_result_in_history()  # 存储到历史记录
             logger.info(f"存储输出到历史记录:{module_intent.NAME_ZH} "
                         f"job_id: {msf_module_return_dict.get('job_id')} "
                         f"uuid: {msf_module_return_dict.get('uuid')}")
@@ -151,7 +151,7 @@ class MSFModule(object):
                          f"Module: <{module_intent.NAME_EN}> {module_intent.target_str} run finish")
 
     @staticmethod
-    def store_heartbeat_data_from_sub(message=None):
+    def handle_heartbeat_data(message=None):
         """处理msf模块发送的data信息pub_json_data"""
         body = message.get('data')
         try:
@@ -173,7 +173,7 @@ class MSFModule(object):
             return False
 
     @staticmethod
-    def store_monitor_from_sub(message=None):
+    def handle_msfrpc_data(message=None):
         """处理msf模块发送的data信息pub_json_data"""
         body = message.get('data')
         try:
@@ -196,7 +196,7 @@ class MSFModule(object):
                 return False
             logger.warning(
                 f"模块回调:{module_intent.NAME_ZH} job_id: {msf_module_return_dict.get('job_id')} uuid: {msf_module_return_dict.get('uuid')}")
-            module_intent._clean_log()  # 清理结果
+            module_intent.clean_log()  # 清理结果
         except Exception as E:
             logger.error(E)
             return False
@@ -212,7 +212,7 @@ class MSFModule(object):
 
         Notice.send_info(f"模块: {module_intent.NAME_ZH} 回调执行完成",
                          f"Module: <{module_intent.NAME_EN}> callback run finish")
-        module_intent._store_result_in_history()  # 存储到历史记录
+        module_intent.store_result_in_history()  # 存储到历史记录
 
     @staticmethod
     def store_log_from_sub(message=None):

@@ -41,7 +41,7 @@ class APSModule(object):
             module_uuid = str(uuid.uuid1())
 
             # 清空历史记录
-            post_module_intent._clean_log()
+            post_module_intent.clean_log()
             post_module_intent._module_uuid = module_uuid
 
             logger.warning(f"模块放入列表:{post_module_intent.NAME_ZH} uuid: {module_uuid}")
@@ -102,7 +102,7 @@ class APSModule(object):
 
         # 存储运行结果
         try:
-            module_common_instance._store_result_in_history()
+            module_common_instance.store_result_in_history()
             Notice.send_info(f"模块: {module_common_instance.NAME_ZH} {module_common_instance.target_str} 执行完成",
                              f"Module: <{module_common_instance.NAME_EN}> {module_common_instance.target_str} start running")
             logger.warning(f"多模块实例执行完成:{module_common_instance.NAME_ZH}")
@@ -123,7 +123,7 @@ class APSModule(object):
         # 存储运行结果
         try:
             module_common_instance.log_except(str(exception), str(exception))
-            module_common_instance._store_result_in_history()
+            module_common_instance.store_result_in_history()
             logger.error(f"多模块实例执行异常:{module_common_instance.NAME_ZH} 异常信息: {exception}")
             return True
         except Exception as E:
@@ -150,7 +150,7 @@ class APSModule(object):
         # 存储已经生成的结果
         try:
             module_common_instance.log_warning("用户手动删除任务", "User manually delete task")
-            module_common_instance._store_result_in_history()
+            module_common_instance.store_result_in_history()
         except Exception as E:
             logger.error(f"删除多模块实例异常:{module_common_instance.NAME_ZH} 异常信息: {E}")
             logger.error(E)
