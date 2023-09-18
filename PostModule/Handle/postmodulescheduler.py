@@ -7,10 +7,8 @@ import uuid
 
 from Lib.api import data_return
 from Lib.configs import PostModuleAuto_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, PostModuleAuto_MSG_EN
-from Lib.configs import VIPER_POSTMODULE_AUTO_CHANNEL
 from Lib.log import logger
 from Lib.notice import Notice
-from Lib.redisclient import RedisClient
 from Lib.xcache import Xcache
 from PostModule.Handle.postmoduleactuator import PostModuleActuator
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
@@ -45,16 +43,57 @@ class PostModuleScheduler(object):
         return context
 
     @staticmethod
+    def list_jobs():
+        jobs = postModuleSingletonScheduler.get_jobs()
+        results = []
+        for job in jobs:
+            kwargs = job.kwargs
+            loadpath = kwargs.get("loadpath")
+            custom_param = kwargs.get("custom_param")
+            scheduler_session = kwargs.get('scheduler_session')
+            jobid = job.id
+            if job.next_run_time is None:
+                pause = True
+                next_run_time = None
+            else:
+                pause = False
+                next_run_time = int(job.next_run_time.timestamp())
+            interval = int(job.trigger.interval_length)
+
+            try:
+                module_intent = PostModuleConfig.get_post_module_intent(loadpath=loadpath,
+                                                                        custom_param=json.loads(custom_param))
+                module_opts = module_intent.get_readable_opts()
+            except Exception as E:
+                logger.exception(E)
+                logger.warning(kwargs)
+                module_opts = {}
+
+            results.append({
+                "loadpath": loadpath,
+                "custom_param": custom_param,
+                "moduleinfo": Xcache.get_moduleconfig(loadpath),
+                "opts": module_opts,
+                "scheduler_session": scheduler_session,
+                "job_id": jobid,
+                "next_run_time": next_run_time,
+                "interval": interval,
+            })
+        return results
+
+    @staticmethod
     def create(loadpath, custom_param, scheduler_session, scheduler_interval):
         job_uuid = str(uuid.uuid1())
-        postModuleSingletonScheduler.add_job(func=PostModuleScheduler.handle_task,
-                                             kwargs={
-                                                 "loadpath": loadpath, "custom_param": custom_param,
-                                                 "scheduler_session": scheduler_session,
-                                             },
-                                             max_instances=1,
-                                             trigger='interval',
-                                             seconds=scheduler_interval, id=job_uuid)
+        job = postModuleSingletonScheduler.add_job(func=PostModuleScheduler.handle_task,
+                                                   kwargs={
+                                                       "loadpath": loadpath, "custom_param": custom_param,
+                                                       "scheduler_session": scheduler_session,
+                                                   },
+                                                   max_instances=1,
+                                                   trigger='interval',
+                                                   seconds=scheduler_interval, id=job_uuid)
+        context = data_return(201, {}, PostModuleAuto_MSG_ZH.get(201), PostModuleAuto_MSG_EN.get(201))
+        return context
 
     @staticmethod
     def destory(module_uuid):
@@ -65,13 +104,6 @@ class PostModuleScheduler(object):
         else:
             context = data_return(304, {}, PostModuleAuto_MSG_ZH.get(304), PostModuleAuto_MSG_EN.get(304))
             return context
-
-    @staticmethod
-    def send_task(session_json):
-        rcon = RedisClient.get_result_connection()
-        if rcon is None:
-            return
-        result = rcon.publish(VIPER_POSTMODULE_AUTO_CHANNEL, session_json)
 
     @staticmethod
     def handle_task(loadpath, custom_param, scheduler_session):

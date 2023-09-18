@@ -15,6 +15,7 @@ from Lib.redisclient import RedisClient
 from Lib.xcache import Xcache
 from PostModule.Handle.postmoduleactuator import PostModuleActuator
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
+from PostModule.Handle.postmodulescheduler import PostModuleScheduler
 
 
 class PostModuleAuto(object):
@@ -23,7 +24,8 @@ class PostModuleAuto(object):
 
     @staticmethod
     def list():
-        result_list = []
+        # 自动编排任务信息
+        auto_text_jobs = []
         postmodule_auto_dict = Xcache.get_postmodule_auto_dict()
         for module_uuid in postmodule_auto_dict:
             one_result = postmodule_auto_dict.get(module_uuid)
@@ -40,8 +42,12 @@ class PostModuleAuto(object):
                 logger.warning(one_result)
                 one_result["opts"] = {}
 
-            result_list.append(one_result)
-        context = data_return(200, result_list, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
+            auto_text_jobs.append(one_result)
+
+        # 定时任务信息
+        scheduler_text_jobs = PostModuleScheduler.list_jobs()
+        context = data_return(200, {"auto": auto_text_jobs, "scheduler": scheduler_text_jobs}, CODE_MSG_ZH.get(200),
+                              CODE_MSG_EN.get(200))
         return context
 
     @staticmethod
