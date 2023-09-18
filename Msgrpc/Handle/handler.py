@@ -169,14 +169,6 @@ class Handler(object):
                     opts.pop('proxies_ipport')
                 except Exception as _:
                     pass
-
-            if opts.get("ReverseListenerComm") is not None:
-                try:
-                    session_id = opts.get("ReverseListenerComm").get("id")
-                    opts["ReverseListenerComm"] = session_id
-                except Exception as _:
-                    opts.pop('ReverseListenerComm')
-                    pass
             try:
                 if opts.get('PAYLOAD').find("reverse") > 0:
                     opts["ReverseListenerBindAddress"] = "0.0.0.0"
