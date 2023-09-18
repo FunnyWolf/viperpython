@@ -111,7 +111,7 @@ class Xcache(object):
     def __init__(self):
         pass
 
-    ### postmodule_auto
+    # postmodule_auto
     @staticmethod
     def get_postmodule_auto_dict():
         """获取自动化模块配置字典"""
@@ -162,9 +162,7 @@ class Xcache(object):
             return {"flag": False, "interval": 1, "max_session": 3}
         return conf
 
-    ### postmodule_auto
-
-    ### proxy_http_scan
+    # proxy_http_scan
     @staticmethod
     def get_proxy_http_scan_dict():
         """获取自动化模块配置字典"""

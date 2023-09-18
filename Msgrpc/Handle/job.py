@@ -37,7 +37,7 @@ class Job(object):
             if uncheck or req.get("job_id") is None or msf_jobs_dict.get(str(req.get("job_id"))) is not None:
                 req["moduleinfo"] = PostModuleSerializer(req.get("module"), many=False).data
                 module_intent = req.pop("module")  # 弹出module实例
-                req["opts"] = module_intent._get_human_opts()
+                req["opts"] = module_intent.get_readable_opts()
                 reqs_temp.append(req)
                 continue
             else:

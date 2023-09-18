@@ -322,12 +322,12 @@ class _CommonModule(object):
             ipaddress=self.host_ipaddress,
             sessionid=self._sessionid,
             loadpath=self.__module__,
-            opts=self._get_human_opts(),
+            opts=self.get_readable_opts(),
             update_time=module_result.get("update_time"),
             result=module_result.get("result"))
         return flag
 
-    def _get_human_opts(self):
+    def get_readable_opts(self):
         opts = {}
         for key in self._custom_param:
             for option in self.OPTIONS:

@@ -34,7 +34,7 @@ class PostModuleAuto(object):
                 module_intent = PostModuleConfig.get_post_module_intent(loadpath=one_result["loadpath"],
                                                                         custom_param=json.loads(
                                                                             one_result["custom_param"]))
-                one_result["opts"] = module_intent._get_human_opts()
+                one_result["opts"] = module_intent.get_readable_opts()
             except Exception as E:
                 logger.exception(E)
                 logger.warning(one_result)

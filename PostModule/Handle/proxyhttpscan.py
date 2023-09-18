@@ -157,7 +157,7 @@ class ProxyHttpScan(object):
             one_result["_module_uuid"] = module_uuid
             one_result["moduleinfo"] = Xcache.get_moduleconfig(loadpath)
             try:
-                one_result["opts"] = module_intent._get_human_opts()
+                one_result["opts"] = module_intent.get_readable_opts()
             except Exception as E:
                 logger.warning(E)
                 Xcache.delete_proxy_http_scan_dict(module_uuid)
