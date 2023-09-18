@@ -329,6 +329,14 @@ class Xcache(object):
         return True
 
     @staticmethod
+    def get_msf_sessions_by_id(sessionid):
+        result = cache.get(Xcache.XCACHE_MSF_SESSIONS_CACHE)
+        try:
+            return result.get(str(sessionid))
+        except Exception as _:
+            return None
+
+    @staticmethod
     def get_module_task_by_uuid(task_uuid):
         key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{task_uuid}"
         req = cache.get(key)

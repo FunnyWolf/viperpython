@@ -27,6 +27,7 @@ from Lib.xcache import Xcache
 from Msgrpc.Handle.handler import Handler
 from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
+from PostModule.Handle.postmodulesingletonscheduler import postModuleSingletonScheduler
 from PostModule.Handle.proxyhttpscan import ProxyHttpScan
 from WebSocket.Handle.console import Console
 from WebSocket.Handle.heartbeat import HeartBeat
@@ -100,6 +101,9 @@ class MainMonitor(object):
                                   trigger='interval',
                                   seconds=1, id='run_python_bot_thread')
         self.BotScheduler.start()
+
+        # 启动自动化定时任务
+        postModuleSingletonScheduler.start()
 
         logger.warning("后台服务启动成功")
         Notice.send_info(f"后台服务启动完成.", "Background service is started.")

@@ -10,6 +10,7 @@ from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
 from PostModule.Handle.postmoduleresult import PostModuleResult
 from PostModule.Handle.postmoduleresulthistory import PostModuleResultHistory
+from PostModule.Handle.postmodulescheduler import PostModuleScheduler
 from PostModule.Handle.proxyhttpscan import ProxyHttpScan
 
 
@@ -93,10 +94,22 @@ class PostModuleAutoView(BaseView):
 
     def create(self, request, **kwargs):
         try:
+            module_type = request.data.get('module_type')
             loadpath = request.data.get('loadpath')
             custom_param = request.data.get('custom_param')
-            context = PostModuleAuto.create(loadpath=loadpath,
-                                            custom_param=custom_param)
+            scheduler_session = request.data.get('scheduler_session')
+            scheduler_interval = request.data.get('scheduler_interval')
+
+            if module_type == "auto":
+                context = PostModuleAuto.create(loadpath=loadpath,
+                                                custom_param=custom_param)
+            elif module_type == "scheduler":
+                context = PostModuleScheduler.create(loadpath=loadpath,
+                                                     custom_param=custom_param,
+                                                     scheduler_session=scheduler_session,
+                                                     scheduler_interval=scheduler_interval)
+            else:
+                context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
