@@ -92,21 +92,40 @@ class PostModuleScheduler(object):
                                                    max_instances=1,
                                                    trigger='interval',
                                                    seconds=scheduler_interval, id=job_uuid)
-        context = data_return(201, {}, PostModuleAuto_MSG_ZH.get(201), PostModuleAuto_MSG_EN.get(201))
+        context = data_return(201, {"job_id": job.id}, PostModuleAuto_MSG_ZH.get(201), PostModuleAuto_MSG_EN.get(201))
         return context
 
     @staticmethod
-    def destory(module_uuid):
-        if Xcache.delete_postmodule_auto_dict(module_uuid):
-            context = data_return(204, {"_module_uuid": module_uuid}, PostModuleAuto_MSG_ZH.get(204),
+    def update(job_id, action):
+        if action == "pause":
+            job = postModuleSingletonScheduler.pause_job(job_id)
+            context = data_return(204, {"job_id": job.id}, PostModuleAuto_MSG_ZH.get(204),
+                                  PostModuleAuto_MSG_EN.get(204))
+        elif action == "resume":
+            job = postModuleSingletonScheduler.resume_job(job_id)
+            context = data_return(204, {"job_id": job.id}, PostModuleAuto_MSG_ZH.get(204),
+                                  PostModuleAuto_MSG_EN.get(204))
+        else:
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return context
+
+    @staticmethod
+    def destory(job_id):
+        try:
+            postModuleSingletonScheduler.remove_job(job_id)
+            context = data_return(204, {"job_id": job_id}, PostModuleAuto_MSG_ZH.get(204),
                                   PostModuleAuto_MSG_EN.get(204))
             return context
-        else:
+        except Exception as E:
+            logger.exception(E)
             context = data_return(304, {}, PostModuleAuto_MSG_ZH.get(304), PostModuleAuto_MSG_EN.get(304))
             return context
 
     @staticmethod
     def handle_task(loadpath, custom_param, scheduler_session):
+        module_config = Xcache.get_moduleconfig(loadpath)
+        Notice.send_info(f"执行自动化定时任务, 模块: {module_config.get('NAME_ZH')} SID: {scheduler_session}",
+                         f"Execute automation scheduler task, Module: {module_config.get('NAME_EN')} SID: {scheduler_session}")
         session_dict = Xcache.get_msf_sessions_by_id(scheduler_session)
         context = PostModuleActuator.create_post(loadpath=loadpath,
                                                  sessionid=scheduler_session,

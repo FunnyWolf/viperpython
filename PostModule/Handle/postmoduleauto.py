@@ -98,8 +98,13 @@ class PostModuleAuto(object):
         postmodule_auto_dict = Xcache.get_postmodule_auto_dict()
         for module_uuid in postmodule_auto_dict:
             time.sleep(interval)
+
             loadpath = postmodule_auto_dict[module_uuid].get("loadpath")
             custom_param = postmodule_auto_dict[module_uuid].get("custom_param")
+            module_config = Xcache.get_moduleconfig(loadpath)
+            Notice.send_info(f"执行自动化任务, 模块: {module_config.get('NAME_ZH')}",
+                             f"Execute automation task, Module: {module_config.get('NAME_EN')}")
+
             context = PostModuleActuator.create_post(loadpath=loadpath,
                                                      sessionid=sessionid,
                                                      ipaddress=ipaddress,

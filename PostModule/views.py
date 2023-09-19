@@ -115,10 +115,28 @@ class PostModuleAutoView(BaseView):
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
 
+    def update(self, request, pk=None, **kwargs):
+        try:
+            module_type = request.data.get('module_type')
+            job_id = request.data.get('job_id')
+            action = request.data.get('action')
+            context = PostModuleScheduler.update(job_id=job_id, action=action)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
     def destroy(self, request, pk=None, **kwargs):
         try:
-            module_uuid = request.query_params.get('_module_uuid')
-            context = PostModuleAuto.destory(module_uuid=module_uuid)
+            module_type = request.query_params.get('module_type')
+            if module_type == "auto":
+                module_uuid = request.query_params.get('_module_uuid')
+                context = PostModuleAuto.destory(module_uuid=module_uuid)
+            elif module_type == "scheduler":
+                job_id = request.query_params.get('job_id')
+                context = PostModuleScheduler.destory(job_id)
+            else:
+                context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))

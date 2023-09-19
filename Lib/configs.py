@@ -133,6 +133,7 @@ PostModuleActuator_MSG_EN = {
 
 PostModuleAuto_MSG_ZH = {
     201: "新建自动执行配置成功",
+    202: "修改自动执行配置成功",
     204: "删除自动执行配置成功",
 
     304: "删除自动执行配置失败",
@@ -141,6 +142,7 @@ PostModuleAuto_MSG_ZH = {
 
 PostModuleAuto_MSG_EN = {
     201: "Create automatic configuration succeeded",
+    202: "Update automatic configuration succeeded",
     204: "The automatic configuration is deleted successfully",
 
     304: "Failed to delete automatic configuration",
