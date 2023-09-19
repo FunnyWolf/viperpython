@@ -360,9 +360,7 @@ class _CommonModule(object):
                             file_dict = json.loads(self._custom_param.get(key))
                             opts[option.get("name")] = {"tag_zh": option.get("tag_zh"),
                                                         "tag_en": option.get("tag_en"),
-                                                        "data": json.dumps({
-                                                            "name": file_dict.get("name"),
-                                                        })}
+                                                        "data": file_dict.get("name")}
 
                         elif key == CREDENTIAL_OPTION.get("name"):
                             credential_dict = json.loads(self._custom_param.get(key))
