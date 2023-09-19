@@ -26,7 +26,6 @@ rm -rf /root/viper/STATICFILES/TMP/*
 
 # format msf file
 cd /root/metasploit-framework || exit
-bundle config --delete 'mirror.https://rubygems.org/'
 find . -name *.py -exec dos2unix {} \;>/dev/null 2>1
 find . -name *.py -exec chmod 755 {} \;>/dev/null 2>1
 
@@ -34,6 +33,7 @@ find . -name *.py -exec chmod 755 {} \;>/dev/null 2>1
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 cd /root/metasploit-framework || exit
+bundle config --delete 'mirror.https://rubygems.org/'
 bundle install
 gem clean
 bundle install
