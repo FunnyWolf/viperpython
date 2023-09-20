@@ -46,14 +46,14 @@ class PostModule(PostMSFPythonWithParamsModule):
             return False, "Session不可用", "Session is unavailable"
 
         # 参数检查
-        NUM = self.param('NUM')
+        num = self.param('NUM')
         timeout = self.param('timeout')
 
         # 检查timeout
         if timeout <= 0 or timeout > 360:
             return False, "输入的模块超时时间有误(最大值60)", "ErroThe entered module timeout time is incorrect (maximum 60)r"
 
-        self.set_script_param('NUM', NUM)
+        self.set_script_param('NUM', num)
         self.set_script_timeout(timeout)
 
         return True, None
