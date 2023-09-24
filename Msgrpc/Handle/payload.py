@@ -96,6 +96,8 @@ class Payload(object):
                 opts["Format"] = 'raw'
             elif "android" in mname:
                 opts["Format"] = 'raw'
+            elif "osx" in mname:
+                opts["Format"] = 'macho'
             else:
                 context = data_return(306, {}, Payload_MSG_ZH.get(306), Payload_MSG_EN.get(306))
                 return context

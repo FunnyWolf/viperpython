@@ -32,6 +32,8 @@ class WebInfomationModel(models.Model):
     title = models.CharField(blank=True, null=True, max_length=100)
     code = models.IntegerField(default=0)
     html = models.TextField(blank=True, null=True)
+    screenshot = models.CharField(blank=True, null=True, max_length=100)
+    sslfile = models.CharField(blank=True, null=True, max_length=100)
     source = models.CharField(blank=True, null=True, max_length=100)  # 信息来源
     data = DiyDictField(default={})
     update_time = models.IntegerField(default=0)
@@ -51,6 +53,16 @@ class VulnerabilityModel(models.Model):
     port = models.IntegerField(default=0)
     name = models.TextField(blank=True, null=True)
     desc = models.TextField(blank=True, null=True)
+    source = models.CharField(blank=True, null=True, max_length=100)  # 信息来源
+    data = DiyDictField(default={})
+    update_time = models.IntegerField(default=0)
+
+
+class DNSRecordModel(models.Model):
+    ip = models.CharField(blank=True, null=True, max_length=100)
+    domain = models.CharField(blank=True, null=True, max_length=100)
+    type = models.CharField(blank=True, null=True, max_length=100)
+    value = models.CharField(blank=True, null=True, max_length=100)
     source = models.CharField(blank=True, null=True, max_length=100)  # 信息来源
     data = DiyDictField(default={})
     update_time = models.IntegerField(default=0)
