@@ -69,8 +69,9 @@ class DNSRecordModel(models.Model):
 
 
 class TargetModel(models.Model):
-    ipdomain = models.CharField(blank=True, null=True, max_length=100)
     name = models.TextField(blank=True, null=True)
+    domain = models.TextField(blank=True, null=True)
+    ipdomain = models.CharField(blank=True, null=True, max_length=100)
     desc = models.TextField(blank=True, null=True)
     source = models.CharField(blank=True, null=True, max_length=100)  # 信息来源
     data = DiyDictField(default={})

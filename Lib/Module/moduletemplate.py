@@ -546,6 +546,36 @@ class _CommonModule(object):
         return salt
 
 
+class WebPythonModule(_CommonModule):
+    MODULE_BROKER = BROKER.web_python_module
+
+    def __init__(self, custom_param):
+        super().__init__(custom_param)  # 父类无需入参
+
+    def run(self):
+        """后台运行模块回调函数"""
+        logger.warning(self._custom_param)
+
+    def _thread_run(self):
+        t1 = ThreadWithExc(target=self.run)
+        t1.start()
+        while True:
+            req = Xcache.get_module_task_by_uuid(self._module_uuid)
+            if req is None:  # 检查模块是否已经删除
+                self.exit_flag = True
+                time.sleep(3)
+                while t1.is_alive():
+                    time.sleep(0.1)
+                    try:
+                        t1.raise_exc(Exception)
+                    except Exception as _:
+                        pass
+                break
+            elif t1.is_alive() is not True:
+                break
+            else:
+                time.sleep(1)
+
 class ProxyHttpScanModule(_CommonModule):
     MODULE_BROKER = BROKER.proxy_http_scan_module
     MODULETYPE = TAG2TYPE.Proxy_Http_Scan

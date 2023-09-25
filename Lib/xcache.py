@@ -29,6 +29,8 @@ class Xcache(object):
 
     XCACHE_MODULES_TASK_LIST = "XCACHE_MODULES_TASK_LIST"
 
+    XCACHE_WEB_MODULES_TASK_LIST = "XCACHE_WEB_MODULES_TASK_LIST"
+
     XCACHE_BOT_MODULES_WAIT_LIST = "XCACHE_BOT_MODULES_WAIT_LIST"
 
     XCACHE_MODULES_RESULT = "XCACHE_MODULES_RESULT"
@@ -226,6 +228,17 @@ class Xcache(object):
             if req.get("job_id") is None:
                 cache.delete(key)
 
+        re_key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_*"
+        keys = cache.keys(re_key)
+        for key in keys:
+            try:
+                req = cache.get(key)
+            except Exception as _:
+                cache.delete(key)
+                continue
+            if req.get("job_id") is None:
+                cache.delete(key)
+
         # 清理session_info缓存
         re_key = f"{Xcache.XCACHE_SESSION_INFO}_*"
         keys = cache.keys(re_key)
@@ -364,6 +377,49 @@ class Xcache(object):
         cache.delete(key)
 
     @staticmethod
+    def get_module_task_length():
+        re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
+        keys = cache.keys(re_key)
+        return len(keys)
+
+    # web module
+
+    @staticmethod
+    def get_web_module_task_by_uuid(task_uuid):
+        key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_{task_uuid}"
+        req = cache.get(key)
+        return req
+
+    @staticmethod
+    def list_web_module_tasks():
+        re_key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_*"
+        keys = cache.keys(re_key)
+        reqs = []
+        for key in keys:
+            reqs.append(cache.get(key))
+        return reqs
+
+    @staticmethod
+    def create_web_module_task(req):
+        """任务队列"""
+        key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_{req.get('uuid')}"
+        cache.set(key, req, None)
+        return True
+
+    @staticmethod
+    def del_web_module_task_by_uuid(task_uuid):
+        key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_{task_uuid}"
+        cache.delete(key)
+
+    @staticmethod
+    def get_web_module_task_length():
+        re_key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_*"
+        keys = cache.keys(re_key)
+        return len(keys)
+
+    # web module
+
+    @staticmethod
     def pop_one_from_bot_wait(broker):
         keys = cache.keys(f"{Xcache.XCACHE_BOT_MODULES_WAIT_LIST}_*")
         for key in keys:
@@ -488,12 +544,6 @@ class Xcache(object):
 
             cache.set(Xcache.XCACHE_MODULES_RESULT_HISTORY, new_result, None)
         return True
-
-    @staticmethod
-    def get_module_task_length():
-        re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
-        keys = cache.keys(re_key)
-        return len(keys)
 
     @staticmethod
     def get_notices():

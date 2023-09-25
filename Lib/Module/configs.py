@@ -73,7 +73,7 @@ class BROKER(object):
     bot_msf_module = 'bot_msf_module'
     bot_python_module = 'bot_python_module'
     proxy_http_scan_module = 'proxy_http_scan_module'
-
+    web_python_module = 'web_python_module'
 
 class TAG2TYPE(object):
     """
@@ -81,6 +81,9 @@ class TAG2TYPE(object):
     """
     example = 'example'  # '样例模块',
     internal = 'internal'  # 内部模块(不提供可视化输出,用于内部的模块)
+
+    # Web模块
+    Web_Subdomain_Scan = "Web_Subdomain_Scan"  # 子域名扫描模块
 
     # 代理扫描模块
     Proxy_Http_Scan = "Proxy_Http_Scan"  # 基于msf的扫描模块

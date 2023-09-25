@@ -20,7 +20,7 @@ from Lib.Module.moduletemplate import (
     PostMSFExecPEModule,
     BotMSFModule,
     BotPythonModule,
-    ProxyHttpScanModule,
+    ProxyHttpScanModule, WebPythonModule,
 )
 from Lib.Module.msfmodule import (
     MsfModule
@@ -60,6 +60,7 @@ __all__ = [
     "BotMSFModule",
     "BotPythonModule",
     "ProxyHttpScanModule",
+    "WebPythonModule",
     "register_options",
     "OptionHander",
     "OptionIPAddressRange",
