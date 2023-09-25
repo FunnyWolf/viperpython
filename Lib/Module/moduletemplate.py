@@ -807,7 +807,7 @@ class PostPythonModule(_PostCommonModule):
         t1 = ThreadWithExc(target=self.run)
         t1.start()
         while True:
-            req = Xcache.get_module_task_by_uuid_nowait(self._module_uuid)
+            req = Xcache.get_module_task_by_uuid(self._module_uuid)
             if req is None:  # 检查模块是否已经删除
                 self.exit_flag = True
                 time.sleep(3)

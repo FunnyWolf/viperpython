@@ -343,12 +343,6 @@ class Xcache(object):
         return req
 
     @staticmethod
-    def get_module_task_by_uuid_nowait(task_uuid):
-        key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_{task_uuid}"
-        req = cache.get(key)
-        return req
-
-    @staticmethod
     def list_module_tasks():
         re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
         keys = cache.keys(re_key)
