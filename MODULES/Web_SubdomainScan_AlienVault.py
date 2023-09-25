@@ -24,10 +24,6 @@ class PostModule(WebPythonModule):
                   desc_en="Domain"),
     ])
 
-    def __init__(self, custom_param):
-        super().__init__(custom_param)
-        pass
-
     def check(self):
         """执行前的检查函数"""
         return True, ""
@@ -35,5 +31,7 @@ class PostModule(WebPythonModule):
     def run(self):
         # data,额外需要传输的数据
         # 调用父类函数存储结果(必须调用)
-        print(self.param)
+
+        self.log_info(self.param('Domain'))
+        self.log_info(self.param('Domain'))
         return True

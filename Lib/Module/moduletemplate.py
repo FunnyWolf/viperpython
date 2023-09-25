@@ -547,9 +547,10 @@ class _CommonModule(object):
 
 
 class WebPythonModule(_CommonModule):
-    MODULE_BROKER = BROKER.web_python_module
+    # MODULE_BROKER = BROKER.web_python_module
+    MODULE_BROKER = BROKER.post_python_job
 
-    def __init__(self, custom_param):
+    def __init__(self, sessionid, ipaddress, custom_param):
         super().__init__(custom_param)  # 父类无需入参
 
     def run(self):
