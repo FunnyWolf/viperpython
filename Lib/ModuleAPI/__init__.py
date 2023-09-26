@@ -3,6 +3,7 @@
 # @Date  : 2020/11/4
 # @Desc  :
 from Core.Handle.uuidjson import UUIDJson
+from Lib import utils
 from Lib.Module.configs import (
     TAG2TYPE, UACLevel, RegType,
 )
@@ -85,4 +86,5 @@ __all__ = [
     "HostInfo",
     "UUIDJson",
     "IPGeo",
+    "utils"
 ]
