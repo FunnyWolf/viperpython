@@ -565,6 +565,26 @@ LazyLoader_MSG_EN = {
     304: "No corresponding data found",
 }
 
+IPDomain_MSG_ZH = {
+    204: "删除IP域名成功",
+
+    304: "输入参数错误",
+}
+
+IPDomain_MSG_EN = {
+    204: "Delete IPDomain successfully",
+
+    304: "Input parameter error",
+}
+
+
+
+
+
+
+
+
+
 Empty_MSG = {
     201: "",
     202: "",

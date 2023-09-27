@@ -577,6 +577,7 @@ class WebPythonModule(_CommonModule):
             else:
                 time.sleep(1)
 
+
 class ProxyHttpScanModule(_CommonModule):
     MODULE_BROKER = BROKER.proxy_http_scan_module
     MODULETYPE = TAG2TYPE.Proxy_Http_Scan

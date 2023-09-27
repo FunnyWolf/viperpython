@@ -4,6 +4,7 @@
 # @Desc  :
 from Core.Handle.uuidjson import UUIDJson
 from Lib import utils
+from Lib.External.quake import Quake
 from Lib.Module.configs import (
     TAG2TYPE, UACLevel, RegType,
 )
@@ -47,7 +48,9 @@ from Lib.notice import Notice
 from Lib.sessionlib import (
     SessionLib as Session,
 )
+from Lib.xcache import Xcache
 from Msgrpc.Handle.filemsf import FileMsf
+from WebDatabase.Handle.ipdomain import IPDomain
 
 __all__ = [
     "PostMSFRawModule",
@@ -86,5 +89,9 @@ __all__ = [
     "HostInfo",
     "UUIDJson",
     "IPGeo",
-    "utils"
+    "utils",
+    "IPDomain",
+    "Xcache",
+    "Quake"
+
 ]

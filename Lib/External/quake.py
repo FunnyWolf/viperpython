@@ -41,8 +41,7 @@ class Quake:
         res = self.__http_get(api_full_url)
         return res
 
-    def is_alive(self):
-
+    def check_alive(self):
         userdata = self.get_userinfo()
         if userdata is None:
             return False
@@ -82,6 +81,19 @@ class Quake:
         }
         res = self.__http_post(api_full_url, data)
         return res
+
+    def get_subdomain_data(self, domain, page=1, size=100):
+        postresult = self.get_json_data(f"domain:\"{domain}\"", page, size)
+        if postresult.get("message") == 'Successful.':
+            items = postresult.get("data")
+            results = []
+            for item in items:
+                hostname = item["service"]["http"]["host"]
+                if hostname.endswith("." + domain):
+                    results.append(hostname)
+            return True, list(set(results))
+        else:
+            return False, postresult.get("message")
 
     def __http_post(self, url, data):
         try:

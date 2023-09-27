@@ -7,11 +7,11 @@ from Lib.ModuleAPI import *
 
 
 class PostModule(WebPythonModule):
-    NAME_ZH = "AlienVault子域名收集"
-    DESC_ZH = "调用AlienVault进行子域名"
+    NAME_ZH = "360 Quake子域名收集"
+    DESC_ZH = "调用360 Quake进行子域名"
 
-    NAME_EN = "AlienVault subdomain collection"
-    DESC_EN = "Call AlienVault to perform subdomain"
+    NAME_EN = "360 Quake subdomain collection"
+    DESC_EN = "Call 360 Quake to perform subdomain"
     MODULETYPE = TAG2TYPE.Web_Subdomain_Scan
     README = [""]
     REFERENCES = [""]
@@ -22,24 +22,25 @@ class PostModule(WebPythonModule):
                   desc_zh="主域名",
                   tag_en="Domain",
                   desc_en="Domain"),
+        OptionInt(name='MaxSize',
+                  tag_zh="最大数量",
+                  desc_zh="最大数量",
+                  tag_en="MaxSize",
+                  desc_en="MaxSize",
+                  default=1000),
     ])
 
     def check(self):
         """执行前的检查函数"""
+        if self.param("MaxSize") > 1000:
+            return False, "MaxSize不能大于1000"
+        elif self.param("MaxSize") < 0:
+            return False, "MaxSize不能小于0"
         return True, ""
-
-    @staticmethod
-    def sub_domains(target):
-        url = f"https://otx.alienvault.com/api/v1/indicators/domain/{target}/passive_dns"
-        items = utils.http_req(url, 'get', timeout=(30.1, 50.1)).json()
-        results = []
-        for item in items["passive_dns"]:
-            if item["hostname"].endswith(f".{target}"):
-                results.append(item["hostname"])
-        return list(set(results))
 
     def run(self):
         self.log_info(f"主域名: {self.param('Domain')}", f"Domain: {self.param('Domain')}")
+        Quake().get_subdomain_data()
         subdomains = self.sub_domains(self.param('Domain'))
         self.log_info(f"子域名列表: ", f"Subdomain List:")
         for subdomain in subdomains:

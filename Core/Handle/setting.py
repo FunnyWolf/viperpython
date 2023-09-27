@@ -164,7 +164,7 @@ class Settings(object):
             key = setting.get("key").strip()
             client = Quake()
             client.set_key(key)
-            if client.is_alive() is not True:
+            if client.check_alive() is not True:
                 data = {"key": key, "alive": False}
                 Xcache.set_quake_conf(data)
                 context = data_return(307, data, Setting_MSG_ZH.get(307), Setting_MSG_EN.get(307))
