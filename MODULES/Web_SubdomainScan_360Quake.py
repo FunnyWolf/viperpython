@@ -30,18 +30,27 @@ class PostModule(WebPythonModule):
                   default=1000),
     ])
 
+    def __init__(self, sessionid, ipaddress, custom_param):
+        super().__init__(sessionid, ipaddress, custom_param)
+        self.quake_client = Quake()
+
     def check(self):
         """执行前的检查函数"""
         if self.param("MaxSize") > 1000:
-            return False, "MaxSize不能大于1000"
+            return False, "MaxSize不能大于1000", "MaxSize cannot be greater than 1000"
         elif self.param("MaxSize") < 0:
-            return False, "MaxSize不能小于0"
+            return False, "MaxSize不能小于0", "MaxSize cannot be less than 0"
+        if self.quake_client.init_conf_from_cache() is not True:
+            return False, "Quake 配置无效", "Quake configuration invalid"
         return True, ""
 
     def run(self):
         self.log_info(f"主域名: {self.param('Domain')}", f"Domain: {self.param('Domain')}")
-        Quake().get_subdomain_data()
-        subdomains = self.sub_domains(self.param('Domain'))
+        flag, subdomains = self.quake_client.get_subdomain_data(domain=self.param('Domain'), size=self.param('MaxSize'))
+        if flag is not True:
+            self.log_error(f"调用Quake失败: {subdomains}", f"Call Quake failed : {subdomains}")
+            return False
+
         self.log_info(f"子域名列表: ", f"Subdomain List:")
         for subdomain in subdomains:
             self.log_good(subdomain)
