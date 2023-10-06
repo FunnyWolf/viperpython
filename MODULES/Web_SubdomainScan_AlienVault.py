@@ -29,12 +29,12 @@ class PostModule(WebPythonModule):
         return True, ""
 
     @staticmethod
-    def sub_domains(target):
-        url = f"https://otx.alienvault.com/api/v1/indicators/domain/{target}/passive_dns"
+    def sub_domains(domain):
+        url = f"https://otx.alienvault.com/api/v1/indicators/domain/{domain}/passive_dns"
         items = utils.http_req(url, 'get', timeout=(30.1, 50.1)).json()
         results = []
         for item in items["passive_dns"]:
-            if item["hostname"].endswith(f".{target}"):
+            if item["hostname"].endswith(f".{domain}"):
                 results.append(item["hostname"])
         return list(set(results))
 
@@ -44,7 +44,8 @@ class PostModule(WebPythonModule):
         self.log_info(f"子域名列表: ", f"Subdomain List:")
         for subdomain in subdomains:
             self.log_good(subdomain)
-            if not IPDomain.add_or_update(ipdomain=subdomain, type="domain", source="AlienVault"):
+            if not IPDomain.add_or_update(ipdomain=subdomain, type="domain", source="AlienVault",
+                                          source_key=f"passive_dns:{self.param('Domain')}"):
                 self.log_error("添加失败", "Add Failed")
         self.log_good(f"查找到 {len(subdomains)} 个子域名", f"Found {len(subdomains)} subdomains")
         self.log_info("模块执行完成", "Module operation completed")

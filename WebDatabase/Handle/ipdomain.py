@@ -16,11 +16,15 @@ from WebDatabase.models import IPDomainModel
 class IPDomain(object):
 
     @staticmethod
-    def add_or_update(ipdomain=None, type=None, source=None, data={}, update_time=None):
+    def add_or_update(ipdomain=None, type=None, source=None, source_key=None, data={}, update_time=None):
         if update_time is None or update_time == 0:
             update_time = int(time.time())
 
-        default_dict = {'ipdomain': ipdomain, 'type': type, 'source': source, 'data': data,
+        default_dict = {'ipdomain': ipdomain,
+                        'type': type,
+                        'source': source,
+                        "source_key": source_key,
+                        'data': data,
                         'update_time': update_time}  # 没有此主机数据时新建
         model, created = IPDomainModel.objects.get_or_create(ipdomain=ipdomain, defaults=default_dict)
         if created is True:

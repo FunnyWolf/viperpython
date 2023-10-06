@@ -83,7 +83,15 @@ class Quake:
         return res
 
     def get_subdomain_data(self, domain, page=1, size=100):
-        postresult = self.get_json_data(f"domain:\"{domain}\"", page, size)
+        # debug hook start
+        if Xcache.get_sample_data("QUAKE_DOMAIN", domain) is None:
+            postresult = self.get_json_data(f"domain:\"{domain}\"", page, size)
+            Xcache.set_sample_data("QUAKE_DOMAIN", domain, postresult)
+        else:
+            postresult = Xcache.get_sample_data("QUAKE_DOMAIN", domain)
+        # debug hook end
+
+        # postresult = self.get_json_data(f"domain:\"{domain}\"", page, size)
         if postresult.get("message") == 'Successful.':
             items = postresult.get("data")
             results = []

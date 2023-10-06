@@ -110,6 +110,8 @@ class Xcache(object):
 
     XCACHE_UUID_JSON_CACHE = "XCACHE_UUID_JSON_CACHE"
 
+    XCACHE_SAMPLE_DATA = "XCACHE_SAMPLE_DATA"
+
     def __init__(self):
         pass
 
@@ -1274,3 +1276,15 @@ class Xcache(object):
         keys = cache.keys(re_key)
         for key in keys:
             req = cache.delete(key)
+
+    @staticmethod
+    def set_sample_data(key, id, data):
+        cache_key = f"{Xcache.XCACHE_SAMPLE_DATA}_{key}_{id}"
+        cache.set(cache_key, data, None)
+        return True
+
+    @staticmethod
+    def get_sample_data(key, id):
+        cache_key = f"{Xcache.XCACHE_SAMPLE_DATA}_{key}_{id}"
+        data = cache.get(cache_key)
+        return data
