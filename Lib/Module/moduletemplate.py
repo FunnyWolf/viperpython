@@ -14,6 +14,7 @@ import string
 import threading
 import time
 import zipfile
+from datetime import datetime
 from ipaddress import summarize_address_range, IPv4Network, IPv4Address
 
 from jinja2 import Environment, FileSystemLoader
@@ -538,6 +539,15 @@ class _CommonModule(object):
         time_array = time.localtime(timestamp)
         other_style_time = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
         return other_style_time
+
+    @staticmethod
+    def str_to_timestamp(timestr, format='%Y-%m-%dT%H:%M:%S.%fZ'):
+        # 转换为datetime对象
+        dt = datetime.strptime(timestr, format)
+
+        # 转换为时间戳
+        timestamp = int(dt.timestamp())
+        return timestamp
 
     @staticmethod
     def random_str(num):

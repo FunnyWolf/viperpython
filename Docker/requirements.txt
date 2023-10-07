@@ -22,3 +22,4 @@ geoip2
 dnslib
 zoomeye
 asgi_redis
+psycopg

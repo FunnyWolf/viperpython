@@ -6,18 +6,16 @@ import time
 
 from django.db import transaction
 
-from Lib.api import data_return
-from Lib.configs import IPDomain_MSG_ZH, \
-    IPDomain_MSG_EN
 from Lib.log import logger
-from WebDatabase.models import IPDomainModel
+from WebDatabase.models import HttpFaviconModel
 
 
-class IPDomain(object):
+class HttpFavicon(object):
 
     @staticmethod
     def add_or_update(source=None, source_key=None, data={}, update_time=None,
-                      ipdomain=None, type=None):
+                      ipdomain=None, port=None,
+                      content=None, hash=None):
         if update_time is None or update_time == 0:
             update_time = int(time.time())
 
@@ -26,36 +24,36 @@ class IPDomain(object):
             "source_key": source_key,
             'data': data,
             'update_time': update_time,
+
             'ipdomain': ipdomain,
-            'type': type
+            'port': port,
+
+            'content': content,
+            'hash': hash,
         }
 
         # key + source 唯一,只要最新数据
-        model, created = IPDomainModel.objects.get_or_create(ipdomain=ipdomain, source=source, defaults=default_dict)
+        model, created = HttpFaviconModel.objects.get_or_create(ipdomain=ipdomain, port=port, source=source,
+                                                                defaults=default_dict)
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据
         with transaction.atomic():
             try:
-                model = IPDomainModel.objects.select_for_update().get(ipdomain=ipdomain, source=source)
+                model = HttpFaviconModel.objects.select_for_update().get(ipdomain=ipdomain, port=port, source=source)
 
                 model.source_key = source_key
                 model.data = data
                 model.update_time = update_time
 
-                model.type = type
+                model.ipdomain = ipdomain
+                model.port = port
+
+                model.content = content
+                model.hash = hash
+
                 model.save()
                 return True
             except Exception as E:
                 logger.error(E)
                 return False
-
-    @staticmethod
-    def destory(ipdomain=None):
-        try:
-            IPDomainModel.objects.filter(ipdomain=ipdomain).delete()
-            context = data_return(204, {}, IPDomain_MSG_ZH.get(204), IPDomain_MSG_EN.get(204))
-        except Exception as E:
-            logger.error(E)
-            context = data_return(304, {}, IPDomain_MSG_ZH.get(304), IPDomain_MSG_EN.get(304))
-        return context

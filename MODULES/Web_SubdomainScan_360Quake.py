@@ -46,16 +46,91 @@ class PostModule(WebPythonModule):
 
     def run(self):
         self.log_info(f"主域名: {self.param('Domain')}", f"Domain: {self.param('Domain')}")
-        flag, subdomains = self.quake_client.get_subdomain_data(domain=self.param('Domain'), size=self.param('MaxSize'))
-        if flag is not True:
-            self.log_error(f"调用Quake失败: {subdomains}", f"Call Quake failed : {subdomains}")
+        msg, items = self.quake_client.query_by_domain(domain=self.param('Domain'), size=self.param('MaxSize'))
+        if items is None:
+            self.log_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
             return False
 
-        self.log_info(f"子域名列表: ", f"Subdomain List:")
-        for subdomain in subdomains:
-            self.log_good(subdomain)
-            if not IPDomain.add_or_update(ipdomain=subdomain, type="domain", source="AlienVault"):
-                self.log_error("添加失败", "Add Failed")
-        self.log_good(f"查找到 {len(subdomains)} 个子域名", f"Found {len(subdomains)} subdomains")
-        self.log_info("模块执行完成", "Module operation completed")
+        for item in items:
+            update_time = self.str_to_timestamp(item.get("time"))
+            source_key = f"Domain:{self.param('Domain')}"
+            ip = item.get("ip")
+            port = item.get("port")
+            source = "Quake"
+
+            service_config = item.get("service")
+            service_name = service_config.get("name")
+
+            # IPDomainModel
+            IPDomain.add_or_update(ipdomain=ip, type="ip", source=source,
+                                   source_key=source_key, data=item,
+                                   update_time=update_time)
+
+            # PortServiceModel
+            WebPortService.add_or_update(ipdomain=ip, port=port, source=source,
+                                         source_key=source_key, data=service_config,
+                                         update_time=update_time,
+                                         transport=item.get("transport"), service=service_config.get("name"),
+                                         version=service_config.get("version"))
+
+            if service_name in ["http/ssl", "http"]:
+                http_config = service_config.get("http")
+                # HttpBaseModel
+                HttpBase.add_or_update(ipdomain=ip, port=port, source=source,
+                                       source_key=source_key, data=http_config,
+                                       update_time=update_time,
+                                       title=http_config.get("title"), status_code=http_config.get("status_code"),
+                                       header=http_config.get("response_headers"),
+                                       response=service_config.get("response"),
+                                       body=http_config.get("body"))
+
+                # HttpFavicon
+                if http_config.get("favicon"):
+                    favicon_config = http_config.get("favicon")
+                    favicon_base64 = Quake.get_images_base64(favicon_config.get("s3_url"))
+                    HttpFavicon.add_or_update(ipdomain=ip, port=port,
+                                              source=source, source_key=source_key, data=http_config,
+                                              update_time=update_time,
+                                              content=favicon_base64)
+                # HttpComponentModel
+                if item.get("components"):
+                    components = item.get("components")
+                    for component in components:
+                        product_type = component.pop("product_type")
+                        product_catalog = component.pop("product_catalog")
+                        product_dict_values = component
+                        HttpComponent.add_or_update(ipdomain=ip, port=port,
+                                                    source=source, source_key=source_key, data=http_config,
+                                                    update_time=update_time,
+                                                    product_dict_values=product_dict_values,
+                                                    product_type=product_type,
+                                                    product_catalog=product_catalog)
+                # DomainICPModel
+                if http_config.get("icp"):
+
+                # HttpScreenshot
+                if item.get("images"):
+                    for image in item.get("images"):
+                        image_base64 = Quake.get_images_base64(image.get("s3_url"))
+                        HttpScreenshot.add_or_update(ipdomain=ip, port=port,
+                                                     source=source, source_key=source_key, data=http_config,
+                                                     update_time=update_time,
+                                                     content=image_base64)
+                if service_name in ["http/ssl"]:
+                    http_config = service_config.get("http")
+
+                    # HttpCert
+                    tls_jarm = service_config.get("tls-jarm")
+                    if tls_jarm:
+                        jarm_hash = tls_jarm.get("jarm_hash")
+                    else:
+                        jarm_hash = None
+                    HttpCert.add_or_update(ipdomain=ip, port=port,
+                                           source=source, source_key=source_key, data=http_config,
+                                           update_time=update_time,
+                                           cert=service_config.get("cert"),
+                                           jarm=jarm_hash)
+
+                # LocationModel
+
         return True

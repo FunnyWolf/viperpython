@@ -50,7 +50,14 @@ from Lib.sessionlib import (
 )
 from Lib.xcache import Xcache
 from Msgrpc.Handle.filemsf import FileMsf
+from WebDatabase.Handle.domainicp import DomainICP
+from WebDatabase.Handle.httpbase import HttpBase
+from WebDatabase.Handle.httpcert import HttpCert
+from WebDatabase.Handle.httpcomponent import HttpComponent
+from WebDatabase.Handle.httpfavicon import HttpFavicon
+from WebDatabase.Handle.httpscreenshot import HttpScreenshot
 from WebDatabase.Handle.ipdomain import IPDomain
+from WebDatabase.Handle.portservice import PortService as WebPortService
 
 __all__ = [
     "PostMSFRawModule",
@@ -91,6 +98,13 @@ __all__ = [
     "IPGeo",
     "utils",
     "IPDomain",
+    "DomainICP",
+    "WebPortService",
+    "HttpBase",
+    "HttpCert",
+    "HttpScreenshot",
+    "HttpFavicon",
+    "HttpComponent",
     "Xcache",
     "Quake"
 

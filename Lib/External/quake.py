@@ -3,6 +3,8 @@
 # @Date  : 2021/2/25
 # @Desc  :
 
+import base64
+
 import requests
 import urllib3
 
@@ -51,11 +53,9 @@ class Quake:
             return False
 
     def get_data(self, query_str, page=1, size=100):
-        postresult = self.get_json_data(query_str, page, size)
-
-        format_results = []
-        if postresult.get("message") == 'Successful.':
-            data = postresult.get("data")
+        msg, data = self.get_json_data(query_str, page, size)
+        if data:
+            format_results = []
             i = 0
             for onedict in data:
                 one_line = {
@@ -70,38 +70,34 @@ class Quake:
                 i += 1
             return True, format_results
         else:
-            return False, postresult.get("message")
+            return False, msg
 
-    def get_json_data(self, query_str, page=1, size=100):
+    def get_json_data(self, query_str, page=1, size=1000):
         api_full_url = f"{self.base_url}{self.search_api_url}"
         data = {
             "query": query_str,
             "start": (page - 1) * size,
             "size": size,
         }
-        res = self.__http_post(api_full_url, data)
-        return res
 
-    def get_subdomain_data(self, domain, page=1, size=100):
         # debug hook start
-        if Xcache.get_sample_data("QUAKE_DOMAIN", domain) is None:
-            postresult = self.get_json_data(f"domain:\"{domain}\"", page, size)
-            Xcache.set_sample_data("QUAKE_DOMAIN", domain, postresult)
+        if Xcache.get_sample_data("QUAKE_DOMAIN", query_str) is None:
+            res = self.__http_post(api_full_url, data)
+            Xcache.set_sample_data("QUAKE_DOMAIN", query_str, res)
         else:
-            postresult = Xcache.get_sample_data("QUAKE_DOMAIN", domain)
+            res = Xcache.get_sample_data("QUAKE_DOMAIN", query_str)
         # debug hook end
+        # res = self.__http_post(api_full_url, data)
 
-        # postresult = self.get_json_data(f"domain:\"{domain}\"", page, size)
-        if postresult.get("message") == 'Successful.':
-            items = postresult.get("data")
-            results = []
-            for item in items:
-                hostname = item["service"]["http"]["host"]
-                if hostname.endswith("." + domain):
-                    results.append(hostname)
-            return True, list(set(results))
+        if res.get("message") == 'Successful.':
+            # 处理meta部分,确保获取到所有数据
+            return res.get("message"), res.get("data")
         else:
-            return False, postresult.get("message")
+            return res.get("message"), None
+
+    def query_by_domain(self, domain, page=1, size=1000):
+        query_str = f"domain:\"{domain}\""
+        return self.get_json_data(query_str, page, size)
 
     def __http_post(self, url, data):
         try:
@@ -126,3 +122,10 @@ class Quake:
             return r.json()
         except Exception as e:
             return None
+
+    @staticmethod
+    def get_images_base64(url):
+        response = requests.get(url)
+        image_bytes = response.content
+        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        return image_base64
