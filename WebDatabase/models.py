@@ -57,18 +57,19 @@ class DomainICPModel(IPDomainBaseModel):
     license = models.CharField(blank=True, null=True, max_length=100)
 
 
+# province_cn = models.CharField(blank=True, null=True, max_length=100)
+# province_en = models.CharField(blank=True, null=True, max_length=100)
+# country_cn = models.CharField(blank=True, null=True, max_length=100)
+# country_en = models.CharField(blank=True, null=True, max_length=100)
+# city_cn = models.CharField(blank=True, null=True, max_length=100)
+# city_en = models.CharField(blank=True, null=True, max_length=100)
+# scene_cn = models.CharField(blank=True, null=True, max_length=100)
+# scene_en = models.CharField(blank=True, null=True, max_length=100)
 class LocationModel(IPDomainBaseModel):
-    org = models.CharField(blank=True, null=True, max_length=100)
     isp = models.CharField(blank=True, null=True, max_length=100)
     asname = models.CharField(blank=True, null=True, max_length=100)
-    province_cn = models.CharField(blank=True, null=True, max_length=100)
-    province_en = models.CharField(blank=True, null=True, max_length=100)
-    country_cn = models.CharField(blank=True, null=True, max_length=100)
-    country_en = models.CharField(blank=True, null=True, max_length=100)
-    city_cn = models.CharField(blank=True, null=True, max_length=100)
-    city_en = models.CharField(blank=True, null=True, max_length=100)
-    scene_cn = models.CharField(blank=True, null=True, max_length=100)
-    scene_en = models.CharField(blank=True, null=True, max_length=100)
+
+    geo_info = HStoreField(default=dict)
 
 
 class PortServiceModel(IPDomainPortBaseModel):
@@ -99,13 +100,13 @@ class HttpFaviconModel(IPDomainPortBaseModel):
     content = models.TextField(blank=True, null=True)  # 存储base64后的文件
 
 
+# product_level = models.CharField(blank=True, null=True, max_length=100)
+# product_vendor = models.CharField(blank=True, null=True, max_length=100)
+# product_name_cn = models.CharField(blank=True, null=True, max_length=100)
+# product_name_en = models.CharField(blank=True, null=True, max_length=100)
+# product_version = models.CharField(blank=True, null=True, max_length=100)
 class HttpComponentModel(IPDomainPortBaseModel):
     product_dict_values = HStoreField(default=dict)
-    # product_level = models.CharField(blank=True, null=True, max_length=100)
-    # product_vendor = models.CharField(blank=True, null=True, max_length=100)
-    # product_name_cn = models.CharField(blank=True, null=True, max_length=100)
-    # product_name_en = models.CharField(blank=True, null=True, max_length=100)
-    # product_version = models.CharField(blank=True, null=True, max_length=100)
     product_type = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
     product_catalog = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
 

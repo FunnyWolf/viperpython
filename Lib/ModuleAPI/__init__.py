@@ -48,8 +48,10 @@ from Lib.notice import Notice
 from Lib.sessionlib import (
     SessionLib as Session,
 )
+from Lib.timeapi import TimeAPI
 from Lib.xcache import Xcache
 from Msgrpc.Handle.filemsf import FileMsf
+from WebDatabase.Handle.dnsrecord import DNSRecord
 from WebDatabase.Handle.domainicp import DomainICP
 from WebDatabase.Handle.httpbase import HttpBase
 from WebDatabase.Handle.httpcert import HttpCert
@@ -57,7 +59,8 @@ from WebDatabase.Handle.httpcomponent import HttpComponent
 from WebDatabase.Handle.httpfavicon import HttpFavicon
 from WebDatabase.Handle.httpscreenshot import HttpScreenshot
 from WebDatabase.Handle.ipdomain import IPDomain
-from WebDatabase.Handle.portservice import PortService as WebPortService
+from WebDatabase.Handle.location import Location
+from WebDatabase.Handle.portservice import PortService
 
 __all__ = [
     "PostMSFRawModule",
@@ -99,13 +102,16 @@ __all__ = [
     "utils",
     "IPDomain",
     "DomainICP",
-    "WebPortService",
+    "PortService",
     "HttpBase",
     "HttpCert",
     "HttpScreenshot",
     "HttpFavicon",
     "HttpComponent",
+    "Location",
+    "DNSRecord",
     "Xcache",
+    "TimeAPI",
     "Quake"
 
 ]

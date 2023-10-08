@@ -13,13 +13,13 @@ from PostLateral.models import PortServiceModel
 from PostLateral.serializers import PortServiceSerializer
 
 
-class PortService(object):
+class IntranetPortService(object):
     def __init__(self):
         pass
 
     @staticmethod
     def list(ipaddress=None):
-        result = PortService.list_by_ipaddress(ipaddress)
+        result = IntranetPortService.list_by_ipaddress(ipaddress)
         context = data_return(200, result, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
         return context
 
@@ -29,7 +29,7 @@ class PortService(object):
         data = PortServiceSerializer(orm_models, many=True).data
 
         try:
-            format_data = PortService.format_banner(data)
+            format_data = IntranetPortService.format_banner(data)
         except Exception as E:
             format_data = data
             logger.error(E)

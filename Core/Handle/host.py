@@ -14,7 +14,7 @@ from Msgrpc.Handle.portfwd import PortFwd
 from Msgrpc.Handle.route import Route
 from Msgrpc.Handle.socks import Socks
 from PostLateral.Handle.edge import Edge
-from PostLateral.Handle.portservice import PortService
+from PostLateral.Handle.intranetportservice import IntranetPortService
 from PostLateral.models import PortServiceModel, VulnerabilityModel, EdgeModel
 
 
@@ -39,7 +39,7 @@ class Host(object):
         for host in hosts:
             ipaddress = host.get('ipaddress')
             # 端口信息
-            host['portService'] = PortService.list_by_ipaddress(ipaddress)
+            host['portService'] = IntranetPortService.list_by_ipaddress(ipaddress)
             # 路由信息
             for route in route_list:
                 ipnetwork = ipaddr.ip_network(f"{route.get('subnet')}/{route.get('netmask')}", strict=False)

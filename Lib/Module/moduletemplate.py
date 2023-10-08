@@ -14,7 +14,6 @@ import string
 import threading
 import time
 import zipfile
-from datetime import datetime
 from ipaddress import summarize_address_range, IPv4Network, IPv4Address
 
 from jinja2 import Environment, FileSystemLoader
@@ -30,7 +29,7 @@ from Msgrpc.Handle.filemsf import FileMsf
 from Msgrpc.Handle.handler import Handler
 from Msgrpc.Handle.payload import Payload
 from PostLateral.Handle.credential import Credential
-from PostLateral.Handle.portservice import PortService
+from PostLateral.Handle.intranetportservice import IntranetPortService
 from PostLateral.Handle.vulnerability import Vulnerability
 
 
@@ -206,7 +205,7 @@ class _CommonModule(object):
         if isinstance(banner, dict) is not True:
             logger.warning(f'数据类型检查错误,数据 {banner}')
             banner = {}
-        result = PortService.add_or_update(ipaddress=ipaddress, port=port, banner=banner, service=service)
+        result = IntranetPortService.add_or_update(ipaddress=ipaddress, port=port, banner=banner, service=service)
         return result
 
     def add_credential(self, username='', password='', password_type='', tag=None, desc=''):
@@ -533,21 +532,7 @@ class _CommonModule(object):
                 iplist.extend([raw])
         return iplist
 
-    @staticmethod
-    def timestamp_to_str(timestamp):
-        """将时间戳转换为字符串."""
-        time_array = time.localtime(timestamp)
-        other_style_time = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
-        return other_style_time
 
-    @staticmethod
-    def str_to_timestamp(timestr, format='%Y-%m-%dT%H:%M:%S.%fZ'):
-        # 转换为datetime对象
-        dt = datetime.strptime(timestr, format)
-
-        # 转换为时间戳
-        timestamp = int(dt.timestamp())
-        return timestamp
 
     @staticmethod
     def random_str(num):

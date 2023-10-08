@@ -7,16 +7,15 @@ import time
 from django.db import transaction
 
 from Lib.log import logger
-from WebDatabase.models import DomainICPModel
+from WebDatabase.models import LocationModel
 
 
-class DomainICP(object):
+class Location(object):
 
     @staticmethod
     def add_or_update(source=None, source_key=None, data={}, update_time=None,
-                      ipdomain=None,
-                      domain=None, unit=None, license=None):
-        # 给出更新DomainICPModel的方法
+                      ipdomain=None, isp=None, asname=None, geo_info={}, ):
+
         if update_time is None or update_time == 0:
             update_time = int(time.time())
 
@@ -26,27 +25,29 @@ class DomainICP(object):
             'data': data,
             'update_time': update_time,
             'ipdomain': ipdomain,
-            'license': license,
-            'domain': domain,
-            'unit': unit,
+
+            'isp': isp,
+            'asname': asname,
+            'geo_info': geo_info,
         }
 
         # key + source 唯一,只要最新数据
-        model, created = DomainICPModel.objects.get_or_create(ipdomain=ipdomain, source=source, defaults=default_dict)
+        model, created = LocationModel.objects.get_or_create(ipdomain=ipdomain, source=source, defaults=default_dict)
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据
         with transaction.atomic():
             try:
-                model = DomainICPModel.objects.select_for_update().get(ipdomain=ipdomain, source=source)
+                model = LocationModel.objects.select_for_update().get(ipdomain=ipdomain, source=source)
 
                 model.source_key = source_key
                 model.data = data
                 model.update_time = update_time
 
-                model.license = license
-                model.domain = domain
-                model.unit = unit
+                model.isp = isp
+                model.asname = asname
+                model.geo_info = geo_info
+
                 model.save()
                 return True
             except Exception as E:

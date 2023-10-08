@@ -8,9 +8,20 @@ import base64
 import requests
 import urllib3
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
+from Lib.timeapi import TimeAPI
 from Lib.xcache import Xcache
+from WebDatabase.Handle.dnsrecord import DNSRecord
+from WebDatabase.Handle.domainicp import DomainICP
+from WebDatabase.Handle.httpbase import HttpBase
+from WebDatabase.Handle.httpcert import HttpCert
+from WebDatabase.Handle.httpcomponent import HttpComponent
+from WebDatabase.Handle.httpfavicon import HttpFavicon
+from WebDatabase.Handle.httpscreenshot import HttpScreenshot
+from WebDatabase.Handle.ipdomain import IPDomain
+from WebDatabase.Handle.location import Location
+from WebDatabase.Handle.portservice import PortService
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Quake:
@@ -18,6 +29,7 @@ class Quake:
         self.key = None
         self.base_url = "https://quake.360.cn"
         self.search_api_url = "/api/v3/search/quake_service"
+        # self.search_api_url = "/api/v3/scroll/quake_service"
         self.user_info_url = "/api/v3/user/info"
         self.fields = ["ip", "port", "protocol", "country_name", "as_organization"]
         self.headers = {
@@ -125,7 +137,124 @@ class Quake:
 
     @staticmethod
     def get_images_base64(url):
+        if not url:
+            return None
         response = requests.get(url)
         image_bytes = response.content
         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
         return image_base64
+
+    def store_query_result(self, items, source_key):
+        source = "Quake"
+
+        for item in items:
+            update_time = TimeAPI.str_to_timestamp(item.get("time"), '%Y-%m-%dT%H:%M:%S.%fZ')
+
+            ip = item.get("ip")
+            port = item.get("port")
+
+            service_config = item.get("service")
+            service_name = service_config.get("name")
+
+            location_config = item.get("location")
+            isp = location_config.pop("isp")
+            asname = location_config.pop("asname")
+
+            # IPDomainModel
+            IPDomain.add_or_update(ipdomain=ip, type="ip", source=source,
+                                   source_key=source_key, data=item,
+                                   update_time=update_time)
+
+            # LocationModel
+            Location.add_or_update(ipdomain=ip, source=source, source_key=source_key, data=location_config,
+                                   update_time=update_time,
+                                   isp=isp,
+                                   asname=asname,
+                                   geo_info=location_config)
+
+            # PortServiceModel
+            PortService.add_or_update(ipdomain=ip, port=port, source=source,
+                                      source_key=source_key, data=service_config,
+                                      update_time=update_time,
+                                      transport=item.get("transport"), service=service_config.get("name"),
+                                      version=service_config.get("version"))
+
+            if item.get("domain"):
+                domain = item.get("domain")
+                # IPDomainModel
+                IPDomain.add_or_update(ipdomain=domain, type="domain", source=source,
+                                       source_key=source_key, data=item,
+                                       update_time=update_time)
+                # DNSRecordModel
+                DNSRecord.add_or_update(ip=ip, domain=domain, type="A", value=ip, source=source, source_key=source_key,
+                                        update_time=update_time)
+
+            # HttpComponentModel
+            if item.get("components"):
+                components = item.get("components")
+                for component in components:
+                    product_type = component.pop("product_type")
+                    product_catalog = component.pop("product_catalog")
+                    product_dict_values = component
+                    HttpComponent.add_or_update(ipdomain=ip, port=port,
+                                                source=source, source_key=source_key, data=component,
+                                                update_time=update_time,
+                                                product_dict_values=product_dict_values,
+                                                product_type=product_type,
+                                                product_catalog=product_catalog)
+
+            # HttpScreenshot
+            if item.get("images"):
+                for image in item.get("images"):
+                    image_base64 = Quake.get_images_base64(image.get("s3_url"))
+                    HttpScreenshot.add_or_update(ipdomain=ip, port=port,
+                                                 source=source, source_key=source_key, data=image,
+                                                 update_time=update_time,
+                                                 content=image_base64)
+
+            if service_name.endswith("/ssl"):
+                # HttpCert
+                tls_jarm = service_config.get("tls-jarm")
+                if tls_jarm:
+                    jarm_hash = tls_jarm.get("jarm_hash")
+                else:
+                    jarm_hash = None
+                HttpCert.add_or_update(ipdomain=ip, port=port,
+                                       source=source, source_key=source_key, data=service_config,
+                                       update_time=update_time,
+                                       cert=service_config.get("cert"),
+                                       jarm=jarm_hash)
+
+            if service_name.startswith("http"):
+                http_config = service_config.get("http")
+                # HttpBaseModel
+                HttpBase.add_or_update(ipdomain=ip, port=port, source=source,
+                                       source_key=source_key, data=http_config,
+                                       update_time=update_time,
+                                       title=http_config.get("title"), status_code=http_config.get("status_code"),
+                                       header=http_config.get("response_headers"),
+                                       response=service_config.get("response"),
+                                       body=http_config.get("body"))
+
+                # HttpFavicon
+                if http_config.get("favicon"):
+                    favicon_config = http_config.get("favicon")
+                    favicon_base64 = Quake.get_images_base64(favicon_config.get("s3_url"))
+                    HttpFavicon.add_or_update(ipdomain=ip, port=port,
+                                              source=source, source_key=source_key, data=http_config,
+                                              update_time=update_time,
+                                              content=favicon_base64)
+
+                # DomainICPModel
+                if http_config.get("icp"):
+                    icp_config = http_config.get("icp")
+                    main_license = icp_config.get("main_licence")
+                    unit = main_license.get("unit")
+                    update_time_icp = TimeAPI.str_to_timestamp(icp_config.get("update_time"),
+                                                               format='%Y-%m-%dT%H:%M:%SZ')
+                    DomainICP.add_or_update(ipdomain=ip,
+                                            source=source, source_key=source_key, data=icp_config,
+                                            update_time=update_time_icp,
+                                            license=icp_config.get("licence"),
+                                            domain=icp_config.get("domain"),
+                                            unit=unit)

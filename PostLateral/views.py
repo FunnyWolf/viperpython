@@ -5,7 +5,7 @@ from Lib.baseview import BaseView
 from Lib.configs import *
 from Lib.log import logger
 from PostLateral.Handle.credential import Credential
-from PostLateral.Handle.portservice import PortService
+from PostLateral.Handle.intranetportservice import IntranetPortService
 from PostLateral.Handle.vulnerability import Vulnerability
 
 
@@ -14,7 +14,7 @@ class PortServiceView(BaseView):
     def list(self, request, **kwargs):
         try:
             ipaddress = request.query_params.get('ipaddress')
-            context = PortService.list(ipaddress=ipaddress)
+            context = IntranetPortService.list(ipaddress=ipaddress)
         except Exception as E:
             logger.error(E)
             context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
@@ -24,7 +24,7 @@ class PortServiceView(BaseView):
         try:
             ipaddress = request.query_params.get('ipaddress')
             port = int(request.query_params.get('port'))
-            context = PortService.destory(ipaddress=ipaddress, port=port)
+            context = IntranetPortService.destory(ipaddress=ipaddress, port=port)
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))

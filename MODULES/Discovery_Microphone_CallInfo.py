@@ -44,7 +44,7 @@ class PostModule(PostMSFRawModule):
             type = one.get("type")
             address = one.get("address")
             body = one.get("body")
-            date = self.timestamp_to_str(int(one.get("date")) / 1000)
+            date = TimeAPI.timestamp_to_str(int(one.get("date")) / 1000)
             data_zh.append(
                 {
                     "Address": address,

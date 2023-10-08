@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from Core.views import BaseAuthView, CurrentUserView, NoticesView, SettingView, HostView, HostInfoView, UUIDJsonView
 from Core.views import NetworkSearchView
+from Lib.montior import MainMonitor
 from Msgrpc.views import LazyLoaderView, LazyLoaderInterfaceView, CollectSandBoxInterfaceView, CollectSandBoxView
 from Msgrpc.views import ServiceStatusView, PayloadView, JobView, HandlerView, SessionView, SessionIOView, RouteView
 from Msgrpc.views import SocksView, TransportView, FileMsfView, FileSessionView, PortFwdView, HostFileView
@@ -59,4 +60,4 @@ urlpatterns = [
     re_path(r'^', include(router.urls)),
 ]
 
-# MainMonitor().start()
+MainMonitor().start()
