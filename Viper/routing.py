@@ -2,11 +2,12 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import path
 
-from WebSocket.views import MsfConsoleView, HeartBeatView
+from WebSocket.views import MsfConsoleView, HeartBeatView, WebSyncView
 
 websocket_urlpatterns = [
     path('ws/v1/websocket/msfconsole/', MsfConsoleView.as_asgi()),
     path('ws/v1/websocket/heartbeat/', HeartBeatView.as_asgi()),
+    path('ws/v1/websocket/websync/', WebSyncView.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({

@@ -2,58 +2,49 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-import time
-
-from django.db import transaction
 
 from Lib.api import data_return
 from Lib.configs import IPDomain_MSG_ZH, \
     IPDomain_MSG_EN
 from Lib.log import logger
 from WebDatabase.models import IPDomainModel
+from WebDatabase.serializers import IPDomainSerializer
 
 
 class IPDomain(object):
 
     @staticmethod
-    def add_or_update(source=None, source_key=None, data={}, update_time=None,
-                      ipdomain=None, type=None):
-        if update_time is None or update_time == 0:
-            update_time = int(time.time())
+    def list_ipdomain():
+        models = IPDomainModel.objects.all()
+        result = IPDomainSerializer(models, many=True).data
+        return result
+
+    @staticmethod
+    def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=0,
+                         ip=None, domain=None):
+        if update_time is None:
+            update_time = 0
 
         default_dict = {
+            'project_id': project_id,
             'source': source,
             "source_key": source_key,
             'data': data,
             'update_time': update_time,
-            'ipdomain': ipdomain,
-            'type': type
+
+            'ip': ip,
+            'domain': domain,
         }
 
         # key + source 唯一,只要最新数据
-        model, created = IPDomainModel.objects.get_or_create(ipdomain=ipdomain, source=source, defaults=default_dict)
-        if created is True:
-            return True  # 新建后直接返回
-        # 有历史数据
-        with transaction.atomic():
-            try:
-                model = IPDomainModel.objects.select_for_update().get(ipdomain=ipdomain, source=source)
-
-                model.source_key = source_key
-                model.data = data
-                model.update_time = update_time
-
-                model.type = type
-                model.save()
-                return True
-            except Exception as E:
-                logger.error(E)
-                return False
+        model, created = IPDomainModel.objects.update_or_create(ip=ip, domain=domain, source=source,
+                                                                defaults=default_dict)
+        return created
 
     @staticmethod
-    def destory(ipdomain=None):
+    def destory(ip=None):
         try:
-            IPDomainModel.objects.filter(ipdomain=ipdomain).delete()
+            IPDomainModel.objects.filter(ipdomain=ip).delete()
             context = data_return(204, {}, IPDomain_MSG_ZH.get(204), IPDomain_MSG_EN.get(204))
         except Exception as E:
             logger.error(E)

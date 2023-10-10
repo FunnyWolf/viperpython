@@ -3,15 +3,15 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
-from WebDatabase.models import HttpBaseModel
+from WebDatabase.models import ComponentModel
 
 
-class HttpBase(object):
+class Component(object):
 
     @staticmethod
     def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
                          ip=None, port=None,
-                         title=None, status_code=None, header=None, response=None, body=None, ):
+                         product_dict_values={}, product_type=[], product_catalog=[]):
         # 给出更新PortServiceModel方法
         if update_time is None:
             update_time = 0
@@ -26,12 +26,12 @@ class HttpBase(object):
             'ip': ip,
             'port': port,
 
-            'title': title,
-            'status_code': status_code,
-            'header': header,
-            'response': response,
-            'body': body,
+            'product_dict_values': product_dict_values,
+            'product_type': product_type,
+            'product_catalog': product_catalog,
+
         }
-        model, create = HttpBaseModel.objects.update_or_create(ip=ip, port=port, source=source,
-                                                               defaults=default_dict)
+        model, create = ComponentModel.objects.update_or_create(ip=ip, port=port, source=source,
+                                                                product_dict_values=product_dict_values,
+                                                                defaults=default_dict)
         return create

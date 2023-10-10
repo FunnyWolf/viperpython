@@ -8,6 +8,7 @@ from Lib.log import logger
 from Lib.xcache import Xcache
 from WebSocket.Handle.console import Console
 from WebSocket.Handle.heartbeat import HeartBeat
+from WebSocket.Handle.websync import WebSync
 
 
 class MsfConsoleView(WebsocketConsumer):
@@ -195,6 +196,47 @@ class HeartBeatView(WebsocketConsumer):
     def disconnect(self, close_code=0):
         try:
             async_to_sync(self.channel_layer.group_discard)("heartbeat", self.channel_name)
+        except:
+            pass
+        super().close(code=close_code)
+
+    def send_message(self, event):
+        message = event['message']
+        data = ""
+        try:
+            data: str = json.dumps(message, skipkeys=True)
+        except Exception as E:
+            logger.exception(E)
+            logger.warning(message)
+
+        self.send(data)
+
+
+class WebSyncView(WebsocketConsumer):
+    Unauth = 3000
+
+    def connect(self):
+        """
+        打开 websocket 连接
+        :return:
+        """
+        query_string = self.scope.get('query_string')
+        connect_request_args = QueryDict(query_string=query_string, encoding='utf-8')
+
+        token = connect_request_args.get('token')
+
+        if Xcache.alive_token(token):
+            result = WebSync.first_heartbeat_result()
+            self.accept()
+            async_to_sync(self.channel_layer.group_add)("websync", self.channel_name)
+            self.send(json.dumps(result))
+            return
+        else:
+            logger.warning("Websocket 鉴权失败")
+
+    def disconnect(self, close_code=0):
+        try:
+            async_to_sync(self.channel_layer.group_discard)("websync", self.channel_name)
         except:
             pass
         super().close(code=close_code)

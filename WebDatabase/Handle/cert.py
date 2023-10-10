@@ -3,18 +3,18 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
-from WebDatabase.models import HttpFaviconModel
+from WebDatabase.models import CertModel
 
 
-class HttpFavicon(object):
+class Cert(object):
 
     @staticmethod
     def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
                          ip=None, port=None,
-                         content=None, hash=None):
+                         cert=None, jarm=None, ):
+        # 给出更新HttpCertModel方法
         if update_time is None:
             update_time = 0
-
         default_dict = {
             'project_id': project_id,
             'source': source,
@@ -25,11 +25,9 @@ class HttpFavicon(object):
             'ip': ip,
             'port': port,
 
-            'content': content,
-            'hash': hash,
+            'cert': cert,
+            'jarm': jarm,
         }
-
-        # key + source 唯一,只要最新数据
-        model, created = HttpFaviconModel.objects.update_or_create(ip=ip, port=port, source=source,
-                                                                   defaults=default_dict)
-        return created
+        model, create = CertModel.objects.update_or_create(ip=ip, port=port, source=source,
+                                                           defaults=default_dict)
+        return create

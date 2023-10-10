@@ -3,15 +3,15 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
-from WebDatabase.models import HttpFaviconModel
+from WebDatabase.models import ScreenshotModel
 
 
-class HttpFavicon(object):
+class Screenshot(object):
 
     @staticmethod
     def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
                          ip=None, port=None,
-                         content=None, hash=None):
+                         content=None, ):
         if update_time is None:
             update_time = 0
 
@@ -26,10 +26,9 @@ class HttpFavicon(object):
             'port': port,
 
             'content': content,
-            'hash': hash,
         }
 
         # key + source 唯一,只要最新数据
-        model, created = HttpFaviconModel.objects.update_or_create(ip=ip, port=port, source=source,
-                                                                   defaults=default_dict)
+        model, created = ScreenshotModel.objects.update_or_create(ip=ip, port=port, source=source,
+                                                                  defaults=default_dict)
         return created
