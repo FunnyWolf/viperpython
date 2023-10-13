@@ -4,6 +4,7 @@
 # @Desc  :
 
 from WebDatabase.Handle.ipdomain import IPDomain
+from WebDatabase.Handle.portservice import PortService
 
 
 class WebSync(object):
@@ -11,12 +12,23 @@ class WebSync(object):
         pass
 
     @staticmethod
-    def first_heartbeat_result():
+    def first_result():
+        ipdomains_result = []
         ipdomains = IPDomain.list_ipdomain()
+        for one_ipdomain in ipdomains:
+            ip = one_ipdomain.get("ip")
+            portservices = PortService.list_by_ip(ip)
+            one_ipdomain['portservice'] = portservices
+            port_and_service = []
+            for portservice in portservices:
+                port_and_service.append(f"{portservice.get('port')}:{portservice.get('service')}")
+            one_ipdomain['port_and_service'] = port_and_service
+            # end
+            ipdomains_result.append(one_ipdomain)
 
         result = {
             'ipdomains_update': True,
-            'ipdomains': ipdomains,
+            'ipdomains': ipdomains_result,
             # 'network_data_update': True,
             # 'network_data': network_data,
             # 'result_history_update': True,

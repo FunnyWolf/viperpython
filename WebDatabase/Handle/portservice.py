@@ -4,9 +4,16 @@
 # @Desc  :
 
 from WebDatabase.models import PortServiceModel
+from WebDatabase.serializers import PortServiceSerializer
 
 
 class PortService(object):
+
+    @staticmethod
+    def list_by_ip(ip):
+        models = PortServiceModel.objects.filter(ip=ip)
+        result = PortServiceSerializer(models, many=True).data
+        return result
 
     @staticmethod
     def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,

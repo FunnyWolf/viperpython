@@ -226,7 +226,7 @@ class WebSyncView(WebsocketConsumer):
         token = connect_request_args.get('token')
 
         if Xcache.alive_token(token):
-            result = WebSync.first_heartbeat_result()
+            result = WebSync.first_result()
             self.accept()
             async_to_sync(self.channel_layer.group_add)("websync", self.channel_name)
             self.send(json.dumps(result))

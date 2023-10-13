@@ -13,7 +13,7 @@ class EdgeSerializer(Serializer):
     data = DictField()
 
 
-class PortServiceSerializer(Serializer):
+class IntranetPortServiceSerializer(Serializer):
     ipaddress = CharField(max_length=100)
     update_time = IntegerField()
     port = IntegerField()

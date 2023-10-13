@@ -15,11 +15,11 @@ from Msgrpc.Handle.route import Route
 from Msgrpc.Handle.socks import Socks
 from PostLateral.Handle.edge import Edge
 from PostLateral.Handle.intranetportservice import IntranetPortService
-from PostLateral.models import PortServiceModel, VulnerabilityModel, EdgeModel
+from PostLateral.models import IntranetPortServiceModel, VulnerabilityModel, EdgeModel
 
 
 class Host(object):
-    REGISTER_DESTORY = [PortServiceModel, VulnerabilityModel]  # 删除Host时同时删除列表中的数据
+    REGISTER_DESTORY = [IntranetPortServiceModel, VulnerabilityModel]  # 删除Host时同时删除列表中的数据
 
     def __init__(self):
         pass

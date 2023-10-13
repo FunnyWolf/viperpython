@@ -10,7 +10,7 @@ from PostLateral.Handle.vulnerability import Vulnerability
 
 
 # Create your views here.
-class PortServiceView(BaseView):
+class IntranetPortServiceView(BaseView):
     def list(self, request, **kwargs):
         try:
             ipaddress = request.query_params.get('ipaddress')

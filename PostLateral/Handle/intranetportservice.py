@@ -9,8 +9,8 @@ from django.db import transaction
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, PortService_MSG_ZH, CODE_MSG_EN, PortService_MSG_EN
 from Lib.log import logger
-from PostLateral.models import PortServiceModel
-from PostLateral.serializers import PortServiceSerializer
+from PostLateral.models import IntranetPortServiceModel
+from PostLateral.serializers import IntranetPortServiceSerializer
 
 
 class IntranetPortService(object):
@@ -25,8 +25,8 @@ class IntranetPortService(object):
 
     @staticmethod
     def list_by_ipaddress(ipaddress=None):
-        orm_models = PortServiceModel.objects.filter(ipaddress=ipaddress).order_by('port')
-        data = PortServiceSerializer(orm_models, many=True).data
+        orm_models = IntranetPortServiceModel.objects.filter(ipaddress=ipaddress).order_by('port')
+        data = IntranetPortServiceSerializer(orm_models, many=True).data
 
         try:
             format_data = IntranetPortService.format_banner(data)
@@ -39,13 +39,14 @@ class IntranetPortService(object):
     def add_or_update(ipaddress=None, port=None, banner=None, service=None):
         default_dict = {'ipaddress': ipaddress, 'port': port, 'banner': banner, 'service': service,
                         'update_time': int(time.time())}  # 没有此主机数据时新建
-        model, created = PortServiceModel.objects.get_or_create(ipaddress=ipaddress, port=port, defaults=default_dict)
+        model, created = IntranetPortServiceModel.objects.get_or_create(ipaddress=ipaddress, port=port,
+                                                                        defaults=default_dict)
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据
         with transaction.atomic():
             try:
-                model = PortServiceModel.objects.select_for_update().get(ipaddress=ipaddress, port=port)
+                model = IntranetPortServiceModel.objects.select_for_update().get(ipaddress=ipaddress, port=port)
                 model.banner = banner
                 model.service = service
                 model.save()
@@ -57,7 +58,7 @@ class IntranetPortService(object):
     @staticmethod
     def destory(ipaddress=None, port=None):
         try:
-            PortServiceModel.objects.filter(ipaddress=ipaddress, port=port).delete()
+            IntranetPortServiceModel.objects.filter(ipaddress=ipaddress, port=port).delete()
             context = data_return(204, {}, PortService_MSG_ZH.get(204), PortService_MSG_EN.get(204))
         except Exception as E:
             logger.error(E)

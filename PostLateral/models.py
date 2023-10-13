@@ -4,7 +4,7 @@ from Core.models import DiyDictField
 
 
 # Create your models here.
-class PortServiceModel(models.Model):
+class IntranetPortServiceModel(models.Model):
     ipaddress = models.CharField(blank=True, null=True, max_length=100)
     update_time = models.IntegerField(default=0)
     port = models.IntegerField(default=0)
