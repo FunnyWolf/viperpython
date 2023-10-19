@@ -4,9 +4,16 @@
 # @Desc  :
 
 from WebDatabase.models import LocationModel
+from WebDatabase.serializers import LocationSerializer
 
 
 class Location(object):
+
+    @staticmethod
+    def list_by_ip(ip):
+        models = LocationModel.objects.filter(ip=ip)
+        result = LocationSerializer(models, many=True).data
+        return result
 
     @staticmethod
     def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,

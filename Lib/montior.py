@@ -29,6 +29,7 @@ from PostModule.Handle.postmoduleauto import PostModuleAuto
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
 from PostModule.Handle.postmodulesingletonscheduler import postModuleSingletonScheduler
 from PostModule.Handle.proxyhttpscan import ProxyHttpScan
+from WebDatabase.Handle.project import Project
 from WebSocket.Handle.console import Console
 from WebSocket.Handle.heartbeat import HeartBeat
 
@@ -52,6 +53,7 @@ class MainMonitor(object):
         # 初始化配置
         try:
             Host.init_on_start()
+            Project.check_default_project()
         except Exception as E:
             logger.exception(E)
 
@@ -74,17 +76,17 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=self.subscribe_main_thread,
                                    max_instances=1,
                                    trigger='interval',
-                                   seconds=1, id='subscribe_main_thread')
+                                   seconds=10, id='subscribe_main_thread')
         # 心跳线程
         self.MainScheduler.add_job(func=self.sub_heartbeat_thread,
                                    max_instances=1,
                                    trigger='interval',
-                                   seconds=1, id='sub_heartbeat_thread')
+                                   seconds=10, id='sub_heartbeat_thread')
 
         # rpc call调用
         self.MainScheduler.add_job(func=self.sub_rpc_call_thread, max_instances=1,
                                    trigger='interval',
-                                   seconds=1, id='sub_rpc_call_thread')
+                                   seconds=10, id='sub_rpc_call_thread')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
@@ -94,12 +96,12 @@ class MainMonitor(object):
         # msf bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
                                   trigger='interval',
-                                  seconds=1, id='run_msf_bot_thread')
+                                  seconds=10, id='run_msf_bot_thread')
 
         # python bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_python_bot_thread, max_instances=3,
                                   trigger='interval',
-                                  seconds=1, id='run_python_bot_thread')
+                                  seconds=10, id='run_python_bot_thread')
         self.BotScheduler.start()
 
         # 启动自动化定时任务

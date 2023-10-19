@@ -16,6 +16,15 @@ class PortService(object):
         return result
 
     @staticmethod
+    def sort_by_port(a, b):
+        if a['port'] < b['port']:
+            return 1
+        elif b['port'] > a['port']:
+            return -1
+        else:
+            return 0
+
+    @staticmethod
     def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
                          ip=None, port=None,
                          transport=None, service=None, version=None, ):
