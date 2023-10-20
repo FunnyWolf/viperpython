@@ -53,6 +53,10 @@ class MainMonitor(object):
         # 初始化配置
         try:
             Host.init_on_start()
+        except Exception as E:
+            logger.exception(E)
+
+        try:
             Project.check_default_project()
         except Exception as E:
             logger.exception(E)
