@@ -9,27 +9,15 @@ from WebDatabase.models import HttpFaviconModel
 class HttpFavicon(object):
 
     @staticmethod
-    def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
-                         ip=None, port=None,
-                         content=None, hash=None):
-        if update_time is None:
-            update_time = 0
-
+    def update_or_create(ip=None, port=None, content=None, hash=None, webbase_dict={}):
         default_dict = {
-            'project_id': project_id,
-            'source': source,
-            "source_key": source_key,
-            'data': data,
-            'update_time': update_time,
-
             'ip': ip,
             'port': port,
 
             'content': content,
             'hash': hash,
         }
-
+        default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = HttpFaviconModel.objects.update_or_create(ip=ip, port=port, source=source,
-                                                                   defaults=default_dict)
+        model, created = HttpFaviconModel.objects.update_or_create(ip=ip, port=port, defaults=default_dict)
         return created

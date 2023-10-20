@@ -9,20 +9,11 @@ from WebDatabase.models import HttpBaseModel
 class HttpBase(object):
 
     @staticmethod
-    def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
-                         ip=None, port=None,
-                         title=None, status_code=None, header=None, response=None, body=None, ):
+    def update_or_create(ip=None, port=None,
+                         title=None, status_code=None, header=None, response=None, body=None, webbase_dict={}):
         # 给出更新PortServiceModel方法
-        if update_time is None:
-            update_time = 0
 
         default_dict = {
-            'project_id': project_id,
-            'source': source,
-            "source_key": source_key,
-            'data': data,
-            'update_time': update_time,
-
             'ip': ip,
             'port': port,
 
@@ -32,6 +23,6 @@ class HttpBase(object):
             'response': response,
             'body': body,
         }
-        model, create = HttpBaseModel.objects.update_or_create(ip=ip, port=port, source=source,
-                                                               defaults=default_dict)
+        default_dict.update(webbase_dict)
+        model, create = HttpBaseModel.objects.update_or_create(ip=ip, port=port, defaults=default_dict)
         return create

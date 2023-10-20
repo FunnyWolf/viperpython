@@ -9,26 +9,16 @@ from WebDatabase.models import ScreenshotModel
 class Screenshot(object):
 
     @staticmethod
-    def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
-                         ip=None, port=None,
-                         content=None, ):
-        if update_time is None:
-            update_time = 0
-
+    def update_or_create(ip=None, port=None,
+                         content=None, webbase_dict={}):
         default_dict = {
-            'project_id': project_id,
-            'source': source,
-            "source_key": source_key,
-            'data': data,
-            'update_time': update_time,
-
             'ip': ip,
             'port': port,
 
             'content': content,
         }
-
+        default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = ScreenshotModel.objects.update_or_create(ip=ip, port=port, source=source,
+        model, created = ScreenshotModel.objects.update_or_create(ip=ip, port=port,
                                                                   defaults=default_dict)
         return created

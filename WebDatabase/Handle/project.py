@@ -5,7 +5,7 @@
 
 from Lib.api import data_return, get_one_uuid_str
 from Lib.configs import IPDomain_MSG_ZH, \
-    IPDomain_MSG_EN
+    IPDomain_MSG_EN, DEFAULT_PROJECT_ID, DEFAULT_PROJECT_NAME, DEFAULT_PROJECT_DESC
 from Lib.log import logger
 from WebDatabase.models import ProjectModel
 from WebDatabase.serializers import ProjectSerializer
@@ -15,11 +15,8 @@ class Project(object):
 
     @staticmethod
     def check_default_project():
-        default_project_id = "0000000000000000"
-        default_project_name = "Default"
-        default_project_desc = "Default Project"
-        if not ProjectModel.objects.filter(project_id=default_project_id).exists():
-            Project.update_or_create(default_project_id, default_project_name, default_project_desc)
+        if not ProjectModel.objects.filter(project_id=DEFAULT_PROJECT_ID).exists():
+            Project.update_or_create(DEFAULT_PROJECT_ID, DEFAULT_PROJECT_NAME, DEFAULT_PROJECT_DESC)
 
     @staticmethod
     def list_project():

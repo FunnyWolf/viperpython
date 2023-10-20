@@ -577,14 +577,6 @@ IPDomain_MSG_EN = {
     304: "Input parameter error",
 }
 
-
-
-
-
-
-
-
-
 Empty_MSG = {
     201: "",
     202: "",
@@ -643,3 +635,6 @@ EN = "en-US"
 VIPER_IP = "255.255.255.255"
 
 MSF_MODULE_CALLBACK_WAIT_SENCOND = 30
+DEFAULT_PROJECT_ID = "0000000000000000"
+DEFAULT_PROJECT_NAME = "Default"
+DEFAULT_PROJECT_DESC = "Default Project"

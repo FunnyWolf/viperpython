@@ -20,24 +20,17 @@ class IPDomain(object):
         return result
 
     @staticmethod
-    def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=0,
-                         ip=None, domain=None):
-        if update_time is None:
-            update_time = 0
+    def update_or_create(project_id=None,
+                         ip=None, domain=None, webbase_dict={}):
 
         default_dict = {
             'project_id': project_id,
-            'source': source,
-            "source_key": source_key,
-            'data': data,
-            'update_time': update_time,
-
             'ip': ip,
             'domain': domain,
         }
-
+        default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = IPDomainModel.objects.update_or_create(ip=ip, domain=domain, source=source,
+        model, created = IPDomainModel.objects.update_or_create(ip=ip, domain=domain,
                                                                 defaults=default_dict)
         return created
 

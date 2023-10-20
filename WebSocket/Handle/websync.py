@@ -2,7 +2,7 @@
 # @File  : heartbeat.py
 # @Date  : 2021/2/27
 # @Desc  :
-
+from WebDatabase.Handle.domainicp import DomainICP
 from WebDatabase.Handle.ipdomain import IPDomain
 from WebDatabase.Handle.location import Location
 from WebDatabase.Handle.portservice import PortService
@@ -23,9 +23,12 @@ class WebSync(object):
         ipdomains = IPDomain.list_ipdomain()
         for one_ipdomain in ipdomains:
             ip = one_ipdomain.get("ip")
+
+            # location
             location = Location.list_by_ip(ip)
             isp = location.get("isp")
             asname = location.get("asname")
+
             # ports
             portservices = PortService.list_by_ip(ip)
             for portservice in portservices:
@@ -38,6 +41,9 @@ class WebSync(object):
                 service = portservice.get("service")
                 one_record["port"] = port
                 one_record["service"] = service
+
+                # DomainICP
+                domainicp = DomainICP.list_by_ipports(ip, port)
 
             one_ipdomain['portservice'] = portservices
 

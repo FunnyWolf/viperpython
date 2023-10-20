@@ -9,26 +9,17 @@ from WebDatabase.models import DNSRecordModel
 class DNSRecord(object):
 
     @staticmethod
-    def update_or_create(project_id=None, source=None, source_key=None, data={}, update_time=None,
-                         ip=None, domain=None, type=None, value=None, ):
+    def update_or_create(ip=None, domain=None, type=None, value=None, webbase_dict={}):
         # 给出更新DomainICPModel的方法
-        if update_time is None:
-            update_time = 0
 
         default_dict = {
-            'project_id': project_id,
-            'source': source,
-            "source_key": source_key,
-            'data': data,
-            'update_time': update_time,
-
             'ip': ip,
             'domain': domain,
             'type': type,
             'value': value,
         }
-
+        default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = DNSRecordModel.objects.update_or_create(ip=ip, domain=domain, type=type, source=source,
+        model, created = DNSRecordModel.objects.update_or_create(ip=ip, domain=domain, type=type,
                                                                  defaults=default_dict)
         return created

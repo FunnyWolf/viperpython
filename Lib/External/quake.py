@@ -8,6 +8,7 @@ import base64
 import requests
 import urllib3
 
+from Lib.configs import DEFAULT_PROJECT_ID
 from Lib.timeapi import TimeAPI
 from Lib.xcache import Xcache
 from WebDatabase.Handle.cert import Cert
@@ -144,7 +145,7 @@ class Quake:
         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
         return image_base64
 
-    def store_query_result(self, items, source_key):
+    def store_query_result(self, items, project_id=DEFAULT_PROJECT_ID, source_key=None):
         source = "Quake"
 
         for item in items:
@@ -164,30 +165,38 @@ class Quake:
             components = item.get("components")
             images = item.get("images")
 
+            webbase_dict = {
+                'source': source,
+                "source_key": source_key,
+                'data': item,
+                'update_time': update_time,
+            }
+
             # IPDomainModel
-            IPDomain.update_or_create(ip=ip, domain=domain, source=source,
-                                      source_key=source_key, data=item,
-                                      update_time=update_time)
+            IPDomain.update_or_create(project_id=project_id,
+                                      ip=ip,
+                                      domain=domain,
+                                      webbase_dict=webbase_dict)
 
             # LocationModel
-            Location.update_or_create(ip=ip, source=source, source_key=source_key, data=location_config,
-                                      update_time=update_time,
+            Location.update_or_create(ip=ip,
                                       isp=isp,
                                       asname=asname,
-                                      geo_info=location_config)
+                                      geo_info=location_config,
+                                      webbase_dict=webbase_dict
+                                      )
 
             # PortServiceModel
-            PortService.update_or_create(ip=ip, port=port, source=source,
-                                         source_key=source_key, data=service_config,
-                                         update_time=update_time,
-                                         transport=item.get("transport"), service=service_config.get("name"),
-                                         version=service_config.get("version"))
+            PortService.update_or_create(ip=ip, port=port,
+                                         transport=item.get("transport"),
+                                         service=service_config.get("name"),
+                                         version=service_config.get("version"),
+                                         webbase_dict=webbase_dict
+                                         )
 
             if domain:
                 # DNSRecordModel
-                DNSRecord.update_or_create(ip=ip, domain=domain, type="A", value=ip, source=source,
-                                           source_key=source_key,
-                                           update_time=update_time)
+                DNSRecord.update_or_create(ip=ip, domain=domain, type="A", value=ip, webbase_dict=webbase_dict)
 
             # HttpComponentModel
             if components:
@@ -197,20 +206,17 @@ class Quake:
                     product_catalog = component.pop("product_catalog")
                     product_dict_values = component
                     Component.update_or_create(ip=ip, port=port,
-                                               source=source, source_key=source_key, data=component,
-                                               update_time=update_time,
                                                product_dict_values=product_dict_values,
                                                product_type=product_type,
-                                               product_catalog=product_catalog)
+                                               product_catalog=product_catalog,
+                                               webbase_dict=webbase_dict
+                                               )
 
             # HttpScreenshot
             if images:
                 for image in images:
                     image_base64 = Quake.get_images_base64(image.get("s3_url"))
-                    Screenshot.update_or_create(ip=ip, port=port,
-                                                source=source, source_key=source_key, data=image,
-                                                update_time=update_time,
-                                                content=image_base64)
+                    Screenshot.update_or_create(ip=ip, port=port, content=image_base64, webbase_dict=webbase_dict)
 
             if service_name.endswith("/ssl"):
                 # HttpCert
@@ -220,41 +226,42 @@ class Quake:
                 else:
                     jarm_hash = None
                 Cert.update_or_create(ip=ip, port=port,
-                                      source=source, source_key=source_key, data=service_config,
-                                      update_time=update_time,
                                       cert=service_config.get("cert"),
-                                      jarm=jarm_hash)
+                                      jarm=jarm_hash,
+                                      webbase_dict=webbase_dict
+                                      )
 
             if service_name.startswith("http"):
                 http_config = service_config.get("http")
                 # HttpBaseModel
-                HttpBase.update_or_create(ip=ip, port=port, source=source,
-                                          source_key=source_key, data=http_config,
-                                          update_time=update_time,
+                HttpBase.update_or_create(ip=ip, port=port,
                                           title=http_config.get("title"), status_code=http_config.get("status_code"),
                                           header=http_config.get("response_headers"),
                                           response=service_config.get("response"),
-                                          body=http_config.get("body"))
+                                          body=http_config.get("body"),
+                                          webbase_dict=webbase_dict
+                                          )
 
                 # HttpFavicon
                 if http_config.get("favicon"):
                     favicon_config = http_config.get("favicon")
                     favicon_base64 = Quake.get_images_base64(favicon_config.get("s3_url"))
-                    HttpFavicon.update_or_create(ip=ip, port=port,
-                                                 source=source, source_key=source_key, data=http_config,
-                                                 update_time=update_time,
-                                                 content=favicon_base64)
+                    favicon_hash = favicon_config.get("hash")
+                    HttpFavicon.update_or_create(ip=ip, port=port, content=favicon_base64,
+                                                 hash=favicon_hash, webbase_dict=webbase_dict)
 
-                # DomainICPModel
-                if http_config.get("icp"):
-                    icp_config = http_config.get("icp")
-                    main_license = icp_config.get("main_licence")
-                    unit = main_license.get("unit")
-                    update_time_icp = TimeAPI.str_to_timestamp(icp_config.get("update_time"),
-                                                               format='%Y-%m-%dT%H:%M:%SZ')
-                    DomainICP.update_or_create(ip=ip,
-                                               source=source, source_key=source_key, data=icp_config,
-                                               update_time=update_time_icp,
-                                               license=icp_config.get("licence"),
-                                               domain=icp_config.get("domain"),
-                                               unit=unit)
+                    # DomainICPModel
+                    if http_config.get("icp"):
+                        icp_config = http_config.get("icp")
+                        main_license = icp_config.get("main_licence")
+                        unit = main_license.get("unit")
+                        update_time_icp = TimeAPI.str_to_timestamp(icp_config.get("update_time"),
+                                                                   format='%Y-%m-%dT%H:%M:%SZ')
+                        webbase_dict_icp = {}
+                        webbase_dict_icp.update(webbase_dict)
+                        webbase_dict_icp["update_time"] = update_time_icp
+                        DomainICP.update_or_create(ip=ip,
+                                                   port=port,
+                                                   license=icp_config.get("licence"),
+                                                   domain_icp=icp_config.get("domain"),
+                                                   unit=unit, webbase_dict=webbase_dict_icp)
