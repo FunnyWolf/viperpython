@@ -4,8 +4,7 @@
 # @Desc  :
 
 from Lib.api import data_return
-from Lib.configs import IPDomain_MSG_ZH, \
-    IPDomain_MSG_EN
+from Lib.configs import IPDomain_MSG_ZH, IPDomain_MSG_EN
 from Lib.log import logger
 from WebDatabase.models import IPDomainModel
 from WebDatabase.serializers import IPDomainSerializer
@@ -14,23 +13,22 @@ from WebDatabase.serializers import IPDomainSerializer
 class IPDomain(object):
 
     @staticmethod
-    def list_ipdomain():
+    def list_all():
         models = IPDomainModel.objects.all()
         result = IPDomainSerializer(models, many=True).data
         return result
 
     @staticmethod
     def update_or_create(project_id=None,
-                         ip=None, domain=None, webbase_dict={}):
+                         ipdomain=None, webbase_dict={}):
 
         default_dict = {
+            # 'ipdomain': ipdomain,
             'project_id': project_id,
-            'ip': ip,
-            'domain': domain,
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = IPDomainModel.objects.update_or_create(ip=ip, domain=domain,
+        model, created = IPDomainModel.objects.update_or_create(ipdomain=ipdomain,
                                                                 defaults=default_dict)
         return created
 

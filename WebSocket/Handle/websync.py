@@ -2,10 +2,18 @@
 # @File  : heartbeat.py
 # @Date  : 2021/2/27
 # @Desc  :
+from Lib.xcache import Xcache
+from WebDatabase.Handle.cdn import CDN
+from WebDatabase.Handle.cert import Cert
+from WebDatabase.Handle.component import Component
+from WebDatabase.Handle.dnsrecord import DNSRecord
 from WebDatabase.Handle.domainicp import DomainICP
+from WebDatabase.Handle.httpbase import HttpBase
+from WebDatabase.Handle.httpfavicon import HttpFavicon
 from WebDatabase.Handle.ipdomain import IPDomain
 from WebDatabase.Handle.location import Location
 from WebDatabase.Handle.portservice import PortService
+from WebDatabase.Handle.screenshot import Screenshot
 
 
 class WebSync(object):
@@ -13,65 +21,103 @@ class WebSync(object):
         pass
 
     @staticmethod
-    def first_result():
-
-        # 按照ip port 为key进行搜索
-
-        # 区分http类型和其他类型
+    def get_ipdomains():
 
         ipdomains_result = []
-        ipdomains = IPDomain.list_ipdomain()
-        for one_ipdomain in ipdomains:
-            ip = one_ipdomain.get("ip")
+
+        ipdomain_list = IPDomain.list_all()
+        for one_ipdomain_record in ipdomain_list:
+
+            ipdomain = one_ipdomain_record.get("ipdomain")
 
             # location
-            location = Location.list_by_ip(ip)
-            isp = location.get("isp")
-            asname = location.get("asname")
+            location = Location.get_by_ipdomain(ipdomain)
+
+            # domainicp
+            domainicp = DomainICP.get_by_ipdomain(ipdomain)
+
+            dnsrecord = DNSRecord.get_by_ipdomain(ipdomain)
 
             # ports
-            portservices = PortService.list_by_ip(ip)
-            for portservice in portservices:
-                one_record = {"ip": ip}
-
-                one_record["isp"] = isp
-                one_record["asname"] = asname
-
+            portservice_list = PortService.list_by_ipdomain(ipdomain)
+            for portservice in portservice_list:
+                service = portservice.get('service')
                 port = portservice.get('port')
-                service = portservice.get("service")
-                one_record["port"] = port
-                one_record["service"] = service
 
-                # DomainICP
-                domainicp = DomainICP.list_by_ipports(ip, port)
+                one_record = {}
+                one_record.update(one_ipdomain_record)
+                one_record.update(portservice)
 
-            one_ipdomain['portservice'] = portservices
+                one_record["location"] = location
+                one_record["domainicp"] = domainicp
+                one_record["dnsrecord"] = dnsrecord
 
-            port_and_service = []
-            for portservice in portservices:
-                port_and_service.append({'service': portservice.get('service'), 'port': portservice.get('port')})
-            portservices_sorted = sorted(port_and_service, key=lambda x: x['port'])
-            one_ipdomain['port_and_service'] = portservices_sorted
-            # end
-            ipdomains_result.append(one_ipdomain)
+                component_list = Component.list_by_ipdomain_port(ipdomain, port)
+                one_record["component_list"] = component_list
+
+                cert = Cert.get_by_ipdomain_port(ipdomain, port)
+                one_record["cert"] = cert
+
+                screenshot = Screenshot.get_by_ipdomain_port(ipdomain, port)
+                one_record["screenshot"] = screenshot
+
+                if service.startswith("http"):
+                    one_record_http = {}
+
+                    httpbase = HttpBase.get_by_ipdomain_port(ipdomain, port)
+                    one_record_http["httpbase"] = httpbase
+
+                    httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
+                    one_record_http["httpfavicon"] = httpfavicon
+
+                    cdn = CDN.get_by_ipdomain_port(ipdomain, port)
+                    one_record_http["cdn"] = cdn
+
+                    one_record['http'] = one_record_http
+
+                ipdomains_result.append(one_record)
+
+        return ipdomains_result
+
+    @staticmethod
+    def get_result():
+        result = {}
+
+        ipdomains_result = WebSync.get_ipdomains()
+        cache_ipdomains_result = Xcache.get_websync_cache_ipdomains()
+        if cache_ipdomains_result == ipdomains_result:
+            result["ipdomains_update"] = False
+            result["ipdomains"] = ipdomains_result
+        else:
+            Xcache.set_websync_cache_ipdomains(ipdomains_result)
+            result["ipdomains_update"] = True
+            result["ipdomains"] = ipdomains_result
 
         result = {
             'ipdomains_update': True,
             'ipdomains': ipdomains_result,
-            # 'network_data_update': True,
-            # 'network_data': network_data,
-            # 'result_history_update': True,
-            # 'result_history': result_history,
-            # 'notices_update': True,
-            # 'notices': notices,
-            # 'task_queue_length': task_queue_length,
-            # 'jobs_update': True,
-            # 'jobs': jobs,
-            # 'bot_wait_list_update': True,
-            # 'bot_wait_list': bot_wait_list,
-            # 'module_options_update': True,
-            # 'module_options': module_options,
+        }
 
+        return result
+
+    @staticmethod
+    def init_result():
+        ipdomains_result = WebSync.get_ipdomains()
+        Xcache.set_websync_cache_ipdomains(ipdomains_result)
+
+        result = {
+            'ipdomains_update': True,
+            'ipdomains': ipdomains_result,
+        }
+        return result
+
+    @staticmethod
+    def first_result():
+
+        cache_ipdomains_result = Xcache.get_websync_cache_ipdomains()
+        result = {
+            'ipdomains_update': True,
+            'ipdomains': cache_ipdomains_result,
         }
 
         return result

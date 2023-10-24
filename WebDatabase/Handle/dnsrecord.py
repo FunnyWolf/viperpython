@@ -4,22 +4,30 @@
 # @Desc  :
 
 from WebDatabase.models import DNSRecordModel
+from WebDatabase.serializers import DNSRecordSerializer
 
 
 class DNSRecord(object):
 
     @staticmethod
-    def update_or_create(ip=None, domain=None, type=None, value=None, webbase_dict={}):
+    def get_by_ipdomain(ipdomain):
+        if DNSRecordModel.objects.filter(ipdomain=ipdomain).count() == 0:
+            return None
+
+        model = DNSRecordModel.objects.get(ipdomain=ipdomain)
+        result = DNSRecordSerializer(model, many=False).data
+        return result
+
+    @staticmethod
+    def update_or_create(domain=None, a=[], cname=[], webbase_dict={}):
         # 给出更新DomainICPModel的方法
 
         default_dict = {
-            'ip': ip,
-            'domain': domain,
-            'type': type,
-            'value': value,
+            'a': a,
+            'cname': cname,
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = DNSRecordModel.objects.update_or_create(ip=ip, domain=domain, type=type,
+        model, created = DNSRecordModel.objects.update_or_create(ipdomain=domain,
                                                                  defaults=default_dict)
         return created

@@ -32,6 +32,7 @@ from PostModule.Handle.proxyhttpscan import ProxyHttpScan
 from WebDatabase.Handle.project import Project
 from WebSocket.Handle.console import Console
 from WebSocket.Handle.heartbeat import HeartBeat
+from WebSocket.Handle.websync import WebSync
 
 
 class MainMonitor(object):
@@ -43,6 +44,12 @@ class MainMonitor(object):
         pass
 
     def start(self):
+
+        # DEBUG
+        # init WebSync
+        WebSync.init_result()
+        logger.warning("WebSync Init Finish")
+
         try:
             time.sleep(random.random())
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -80,17 +87,23 @@ class MainMonitor(object):
         self.MainScheduler.add_job(func=self.subscribe_main_thread,
                                    max_instances=1,
                                    trigger='interval',
-                                   seconds=10, id='subscribe_main_thread')
+                                   seconds=1, id='subscribe_main_thread')
         # 心跳线程
         self.MainScheduler.add_job(func=self.sub_heartbeat_thread,
                                    max_instances=1,
                                    trigger='interval',
-                                   seconds=10, id='sub_heartbeat_thread')
+                                   seconds=1, id='sub_heartbeat_thread')
 
         # rpc call调用
         self.MainScheduler.add_job(func=self.sub_rpc_call_thread, max_instances=1,
                                    trigger='interval',
-                                   seconds=10, id='sub_rpc_call_thread')
+                                   seconds=1, id='sub_rpc_call_thread')
+
+        # WebSync
+        self.MainScheduler.add_job(func=self.sub_websync_thread,
+                                   max_instances=1,
+                                   trigger='interval',
+                                   seconds=1, id='sub_websync_thread')
 
         # 定时清理日志
         self.MainScheduler.add_job(func=File.clean_logs, trigger='cron', hour='23', minute='59')
@@ -100,12 +113,12 @@ class MainMonitor(object):
         # msf bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
                                   trigger='interval',
-                                  seconds=10, id='run_msf_bot_thread')
+                                  seconds=1, id='run_msf_bot_thread')
 
         # python bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_python_bot_thread, max_instances=3,
                                   trigger='interval',
-                                  seconds=10, id='run_python_bot_thread')
+                                  seconds=1, id='run_python_bot_thread')
         self.BotScheduler.start()
 
         # 启动自动化定时任务
@@ -165,6 +178,19 @@ class MainMonitor(object):
         result = HeartBeat.get_heartbeat_result()
         async_to_sync(channel_layer.group_send)(
             "heartbeat",
+            {
+                'type': 'send.message',
+                'message': result
+            }
+        )
+
+    @staticmethod
+    def sub_websync_thread():
+        channel_layer = get_channel_layer()
+
+        result = WebSync.get_result()
+        async_to_sync(channel_layer.group_send)(
+            "websync",
             {
                 'type': 'send.message',
                 'message': result

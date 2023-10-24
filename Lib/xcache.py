@@ -112,6 +112,8 @@ class Xcache(object):
 
     XCACHE_SAMPLE_DATA = "XCACHE_SAMPLE_DATA"
 
+    XCACHE_WEBSYNC_CACHE_IPDOMAINS = "XCACHE_WEBSYNC_CACHE_IPDOMAINS"
+
     def __init__(self):
         pass
 
@@ -1288,3 +1290,16 @@ class Xcache(object):
         cache_key = f"{Xcache.XCACHE_SAMPLE_DATA}_{key}_{id}"
         data = cache.get(cache_key)
         return data
+
+    @staticmethod
+    def get_websync_cache_ipdomains():
+        result = cache.get(Xcache.XCACHE_WEBSYNC_CACHE_IPDOMAINS)
+        if result is None:
+            return []
+
+        return result
+
+    @staticmethod
+    def set_websync_cache_ipdomains(result):
+        cache.set(Xcache.XCACHE_WEBSYNC_CACHE_IPDOMAINS, result, None)
+        return True

@@ -10,15 +10,20 @@ from WebDatabase.serializers import LocationSerializer
 class Location(object):
 
     @staticmethod
-    def list_by_ip(ip):
-        models = LocationModel.objects.filter(ip=ip).order_by('-update_time')[:1]
-        result = LocationSerializer(models, many=False).data
+    def get_by_ipdomain(ipdomain):
+        # models = LocationModel.objects.filter(ipdomain=ipdomain).order_by('-update_time')
+
+        if LocationModel.objects.filter(ipdomain=ipdomain).count() == 0:
+            return None
+
+        model = LocationModel.objects.get(ipdomain=ipdomain)
+        result = LocationSerializer(model, many=False).data
         return result
 
     @staticmethod
-    def update_or_create(ip=None, isp=None, asname=None, geo_info={}, webbase_dict={}):
+    def update_or_create(ipdomain=None, isp=None, asname=None, geo_info={}, webbase_dict={}):
         default_dict = {
-            'ip': ip,
+            # 'ipdomain': ipdomain,
             'isp': isp,
             'asname': asname,
             'geo_info': geo_info,
@@ -26,5 +31,5 @@ class Location(object):
         default_dict.update(webbase_dict)
 
         # key + source 唯一,只要最新数据
-        model, created = LocationModel.objects.update_or_create(ip=ip, defaults=default_dict)
+        model, created = LocationModel.objects.update_or_create(ipdomain=ipdomain, defaults=default_dict)
         return created

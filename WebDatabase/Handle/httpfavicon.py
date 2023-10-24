@@ -4,20 +4,30 @@
 # @Desc  :
 
 from WebDatabase.models import HttpFaviconModel
+from WebDatabase.serializers import HttpFaviconSerializer
 
 
 class HttpFavicon(object):
 
     @staticmethod
-    def update_or_create(ip=None, port=None, content=None, hash=None, webbase_dict={}):
+    def get_by_ipdomain_port(ipdomain, port):
+        if HttpFaviconModel.objects.filter(ipdomain=ipdomain, port=port).count() == 0:
+            return None
+
+        model = HttpFaviconModel.objects.get(ipdomain=ipdomain, port=port)
+        result = HttpFaviconSerializer(model, many=False).data
+        return result
+
+    @staticmethod
+    def update_or_create(ipdomain=None, port=None, content=None, hash=None, webbase_dict={}):
         default_dict = {
-            'ip': ip,
-            'port': port,
+            # 'ipdomain': ipdomain,
+            # 'port': port,
 
             'content': content,
             'hash': hash,
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = HttpFaviconModel.objects.update_or_create(ip=ip, port=port, defaults=default_dict)
+        model, created = HttpFaviconModel.objects.update_or_create(ipdomain=ipdomain, port=port, defaults=default_dict)
         return created

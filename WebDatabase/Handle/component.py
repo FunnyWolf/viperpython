@@ -4,23 +4,30 @@
 # @Desc  :
 
 from WebDatabase.models import ComponentModel
+from WebDatabase.serializers import ComponentSerializer
 
 
 class Component(object):
 
     @staticmethod
-    def update_or_create(ip=None, port=None,
-                         product_dict_values={}, product_type=[], product_catalog=[], webbase_dict={}):
-        default_dict = {
-            'ip': ip,
-            'port': port,
+    def list_by_ipdomain_port(ipdomain, port):
+        models = ComponentModel.objects.filter(ipdomain=ipdomain, port=port)
+        result = ComponentSerializer(models, many=True).data
+        return result
 
+    @staticmethod
+    def update_or_create(ipdomain=None, port=None, product_name=None, product_version=None,
+                         product_type=[], product_catalog=[], product_dict_values={}, webbase_dict={}):
+        default_dict = {
+            # 'ipdomain': ipdomain,
+            # 'port': port,
+            'product_name': product_name,
+            'product_version': product_version,
             'product_dict_values': product_dict_values,
             'product_type': product_type,
             'product_catalog': product_catalog,
         }
         default_dict.update(webbase_dict)
-        model, create = ComponentModel.objects.update_or_create(ip=ip, port=port,
-                                                                product_dict_values=product_dict_values,
+        model, create = ComponentModel.objects.update_or_create(ipdomain=ipdomain, port=port, product_name=product_name,
                                                                 defaults=default_dict)
         return create

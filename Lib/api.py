@@ -2,6 +2,7 @@
 # @File  : api.py
 # @Date  : 2021/2/25
 # @Desc  :
+import ipaddress
 import json
 import random
 import string
@@ -21,6 +22,14 @@ def random_int(num):
 def is_json(data):
     try:
         json.loads(data)
+        return True
+    except Exception as E:
+        return False
+
+
+def is_ipaddress(ip_str):
+    try:
+        ip = ipaddress.IPv4Address(ip_str)
         return True
     except Exception as E:
         return False

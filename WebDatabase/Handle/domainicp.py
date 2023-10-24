@@ -10,25 +10,24 @@ from WebDatabase.serializers import DomainICPSerializer
 class DomainICP(object):
 
     @staticmethod
-    def list_by_ipports(ip, port):
-        models = DomainICPModel.objects.filter(ip=ip, port=port).order_by('-update_time')[:1]
-        result = DomainICPSerializer(models, many=False).data
+    def get_by_ipdomain(ipdomain):
+        if DomainICPModel.objects.filter(ipdomain=ipdomain).count() == 0:
+            return None
+
+        model = DomainICPModel.objects.get(ipdomain=ipdomain)
+        result = DomainICPSerializer(model, many=False).data
         return result
 
     @staticmethod
-    def update_or_create(ip=None, port=None,
-                         domain_icp=None, unit=None, license=None, webbase_dict={}):
+    def update_or_create(ipdomain=None, unit=None, license=None, webbase_dict={}):
         # 给出更新DomainICPModel的方法
 
         default_dict = {
-            'ip': ip,
-            'port': port,
             'license': license,
-            'domain_icp': domain_icp,
             'unit': unit,
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = DomainICPModel.objects.update_or_create(ip=ip,
+        model, created = DomainICPModel.objects.update_or_create(ipdomain=ipdomain,
                                                                  defaults=default_dict)
         return created

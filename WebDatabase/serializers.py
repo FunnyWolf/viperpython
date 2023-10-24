@@ -7,7 +7,12 @@ from rest_framework.serializers import ModelSerializer
 from WebDatabase.models import *
 
 
-# from rest_framework.serializers import Serializer, IntegerField, DictField, CharField
+# class ProjectSerializer(ModelSerializer):
+#     class Meta(object):
+#         model = ProjectModel
+#         fields = '__all__'
+
+
 class ProjectSerializer(ModelSerializer):
     class Meta(object):
         model = ProjectModel
@@ -17,55 +22,67 @@ class ProjectSerializer(ModelSerializer):
 class IPDomainSerializer(ModelSerializer):
     class Meta(object):
         model = IPDomainModel
-        fields = '__all__'
+        fields = ['project_id', 'ipdomain']
 
 
 class PortServiceSerializer(ModelSerializer):
     class Meta(object):
         model = PortServiceModel
-        fields = '__all__'
+        fields = ['id', 'port', 'transport', 'service', 'version', 'update_time']
 
 
 class LocationSerializer(ModelSerializer):
     class Meta(object):
         model = LocationModel
-        fields = '__all__'
+        fields = ['isp', 'asname', 'geo_info']
 
 
 class CertSerializer(ModelSerializer):
     class Meta(object):
         model = CertModel
-        fields = '__all__'
+        fields = ['cert', 'jarm']
+
+
+class ScreenshotSerializer(ModelSerializer):
+    class Meta(object):
+        model = ScreenshotModel
+        fields = ['content']
 
 
 class DNSRecordSerializer(ModelSerializer):
     class Meta(object):
         model = DNSRecordModel
-        fields = '__all__'
+        fields = ['a', 'cname']
 
 
 class DomainICPSerializer(ModelSerializer):
     class Meta(object):
         model = DomainICPModel
-        fields = '__all__'
+        fields = ['ipdomain', 'unit', 'license']
+
+
+class CDNSerializer(ModelSerializer):
+    class Meta(object):
+        model = CDNModel
+        fields = ['cname', 'a']
 
 
 class HttpBaseSerializer(ModelSerializer):
     class Meta(object):
         model = HttpBaseModel
-        fields = '__all__'
+        fields = ['title', 'status_code', 'response', 'header', 'body']
 
 
 class HttpFaviconSerializer(ModelSerializer):
     class Meta(object):
         model = HttpFaviconModel
-        fields = '__all__'
+        fields = ['hash', 'content']
 
 
 class ComponentSerializer(ModelSerializer):
     class Meta(object):
         model = ComponentModel
-        fields = '__all__'
+        fields = ['product_name', 'product_version', 'product_type', 'product_catalog', 'product_dict_values']
 
 
 class VulnerabilitySerializer(ModelSerializer):
