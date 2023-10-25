@@ -25,7 +25,7 @@ class WebSync(object):
 
         ipdomains_result = []
 
-        ipdomain_list = IPDomain.list_all()
+        ipdomain_list = IPDomain.list_all()[:100]
         for one_ipdomain_record in ipdomain_list:
 
             ipdomain = one_ipdomain_record.get("ipdomain")

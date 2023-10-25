@@ -16,6 +16,7 @@ class DNSRecord(object):
 
         model = DNSRecordModel.objects.get(ipdomain=ipdomain)
         result = DNSRecordSerializer(model, many=False).data
+
         return result
 
     @staticmethod
