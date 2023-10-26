@@ -19,6 +19,12 @@ class IPDomain(object):
         return result
 
     @staticmethod
+    def update_project_id(project_id=None, ipdomain=None):
+        models = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
+        result = IPDomainSerializer(models, many=True).data
+        return result
+
+    @staticmethod
     def update_or_create(project_id=None,
                          ipdomain=None, webbase_dict={}):
 
