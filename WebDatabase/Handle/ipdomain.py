@@ -20,9 +20,9 @@ class IPDomain(object):
 
     @staticmethod
     def update_project_id(project_id=None, ipdomain=None):
-        models = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
-        result = IPDomainSerializer(models, many=True).data
-        return result
+        update_count = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
+        # result = IPDomainSerializer(models, many=True).data
+        return {"count": update_count}
 
     @staticmethod
     def update_or_create(project_id=None,
@@ -36,6 +36,7 @@ class IPDomain(object):
         # key + source 唯一,只要最新数据
         model, created = IPDomainModel.objects.update_or_create(ipdomain=ipdomain,
                                                                 defaults=default_dict)
+
         return created
 
     @staticmethod
