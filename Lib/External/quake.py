@@ -179,7 +179,7 @@ class Quake:
             webbase_dict = {
                 'source': source,
                 "source_key": source_key,
-                'data': item,
+                # 'data': item,
                 'update_time': update_time,
             }
             a = []

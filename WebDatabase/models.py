@@ -36,17 +36,19 @@ class WebBaseModel(models.Model):
 
 
 class IPDomainBaseModel(WebBaseModel):
-    ipdomain = models.CharField(blank=True, null=True, max_length=100)  # 存放IP或domain
+    ipdomain = models.CharField(blank=True, null=True, max_length=100, db_index=True)  # 存放IP或domain
 
     class Meta:
         abstract = True
+        # indexs = [models.Index(fields=['ipdomain'])]
 
 
 class PortBaseModel(IPDomainBaseModel):
-    port = models.IntegerField(default=0)
+    port = models.IntegerField(default=0, db_index=True)
 
     class Meta:
         abstract = True
+        # indexs = [models.Index(fields=['port'])]
 
 
 class ProjectModel(ProjectBaseModel):
