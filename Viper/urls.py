@@ -10,7 +10,7 @@ from Msgrpc.views import WebDeliveryView, IPFilterView
 from PostLateral.views import IntranetPortServiceView, CredentialView, VulnerabilityView
 from PostModule.views import PostModuleConfigView, PostModuleActuatorView, PostModuleResultView, ProxyHttpScanView
 from PostModule.views import PostModuleResultHistoryView, PostModuleAutoView
-from WebDatabase.views import ProjectView
+from WebDatabase.views import ProjectView, IPDomainView
 
 router = routers.DefaultRouter()
 router.register(r'api/v1/core/baseauth', BaseAuthView, basename="BaseAuth")
@@ -54,6 +54,8 @@ router.register(r'api/v1/postmodule/proxyhttpscan', ProxyHttpScanView,
 # WebDatabase
 router.register(r'api/v1/webdatabase/project', ProjectView,
                 basename="ProjectView")
+router.register(r'api/v1/webdatabase/ipdomain', IPDomainView,
+                basename="IPDomainView")
 
 # 无需认证的api
 router.register(r'api/v1/d', HostFileView, basename="HostFileView")
@@ -64,6 +66,6 @@ urlpatterns = [
     re_path(r'^', include(router.urls)),
 ]
 
-from Lib.montior import MainMonitor
-
-MainMonitor().start()
+# from Lib.montior import MainMonitor
+#
+# MainMonitor().start()

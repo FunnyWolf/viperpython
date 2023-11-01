@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.response import Response
 
 from Lib.api import data_return
@@ -52,4 +54,26 @@ class ProjectView(BaseView):
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+
+class IPDomainView(BaseView):
+    def list(self, request, **kwargs):
+
+        try:
+            pagination = request.query_params.get('pagination')
+            pagination = json.loads(pagination)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+            return Response(context)
+
+        try:
+            project_id = request.query_params.get('project_id', None)
+            result, pagination = IPDomain.list(project_id=project_id, pagination=pagination)
+            context = data_return(200, {"result": result, "pagination": pagination}, CODE_MSG_ZH.get(200),
+                                  CODE_MSG_EN.get(200))
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)
