@@ -564,7 +564,18 @@ LazyLoader_MSG_EN = {
     303: "Failed to parse parameters",
     304: "No corresponding data found",
 }
+Project_MSG_ZH = {
+    201: "更新项目信息成功",
+    202: "转移到新项目成功",
+    210: "删除项目成功"
+    # 304: "输入参数错误",
+}
 
+Project_MSG_EN = {
+    201: "Update project information successfully",
+    202: "Successfully moved to new project",
+    210: "Delete project successfully"
+}
 IPDomain_MSG_ZH = {
     204: "删除IP域名成功",
 

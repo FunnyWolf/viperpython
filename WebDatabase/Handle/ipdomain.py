@@ -99,7 +99,6 @@ class IPDomain(object):
     @staticmethod
     def update_project_id(project_id=None, ipdomain=None):
         update_count = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
-        # result = IPDomainSerializer(models, many=True).data
         return {"count": update_count}
 
     @staticmethod
@@ -107,7 +106,6 @@ class IPDomain(object):
                          ipdomain=None, webbase_dict={}):
 
         default_dict = {
-            # 'ipdomain': ipdomain,
             'project_id': project_id,
         }
         default_dict.update(webbase_dict)
@@ -118,9 +116,9 @@ class IPDomain(object):
         return created
 
     @staticmethod
-    def destory(ip=None):
+    def destory(ipdomain=None):
         try:
-            IPDomainModel.objects.filter(ipdomain=ip).delete()
+            IPDomainModel.objects.filter(ipdomain=ipdomain).delete()
             context = data_return(204, {}, IPDomain_MSG_ZH.get(204), IPDomain_MSG_EN.get(204))
         except Exception as E:
             logger.error(E)

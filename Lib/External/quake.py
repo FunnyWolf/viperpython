@@ -9,6 +9,7 @@ import requests
 import urllib3
 
 from Lib.configs import DEFAULT_PROJECT_ID
+from Lib.log import logger
 from Lib.timeapi import TimeAPI
 from Lib.xcache import Xcache
 from WebDatabase.Handle.cdn import CDN
@@ -141,9 +142,13 @@ class Quake:
     def get_images_base64(url):
         if not url:
             return None
-        response = requests.get(url)
-        image_bytes = response.content
-        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        try:
+            response = requests.get(url)
+            image_bytes = response.content
+            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        except Exception as E:
+            logger.exception(E)
+            return None
         return image_base64
 
     @staticmethod
@@ -283,9 +288,10 @@ class Quake:
                     if http_config.get("favicon"):
                         favicon_config = http_config.get("favicon")
                         favicon_base64 = Quake.get_images_base64(favicon_config.get("s3_url"))
-                        favicon_hash = favicon_config.get("hash")
-                        HttpFavicon.update_or_create(ipdomain=ipdomain, port=port, content=favicon_base64,
-                                                     hash=favicon_hash, webbase_dict=webbase_dict)
+                        if favicon_base64:
+                            favicon_hash = favicon_config.get("hash")
+                            HttpFavicon.update_or_create(ipdomain=ipdomain, port=port, content=favicon_base64,
+                                                         hash=favicon_hash, webbase_dict=webbase_dict)
 
                     # DomainICPModel
                     if http_config.get("icp"):

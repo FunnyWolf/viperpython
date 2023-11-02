@@ -27,7 +27,7 @@ class ProjectView(BaseView):
             name = request.data.get('name')
             desc = request.data.get('desc')
             data = Project.update_or_create(project_id, name, desc)
-            context = data_return(201, data, Credential_MSG_ZH.get(201), Credential_MSG_EN.get(201))
+            context = data_return(201, data, Project_MSG_ZH.get(201), Project_MSG_EN.get(201))
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
@@ -39,7 +39,7 @@ class ProjectView(BaseView):
             ipdomain = request.data.get('ipdomain')
             if ipdomain:
                 data = IPDomain.update_project_id(project_id, ipdomain)
-                context = data_return(201, data, Credential_MSG_ZH.get(201), Credential_MSG_EN.get(201))
+                context = data_return(201, data, Project_MSG_ZH.get(202), Project_MSG_ZH.get(202))
             else:
                 context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         except Exception as E:
@@ -76,4 +76,13 @@ class IPDomainView(BaseView):
         except Exception as E:
             logger.error(E)
             context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+    def destroy(self, request, pk=None, **kwargs):
+        try:
+            ipdomain = request.query_params.get('ipdomain')
+            context = IPDomain.destory(ipdomain=ipdomain)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
         return Response(context)

@@ -5,6 +5,7 @@
 import logging
 import random
 import socket
+import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from asgiref.sync import async_to_sync
@@ -43,14 +44,6 @@ class MainMonitor(object):
         pass
 
     def start(self):
-
-        # DEBUG
-        # init WebSync
-        import time
-        print(time.time())
-        WebSync.init_result()
-        logger.warning("WebSync Init Finish")
-        print(time.time())
         try:
             time.sleep(random.random())
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
