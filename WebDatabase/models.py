@@ -13,8 +13,7 @@ class ProjectBaseModel(models.Model):
 
 
 class WebBaseModel(models.Model):
-    source = models.CharField(blank=True, null=True, max_length=100)  # 信息来源
-    source_key = models.CharField(blank=True, null=True, max_length=100)  # 信息来源
+    source = models.JSONField(default=dict)  # 信息来源
     data = models.JSONField(default=dict)
     update_time = models.IntegerField(default=0)
 
@@ -57,8 +56,8 @@ class ProjectModel(ProjectBaseModel):
 
 
 class DNSRecordModel(IPDomainBaseModel):
-    a = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True, default=list)  # A记录值
-    cname = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True, default=list)  # cname记录值
+    type = models.CharField(blank=True, null=True, max_length=10)  # A/CNAME
+    value = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True, default=list)
 
 
 class IPDomainModel(IPDomainBaseModel, ProjectBaseModel):
@@ -117,8 +116,7 @@ class HttpBaseModel(PortBaseModel):
 
 
 class CDNModel(PortBaseModel):
-    cname = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
-    a = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
+    flag = models.BooleanField(default=False)
 
 
 class HttpFaviconModel(PortBaseModel):

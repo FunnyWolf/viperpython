@@ -40,7 +40,7 @@ class PostModule(PostPythonModule):
 
     def run(self):
         second = self.generate_payload("base64")
-        key = self.random_str(48)
+        key = random_str(48)
 
         first = encrypt(key, second.decode())
         zero = base64.b64encode(first).decode()

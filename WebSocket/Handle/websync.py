@@ -3,6 +3,7 @@
 # @Date  : 2021/2/27
 # @Desc  :
 from Lib.xcache import Xcache
+from PostModule.Handle.postmoduleconfig import PostModuleConfig
 
 
 class WebSync(object):
@@ -11,19 +12,25 @@ class WebSync(object):
 
     @staticmethod
     def get_result():
-        result = {
-            'ipdomains_update': True,
-            'ipdomains': None,
-        }
+        result = {}
 
+        # module_options 列表
+        module_options = PostModuleConfig.list_dynamic_option()
+        cache_module_options = Xcache.get_heartbeat_cache_module_options()
+        if cache_module_options == module_options:
+            result["module_options_update"] = False
+            result["module_options"] = []
+        else:
+            Xcache.set_heartbeat_cache_module_options(module_options)
+            result["module_options_update"] = True
+            result["module_options"] = module_options
         return result
 
     @staticmethod
     def first_result():
-        cache_ipdomains_result = Xcache.get_websync_cache_ipdomains()
+        module_options = PostModuleConfig.list_dynamic_option()
         result = {
-            'ipdomains_update': True,
-            'ipdomains': cache_ipdomains_result,
+            'module_options_update': True,
+            'module_options': module_options,
         }
-
         return result

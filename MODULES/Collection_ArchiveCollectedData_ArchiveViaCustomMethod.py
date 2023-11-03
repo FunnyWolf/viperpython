@@ -55,7 +55,7 @@ class PostModule(PostMSFRawModule):
             return False, "模块只支持Windows及Linux原生Session", "This module only supports Meterpreter for Windows and Linux"
 
         inputdir = self.param("INPUTDIR")
-        self.outfile = f"{self.random_str(8)}.zip"
+        self.outfile = f"{random_str(8)}.zip"
         args = f"-inputdir {inputdir} -outfile {self.outfile}"
         self.set_msf_option("ARGS", args)
 

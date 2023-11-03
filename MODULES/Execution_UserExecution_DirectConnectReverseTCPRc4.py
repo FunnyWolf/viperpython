@@ -45,7 +45,7 @@ class PostModule(PostPythonModule):
         LHOST = handler_config.get("LHOST")
         LPORT = handler_config.get("LPORT")
         PASSWORD = handler_config.get("RC4PASSWORD")
-        FUNCTION = self.random_str(10)
+        FUNCTION = random_str(10)
         source_code = self.generate_context_by_template(filename="main.cpp", LHOST=LHOST, LPORT=LPORT,
                                                         PASSWORD=PASSWORD, FUNCTION=FUNCTION)
         mingw = Mingw(include_dir=self.module_data_dir, source_code=source_code)

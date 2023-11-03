@@ -177,7 +177,7 @@ class PostModule(PostPythonModule):
         ldapserver_t = LDAPServer(port=self.param("listenport"), unrepeat=self.param("unrepeat"))
         ldapserver_t.setDaemon(True)
         ldapserver_t.start()
-        lhost = self.get_lhost()
+        lhost = Xcache.get_lhost_config().get("lhost")
         if lhost is None:
             lhost = "0.0.0.0"
         Notice.send_info(f'LDAPServer: {lhost}:{self.param("listenport")}')

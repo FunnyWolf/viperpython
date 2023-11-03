@@ -2,7 +2,7 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-
+from Lib.log import logger
 from WebDatabase.models import DomainICPModel
 from WebDatabase.serializers import DomainICPSerializer
 
@@ -11,12 +11,13 @@ class DomainICP(object):
 
     @staticmethod
     def get_by_ipdomain(ipdomain):
-        if DomainICPModel.objects.filter(ipdomain=ipdomain).count() == 0:
+        try:
+            model = DomainICPModel.objects.filter(ipdomain=ipdomain).first()
+            result = DomainICPSerializer(model, many=False).data
+            return result
+        except Exception as E:
+            logger.exception(E)
             return None
-
-        model = DomainICPModel.objects.get(ipdomain=ipdomain)
-        result = DomainICPSerializer(model, many=False).data
-        return result
 
     @staticmethod
     def update_or_create(ipdomain=None, unit=None, license=None, webbase_dict={}):

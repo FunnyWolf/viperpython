@@ -44,7 +44,8 @@ class PostModule(PostMSFPythonWithParamsModule):
                   tag_en="Module timeout time (seconds)", desc_en="Module execution timeout",
                   required=True, default=3600),
         OptionInt(name='connect_time_out',
-                  tag_zh="连接超时时间(毫秒)", desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
+                  tag_zh="连接超时时间(毫秒)",
+                  desc_zh="网络扫描过程中每个网络连接的超时时间,请依据主机内网网络环境进行调整",
                   tag_en="Connection timeout (milliseconds)",
                   desc_en="Please adjust the timeout time of each network connection during the network scanning process according to the host's intranet network environment",
                   default=500),
@@ -72,7 +73,7 @@ class PostModule(PostMSFPythonWithParamsModule):
         max_threads = self.param('max_threads')
 
         try:
-            iplist = self.str_to_ips(ipstr)
+            iplist = str_to_ips(ipstr)
             if len(iplist) > 510:
                 return False, "扫描IP范围过大(超过510)", "Scanning IP range is too large (more than 510)"
             elif len(iplist) < 0:
@@ -127,9 +128,9 @@ class PostModule(PostMSFPythonWithParamsModule):
             if int(octet) > 255:
                 raise ValueError
         return (int(octets[0]) << 24) + \
-               (int(octets[1]) << 16) + \
-               (int(octets[2]) << 8) + \
-               (int(octets[3]))
+            (int(octets[1]) << 16) + \
+            (int(octets[2]) << 8) + \
+            (int(octets[3]))
 
     def callback(self, status, message, data):
         if status:
@@ -145,8 +146,9 @@ class PostModule(PostMSFPythonWithParamsModule):
             if len(portservice_list) == 0:
                 self.log_info("脚本执行完成,但是未扫描到有效数据,可能是由于对方网络关闭,请检查主机netstat信息后重试",
                               "The script execution is complete, but no valid data is scanned. It may be because the other party's network is closed. Please check the host's netstat information and try again")
-                self.log_info("如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描",
-                              "If you confirm that the network connection is normal but the scan has no results, please use the'reset python plugin' function in the Meterpreter command line to rescan after reset")
+                self.log_info(
+                    "如果确认网络连接正常但扫描无结果,请使用Meterpreter命令行中的'重置python插件功能'重置后重新扫描",
+                    "If you confirm that the network connection is normal but the scan has no results, please use the'reset python plugin' function in the Meterpreter command line to rescan after reset")
                 return
 
             data_zh = []

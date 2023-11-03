@@ -48,7 +48,7 @@ class IPDomain(object):
             # domainicp
             domainicp = DomainICP.get_by_ipdomain(ipdomain)
 
-            dnsrecord = DNSRecord.get_by_ipdomain(ipdomain)
+            dnsrecord = DNSRecord.list_by_ipdomain(ipdomain)
 
             # ports
             portservice_list = PortService.list_by_ipdomain(ipdomain)

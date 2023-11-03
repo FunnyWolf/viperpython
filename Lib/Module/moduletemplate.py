@@ -8,9 +8,7 @@ import ctypes
 import inspect
 import json
 import os
-import random
 import re
-import string
 import threading
 import time
 import zipfile
@@ -195,8 +193,6 @@ class _CommonModule(object):
         return True
 
     # 新增数据相关函数
-    # 新增数据相关函数
-
     def add_portservice(self, ipaddress, port, banner=None, service=""):
         """增加一个端口/服务信息"""
         if banner is None:
@@ -480,97 +476,6 @@ class _CommonModule(object):
         filename = f"tmp_{int(time.time())}.exe"
         filepath = FileMsf.write_msf_file(filename, bytedata)
         return filepath
-
-    def get_lhost(self):
-        cache_data = Xcache.get_lhost_config()
-        return cache_data.get("lhost")
-
-    # 功能函数
-    @staticmethod
-    def dqtoi(dq):
-        """将字符串ip地址转换为int数字."""
-        octets = dq.split(".")
-        if len(octets) != 4:
-            raise ValueError
-        for octet in octets:
-            if int(octet) > 255:
-                raise ValueError
-        return (int(octets[0]) << 24) + \
-            (int(octets[1]) << 16) + \
-            (int(octets[2]) << 8) + \
-            (int(octets[3]))
-
-    def str_to_ips(self, ipstr):
-        """字符串转ip地址列表"""
-        iplist = []
-        lines = ipstr.split(",")
-        for raw in lines:
-            if '/' in raw:
-                addr, mask = raw.split('/')
-                mask = int(mask)
-
-                bin_addr = ''.join([(8 - len(bin(int(i))[2:])) * '0' + bin(int(i))[2:] for i in addr.split('.')])
-                start = bin_addr[:mask] + (32 - mask) * '0'
-                end = bin_addr[:mask] + (32 - mask) * '1'
-                bin_addrs = [(32 - len(bin(int(i))[2:])) * '0' + bin(i)[2:] for i in
-                             range(int(start, 2), int(end, 2) + 1)]
-
-                dec_addrs = ['.'.join([str(int(bin_addr[8 * i:8 * (i + 1)], 2)) for i in range(0, 4)]) for bin_addr in
-                             bin_addrs]
-
-                iplist.extend(dec_addrs)
-
-            elif '-' in raw:
-                addr, end = raw.split('-')
-                end = int(end)
-                start = int(addr.split('.')[3])
-                prefix = '.'.join(addr.split('.')[:-1])
-                addrs = [prefix + '.' + str(i) for i in range(start, end + 1)]
-                iplist.extend(addrs)
-                return addrs
-            else:
-                iplist.extend([raw])
-        return iplist
-
-
-
-    @staticmethod
-    def random_str(num):
-        """生成随机字符串"""
-        salt = ''.join(random.sample(string.ascii_letters, num))
-        return salt
-
-
-class WebPythonModule(_CommonModule):
-    # MODULE_BROKER = BROKER.web_python_module
-    MODULE_BROKER = BROKER.post_python_job
-
-    def __init__(self, sessionid, ipaddress, custom_param):
-        super().__init__(custom_param)  # 父类无需入参
-
-    def run(self):
-        """后台运行模块回调函数"""
-        logger.warning(self._custom_param)
-
-    def _thread_run(self):
-        t1 = ThreadWithExc(target=self.run)
-        t1.start()
-        while True:
-            req = Xcache.get_module_task_by_uuid(self._module_uuid)
-            if req is None:  # 检查模块是否已经删除
-                self.exit_flag = True
-                time.sleep(3)
-                while t1.is_alive():
-                    time.sleep(0.1)
-                    try:
-                        t1.raise_exc(Exception)
-                    except Exception as _:
-                        pass
-                break
-            elif t1.is_alive() is not True:
-                break
-            else:
-                time.sleep(1)
 
 
 class ProxyHttpScanModule(_CommonModule):
@@ -1038,3 +943,35 @@ class PostMSFExecPEModule(_PostMSFModuleCommon):
     def set_args(self, args):
         """API:设置pe文件执行参数"""
         self.opts['ARGS'] = str(args)
+
+
+class WebPythonModule(_CommonModule):
+    MODULE_BROKER = BROKER.web_python_module
+
+    def __init__(self, project_id, ipaddress, custom_param):
+        super().__init__(custom_param)  # 父类无需入参
+        self.project_id = project_id
+
+    def run(self):
+        """后台运行模块回调函数"""
+        logger.warning(self._custom_param)
+
+    def _thread_run(self):
+        t1 = ThreadWithExc(target=self.run)
+        t1.start()
+        while True:
+            req = Xcache.get_module_task_by_uuid(self._module_uuid)
+            if req is None:  # 检查模块是否已经删除
+                self.exit_flag = True
+                time.sleep(3)
+                while t1.is_alive():
+                    time.sleep(0.1)
+                    try:
+                        t1.raise_exc(Exception)
+                    except Exception as _:
+                        pass
+                break
+            elif t1.is_alive() is not True:
+                break
+            else:
+                time.sleep(1)

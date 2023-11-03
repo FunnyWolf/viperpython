@@ -2,7 +2,7 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-
+from Lib.log import logger
 from WebDatabase.models import HttpBaseModel
 from WebDatabase.serializers import HttpBaseSerializer
 
@@ -11,12 +11,13 @@ class HttpBase(object):
 
     @staticmethod
     def get_by_ipdomain_port(ipdomain, port):
-        if HttpBaseModel.objects.filter(ipdomain=ipdomain, port=port).count() == 0:
+        try:
+            model = HttpBaseModel.objects.filter(ipdomain=ipdomain, port=port).first()
+            result = HttpBaseSerializer(model, many=False).data
+            return result
+        except Exception as E:
+            logger.exception(E)
             return None
-
-        model = HttpBaseModel.objects.get(ipdomain=ipdomain, port=port)
-        result = HttpBaseSerializer(model, many=False).data
-        return result
 
     @staticmethod
     def update_or_create(ipdomain=None, port=None,

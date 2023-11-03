@@ -41,6 +41,7 @@ from Lib.Module.option import (
     OptionCacheHanderConfig,
     OptionHander,
 )
+from Lib.api import str_to_ips, random_str
 from Lib.file import File
 from Lib.gcc import Gcc
 from Lib.ipgeo import IPGeo
@@ -115,4 +116,6 @@ __all__ = [
     "TimeAPI",
     "Quake",
     "FOFAClient",
+    "str_to_ips",
+    "random_str"
 ]

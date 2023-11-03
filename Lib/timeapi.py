@@ -11,10 +11,7 @@ class TimeAPI(object):
         #
         #
         # '%Y-%m-%dT%H:%M:%S.%fZ'
-        try:
-            return int(time.mktime(time.strptime(timestr, format)))
-        except Exception as _:
-            return 0
+        return int(time.mktime(time.strptime(timestr, format)))
 
     @staticmethod
     def timestamp_to_str(timestamp, format="%Y-%m-%d %H:%M:%S"):

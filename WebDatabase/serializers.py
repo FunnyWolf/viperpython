@@ -52,7 +52,7 @@ class ScreenshotSerializer(ModelSerializer):
 class DNSRecordSerializer(ModelSerializer):
     class Meta(object):
         model = DNSRecordModel
-        fields = ['a', 'cname']
+        fields = ['type', 'value']
 
 
 class DomainICPSerializer(ModelSerializer):
@@ -64,7 +64,7 @@ class DomainICPSerializer(ModelSerializer):
 class CDNSerializer(ModelSerializer):
     class Meta(object):
         model = CDNModel
-        fields = ['cname', 'a']
+        fields = ['flag']
 
 
 class HttpBaseSerializer(ModelSerializer):

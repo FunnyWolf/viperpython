@@ -45,8 +45,8 @@ class PostModule(PostPythonModule):
     def run(self):
         loadername = self.param("LoaderName")
         shellcode = self.generate_hex_reverse_shellcode_by_handler()
-        FUNCTION = self.random_str(8)
-        FUNCTION1 = self.random_str(9)
+        FUNCTION = random_str(8)
+        FUNCTION1 = random_str(9)
         source_code = self.generate_context_by_template(filename="main.cpp", SHELLCODE_STR=shellcode, FUNCTION=FUNCTION,
                                                         LOADERFILE=loadername)
 
@@ -54,4 +54,5 @@ class PostModule(PostPythonModule):
         self.write_zip_vs_project(filename, source_code)
 
         self.log_info("模块执行完成", "Module operation completed")
-        self.log_good(f"请在<文件列表>中查看生成的源码: {filename}", f"Please check the generated source code in <Files>: {filename}")
+        self.log_good(f"请在<文件列表>中查看生成的源码: {filename}",
+                      f"Please check the generated source code in <Files>: {filename}")

@@ -66,7 +66,7 @@ class PostModule(PostPythonModule):
         tcplogserver_t = TCPLOGServer(port=self.param("listenport"))
         tcplogserver_t.setDaemon(True)
         tcplogserver_t.start()
-        lhost = self.get_lhost()
+        lhost = Xcache.get_lhost_config().get("lhost")
         if lhost is None:
             lhost = "0.0.0.0"
         Notice.send_info(f'TCPLOGServer: {lhost}:{self.param("listenport")}')

@@ -58,7 +58,7 @@ class PostModule(PostMSFRawModule):
 
         target = self.param("TARGET")
         subvolume = self.param("SubVolume")
-        self.outfile = f"{self.random_str(8)}.7z"
+        self.outfile = f"{random_str(8)}.7z"
 
         args = f"a -v{subvolume}m {self.outfile} {target}"
         self.set_msf_option("ARGS", args)

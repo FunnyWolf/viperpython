@@ -77,7 +77,7 @@ class PostModule(PostMSFPythonWithParamsModule):
         # 检查ip地址
 
         try:
-            iplist = self.str_to_ips(ipstr)
+            iplist = str_to_ips(ipstr)
             if len(iplist) > 510:
                 return False, "扫描IP范围过大(超过510)", "Scanning IP range is too large (more than 510)"
             elif len(iplist) < 0:

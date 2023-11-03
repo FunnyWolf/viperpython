@@ -2,30 +2,29 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-
+from Lib.log import logger
 from WebDatabase.models import CDNModel
-from WebDatabase.serializers import DomainICPSerializer as CDNSerializer
+from WebDatabase.serializers import CDNSerializer
 
 
 class CDN(object):
 
     @staticmethod
     def get_by_ipdomain_port(ipdomain, port):
-        if CDNModel.objects.filter(ipdomain=ipdomain, port=port).count() == 0:
+        try:
+            model = CDNModel.objects.filter(ipdomain=ipdomain, port=port).first()
+            result = CDNSerializer(model, many=False).data
+            return result
+        except Exception as E:
+            logger.exception(E)
             return None
 
-        model = CDNModel.objects.get(ipdomain=ipdomain, port=port)
-        result = CDNSerializer(model, many=False).data
-        return result
-
     @staticmethod
-    def update_or_create(domain=None, port=None, cname=None, a=None, webbase_dict={}):
+    def update_or_create(domain=None, port=None, flag=None, webbase_dict={}):
         # 给出更新DomainICPModel的方法
 
         default_dict = {
-
-            'cname': cname,
-            'a': a,
+            'flag': flag,
         }
 
         default_dict.update(webbase_dict)

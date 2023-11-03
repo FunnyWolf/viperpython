@@ -158,11 +158,15 @@ class Quake:
         else:
             return True
 
-    def store_query_result(self, items, project_id=DEFAULT_PROJECT_ID, source_key=None):
+    def store_query_result(self, items, project_id=DEFAULT_PROJECT_ID, source={}):
         source = "Quake"
 
         for item in items:
-            update_time = TimeAPI.str_to_timestamp(item.get("time"), '%Y-%m-%dT%H:%M:%S.%fZ')
+            if "." in item.get("time"):
+                format = '%Y-%m-%dT%H:%M:%S.%fZ'
+            else:
+                format = '%Y-%m-%dT%H:%M:%SZ'
+            update_time = TimeAPI.str_to_timestamp(item.get("time"), format)
 
             ip = item.get("ip")
             domain = item.get("domain")
@@ -175,15 +179,14 @@ class Quake:
             service_name = service_config.get("name")
 
             location_config = item.get("location")
-            isp = location_config.pop("isp")
-            asname = location_config.pop("asname")
+            isp = location_config.get("isp")
+            asname = location_config.get("asname")
 
             components = item.get("components")
             images = item.get("images")
 
             webbase_dict = {
-                'source': source,
-                "source_key": source_key,
+                'source': {},
                 # 'data': item,
                 'update_time': update_time,
             }
@@ -200,19 +203,25 @@ class Quake:
                     a = dns_reocord.get("a")
                     if a is None:
                         a = []
+
                     cname = dns_reocord.get("cname")
                     if cname is None:
                         cname = []
+
                 # 存储dns
-                DNSRecord.update_or_create(domain=domain, a=a, cname=cname, webbase_dict=webbase_dict)
+                if a:
+                    DNSRecord.update_or_create(domain=domain, type="A", value=a, webbase_dict=webbase_dict)
+                if cname:
+                    DNSRecord.update_or_create(domain=domain, type="CNAME", value=cname, webbase_dict=webbase_dict)
 
                 if Quake.is_cdn_record(cname):
                     # 只保存Domain信息
                     ip = None
                     cname = dns_reocord.get("cname")
                     a = dns_reocord.get("a")
-                    CDN.update_or_create(domain=domain, port=port, cname=cname, a=a, webbase_dict=webbase_dict)
-
+                    CDN.update_or_create(domain=domain, port=port, flag=True, webbase_dict=webbase_dict)
+                else:
+                    CDN.update_or_create(domain=domain, port=port, flag=False, webbase_dict=webbase_dict)
             for ipdomain in [ip, domain]:
                 if ipdomain is None:
                     continue
