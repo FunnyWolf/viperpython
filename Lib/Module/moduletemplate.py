@@ -963,7 +963,7 @@ class WebPythonModule(_CommonModule):
             req = Xcache.get_module_task_by_uuid(self._module_uuid)
             if req is None:  # 检查模块是否已经删除
                 self.exit_flag = True
-                time.sleep(3)
+                time.sleep(1)
                 while t1.is_alive():
                     time.sleep(0.1)
                     try:
