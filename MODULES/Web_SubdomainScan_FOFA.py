@@ -17,17 +17,11 @@ class PostModule(WebPythonModule):
     REFERENCES = [""]
     AUTHOR = ["Viper"]
     OPTIONS = register_options([
-        OptionStr(name='Domain',
-                  tag_zh="主域名",
-                  desc_zh="主域名",
-                  tag_en="Domain",
-                  desc_en="Domain"),
-        OptionInt(name='MaxSize',
-                  tag_zh="最大数量",
-                  desc_zh="最大数量",
-                  tag_en="MaxSize",
-                  desc_en="MaxSize",
-                  default=1000),
+        OptionList(name='IP',
+                   tag_zh="IP",
+                   desc_zh="IP",
+                   tag_en="IP",
+                   desc_en="IP"),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):

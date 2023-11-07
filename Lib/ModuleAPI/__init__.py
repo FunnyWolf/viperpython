@@ -40,6 +40,7 @@ from Lib.Module.option import (
     OptionCredentialEnum,
     OptionCacheHanderConfig,
     OptionHander,
+    OptionList
 )
 from Lib.api import str_to_ips, random_str
 from Lib.file import File
@@ -88,6 +89,7 @@ __all__ = [
     "OptionFileEnum",
     "OptionCredentialEnum",
     "OptionCacheHanderConfig",
+    "OptionList",
     "Session",
     "Notice",
     "MsfModule",

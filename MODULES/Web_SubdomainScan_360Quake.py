@@ -22,12 +22,6 @@ class PostModule(WebPythonModule):
                   desc_zh="主域名",
                   tag_en="Domain",
                   desc_en="Domain"),
-        OptionInt(name='MaxSize',
-                  tag_zh="最大数量",
-                  desc_zh="最大数量",
-                  tag_en="MaxSize",
-                  desc_en="MaxSize",
-                  default=1000),
     ])
 
     def __init__(self, sessionid, ipaddress, custom_param):
@@ -36,10 +30,6 @@ class PostModule(WebPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-        if self.param("MaxSize") > 1000:
-            return False, "MaxSize不能大于1000", "MaxSize cannot be greater than 1000"
-        elif self.param("MaxSize") < 0:
-            return False, "MaxSize不能小于0", "MaxSize cannot be less than 0"
         if self.quake_client.init_conf_from_cache() is not True:
             return False, "Quake 配置无效", "Quake configuration invalid"
         return True, ""
@@ -47,7 +37,7 @@ class PostModule(WebPythonModule):
     def run(self):
         self.log_info(f"主域名: {self.param('Domain')}", f"Domain: {self.param('Domain')}")
         source_key = f"domain:\"{self.param('Domain')}\""
-        msg, items = self.quake_client.get_json_data(source_key, size=self.param('MaxSize'))
+        msg, items = self.quake_client.get_json_data(source_key)
         if items is None:
             self.log_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
             return False

@@ -119,6 +119,19 @@ class OptionStr(_Option):
                          length=length)
 
 
+class OptionList(_Option):
+    """字符串类型参数"""
+
+    def __init__(self, name,
+                 tag_zh=None, desc_zh=None,
+                 tag_en=None, desc_en=None,
+                 required=False, default=None,
+                 length=None):
+        super().__init__(type='list', name=name, tag_zh=tag_zh, desc_zh=desc_zh, tag_en=tag_en, desc_en=desc_en,
+                         required=required, default=default,
+                         length=length)
+
+
 class OptionText(_Option):
     """text类型参数"""
 
