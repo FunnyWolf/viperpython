@@ -28,12 +28,12 @@ class APSWebModule(object):
         self.ModuleJobsScheduler.add_listener(self.deal_result)
         self.ModuleJobsScheduler.start()
 
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(APSWebModule, "_instance"):
-            with APSWebModule._instance_lock:
-                if not hasattr(APSWebModule, "_instance"):
-                    APSWebModule._instance = object.__new__(cls)
-        return APSWebModule._instance
+    # def __new__(cls, *args, **kwargs):
+    #     if not hasattr(APSWebModule, "_instance"):
+    #         with APSWebModule._instance_lock:
+    #             if not hasattr(APSWebModule, "_instance"):
+    #                 APSWebModule._instance = object.__new__(cls)
+    #     return APSWebModule._instance
 
     def putin_web_python_module_queue(self, web_module_intent=None):
         try:

@@ -55,6 +55,20 @@ class PostModuleActuatorView(BaseView):
                 logger.error(E)
                 context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
             return Response(context)
+        elif moduletype == "Web":
+            try:
+                loadpath = request.data.get('loadpath')
+                input_list = request.data.get('input_list')
+                project_id = request.data.get('project_id')
+                custom_param = request.data.get('custom_param')
+                context = PostModuleActuator.create_web(input_list=input_list,
+                                                        project_id=project_id,
+                                                        loadpath=loadpath,
+                                                        custom_param=custom_param)
+            except Exception as E:
+                logger.error(E)
+                context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+            return Response(context)
         else:
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
             return Response(context)

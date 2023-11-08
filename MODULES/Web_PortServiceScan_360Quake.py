@@ -16,16 +16,12 @@ class PostModule(WebPythonModule):
     README = [""]
     REFERENCES = [""]
     AUTHOR = ["Viper"]
-    OPTIONS = register_options([
-        OptionList(name='IP',
-                   tag_zh="IP",
-                   desc_zh="IP",
-                   tag_en="IP",
-                   desc_en="IP"),
-    ])
+    OPTIONS = register_options([])
 
-    def __init__(self, sessionid, ipaddress, custom_param):
-        super().__init__(sessionid, ipaddress, custom_param)
+    def __init__(self, project_id, input_list: list, custom_param):
+        super().__init__(project_id, input_list, custom_param)
+
+        # 参数初始化
         self.quake_client = Quake()
 
     def check(self):
@@ -41,7 +37,7 @@ class PostModule(WebPythonModule):
 
     def run(self):
         self.log_info(f"IP: {self.param('IP')}", f"IP: {self.param('IP')}")
-
+        return True
         source_key = f"ip:\"{self.param('IP')}\""
         msg, items = self.quake_client.get_json_data(source_key)
 

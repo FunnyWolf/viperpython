@@ -948,9 +948,10 @@ class PostMSFExecPEModule(_PostMSFModuleCommon):
 class WebPythonModule(_CommonModule):
     MODULE_BROKER = BROKER.web_python_module
 
-    def __init__(self, project_id, ipaddress, custom_param):
+    def __init__(self, project_id, input_list: list, custom_param):
         super().__init__(custom_param)  # 父类无需入参
         self.project_id = project_id
+        self.input_list = input_list  # 模块输入参数列表(界面传入)
 
     def run(self):
         """后台运行模块回调函数"""
