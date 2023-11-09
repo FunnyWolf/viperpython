@@ -2,7 +2,6 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from Lib.log import logger
 from WebDatabase.models import CertModel
 from WebDatabase.serializers import CertSerializer
 
@@ -11,13 +10,11 @@ class Cert(object):
 
     @staticmethod
     def get_by_ipdomain_port(ipdomain, port):
-        try:
-            model = CertModel.objects.filter(ipdomain=ipdomain, port=port).first()
-            result = CertSerializer(model, many=False).data
-            return result
-        except Exception as E:
-            logger.exception(E)
+        model = CertModel.objects.filter(ipdomain=ipdomain, port=port).first()
+        if not model:
             return None
+        result = CertSerializer(model, many=False).data
+        return result
 
     @staticmethod
     def update_or_create(ipdomain=None, port=None, cert=None, jarm=None, webbase_dict={}):

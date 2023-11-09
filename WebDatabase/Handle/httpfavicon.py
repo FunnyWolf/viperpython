@@ -2,7 +2,6 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from Lib.log import logger
 from WebDatabase.models import HttpFaviconModel
 from WebDatabase.serializers import HttpFaviconSerializer
 
@@ -11,13 +10,11 @@ class HttpFavicon(object):
 
     @staticmethod
     def get_by_ipdomain_port(ipdomain, port):
-        try:
-            model = HttpFaviconModel.objects.filter(ipdomain=ipdomain, port=port).first()
-            result = HttpFaviconSerializer(model, many=False).data
-            return result
-        except Exception as E:
-            logger.exception(E)
+        model = HttpFaviconModel.objects.filter(ipdomain=ipdomain, port=port).first()
+        if not model:
             return None
+        result = HttpFaviconSerializer(model, many=False).data
+        return result
 
     @staticmethod
     def update_or_create(ipdomain=None, port=None, content=None, hash=None, webbase_dict={}):

@@ -159,8 +159,6 @@ class Quake:
             return True
 
     def store_query_result(self, items, project_id=DEFAULT_PROJECT_ID, source={}):
-        source = "Quake"
-
         for item in items:
             if "." in item.get("time"):
                 format = '%Y-%m-%dT%H:%M:%S.%fZ'

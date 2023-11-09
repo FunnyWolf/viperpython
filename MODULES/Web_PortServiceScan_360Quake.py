@@ -36,15 +36,15 @@ class PostModule(WebPythonModule):
         return True, ""
 
     def run(self):
-        self.log_info(f"IP: {self.param('IP')}", f"IP: {self.param('IP')}")
-        return True
-        source_key = f"ip:\"{self.param('IP')}\""
-        msg, items = self.quake_client.get_json_data(source_key)
+        for one_input in self.input_list:
+            ipdomain = one_input.get("ipdomain")
+            source_key = f"ip:\"{ipdomain}\""
+            msg, items = self.quake_client.get_json_data(source_key)
 
-        if items is None:
-            self.log_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
-            return False
+            if items is None:
+                Notice.send_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
+                return False
 
-        self.quake_client.store_query_result(items, source={})
-        self.log_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
+            self.quake_client.store_query_result(items, source={})
+        # Notice.send_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
         return True

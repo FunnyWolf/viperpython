@@ -2,7 +2,6 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from Lib.log import logger
 from WebDatabase.models import ScreenshotModel
 from WebDatabase.serializers import ScreenshotSerializer
 
@@ -10,14 +9,11 @@ from WebDatabase.serializers import ScreenshotSerializer
 class Screenshot(object):
     @staticmethod
     def get_by_ipdomain_port(ipdomain, port):
-        try:
-            model = ScreenshotModel.objects.filter(ipdomain=ipdomain, port=port).first()
-            result = ScreenshotSerializer(model, many=False).data
-            return result
-
-        except Exception as E:
-            logger.exception(E)
+        model = ScreenshotModel.objects.filter(ipdomain=ipdomain, port=port).first()
+        if not model:
             return None
+        result = ScreenshotSerializer(model, many=False).data
+        return result
 
     @staticmethod
     def update_or_create(ipdomain=None, port=None,

@@ -261,7 +261,7 @@ class PostModuleActuator(object):
 
         if broker == BROKER.web_python_module:
             # 放入多模块队列
-            if aps_web_module.putin_post_python_module_queue(post_module_intent):
+            if aps_web_module.putin_web_python_module_queue(post_module_intent):
                 context = data_return(201, {}, PostModuleActuator_MSG_ZH.get(201), PostModuleActuator_MSG_EN.get(201))
                 return context
             else:

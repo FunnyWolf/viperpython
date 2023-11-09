@@ -2,7 +2,6 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from Lib.log import logger
 from WebDatabase.models import LocationModel
 from WebDatabase.serializers import LocationSerializer
 
@@ -11,13 +10,11 @@ class Location(object):
 
     @staticmethod
     def get_by_ipdomain(ipdomain):
-        try:
-            model = LocationModel.objects.filter(ipdomain=ipdomain).first()
-            result = LocationSerializer(model, many=False).data
-            return result
-        except Exception as E:
-            logger.exception(E)
+        model = LocationModel.objects.filter(ipdomain=ipdomain).first()
+        if not model:
             return None
+        result = LocationSerializer(model, many=False).data
+        return result
 
     @staticmethod
     def update_or_create(ipdomain=None, isp=None, asname=None, geo_info={}, webbase_dict={}):

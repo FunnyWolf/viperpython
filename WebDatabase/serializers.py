@@ -28,7 +28,7 @@ class IPDomainSerializer(ModelSerializer):
 class PortServiceSerializer(ModelSerializer):
     class Meta(object):
         model = PortServiceModel
-        fields = ['id', 'port', 'transport', 'service', 'version', 'update_time']
+        fields = ['port', 'transport', 'service', 'version', 'update_time']
 
 
 class LocationSerializer(ModelSerializer):
