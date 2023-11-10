@@ -2,6 +2,8 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
+from django.db import transaction
+
 from WebDatabase.Handle.cdn import CDN
 from WebDatabase.Handle.cert import Cert
 from WebDatabase.Handle.component import Component
@@ -86,6 +88,7 @@ class PortService(object):
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = PortServiceModel.objects.update_or_create(ipdomain=ipdomain, port=port,
-                                                                   defaults=default_dict)
+        with transaction.atomic():
+            model, created = PortServiceModel.objects.update_or_create(ipdomain=ipdomain, port=port,
+                                                                       defaults=default_dict)
         return created

@@ -184,137 +184,125 @@ class Quake:
             images = item.get("images")
 
             webbase_dict = {
-                'source': {},
-                # 'data': item,
+                'source': source,
                 'update_time': update_time,
+                # 'data': item,
             }
-            a = []
-            cname = []
 
             # DNS 信息
-            if domain is None:  # 只有IP
-                pass
-            else:
-                if dns_reocord is None:  # 存在A记录,但是未添加到result中
-                    a = [ip]
-                else:
-                    a = dns_reocord.get("a")
-                    if a is None:
-                        a = []
+            if dns_reocord:
+                a = dns_reocord.get("a")
+                cname = dns_reocord.get("cname")
 
-                    cname = dns_reocord.get("cname")
-                    if cname is None:
-                        cname = []
-
-                # 存储dns
                 if a:
                     DNSRecord.update_or_create(domain=domain, type="A", value=a, webbase_dict=webbase_dict)
                 if cname:
                     DNSRecord.update_or_create(domain=domain, type="CNAME", value=cname, webbase_dict=webbase_dict)
 
+                # CDN
                 if Quake.is_cdn_record(cname):
-                    # 只保存Domain信息
-                    ip = None
-                    cname = dns_reocord.get("cname")
-                    a = dns_reocord.get("a")
                     CDN.update_or_create(domain=domain, port=port, flag=True, webbase_dict=webbase_dict)
                 else:
                     CDN.update_or_create(domain=domain, port=port, flag=False, webbase_dict=webbase_dict)
-            for ipdomain in [ip, domain]:
-                if ipdomain is None:
-                    continue
-                IPDomain.update_or_create(project_id=project_id,
-                                          ipdomain=ipdomain,
-                                          webbase_dict=webbase_dict)
-                Location.update_or_create(ipdomain=ipdomain,
-                                          isp=isp,
-                                          asname=asname,
-                                          geo_info=location_config,
+
+            if domain is None:
+                ipdomain = ip
+            else:
+                ipdomain = domain
+
+            IPDomain.update_or_create(project_id=project_id,
+                                      ipdomain=ipdomain,
+                                      webbase_dict=webbase_dict)
+
+            Location.update_or_create(ipdomain=ipdomain,
+                                      isp=isp,
+                                      asname=asname,
+                                      geo_info=location_config,
+                                      webbase_dict=webbase_dict)
+
+            PortService.update_or_create(ipdomain=ipdomain, port=port,
+                                         transport=item.get("transport"),
+                                         service=service_name,
+                                         version=service_config.get("version"),
+                                         webbase_dict=webbase_dict)
+
+            # HttpComponentModel
+            if components:
+                components = item.get("components")
+                for component in components:
+                    product_name = component.get("product_name_en")
+                    product_version = component.get("version")
+                    product_type = component.get("product_type")
+                    product_catalog = component.get("product_catalog")
+                    product_dict_values = component
+
+                    Component.update_or_create(ipdomain=ipdomain,
+                                               port=port,
+                                               product_name=product_name,
+                                               product_version=product_version,
+                                               product_type=product_type,
+                                               product_catalog=product_catalog,
+                                               product_dict_values=product_dict_values,
+                                               webbase_dict=webbase_dict
+                                               )
+
+            # HttpScreenshot
+            if images:
+                for image in images:
+                    image_base64 = Quake.get_images_base64(image.get("s3_url"))
+                    Screenshot.update_or_create(ipdomain=ipdomain, port=port, content=image_base64,
+                                                webbase_dict=webbase_dict)
+            # Cert
+            if service_name.endswith("/ssl"):
+                tls_jarm = service_config.get("tls-jarm")
+                if tls_jarm:
+                    jarm_hash = tls_jarm.get("jarm_hash")
+                else:
+                    jarm_hash = None
+
+                Cert.update_or_create(ipdomain=ipdomain, port=port,
+                                      cert=service_config.get("cert"),
+                                      jarm=jarm_hash,
+                                      webbase_dict=webbase_dict
+                                      )
+
+            # http
+            if service_name.startswith("http"):
+                http_config = service_config.get("http")
+                # HttpBaseModel
+                HttpBase.update_or_create(ipdomain=ipdomain, port=port,
+                                          title=http_config.get("title"),
+                                          status_code=http_config.get("status_code"),
+                                          header=http_config.get("response_headers"),
+                                          response=service_config.get("response"),
+                                          body=http_config.get("body"),
                                           webbase_dict=webbase_dict
                                           )
-                PortService.update_or_create(ipdomain=ipdomain, port=port,
-                                             transport=item.get("transport"),
-                                             service=service_name,
-                                             version=service_config.get("version"),
-                                             webbase_dict=webbase_dict
-                                             )
-                # HttpComponentModel
-                if components:
-                    components = item.get("components")
-                    for component in components:
-                        product_name = component.get("product_name_en")
-                        product_version = component.get("version")
-                        product_type = component.get("product_type")
-                        product_catalog = component.get("product_catalog")
-                        product_dict_values = component
 
-                        Component.update_or_create(ipdomain=ipdomain,
-                                                   port=port,
-                                                   product_name=product_name,
-                                                   product_version=product_version,
-                                                   product_type=product_type,
-                                                   product_catalog=product_catalog,
-                                                   product_dict_values=product_dict_values,
-                                                   webbase_dict=webbase_dict
-                                                   )
+                # HttpFavicon
+                if http_config.get("favicon"):
+                    favicon_config = http_config.get("favicon")
+                    favicon_base64 = Quake.get_images_base64(favicon_config.get("s3_url"))
+                    if favicon_base64:
+                        favicon_hash = favicon_config.get("hash")
+                        HttpFavicon.update_or_create(ipdomain=ipdomain, port=port, content=favicon_base64,
+                                                     hash=favicon_hash, webbase_dict=webbase_dict)
 
-                # HttpScreenshot
-                if images:
-                    for image in images:
-                        image_base64 = Quake.get_images_base64(image.get("s3_url"))
-                        Screenshot.update_or_create(ipdomain=ipdomain, port=port, content=image_base64,
-                                                    webbase_dict=webbase_dict)
+                # DomainICPModel
+                if http_config.get("icp"):
+                    icp_config = http_config.get("icp")
+                    domain_icp = icp_config.get("domain")
+                    main_license = icp_config.get("main_licence")
+                    unit = main_license.get("unit")
+                    update_time_icp = TimeAPI.str_to_timestamp(icp_config.get("update_time"),
+                                                               format='%Y-%m-%dT%H:%M:%SZ')
+                    webbase_dict_icp = {}
+                    webbase_dict_icp.update(webbase_dict)
+                    webbase_dict_icp["update_time"] = update_time_icp
 
-                if service_name.endswith("/ssl"):
-                    # Cert
-                    tls_jarm = service_config.get("tls-jarm")
-                    if tls_jarm:
-                        jarm_hash = tls_jarm.get("jarm_hash")
-                    else:
-                        jarm_hash = None
+                    IPDomain.update_or_create(project_id=project_id, ipdomain=domain_icp,
+                                              webbase_dict=webbase_dict)
 
-                    Cert.update_or_create(ipdomain=ipdomain, port=port,
-                                          cert=service_config.get("cert"),
-                                          jarm=jarm_hash,
-                                          webbase_dict=webbase_dict
-                                          )
-
-                if service_name.startswith("http"):
-                    http_config = service_config.get("http")
-                    # HttpBaseModel
-                    HttpBase.update_or_create(ipdomain=ipdomain, port=port,
-                                              title=http_config.get("title"),
-                                              status_code=http_config.get("status_code"),
-                                              header=http_config.get("response_headers"),
-                                              response=service_config.get("response"),
-                                              body=http_config.get("body"),
-                                              webbase_dict=webbase_dict
-                                              )
-
-                    # HttpFavicon
-                    if http_config.get("favicon"):
-                        favicon_config = http_config.get("favicon")
-                        favicon_base64 = Quake.get_images_base64(favicon_config.get("s3_url"))
-                        if favicon_base64:
-                            favicon_hash = favicon_config.get("hash")
-                            HttpFavicon.update_or_create(ipdomain=ipdomain, port=port, content=favicon_base64,
-                                                         hash=favicon_hash, webbase_dict=webbase_dict)
-
-                    # DomainICPModel
-                    if http_config.get("icp"):
-                        icp_config = http_config.get("icp")
-                        domain_icp = icp_config.get("domain")
-                        main_license = icp_config.get("main_licence")
-                        unit = main_license.get("unit")
-                        update_time_icp = TimeAPI.str_to_timestamp(icp_config.get("update_time"),
-                                                                   format='%Y-%m-%dT%H:%M:%SZ')
-                        webbase_dict_icp = {}
-                        webbase_dict_icp.update(webbase_dict)
-                        webbase_dict_icp["update_time"] = update_time_icp
-
-                        IPDomain.update_or_create(project_id=project_id, ipdomain=domain_icp,
-                                                  webbase_dict=webbase_dict)
-
-                        DomainICP.update_or_create(ipdomain=domain_icp,
-                                                   license=icp_config.get("licence"),
-                                                   unit=unit, webbase_dict=webbase_dict_icp)
+                    DomainICP.update_or_create(ipdomain=domain_icp,
+                                               license=icp_config.get("licence"),
+                                               unit=unit, webbase_dict=webbase_dict_icp)

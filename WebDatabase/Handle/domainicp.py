@@ -2,6 +2,8 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
+from django.db import transaction
+
 from WebDatabase.models import DomainICPModel
 from WebDatabase.serializers import DomainICPSerializer
 
@@ -26,6 +28,7 @@ class DomainICP(object):
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = DomainICPModel.objects.update_or_create(ipdomain=ipdomain,
-                                                                 defaults=default_dict)
+        with transaction.atomic():
+            model, created = DomainICPModel.objects.update_or_create(ipdomain=ipdomain,
+                                                                     defaults=default_dict)
         return created

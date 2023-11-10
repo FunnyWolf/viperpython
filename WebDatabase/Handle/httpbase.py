@@ -2,6 +2,9 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
+
+from django.db import transaction
+
 from WebDatabase.models import HttpBaseModel
 from WebDatabase.serializers import HttpBaseSerializer
 
@@ -32,5 +35,6 @@ class HttpBase(object):
             'body': body,
         }
         default_dict.update(webbase_dict)
-        model, create = HttpBaseModel.objects.update_or_create(ipdomain=ipdomain, port=port, defaults=default_dict)
+        with transaction.atomic():
+            model, create = HttpBaseModel.objects.update_or_create(ipdomain=ipdomain, port=port, defaults=default_dict)
         return create

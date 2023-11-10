@@ -35,13 +35,9 @@ class PostModule(WebPythonModule):
         return True, ""
 
     def run(self):
-        self.log_info(f"主域名: {self.param('Domain')}", f"Domain: {self.param('Domain')}")
         source_key = f"domain:\"{self.param('Domain')}\""
         msg, items = self.quake_client.get_json_data(source_key)
         if items is None:
-            self.log_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
             return False
-
         self.quake_client.store_query_result(items, source={})
-        self.log_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
         return True

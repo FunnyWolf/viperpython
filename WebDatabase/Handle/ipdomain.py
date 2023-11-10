@@ -3,6 +3,8 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
+from django.db import transaction
+
 from Lib.api import data_return
 from Lib.configs import IPDomain_MSG_ZH, IPDomain_MSG_EN
 from Lib.log import logger
@@ -73,8 +75,9 @@ class IPDomain(object):
 
     @staticmethod
     def update_project_id(project_id=None, ipdomain=None):
-        update_count = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
-        return {"count": update_count}
+        with transaction.atomic():
+            update_count = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
+            return {"count": update_count}
 
     @staticmethod
     def update_or_create(project_id=None,
@@ -85,8 +88,9 @@ class IPDomain(object):
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = IPDomainModel.objects.update_or_create(ipdomain=ipdomain,
-                                                                defaults=default_dict)
+        with transaction.atomic():
+            model, created = IPDomainModel.objects.update_or_create(ipdomain=ipdomain,
+                                                                    defaults=default_dict)
 
         return created
 

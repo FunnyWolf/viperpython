@@ -1,5 +1,5 @@
-from django.contrib.postgres.fields import ArrayField
-from django.contrib.postgres.fields import HStoreField
+# from django.contrib.postgres.fields import ArrayField
+# from django.contrib.postgres.fields import HStoreField
 from django.db import models
 
 from Lib.log import logger
@@ -57,7 +57,8 @@ class ProjectModel(ProjectBaseModel):
 
 class DNSRecordModel(IPDomainBaseModel):
     type = models.CharField(blank=True, null=True, max_length=10)  # A/CNAME
-    value = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True, default=list)
+    # value = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True, default=list)
+    value = models.JSONField(default=list)
 
 
 class IPDomainModel(IPDomainBaseModel, ProjectBaseModel):
@@ -81,7 +82,8 @@ class DomainICPModel(IPDomainBaseModel):
 class LocationModel(IPDomainBaseModel):
     isp = models.CharField(blank=True, null=True, max_length=100)
     asname = models.CharField(blank=True, null=True, max_length=100)
-    geo_info = HStoreField(default=dict)
+    # geo_info = HStoreField(default=dict)
+    geo_info = models.JSONField(default=dict)
 
 
 class PortServiceModel(PortBaseModel):
@@ -93,9 +95,13 @@ class PortServiceModel(PortBaseModel):
 class ComponentModel(PortBaseModel):
     product_name = models.CharField(blank=True, null=True, max_length=100)
     product_version = models.CharField(blank=True, null=True, max_length=100)
-    product_type = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
-    product_catalog = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
-    product_dict_values = HStoreField(default=dict)
+    # product_type = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
+    # product_catalog = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
+    product_type = models.JSONField(default=list)
+    product_catalog = models.JSONField(default=list)
+
+    # product_dict_values = HStoreField(default=dict)
+    product_dict_values = models.JSONField(default=dict)
 
 
 class CertModel(PortBaseModel):
