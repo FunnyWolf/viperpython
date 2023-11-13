@@ -65,7 +65,7 @@ router.register(r'api/v1/a', CollectSandBoxInterfaceView, basename="CollectSandB
 urlpatterns = [
     re_path(r'^', include(router.urls)),
 ]
-#
-# from Lib.montior import MainMonitor
-#
-# MainMonitor().start()
+
+from Lib.montior import MainMonitor
+
+MainMonitor().start()
