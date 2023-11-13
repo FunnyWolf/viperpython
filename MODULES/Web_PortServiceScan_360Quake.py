@@ -45,6 +45,6 @@ class PostModule(WebPythonModule):
                 Notice.send_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
                 return False
 
-            self.quake_client.store_query_result(items, source={})
-        # Notice.send_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
-        return True
+            self.quake_client.store_query_result(items, project_id=self.project_id, source={})
+            # Notice.send_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
+            return True

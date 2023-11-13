@@ -28,7 +28,7 @@ class IPDomainSerializer(ModelSerializer):
 class PortServiceSerializer(ModelSerializer):
     class Meta(object):
         model = PortServiceModel
-        fields = ['port', 'transport', 'service', 'version', 'update_time']
+        fields = ['port', 'response', 'response_hash', 'transport', 'service', 'version', 'update_time']
 
 
 class LocationSerializer(ModelSerializer):
@@ -70,7 +70,7 @@ class CDNSerializer(ModelSerializer):
 class HttpBaseSerializer(ModelSerializer):
     class Meta(object):
         model = HttpBaseModel
-        fields = ['title', 'status_code', 'response', 'header', 'body']
+        fields = ['title', 'status_code', 'header', 'body']
 
 
 class HttpFaviconSerializer(ModelSerializer):

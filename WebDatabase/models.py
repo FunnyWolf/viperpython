@@ -88,6 +88,8 @@ class PortServiceModel(PortBaseModel):
     transport = models.CharField(default="tcp", blank=True, null=True, max_length=100)
     service = models.CharField(blank=True, null=True, max_length=100)
     version = models.CharField(blank=True, null=True, max_length=100)
+    response = models.TextField(blank=True, null=True)
+    response_hash = models.CharField(blank=True, null=True, max_length=100)
 
 
 class ComponentModel(PortBaseModel):
@@ -113,7 +115,6 @@ class ScreenshotModel(PortBaseModel):
 class HttpBaseModel(PortBaseModel):
     title = models.CharField(blank=True, null=True, max_length=100)
     status_code = models.IntegerField(default=0)
-    response = models.TextField(blank=True, null=True)
     header = models.TextField(blank=True, null=True)
     body = models.TextField(blank=True, null=True)
 

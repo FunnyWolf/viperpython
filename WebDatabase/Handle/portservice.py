@@ -17,8 +17,10 @@ from WebDatabase.serializers import PortServiceSerializer
 class PortService(object):
 
     @staticmethod
-    def list_by_ipdomain(ipdomain):
+    def list_by_ipdomain(ipdomain, port):
         models = PortServiceModel.objects.filter(ipdomain=ipdomain)
+        if port:
+            models = models.filter(port=port)
         result = PortServiceSerializer(models, many=True).data
         return result
 
@@ -75,13 +77,15 @@ class PortService(object):
             return 0
 
     @staticmethod
-    def update_or_create(ipdomain=None, port=None, transport=None, service=None, version=None, webbase_dict={}):
+    def update_or_create(ipdomain=None, port=None, response=None,
+                         response_hash=None, transport=None, service=None, version=None, webbase_dict={}):
         # 给出更新PortServiceModel方法
 
         default_dict = {
             # 'ipdomain': ipdomain,
             # 'port': port,
-
+            'response': response,
+            'response_hash': response_hash,
             'transport': transport,
             'service': service,
             'version': version,

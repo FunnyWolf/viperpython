@@ -172,6 +172,8 @@ class Quake:
             port = item.get("port")
 
             service_config = item.get("service")
+            response = service_config.get("response")
+            response_hash = service_config.get("response_hash")
             dns_reocord = service_config.get("dns")
 
             service_name = service_config.get("name")
@@ -221,12 +223,14 @@ class Quake:
                                       webbase_dict=webbase_dict)
 
             PortService.update_or_create(ipdomain=ipdomain, port=port,
+                                         response=response,
+                                         response_hash=response_hash,
                                          transport=item.get("transport"),
                                          service=service_name,
                                          version=service_config.get("version"),
                                          webbase_dict=webbase_dict)
 
-            # HttpComponentModel
+            # ComponentModel
             if components:
                 components = item.get("components")
                 for component in components:
@@ -246,7 +250,7 @@ class Quake:
                                                webbase_dict=webbase_dict
                                                )
 
-            # HttpScreenshot
+            # Screenshot
             if images:
                 for image in images:
                     image_base64 = Quake.get_images_base64(image.get("s3_url"))
@@ -274,7 +278,6 @@ class Quake:
                                           title=http_config.get("title"),
                                           status_code=http_config.get("status_code"),
                                           header=http_config.get("response_headers"),
-                                          response=service_config.get("response"),
                                           body=http_config.get("body"),
                                           webbase_dict=webbase_dict
                                           )

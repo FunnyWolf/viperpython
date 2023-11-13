@@ -35,3 +35,20 @@ class DNSRecord(object):
                                                                      type=type,
                                                                      defaults=default_dict)
         return created
+
+    @staticmethod
+    def get_by_ipdomain(ipdomain):
+        model = DNSRecordModel.objects.filter(ipdomain=ipdomain).first()
+        if not model:
+            return None
+        result = DNSRecordSerializer(model).data
+        return result
+
+    @staticmethod
+    def get_domain_ip(domain):
+        model = DNSRecordModel.objects.filter(ipdomain=domain, type="A").first()
+        if not model:
+            return None
+        result = DNSRecordSerializer(model).data
+        a = result.get("value")
+        return a[0]

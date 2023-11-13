@@ -21,7 +21,7 @@ class HttpBase(object):
 
     @staticmethod
     def update_or_create(ipdomain=None, port=None,
-                         title=None, status_code=None, header=None, response=None, body=None, webbase_dict={}):
+                         title=None, status_code=None, header=None, body=None, webbase_dict={}):
         # 给出更新PortServiceModel方法
 
         default_dict = {
@@ -31,7 +31,6 @@ class HttpBase(object):
             'title': title,
             'status_code': status_code,
             'header': header,
-            'response': response,
             'body': body,
         }
         default_dict.update(webbase_dict)

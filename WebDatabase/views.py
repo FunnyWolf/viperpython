@@ -67,10 +67,18 @@ class IPDomainView(BaseView):
             logger.error(E)
             context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
             return Response(context)
+        project_id = request.query_params.get('project_id', None)
+        ipdomain = request.query_params.get('ipdomain', None)
+        port = request.query_params.get('port', None)
+        try:
+            port = int(port)
+        except Exception as _:
+            port = None
 
         try:
-            project_id = request.query_params.get('project_id', None)
-            result, pagination = IPDomain.list(project_id=project_id, pagination=pagination)
+
+            result, pagination = IPDomain.list(project_id=project_id, pagination=pagination, ipdomain=ipdomain,
+                                               port=port)
             context = data_return(200, {"result": result, "pagination": pagination}, CODE_MSG_ZH.get(200),
                                   CODE_MSG_EN.get(200))
         except Exception as E:
