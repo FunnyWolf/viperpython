@@ -15,6 +15,7 @@ from Core.Handle.host import Host
 from Core.Handle.setting import Settings
 from Core.Handle.uuidjson import UUIDJson
 from Lib.Module.moduletemplate import BROKER
+from Lib.apswebmodule import APSWebModule
 from Lib.botmodule import BotModule
 from Lib.configs import *
 from Lib.file import File
@@ -104,16 +105,24 @@ class MainMonitor(object):
         self.MainScheduler.start()
 
         self.BotScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
+
         # msf bot 运行测试线程
         self.BotScheduler.add_job(func=self.run_msf_bot_thread, max_instances=1,
                                   trigger='interval',
                                   seconds=1, id='run_msf_bot_thread')
 
         # python bot 运行测试线程
-        self.BotScheduler.add_job(func=self.run_python_bot_thread, max_instances=3,
+        self.BotScheduler.add_job(func=self.run_python_bot_thread, max_instances=1,
                                   trigger='interval',
                                   seconds=1, id='run_python_bot_thread')
         self.BotScheduler.start()
+
+        # web module
+        self.WebModuleScheduler = BackgroundScheduler(timezone='Asia/Shanghai')
+        self.WebModuleScheduler.add_job(func=APSWebModule.run_web_module_thread, max_instances=2,
+                                        trigger='interval',
+                                        seconds=1, id='run_web_module_thread')
+        self.WebModuleScheduler.start()
 
         # 启动自动化定时任务
         postModuleSingletonScheduler.start()

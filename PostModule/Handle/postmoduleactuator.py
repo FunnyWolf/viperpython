@@ -10,7 +10,7 @@ import uuid
 from Lib.Module.configs import BROKER
 from Lib.api import data_return, get_one_uuid_str
 from Lib.apsmodule import aps_module
-from Lib.apswebmodule import aps_web_module
+from Lib.apswebmodule import APSWebModule
 from Lib.configs import PostModuleActuator_MSG_ZH, PostModuleActuator_MSG_EN
 from Lib.log import logger
 from Lib.msfmodule import MSFModule
@@ -209,7 +209,7 @@ class PostModuleActuator(object):
         # 获取模块实例
         try:
             class_intent = importlib.import_module(loadpath)
-            post_module_intent = class_intent.PostModule(project_id, input_list, custom_param)
+            web_module_intent = class_intent.PostModule(project_id, input_list, custom_param)
         except Exception as E:
             logger.warning(E)
             context = data_return(305, {}, PostModuleActuator_MSG_ZH.get(305), PostModuleActuator_MSG_EN.get(305))
@@ -218,13 +218,13 @@ class PostModuleActuator(object):
         # 格式化固定字段
         # AUTHOR字段可能为list或者str,需要统一处理
         try:
-            post_module_intent.AUTHOR = module_config.get("AUTHOR")
+            web_module_intent.AUTHOR = module_config.get("AUTHOR")
         except Exception as E:
             logger.warning(E)
 
         # 模块前序检查,调用check函数
         try:
-            check_result = post_module_intent.check()
+            check_result = web_module_intent.check()
             # 模块忘记返回True,按照通过处理
             if check_result is None:
                 pass
@@ -253,7 +253,7 @@ class PostModuleActuator(object):
             return context
 
         try:
-            broker = post_module_intent.MODULE_BROKER
+            broker = web_module_intent.MODULE_BROKER
         except Exception as E:
             logger.warning(E)
             context = data_return(305, {}, PostModuleActuator_MSG_ZH.get(305), PostModuleActuator_MSG_EN.get(305))
@@ -261,7 +261,7 @@ class PostModuleActuator(object):
 
         if broker == BROKER.web_python_module:
             # 放入多模块队列
-            if aps_web_module.putin_web_python_module_queue(post_module_intent):
+            if APSWebModule.putin_web_python_module_queue(web_module_intent):
                 context = data_return(201, {}, PostModuleActuator_MSG_ZH.get(201), PostModuleActuator_MSG_EN.get(201))
                 return context
             else:

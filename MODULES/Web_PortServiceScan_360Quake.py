@@ -26,11 +26,6 @@ class PostModule(WebPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-        # if self.param("MaxSize") > 1000:
-        #     return False, "MaxSize不能大于1000", "MaxSize cannot be greater than 1000"
-        # elif self.param("MaxSize") < 0:
-        #     return False, "MaxSize不能小于0", "MaxSize cannot be less than 0"
-
         if self.quake_client.init_conf_from_cache() is not True:
             return False, "Quake 配置无效", "Quake configuration invalid"
         return True, ""
@@ -46,5 +41,3 @@ class PostModule(WebPythonModule):
                 return False
 
             self.quake_client.store_query_result(items, project_id=self.project_id, source={})
-            # Notice.send_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
-            return True

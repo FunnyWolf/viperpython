@@ -3,6 +3,7 @@
 # @Date  : 2021/2/27
 # @Desc  :
 from Lib.xcache import Xcache
+from Msgrpc.Handle.job import Job
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
 
 
@@ -13,6 +14,16 @@ class WebSync(object):
     @staticmethod
     def get_result():
         result = {}
+
+        jobs = Job.list_web_jobs()
+        cache_jobs = Xcache.get_websync_cache_jobs()
+        if cache_jobs == jobs:
+            result["jobs_update"] = False
+            result["jobs"] = []
+        else:
+            Xcache.set_websync_cache_jobs(jobs)
+            result["jobs_update"] = True
+            result["jobs"] = jobs
 
         # module_options 列表
         module_options = PostModuleConfig.list_dynamic_option()
@@ -28,8 +39,11 @@ class WebSync(object):
 
     @staticmethod
     def first_result():
+        jobs = Job.list_web_jobs()
         module_options = PostModuleConfig.list_dynamic_option()
         result = {
+            'jobs_update': True,
+            'jobs': jobs,
             'module_options_update': True,
             'module_options': module_options,
         }

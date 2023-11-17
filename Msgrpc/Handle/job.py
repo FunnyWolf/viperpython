@@ -8,6 +8,7 @@ import time
 from Lib.Module.configs import HANDLER_OPTION, BROKER
 from Lib.api import data_return
 from Lib.apsmodule import aps_module
+from Lib.apswebmodule import APSWebModule
 from Lib.configs import Job_MSG_ZH, CODE_MSG_ZH, RPC_FRAMEWORK_API_REQ, Job_MSG_EN, CODE_MSG_EN, \
     MSF_MODULE_CALLBACK_WAIT_SENCOND
 from Lib.log import logger
@@ -15,7 +16,7 @@ from Lib.method import Method
 from Lib.notice import Notice
 from Lib.rpcclient import RpcClient
 from Lib.xcache import Xcache
-from Msgrpc.serializers import PostModuleSerializer, BotModuleSerializer
+from Msgrpc.serializers import PostModuleSerializer, BotModuleSerializer, WebModuleSerializer, WebModuleTaskSerializer
 
 
 class Job(object):
@@ -53,6 +54,17 @@ class Job(object):
                     req.pop("module")
                     reqs_temp.append(req)
                     continue
+        return reqs_temp
+
+    @staticmethod
+    def list_web_jobs():
+        """获取后台任务列表,包括msf任务及本地多模块任务"""
+        tasks = Xcache.list_web_module_task()
+        reqs_temp = []
+        for task in tasks:
+            task.module_config = WebModuleSerializer(task.module, many=False).data
+            task_config = WebModuleTaskSerializer(task, many=False).data
+            reqs_temp.append(task_config)
         return reqs_temp
 
     @staticmethod
@@ -174,6 +186,15 @@ class Job(object):
                     return context
                 else:
                     context = data_return(204, {"uuid": task_uuid}, Job_MSG_ZH.get(204), Job_MSG_EN.get(204))
+                    return context
+            elif broker == BROKER.web_python_module:
+                flag = APSWebModule.delete_job_by_uuid(task_uuid)
+                if flag is not True:
+                    context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))
+                    return context
+                else:
+                    context = data_return(204, {"uuid": task_uuid, "job_id": job_id}, Job_MSG_ZH.get(204),
+                                          Job_MSG_EN.get(204))
                     return context
             else:
                 context = data_return(304, {}, Job_MSG_ZH.get(304), Job_MSG_EN.get(304))

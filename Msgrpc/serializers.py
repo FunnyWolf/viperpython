@@ -76,6 +76,32 @@ class PostModuleSerializer(Serializer):
     _ipaddress = CharField(max_length=100)  # 前端传入的ipaddress信息
 
 
+class WebModuleSerializer(Serializer):
+    NAME_ZH = CharField(max_length=100)
+    NAME_EN = CharField(max_length=100)
+
+    DESC_ZH = CharField(max_length=100)
+    DESC_EN = CharField(max_length=100)
+
+    MODULETYPE = CharField(max_length=100)  # 模块类型
+    AUTHOR = ListField()  # 模块作者
+    README = ListField()
+    ATTCK = ListField()
+    REFERENCES = ListField()
+    _custom_param = DictField()  # 前端传入的参数信息
+
+    project_id = CharField(max_length=100)  # 前端传入的project_id信息
+    input_list = ListField()
+
+
+class WebModuleTaskSerializer(Serializer):
+    broker = CharField(max_length=100)
+    task_uuid = CharField(max_length=100)
+    time = IntegerField()
+    module_config = DictField()
+    status = CharField(max_length=100)
+
+
 class BotModuleSerializer(Serializer):
     NAME_ZH = CharField(max_length=100)
     NAME_EN = CharField(max_length=100)

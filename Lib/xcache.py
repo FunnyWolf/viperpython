@@ -11,6 +11,7 @@ from CONFIG import DEBUG
 from Lib.api import get_one_uuid_str
 from Lib.configs import EXPIRE_MINUTES
 from Lib.log import logger
+from Lib.webmoduletask import WebModuleTaskStatus, WebModuleTask
 
 
 class Xcache(object):
@@ -28,8 +29,6 @@ class Xcache(object):
     XCACHE_NOTICES_LIST = "XCACHE_NOTICES_LIST"
 
     XCACHE_MODULES_TASK_LIST = "XCACHE_MODULES_TASK_LIST"
-
-    XCACHE_WEB_MODULES_TASK_LIST = "XCACHE_WEB_MODULES_TASK_LIST"
 
     XCACHE_BOT_MODULES_WAIT_LIST = "XCACHE_BOT_MODULES_WAIT_LIST"
 
@@ -112,7 +111,8 @@ class Xcache(object):
 
     XCACHE_SAMPLE_DATA = "XCACHE_SAMPLE_DATA"
 
-    XCACHE_WEBSYNC_CACHE_IPDOMAINS = "XCACHE_WEBSYNC_CACHE_IPDOMAINS"
+    XCACHE_WEB_MODULE_TASK_LIST = "XCACHE_WEB_MODULE_TASK_LIST"
+    XCACHE_WEBSYNC_CACHE_JOBS = "XCACHE_WEBSYNC_CACHE_JOBS"
 
     def __init__(self):
         pass
@@ -220,19 +220,11 @@ class Xcache(object):
         # 清理模块配置缓存
         cache.set(Xcache.XCACHE_MODULES_CONFIG, None, None)
 
+        # web_module_task_list
+        cache.set(Xcache.XCACHE_WEB_MODULE_TASK_LIST, None, None)
+
         # 清理muit_module缓存
         re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
-        keys = cache.keys(re_key)
-        for key in keys:
-            try:
-                req = cache.get(key)
-            except Exception as _:
-                cache.delete(key)
-                continue
-            if req.get("job_id") is None:
-                cache.delete(key)
-
-        re_key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_*"
         keys = cache.keys(re_key)
         for key in keys:
             try:
@@ -385,43 +377,6 @@ class Xcache(object):
         re_key = f"{Xcache.XCACHE_MODULES_TASK_LIST}_*"
         keys = cache.keys(re_key)
         return len(keys)
-
-    # web module
-
-    @staticmethod
-    def get_web_module_task_by_uuid(task_uuid):
-        key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_{task_uuid}"
-        req = cache.get(key)
-        return req
-
-    @staticmethod
-    def list_web_module_tasks():
-        re_key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_*"
-        keys = cache.keys(re_key)
-        reqs = []
-        for key in keys:
-            reqs.append(cache.get(key))
-        return reqs
-
-    @staticmethod
-    def create_web_module_task(req):
-        """任务队列"""
-        key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_{req.get('uuid')}"
-        cache.set(key, req, None)
-        return True
-
-    @staticmethod
-    def del_web_module_task_by_uuid(task_uuid):
-        key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_{task_uuid}"
-        cache.delete(key)
-
-    @staticmethod
-    def get_web_module_task_length():
-        re_key = f"{Xcache.XCACHE_WEB_MODULES_TASK_LIST}_*"
-        keys = cache.keys(re_key)
-        return len(keys)
-
-    # web module
 
     @staticmethod
     def pop_one_from_bot_wait(broker):
@@ -1291,15 +1246,68 @@ class Xcache(object):
         data = cache.get(cache_key)
         return data
 
-    @staticmethod
-    def get_websync_cache_ipdomains():
-        result = cache.get(Xcache.XCACHE_WEBSYNC_CACHE_IPDOMAINS)
-        if result is None:
-            return []
+    # XCACHE_WEB_MODULE_TASK_LIST
 
+    @staticmethod
+    def list_web_module_task():
+        data = cache.get(Xcache.XCACHE_WEB_MODULE_TASK_LIST)
+        if data is None:
+            cache.set(Xcache.XCACHE_WEB_MODULE_TASK_LIST, [], None)
+            return []
+        else:
+            return data
+
+    @staticmethod
+    def is_web_module_task_running(task_uuid):
+        task_list: list = Xcache.list_web_module_task()
+        for one_task in task_list:
+            if one_task.status == WebModuleTaskStatus.running and one_task.task_uuid == task_uuid:
+                return True
+        else:
+            return False
+
+    @staticmethod
+    def del_web_module_task(task_uuid):
+        task_list: list = Xcache.list_web_module_task()
+        for one_task in task_list:
+            if one_task.task_uuid == task_uuid:
+                task_list.remove(one_task)
+        cache.set(Xcache.XCACHE_WEB_MODULE_TASK_LIST, task_list, None)
+        return True
+
+    @staticmethod
+    def get_web_module_task(task_uuid):
+        task_list: list = Xcache.list_web_module_task()
+        for one_task in task_list:
+            if one_task.task_uuid == task_uuid:
+                return one_task
+        else:
+            return None
+
+    @staticmethod
+    def pop_web_module_task_from_waiting():
+        task_list: list = Xcache.list_web_module_task()
+        for one_task in task_list:
+            if one_task.status == WebModuleTaskStatus.waiting:
+                one_task.status = WebModuleTaskStatus.running
+                cache.set(Xcache.XCACHE_WEB_MODULE_TASK_LIST, task_list, None)
+                return one_task
+        else:
+            return None
+
+    @staticmethod
+    def add_web_module_task(task: WebModuleTask):
+        task_list: list = Xcache.list_web_module_task()
+        task_list.append(task)
+        cache.set(Xcache.XCACHE_WEB_MODULE_TASK_LIST, task_list, None)
+        return True
+
+    @staticmethod
+    def get_websync_cache_jobs():
+        result = cache.get(Xcache.XCACHE_WEBSYNC_CACHE_JOBS)
         return result
 
     @staticmethod
-    def set_websync_cache_ipdomains(result):
-        cache.set(Xcache.XCACHE_WEBSYNC_CACHE_IPDOMAINS, result, None)
+    def set_websync_cache_jobs(result):
+        cache.set(Xcache.XCACHE_WEBSYNC_CACHE_JOBS, result, None)
         return True
