@@ -8,6 +8,7 @@ from django.db import transaction
 from Lib.api import data_return, is_ipaddress
 from Lib.configs import IPDomain_MSG_ZH, IPDomain_MSG_EN
 from Lib.log import logger
+from WebDatabase.Handle.cdn import CDN
 from WebDatabase.Handle.dnsrecord import DNSRecord
 from WebDatabase.Handle.domainicp import DomainICP
 from WebDatabase.Handle.location import Location
@@ -19,7 +20,7 @@ from WebDatabase.serializers import IPDomainSerializer
 class IPDomain(object):
 
     @staticmethod
-    def list(project_id=None, pagination=None, ipdomain=None, port=None):
+    def list(project_id=None, pagination=None, ipdomain_s=None, port_s=None):
         # pagination
         if pagination is None:
             pagination = {'current': 1, 'pageSize': 10}
@@ -29,11 +30,9 @@ class IPDomain(object):
 
         filter_models = IPDomainModel.objects.filter(project_id=project_id)
 
-        # search params start
-        if ipdomain:
-            filter_models = filter_models.filter(ipdomain__icontains=ipdomain)
-
-        # search params end
+        # search params
+        if ipdomain_s:
+            filter_models = filter_models.filter(ipdomain__icontains=ipdomain_s)
 
         pagination["total"] = filter_models.count()
 
@@ -49,7 +48,7 @@ class IPDomain(object):
             if is_ipaddress(ipdomain):
                 ip = ipdomain
             else:
-                ip = DNSRecord.get_domain_ip(ipdomain)
+                ip = DNSRecord.get_domain_first_ip(ipdomain)
             ipdomain_record["ip"] = ip
 
             # location
@@ -64,22 +63,28 @@ class IPDomain(object):
             dnsrecord = DNSRecord.list_by_ipdomain(ipdomain)
             ipdomain_record["dnsrecord"] = dnsrecord
 
-            # ports
-            portservice_list = PortService.list_by_ipdomain(ipdomain, port)
+            # cdn
+            cdn = CDN.get_by_ipdomain_port(ipdomain)
+            ipdomain_record["cdn"] = cdn
 
-            if not portservice_list and (port is None):  # ipdomain 没有端口信息且没有过滤端口
+            # ports
+            portservice_list = PortService.list_by_ipdomain_and_filter(ipdomain, port_s)
+
+            if not portservice_list and (port_s is None):  # ipdomain 没有端口信息且没有过滤端口
                 one_record = {}
                 one_record.update(ipdomain_record)
 
                 ipdomains_result.append(one_record)
             else:
                 for portservice in portservice_list:
-                    port = portservice.get('port')
-                    port_record = PortService.get_info_by_ipdomain_port(ipdomain, port)
-
                     one_record = {}
                     one_record.update(ipdomain_record)
-                    one_record.update(port_record)
+
+                    port = portservice.get('port')
+                    port_record = PortService.get_info_by_ipdomain_port(ipdomain, port)
+                    port_record['service'] = portservice
+
+                    one_record['port'] = port_record
 
                     ipdomains_result.append(one_record)
         return ipdomains_result, pagination

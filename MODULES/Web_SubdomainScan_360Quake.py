@@ -24,8 +24,9 @@ class PostModule(WebPythonModule):
                   desc_en="Domain"),
     ])
 
-    def __init__(self, sessionid, ipaddress, custom_param):
-        super().__init__(sessionid, ipaddress, custom_param)
+    def __init__(self, project_id, input_list: list, custom_param):
+        super().__init__(project_id, input_list, custom_param)
+
         self.quake_client = Quake()
 
     def check(self):

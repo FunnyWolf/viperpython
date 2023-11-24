@@ -22,7 +22,7 @@ class ProjectSerializer(ModelSerializer):
 class IPDomainSerializer(ModelSerializer):
     class Meta(object):
         model = IPDomainModel
-        fields = ['project_id', 'ipdomain']
+        fields = ['project_id', 'ipdomain', 'update_time']
 
 
 class PortServiceSerializer(ModelSerializer):
@@ -34,55 +34,56 @@ class PortServiceSerializer(ModelSerializer):
 class LocationSerializer(ModelSerializer):
     class Meta(object):
         model = LocationModel
-        fields = ['isp', 'asname', 'geo_info']
+        fields = ['isp', 'asname', 'geo_info', 'update_time']
 
 
 class CertSerializer(ModelSerializer):
     class Meta(object):
         model = CertModel
-        fields = ['cert', 'jarm']
+        fields = ['cert', 'jarm', 'update_time']
 
 
 class ScreenshotSerializer(ModelSerializer):
     class Meta(object):
         model = ScreenshotModel
-        fields = ['content']
+        fields = ['content', 'update_time']
 
 
 class DNSRecordSerializer(ModelSerializer):
     class Meta(object):
         model = DNSRecordModel
-        fields = ['type', 'value']
+        fields = ['type', 'value', 'update_time']
 
 
 class DomainICPSerializer(ModelSerializer):
     class Meta(object):
         model = DomainICPModel
-        fields = ['ipdomain', 'unit', 'license']
+        fields = ['ipdomain', 'unit', 'license', 'update_time']
 
 
 class CDNSerializer(ModelSerializer):
     class Meta(object):
         model = CDNModel
-        fields = ['flag']
+        fields = ['flag', 'update_time']
 
 
 class HttpBaseSerializer(ModelSerializer):
     class Meta(object):
         model = HttpBaseModel
-        fields = ['title', 'status_code', 'header', 'body']
+        fields = ['title', 'status_code', 'header', 'body', 'update_time']
 
 
 class HttpFaviconSerializer(ModelSerializer):
     class Meta(object):
         model = HttpFaviconModel
-        fields = ['hash', 'content']
+        fields = ['hash', 'content', 'update_time']
 
 
 class ComponentSerializer(ModelSerializer):
     class Meta(object):
         model = ComponentModel
-        fields = ['product_name', 'product_version', 'product_type', 'product_catalog', 'product_dict_values']
+        fields = ['product_name', 'product_version', 'product_type', 'product_catalog', 'product_dict_values',
+                  'update_time']
 
 
 class VulnerabilitySerializer(ModelSerializer):

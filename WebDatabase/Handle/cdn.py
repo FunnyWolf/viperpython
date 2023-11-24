@@ -11,15 +11,15 @@ from WebDatabase.serializers import CDNSerializer
 class CDN(object):
 
     @staticmethod
-    def get_by_ipdomain_port(ipdomain, port):
-        model = CDNModel.objects.filter(ipdomain=ipdomain, port=port).first()
+    def get_by_ipdomain_port(ipdomain):
+        model = CDNModel.objects.filter(ipdomain=ipdomain).first()
         if not model:
             return None
         result = CDNSerializer(model, many=False).data
         return result
 
     @staticmethod
-    def update_or_create(domain=None, port=None, flag=None, webbase_dict={}):
+    def update_or_create(domain=None, flag=None, webbase_dict={}):
         # 给出更新DomainICPModel的方法
 
         default_dict = {
@@ -30,6 +30,5 @@ class CDN(object):
         # key + source 唯一,只要最新数据
         with transaction.atomic():
             model, created = CDNModel.objects.update_or_create(ipdomain=domain,
-                                                               port=port,
                                                                defaults=default_dict)
         return created

@@ -6,6 +6,7 @@ from Core.Handle.uuidjson import UUIDJson
 from Lib import utils
 from Lib.External.fofaclient import FOFAClient
 from Lib.External.quake import Quake
+from Lib.External.zoomeyeapi import ZoomeyeAPI
 from Lib.Module.configs import (
     TAG2TYPE, UACLevel, RegType,
 )
@@ -119,5 +120,6 @@ __all__ = [
     "Quake",
     "FOFAClient",
     "str_to_ips",
-    "random_str"
+    "random_str",
+    "ZoomeyeAPI"
 ]

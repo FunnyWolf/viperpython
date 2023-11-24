@@ -24,6 +24,9 @@ class PostModule(WebPythonModule):
                   desc_en="Domain"),
     ])
 
+    def __init__(self, project_id, input_list: list, custom_param):
+        super().__init__(project_id, input_list, custom_param)
+
     def check(self):
         """执行前的检查函数"""
         return True, ""

@@ -77,8 +77,8 @@ class IPDomainView(BaseView):
 
         try:
 
-            result, pagination = IPDomain.list(project_id=project_id, pagination=pagination, ipdomain=ipdomain,
-                                               port=port)
+            result, pagination = IPDomain.list(project_id=project_id, pagination=pagination, ipdomain_s=ipdomain,
+                                               port_s=port)
             context = data_return(200, {"result": result, "pagination": pagination}, CODE_MSG_ZH.get(200),
                                   CODE_MSG_EN.get(200))
         except Exception as E:

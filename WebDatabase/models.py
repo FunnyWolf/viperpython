@@ -114,12 +114,12 @@ class ScreenshotModel(PortBaseModel):
 
 class HttpBaseModel(PortBaseModel):
     title = models.CharField(blank=True, null=True, max_length=100)
-    status_code = models.IntegerField(default=0)
+    status_code = models.IntegerField(default=0, blank=True, null=True, )
     header = models.TextField(blank=True, null=True)
     body = models.TextField(blank=True, null=True)
 
 
-class CDNModel(PortBaseModel):
+class CDNModel(IPDomainBaseModel):
     flag = models.BooleanField(default=False)
 
 

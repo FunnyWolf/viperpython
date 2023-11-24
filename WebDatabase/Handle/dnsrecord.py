@@ -45,7 +45,7 @@ class DNSRecord(object):
         return result
 
     @staticmethod
-    def get_domain_ip(domain):
+    def get_domain_first_ip(domain):
         model = DNSRecordModel.objects.filter(ipdomain=domain, type="A").first()
         if not model:
             return None

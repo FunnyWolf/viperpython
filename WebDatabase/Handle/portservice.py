@@ -4,7 +4,6 @@
 # @Desc  :
 from django.db import transaction
 
-from WebDatabase.Handle.cdn import CDN
 from WebDatabase.Handle.cert import Cert
 from WebDatabase.Handle.component import Component
 from WebDatabase.Handle.httpbase import HttpBase
@@ -17,7 +16,7 @@ from WebDatabase.serializers import PortServiceSerializer
 class PortService(object):
 
     @staticmethod
-    def list_by_ipdomain(ipdomain, port):
+    def list_by_ipdomain_and_filter(ipdomain, port):
         models = PortServiceModel.objects.filter(ipdomain=ipdomain)
         if port:
             models = models.filter(port=port)
@@ -37,13 +36,12 @@ class PortService(object):
         portservice = PortService.get_by_ipdomain_port(ipdomain, port)
         if not portservice:
             return None
-        service = portservice.get("service")
 
         result = {}
-        result.update(portservice)
+        result['service'] = portservice
 
-        component_list = Component.list_by_ipdomain_port(ipdomain, port)
-        result["component_list"] = component_list
+        components = Component.list_by_ipdomain_port(ipdomain, port)
+        result["components"] = components
 
         cert = Cert.get_by_ipdomain_port(ipdomain, port)
         result["cert"] = cert
@@ -51,19 +49,14 @@ class PortService(object):
         screenshot = Screenshot.get_by_ipdomain_port(ipdomain, port)
         result["screenshot"] = screenshot
 
+        service = portservice.get("service")
         if service.startswith("http"):
-            one_record_http = {}
-
             httpbase = HttpBase.get_by_ipdomain_port(ipdomain, port)
-            one_record_http["httpbase"] = httpbase
+            result["http_base"] = httpbase
 
             httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
-            one_record_http["httpfavicon"] = httpfavicon
+            result["http_favicon"] = httpfavicon
 
-            cdn = CDN.get_by_ipdomain_port(ipdomain, port)
-            one_record_http["cdn"] = cdn
-
-            result['http'] = one_record_http
         return result
 
     # portservices_sorted = sorted(port_and_service, key=lambda x: x['port'])

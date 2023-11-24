@@ -203,9 +203,9 @@ class Quake:
 
                 # CDN
                 if Quake.is_cdn_record(cname):
-                    CDN.update_or_create(domain=domain, port=port, flag=True, webbase_dict=webbase_dict)
+                    CDN.update_or_create(domain=domain, flag=True, webbase_dict=webbase_dict)
                 else:
-                    CDN.update_or_create(domain=domain, port=port, flag=False, webbase_dict=webbase_dict)
+                    CDN.update_or_create(domain=domain, flag=False, webbase_dict=webbase_dict)
 
             if domain is None:
                 ipdomain = ip

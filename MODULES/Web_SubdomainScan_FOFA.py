@@ -17,23 +17,19 @@ class PostModule(WebPythonModule):
     REFERENCES = [""]
     AUTHOR = ["Viper"]
     OPTIONS = register_options([
-        OptionList(name='IP',
-                   tag_zh="IP",
-                   desc_zh="IP",
-                   tag_en="IP",
-                   desc_en="IP"),
+        OptionStr(name='Domain',
+                  tag_zh="主域名",
+                  desc_zh="主域名",
+                  tag_en="Domain",
+                  desc_en="Domain"),
     ])
 
-    def __init__(self, sessionid, ipaddress, custom_param):
-        super().__init__(sessionid, ipaddress, custom_param)
+    def __init__(self, project_id, input_list: list, custom_param):
+        super().__init__(project_id, input_list, custom_param)
         self.fofa_client = FOFAClient()
 
     def check(self):
         """执行前的检查函数"""
-        if self.param("MaxSize") > 1000:
-            return False, "MaxSize不能大于1000", "MaxSize cannot be greater than 1000"
-        elif self.param("MaxSize") < 0:
-            return False, "MaxSize不能小于0", "MaxSize cannot be less than 0"
         if self.fofa_client.init_conf_from_cache() is not True:
             return False, "Quake 配置无效", "Quake configuration invalid"
         return True, ""
@@ -41,11 +37,12 @@ class PostModule(WebPythonModule):
     def run(self):
         self.log_info(f"主域名: {self.param('Domain')}", f"Domain: {self.param('Domain')}")
         source_key = f"host~=\".+\\.{self.param('Domain')}\""
-        msg, items = self.fofa_client.get_json_data(source_key, size=self.param('MaxSize'))
+        source_key = f"domain=\"{self.param('Domain')}\""
+        msg, items = self.fofa_client.get_json_data(source_key)
         if items is None:
-            self.log_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
+            self.log_error(f"调用FOFA失败: {msg}", f"Call FOFA failed : {msg}")
             return False
 
-        # self.fofa_client.store_query_result(items, source_key=source_key)
+        self.fofa_client.store_query_result(items, project_id=self.project_id, source={})
         self.log_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
         return True
