@@ -40,7 +40,7 @@ class LocationSerializer(ModelSerializer):
 class CertSerializer(ModelSerializer):
     class Meta(object):
         model = CertModel
-        fields = ['cert', 'jarm', 'update_time']
+        fields = ['cert', 'jarm', 'subject', 'update_time']
 
 
 class ScreenshotSerializer(ModelSerializer):

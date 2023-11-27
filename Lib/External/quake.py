@@ -264,9 +264,22 @@ class Quake:
                 else:
                     jarm_hash = None
 
+                try:
+                    subject = service_config["tls"]["handshake_log"]["server_certificates"]["certificate"]["parsed"][
+                        "subject"]
+                    subject["country"] = subject["country"][0]
+                    subject["organization"] = subject["organization"][0]
+                    subject["province"] = subject["province"][0]
+                    subject["common_name"] = subject["common_name"][0]
+                    subject["locality"] = subject["locality"][0]
+                except Exception as _:
+                    subject = {}
+
+
                 Cert.update_or_create(ipdomain=ipdomain, port=port,
                                       cert=service_config.get("cert"),
                                       jarm=jarm_hash,
+                                      subject=subject,
                                       webbase_dict=webbase_dict
                                       )
 

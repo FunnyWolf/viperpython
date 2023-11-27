@@ -106,6 +106,7 @@ class ComponentModel(PortBaseModel):
 class CertModel(PortBaseModel):
     cert = models.TextField(blank=True, null=True)
     jarm = models.CharField(blank=True, null=True, max_length=100)
+    subject = HStoreField(default=dict)
 
 
 class ScreenshotModel(PortBaseModel):

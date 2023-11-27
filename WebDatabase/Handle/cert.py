@@ -19,12 +19,12 @@ class Cert(object):
         return result
 
     @staticmethod
-    def update_or_create(ipdomain=None, port=None, cert=None, jarm=None, webbase_dict={}):
+    def update_or_create(ipdomain=None, port=None, cert=None, jarm=None, subject={}, webbase_dict={}):
         # 给出更新HttpCertModel方法
         default_dict = {
             # 'ipdomain': ipdomain,
             # 'port': port,
-
+            'subject': subject,
             'cert': cert,
             'jarm': jarm,
         }
