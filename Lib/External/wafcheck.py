@@ -6,17 +6,16 @@ See the LICENSE file for copying permission.
 '''
 # For keeping python2 support for now
 
-import io
-import logging
-import os
 import random
 import re
 import string
 import sys
 
-from Lib.External.wafw00f.lib.evillib import urlParser, waftoolsengine
+from Lib.External.wafw00f.lib.evillib import waftoolsengine
 from Lib.External.wafw00f.manager import load_plugins
 from Lib.External.wafw00f.wafprio import wafdetectionsprio
+from Lib.log import logger
+from Lib.utils import urlParser
 
 
 class WAFW00F(waftoolsengine):
@@ -29,11 +28,19 @@ class WAFW00F(waftoolsengine):
     def __init__(self, target='www.example.com', debuglevel=0, path='/',
                  followredirect=True, extraheaders={}, proxies=None):
 
-        self.log = logging.getLogger('wafw00f')
         self.attackres = None
         waftoolsengine.__init__(self, target, debuglevel, path, proxies, followredirect, extraheaders)
         self.knowledge = dict(generic=dict(found=False, reason=''), wafname=list())
         self.rq = self.normalRequest()
+
+        self.wafdetections = dict()
+
+        plugin_dict = load_plugins()
+        result_dict = {}
+        for plugin_module in plugin_dict.values():
+            self.wafdetections[plugin_module.NAME] = plugin_module.is_waf
+        self.checklist = wafdetectionsprio
+        self.checklist += list(set(self.wafdetections.keys()) - set(self.checklist))
 
     def normalRequest(self):
         return self.Request()
@@ -121,7 +128,7 @@ class WAFW00F(waftoolsengine):
             resp3 = self.customRequest(headers=self.headers)
             if resp3 is not None and resp1 is not None:
                 if resp1.status_code != resp3.status_code:
-                    self.log.info(
+                    logger.info(
                         'Server returned a different response when request didn\'t contain the User-Agent header.')
                     reason = reasons[4]
                     reason += '\r\n'
@@ -134,7 +141,7 @@ class WAFW00F(waftoolsengine):
             # Testing the status code upon sending a xss attack
             resp2, xss_url = self.performCheck(self.xssAttack)
             if resp1.status_code != resp2.status_code:
-                self.log.info('Server returned a different response when a XSS attack vector was tried.')
+                logger.info('Server returned a different response when a XSS attack vector was tried.')
                 reason = reasons[2]
                 reason += '\r\n'
                 reason += 'Normal response code is "%s",' % resp1.status_code
@@ -146,7 +153,7 @@ class WAFW00F(waftoolsengine):
             # Testing the status code upon sending a lfi attack
             resp2, lfi_url = self.performCheck(self.lfiAttack)
             if resp1.status_code != resp2.status_code:
-                self.log.info('Server returned a different response when a directory traversal was attempted.')
+                logger.info('Server returned a different response when a directory traversal was attempted.')
                 reason = reasons[2]
                 reason += '\r\n'
                 reason += 'Normal response code is "%s",' % resp1.status_code
@@ -158,7 +165,7 @@ class WAFW00F(waftoolsengine):
             # Testing the status code upon sending a sqli attack
             resp2, sqli_url = self.performCheck(self.sqliAttack)
             if resp1.status_code != resp2.status_code:
-                self.log.info('Server returned a different response when a SQLi was attempted.')
+                logger.info('Server returned a different response when a SQLi was attempted.')
                 reason = reasons[2]
                 reason += '\r\n'
                 reason += 'Normal response code is "%s",' % resp1.status_code
@@ -175,9 +182,9 @@ class WAFW00F(waftoolsengine):
             if response is not None and 'server' in response.headers:
                 attackresponse_server = response.headers.get('Server')
             if attackresponse_server != normalserver:
-                self.log.info('Server header changed, WAF possibly detected')
-                self.log.debug('Attack response: %s' % attackresponse_server)
-                self.log.debug('Normal response: %s' % normalserver)
+                logger.info('Server header changed, WAF possibly detected')
+                logger.debug('Attack response: %s' % attackresponse_server)
+                logger.debug('Normal response: %s' % normalserver)
                 reason = reasons[1]
                 reason += '\r\nThe server header for a normal response is "%s",' % normalserver
                 reason += ' while the server header a response to an attack is "%s",' % attackresponse_server
@@ -252,16 +259,6 @@ class WAFW00F(waftoolsengine):
             return True
         return False
 
-    wafdetections = dict()
-
-    plugin_dict = load_plugins()
-    result_dict = {}
-    for plugin_module in plugin_dict.values():
-        wafdetections[plugin_module.NAME] = plugin_module.is_waf
-    # Check for prioritized ones first, then check those added externally
-    checklist = wafdetectionsprio
-    checklist += list(set(wafdetections.keys()) - set(checklist))
-
     def identwaf(self, findall=False):
         detected = list()
         try:
@@ -269,21 +266,13 @@ class WAFW00F(waftoolsengine):
         except RequestBlocked:
             return detected, None
         for wafvendor in self.checklist:
-            self.log.info('Checking for %s' % wafvendor)
+            # logger.info('Checking for %s' % wafvendor)
             if self.wafdetections[wafvendor](self):
                 detected.append(wafvendor)
                 if not findall:
                     break
         self.knowledge['wafname'] = detected
         return detected, xurl
-
-
-def calclogginglevel(verbosity):
-    default = 40  # errors are printed out
-    level = default - (verbosity * 10)
-    if level < 0:
-        level = 0
-    return level
 
 
 def buildResultRecord(url, waf, evil_url=None):
@@ -334,73 +323,53 @@ def create_random_param_name(size=8, chars=string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def disableStdOut():
-    sys.stdout = None
-
-
-def enableStdOut():
-    sys.stdout = sys.__stdout__
-
-
-def getheaders(fn):
-    headers = {}
-    if not os.path.exists(fn):
-        logging.getLogger('wafw00f').critical('Headers file "%s" does not exist!' % fn)
-        return
-    with io.open(fn, 'r', encoding='utf-8') as f:
-        for line in f.readlines():
-            _t = line.split(':', 2)
-            if len(_t) == 2:
-                h, v = map(lambda x: x.strip(), _t)
-                headers[h] = v
-    return headers
-
-
 class RequestBlocked(Exception):
     pass
 
 
-def main():
-    log = logging.getLogger('wafw00f')
+class WafCheck(object):
 
-    extraheaders = {}
+    @staticmethod
+    def check(targets: list):
+        extraheaders = {}
 
-    targets = ["https://did-sso.bba-app.biz"]
-    results = []
-    for target in targets:
-        if not target.startswith('http'):
-            log.info('The url %s should start with http:// or https:// .. fixing (might make this unusable)' % target)
-            target = 'https://' + target
-        print('[*] Checking %s' % target)
-        pret = urlParser(target)
-        if pret is None:
-            log.critical('The url %s is not well formed' % target)
-            sys.exit(1)
-        (hostname, _, path, _, _) = pret
+        results = []
+        for target in targets:
+            if not target.startswith('http'):
+                logger.info(
+                    'The url %s should start with http:// or https:// .. fixing (might make this unusable)' % target)
+                target = 'https://' + target
+            pret = urlParser(target)
+            if pret is None:
+                logger.critical('The url %s is not well formed' % target)
+                sys.exit(1)
+            (hostname, _, path, _, _) = pret
 
-        proxies = {}
+            proxies = {}
 
-        attacker = WAFW00F(target, debuglevel=0, path=path,
-                           followredirect=True, extraheaders=extraheaders,
-                           proxies=proxies)
-        if attacker.rq is None:
-            log.error('Site %s appears to be down' % hostname)
-            continue
+            attacker = WAFW00F(target, debuglevel=0, path=path,
+                               followredirect=True, extraheaders=extraheaders,
+                               proxies=proxies)
+            if attacker.rq is None:
+                logger.error('Site %s appears to be down' % hostname)
+                continue
 
-        waf, xurl = attacker.identwaf(findall=False)
+            waf, xurl = attacker.identwaf(findall=False)
 
-        if len(waf) > 0:
-            for i in waf:
-                results.append(buildResultRecord(target, i, xurl))
-        else:
-            generic_url = attacker.genericdetect()
-            if generic_url:
-                results.append(buildResultRecord(target, 'generic', generic_url))
+            if len(waf) > 0:
+                for i in waf:
+                    results.append(buildResultRecord(target, i, xurl))
             else:
-                results.append(buildResultRecord(target, None, None))
+                generic_url = attacker.genericdetect()
+                if generic_url:
+                    results.append(buildResultRecord(target, 'generic', generic_url))
+                else:
+                    results.append(buildResultRecord(target, None, None))
 
-        print(results)
+        return results
 
 
 if __name__ == '__main__':
-    main()
+    targets = ["https://did-sso.bba-app.biz"]
+    results = WafCheck.check(targets)
+    print(results)

@@ -2,7 +2,6 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from django.db import transaction
 
 from WebDatabase.models import CDNModel
 from WebDatabase.serializers import CDNSerializer
@@ -28,7 +27,13 @@ class CDN(object):
 
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        with transaction.atomic():
-            model, created = CDNModel.objects.update_or_create(ipdomain=domain,
-                                                               defaults=default_dict)
+        model, created = CDNModel.objects.update_or_create(ipdomain=domain,
+                                                           defaults=default_dict)
         return created
+
+    @staticmethod
+    def is_cdn_record(cname):
+        if cname is None or len(cname) == 0:
+            return False
+        else:
+            return True

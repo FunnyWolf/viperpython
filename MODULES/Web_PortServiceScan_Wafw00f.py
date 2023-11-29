@@ -29,23 +29,19 @@ class PostModule(WebPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-
+        url = self.param("URL")
+        pret = utils.urlParser(url)
+        if pret is None:
+            return False, "输入的URL无效", "Invalid URL"
         return True, ""
 
     def run(self):
         ip_list = []
-        ip_list.extend(str_to_ips(self.param("IP")))
 
         for one_input in self.input_list:
             ipdomain = one_input.get("ipdomain")
             ip_list.append(ipdomain)
 
-        for oneip in ip_list:
-            source_key = f"ip:\"{oneip}\""
-            msg, items = self.quake_client.get_json_data(source_key)
-
-            if items is None:
-                Notice.send_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
-                return False
-
-            self.quake_client.store_query_result(items, project_id=self.project_id, source={})
+        url = self.param("URL")
+        items = WafCheck.check([url])
+        DataStore.wafcheck_result(items, project_id=self.project_id, source={})

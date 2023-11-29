@@ -43,6 +43,6 @@ class PostModule(WebPythonModule):
             self.log_error(f"调用FOFA失败: {msg}", f"Call FOFA failed : {msg}")
             return False
 
-        self.fofa_client.store_query_result(items, project_id=self.project_id, source={})
+        DataStore.fofa_result(items, project_id=self.project_id, source={})
         self.log_info(f"更新 {len(items)} 条数据.", f"Update {len(items)} data.")
         return True

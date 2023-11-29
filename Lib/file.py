@@ -2,6 +2,7 @@
 # @File  : file.py
 # @Date  : 2021/4/1
 # @Desc  :
+import base64
 import os
 import re
 import shutil
@@ -9,6 +10,7 @@ import time
 import zipfile
 from pathlib import PurePosixPath
 
+import requests
 from django.conf import settings
 
 from Lib.configs import MSFLOOT
@@ -114,3 +116,16 @@ class File(object):
             logger.log_warning('输入错误字符', "Typing wrong characters")
             tmppath = '/'
         return tmppath
+
+    @staticmethod
+    def get_images_base64(url):
+        if not url:
+            return None
+        try:
+            response = requests.get(url)
+            image_bytes = response.content
+            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        except Exception as E:
+            logger.exception(E)
+            return None
+        return image_base64

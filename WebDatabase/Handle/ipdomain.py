@@ -3,8 +3,6 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
-from django.db import transaction
-
 from Lib.api import data_return, is_ipaddress
 from Lib.configs import IPDomain_MSG_ZH, IPDomain_MSG_EN
 from Lib.log import logger
@@ -12,7 +10,7 @@ from WebDatabase.Handle.cdn import CDN
 from WebDatabase.Handle.dnsrecord import DNSRecord
 from WebDatabase.Handle.domainicp import DomainICP
 from WebDatabase.Handle.location import Location
-from WebDatabase.Handle.portservice import PortService
+from WebDatabase.Handle.port import Port
 from WebDatabase.models import IPDomainModel
 from WebDatabase.serializers import IPDomainSerializer
 
@@ -68,23 +66,24 @@ class IPDomain(object):
             ipdomain_record["cdn"] = cdn
 
             # ports
-            portservice_list = PortService.list_by_ipdomain_and_filter(ipdomain, port_s)
+            port_list = Port.list_by_ipdomain_and_filter(ipdomain, port_s)
 
-            if not portservice_list and (port_s is None):  # ipdomain 没有端口信息且没有过滤端口
+            # portservice_list = Port.list_by_ipdomain_and_filter(ipdomain, port_s)
+
+            if not port_list and (port_s is None):  # ipdomain 没有端口信息且没有过滤端口
                 one_record = {}
                 one_record.update(ipdomain_record)
 
                 ipdomains_result.append(one_record)
             else:
-                for portservice in portservice_list:
+                for port_record in port_list:
                     one_record = {}
                     one_record.update(ipdomain_record)
 
-                    port = portservice.get('port')
-                    port_record = PortService.get_info_by_ipdomain_port(ipdomain, port)
-                    port_record['service'] = portservice
-
-                    one_record['port'] = port_record
+                    port = port_record.get('port')
+                    port_info = Port.get_info_by_ipdomain_port(ipdomain, port)
+                    port_info.update(port_record)  # 加入port的基础信息
+                    one_record['port'] = port_info
 
                     ipdomains_result.append(one_record)
         return ipdomains_result, pagination
@@ -97,9 +96,8 @@ class IPDomain(object):
 
     @staticmethod
     def update_project_id(project_id=None, ipdomain=None):
-        with transaction.atomic():
-            update_count = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
-            return {"count": update_count}
+        update_count = IPDomainModel.objects.filter(ipdomain=ipdomain).update(project_id=project_id)
+        return {"count": update_count}
 
     @staticmethod
     def update_or_create(project_id=None,
@@ -110,9 +108,9 @@ class IPDomain(object):
         }
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        with transaction.atomic():
-            model, created = IPDomainModel.objects.update_or_create(ipdomain=ipdomain,
-                                                                    defaults=default_dict)
+
+        model, created = IPDomainModel.objects.update_or_create(ipdomain=ipdomain,
+                                                                defaults=default_dict)
 
         return created
 

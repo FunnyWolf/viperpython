@@ -4,8 +4,6 @@
 # @Desc  :
 import time
 
-from django.db import transaction
-
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, PortService_MSG_ZH, CODE_MSG_EN, PortService_MSG_EN
 from Lib.log import logger
@@ -44,16 +42,15 @@ class IntranetPortService(object):
         if created is True:
             return True  # 新建后直接返回
         # 有历史数据
-        with transaction.atomic():
-            try:
-                model = IntranetPortServiceModel.objects.select_for_update().get(ipaddress=ipaddress, port=port)
-                model.banner = banner
-                model.service = service
-                model.save()
-                return True
-            except Exception as E:
-                logger.error(E)
-                return False
+        try:
+            model = IntranetPortServiceModel.objects.select_for_update().get(ipaddress=ipaddress, port=port)
+            model.banner = banner
+            model.service = service
+            model.save()
+            return True
+        except Exception as E:
+            logger.error(E)
+            return False
 
     @staticmethod
     def destory(ipaddress=None, port=None):

@@ -3,8 +3,6 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
-from django.db import transaction
-
 from WebDatabase.models import ComponentModel
 from WebDatabase.serializers import ComponentSerializer
 
@@ -30,8 +28,8 @@ class Component(object):
             'product_catalog': product_catalog,
         }
         default_dict.update(webbase_dict)
-        with transaction.atomic():
-            model, create = ComponentModel.objects.update_or_create(ipdomain=ipdomain, port=port,
-                                                                    product_name=product_name,
-                                                                    defaults=default_dict)
+
+        model, create = ComponentModel.objects.update_or_create(ipdomain=ipdomain, port=port,
+                                                                product_name=product_name,
+                                                                defaults=default_dict)
         return create

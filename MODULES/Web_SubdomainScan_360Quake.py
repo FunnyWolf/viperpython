@@ -40,5 +40,5 @@ class PostModule(WebPythonModule):
         msg, items = self.quake_client.get_json_data(source_key)
         if items is None:
             return False
-        self.quake_client.store_query_result(items, project_id=self.project_id, source={})
+        DataStore.quake_result(items, project_id=self.project_id, source={})
         return True

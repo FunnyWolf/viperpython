@@ -84,7 +84,11 @@ class LocationModel(IPDomainBaseModel):
     # geo_info = models.JSONField(default=dict)
 
 
-class PortServiceModel(PortBaseModel):
+class PortModel(PortBaseModel):
+    pass
+
+
+class ServiceModel(PortBaseModel):
     transport = models.CharField(default="tcp", blank=True, null=True, max_length=100)
     service = models.CharField(blank=True, null=True, max_length=100)
     version = models.CharField(blank=True, null=True, max_length=100)
@@ -134,6 +138,12 @@ class HttpFaviconModel(PortBaseModel):
 # product_name_cn = models.CharField(blank=True, null=True, max_length=100)
 # product_name_en = models.CharField(blank=True, null=True, max_length=100)
 # product_version = models.CharField(blank=True, null=True, max_length=100)
+
+class WAFModel(PortBaseModel):
+    flag = models.BooleanField(default=False)
+    trigger_url = models.TextField(blank=True, null=True)
+    name = models.CharField(blank=True, null=True, max_length=100)
+    manufacturer = models.CharField(blank=True, null=True, max_length=100)
 
 
 class VulnerabilityModel(PortBaseModel):

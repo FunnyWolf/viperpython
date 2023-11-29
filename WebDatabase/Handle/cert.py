@@ -2,7 +2,6 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from django.db import transaction
 
 from WebDatabase.models import CertModel
 from WebDatabase.serializers import CertSerializer
@@ -29,7 +28,6 @@ class Cert(object):
             'jarm': jarm,
         }
         default_dict.update(webbase_dict)
-        with transaction.atomic():
-            model, create = CertModel.objects.update_or_create(ipdomain=ipdomain, port=port,
-                                                               defaults=default_dict)
+        model, create = CertModel.objects.update_or_create(ipdomain=ipdomain, port=port,
+                                                           defaults=default_dict)
         return create

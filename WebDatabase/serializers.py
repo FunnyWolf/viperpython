@@ -25,9 +25,15 @@ class IPDomainSerializer(ModelSerializer):
         fields = ['project_id', 'ipdomain', 'update_time']
 
 
-class PortServiceSerializer(ModelSerializer):
+class PortSerializer(ModelSerializer):
     class Meta(object):
-        model = PortServiceModel
+        model = PortModel
+        fields = ['port', 'update_time']
+
+
+class ServiceSerializer(ModelSerializer):
+    class Meta(object):
+        model = ServiceModel
         fields = ['port', 'response', 'response_hash', 'transport', 'service', 'version', 'update_time']
 
 
@@ -77,6 +83,12 @@ class HttpFaviconSerializer(ModelSerializer):
     class Meta(object):
         model = HttpFaviconModel
         fields = ['hash', 'content', 'update_time']
+
+
+class WAFSerializer(ModelSerializer):
+    class Meta(object):
+        model = WAFModel
+        fields = ['flag', 'trigger_url', 'name', 'manufacturer', 'update_time']
 
 
 class ComponentSerializer(ModelSerializer):

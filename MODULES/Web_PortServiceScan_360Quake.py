@@ -57,4 +57,4 @@ class PostModule(WebPythonModule):
                 Notice.send_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
                 return False
 
-            self.quake_client.store_query_result(items, project_id=self.project_id, source={})
+            DataStore.quake_result(items, project_id=self.project_id, source={})

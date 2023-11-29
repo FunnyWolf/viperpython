@@ -2,38 +2,31 @@
 # @File  : portservice.py
 # @Date  : 2021/2/26
 # @Desc  :
-from django.db import transaction
 
 from WebDatabase.Handle.cert import Cert
 from WebDatabase.Handle.component import Component
 from WebDatabase.Handle.httpbase import HttpBase
 from WebDatabase.Handle.httpfavicon import HttpFavicon
 from WebDatabase.Handle.screenshot import Screenshot
-from WebDatabase.models import PortServiceModel
-from WebDatabase.serializers import PortServiceSerializer
+from WebDatabase.Handle.service import Service
+from WebDatabase.Handle.waf import WAF
+from WebDatabase.models import PortModel
+from WebDatabase.serializers import PortSerializer
 
 
-class PortService(object):
+class Port(object):
 
     @staticmethod
     def list_by_ipdomain_and_filter(ipdomain, port):
-        models = PortServiceModel.objects.filter(ipdomain=ipdomain)
+        models = PortModel.objects.filter(ipdomain=ipdomain)
         if port:
             models = models.filter(port=port)
-        result = PortServiceSerializer(models, many=True).data
-        return result
-
-    @staticmethod
-    def get_by_ipdomain_port(ipdomain, port):
-        model = PortServiceModel.objects.filter(ipdomain=ipdomain, port=port).first()
-        if not model:
-            return None
-        result = PortServiceSerializer(model).data
+        result = PortSerializer(models, many=True).data
         return result
 
     @staticmethod
     def get_info_by_ipdomain_port(ipdomain, port):
-        portservice = PortService.get_by_ipdomain_port(ipdomain, port)
+        portservice = Service.get_by_ipdomain_port(ipdomain, port)
         if not portservice:
             return None
 
@@ -57,6 +50,10 @@ class PortService(object):
             httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
             result["http_favicon"] = httpfavicon
 
+            # waf
+            waf = WAF.get_by_ipdomain_port(ipdomain, port)
+            result["waf"] = waf
+
         return result
 
     # portservices_sorted = sorted(port_and_service, key=lambda x: x['port'])
@@ -70,22 +67,12 @@ class PortService(object):
             return 0
 
     @staticmethod
-    def update_or_create(ipdomain=None, port=None, response=None,
-                         response_hash=None, transport=None, service=None, version=None, webbase_dict={}):
+    def update_or_create(ipdomain=None, port=None, webbase_dict={}):
         # 给出更新PortServiceModel方法
 
-        default_dict = {
-            # 'ipdomain': ipdomain,
-            # 'port': port,
-            'response': response,
-            'response_hash': response_hash,
-            'transport': transport,
-            'service': service,
-            'version': version,
-        }
+        default_dict = {}
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        with transaction.atomic():
-            model, created = PortServiceModel.objects.update_or_create(ipdomain=ipdomain, port=port,
-                                                                       defaults=default_dict)
+        model, created = PortModel.objects.update_or_create(ipdomain=ipdomain, port=port,
+                                                            defaults=default_dict)
         return created

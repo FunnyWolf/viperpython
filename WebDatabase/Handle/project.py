@@ -3,8 +3,6 @@
 # @Date  : 2021/2/26
 # @Desc  :
 
-from django.db import transaction
-
 from Lib.api import data_return, get_one_uuid_str
 from Lib.configs import IPDomain_MSG_ZH, \
     IPDomain_MSG_EN, DEFAULT_PROJECT_ID, DEFAULT_PROJECT_NAME, DEFAULT_PROJECT_DESC
@@ -36,9 +34,9 @@ class Project(object):
             'name': name,
             "desc": desc,
         }
-        with transaction.atomic():
-            model, created = ProjectModel.objects.update_or_create(project_id=project_id,
-                                                                   defaults=default_dict)
+
+        model, created = ProjectModel.objects.update_or_create(project_id=project_id,
+                                                               defaults=default_dict)
         result = ProjectSerializer(model, many=False).data
         return result
 
