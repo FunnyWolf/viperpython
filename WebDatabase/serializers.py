@@ -70,7 +70,7 @@ class DomainICPSerializer(ModelSerializer):
 class CDNSerializer(ModelSerializer):
     class Meta(object):
         model = CDNModel
-        fields = ['flag', 'update_time']
+        fields = ['flag', 'domain', 'name', 'link', 'update_time']
 
 
 class HttpBaseSerializer(ModelSerializer):

@@ -14,6 +14,7 @@ from channels.layers import get_channel_layer
 from Core.Handle.host import Host
 from Core.Handle.setting import Settings
 from Core.Handle.uuidjson import UUIDJson
+from Lib.External.cdncheck import CDNCheck
 from Lib.Module.moduletemplate import BROKER
 from Lib.apswebmodule import APSWebModule
 from Lib.botmodule import BotModule
@@ -60,6 +61,7 @@ class MainMonitor(object):
 
         try:
             Project.check_default_project()
+            CDNCheck.init_cdn_dict_data()
         except Exception as E:
             logger.exception(E)
 

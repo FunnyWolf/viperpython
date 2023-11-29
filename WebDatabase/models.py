@@ -126,6 +126,9 @@ class HttpBaseModel(PortBaseModel):
 
 class CDNModel(IPDomainBaseModel):
     flag = models.BooleanField(default=False)
+    domain = models.CharField(blank=True, null=True, max_length=100)
+    name = models.CharField(blank=True, null=True, max_length=100)
+    link = models.CharField(blank=True, null=True, max_length=100)
 
 
 class HttpFaviconModel(PortBaseModel):

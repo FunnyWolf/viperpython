@@ -18,7 +18,8 @@ from WebDatabase.serializers import IPDomainSerializer
 class IPDomain(object):
 
     @staticmethod
-    def list(project_id=None, pagination=None, ipdomain_s=None, port_s=None):
+    def list(project_id=None, pagination=None, ipdomain_s=None, port_s=None, cdn_flag_s=None, waf_flag_s=None,
+             service_s=None):
         # pagination
         if pagination is None:
             pagination = {'current': 1, 'pageSize': 10}
@@ -26,13 +27,20 @@ class IPDomain(object):
         start = (pagination['current'] - 1) * pagination['pageSize']
         end = pagination['current'] * pagination['pageSize']
 
+        # 先filter出ipdomain list
         filter_models = IPDomainModel.objects.filter(project_id=project_id)
 
-        # search params
         if ipdomain_s:
             filter_models = filter_models.filter(ipdomain__icontains=ipdomain_s)
 
+        # if cdn_flag_s is not None:
+        #     ipdomain_list = filter_models.values_list("ipdomain", flat=True)
+        #     ipdomain_list = CDNModel.objects.filter(ipdomain__in=ipdomain_list).filter(flag=cdn_flag_s).values_list(
+        #         "ipdomain", flat=True)
+
         pagination["total"] = filter_models.count()
+
+        # 和符合的ipdomain+port list
 
         ipdomain_models = filter_models.order_by('-update_time')[start:end]
 

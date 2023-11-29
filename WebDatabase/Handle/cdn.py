@@ -18,16 +18,19 @@ class CDN(object):
         return result
 
     @staticmethod
-    def update_or_create(domain=None, flag=None, webbase_dict={}):
+    def update_or_create(ipdomain=None, flag=None, domain=None, name=None, link=None, webbase_dict={}):
         # 给出更新DomainICPModel的方法
 
         default_dict = {
             'flag': flag,
+            'domain': domain,
+            'name': name,
+            'link': link,
         }
 
         default_dict.update(webbase_dict)
         # key + source 唯一,只要最新数据
-        model, created = CDNModel.objects.update_or_create(ipdomain=domain,
+        model, created = CDNModel.objects.update_or_create(ipdomain=ipdomain,
                                                            defaults=default_dict)
         return created
 

@@ -23,3 +23,5 @@ dnslib
 zoomeye
 asgi_redis
 psycopg
+tldextract
+pluginbase

@@ -2,6 +2,7 @@ import time
 
 import urllib3
 
+from Lib.External.cdncheck import CDNCheck
 from Lib.configs import DEFAULT_PROJECT_ID
 from Lib.file import File
 from Lib.timeapi import TimeAPI
@@ -69,10 +70,19 @@ class DataStore(object):
                     DNSRecord.update_or_create(domain=domain, type="CNAME", value=cname, webbase_dict=webbase_dict)
 
                 # CDN
-                if CDN.is_cdn_record(cname):
-                    CDN.update_or_create(domain=domain, flag=True, webbase_dict=webbase_dict)
+                if cname:
+                    for one_cname in cname:
+                        cdn_record = CDNCheck.check(one_cname)
+                        if cdn_record:
+                            CDN.update_or_create(ipdomain=domain, flag=True, domain=cdn_record.get("domain"),
+                                                 name=cdn_record.get("name"), link=cdn_record.get("link"),
+                                                 webbase_dict=webbase_dict)
+                    else:
+                        CDN.update_or_create(ipdomain=domain, flag=False, domain=None, name=None, link=None,
+                                             webbase_dict=webbase_dict)
                 else:
-                    CDN.update_or_create(domain=domain, flag=False, webbase_dict=webbase_dict)
+                    CDN.update_or_create(ipdomain=domain, flag=False, domain=None, name=None, link=None,
+                                         webbase_dict=webbase_dict)
 
             if domain is None:
                 ipdomain = ip
@@ -226,9 +236,15 @@ class DataStore(object):
 
             if cname:
                 DNSRecord.update_or_create(domain=domain, type="CNAME", value=[cname], webbase_dict=webbase_dict)
-                CDN.update_or_create(domain=domain, flag=True, webbase_dict=webbase_dict)
+
+            cdn_record = CDNCheck.check(cname)
+            if cdn_record:
+                CDN.update_or_create(ipdomain=domain, flag=True, domain=cdn_record.get("domain"),
+                                     name=cdn_record.get("name"), link=cdn_record.get("link"),
+                                     webbase_dict=webbase_dict)
             else:
-                CDN.update_or_create(domain=domain, flag=False, webbase_dict=webbase_dict)
+                CDN.update_or_create(ipdomain=domain, flag=False, domain=None, name=None, link=None,
+                                     webbase_dict=webbase_dict)
 
             if domain is None:
                 ipdomain = ip

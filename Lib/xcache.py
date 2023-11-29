@@ -113,6 +113,7 @@ class Xcache(object):
 
     XCACHE_WEB_MODULE_TASK_LIST = "XCACHE_WEB_MODULE_TASK_LIST"
     XCACHE_WEBSYNC_CACHE_JOBS = "XCACHE_WEBSYNC_CACHE_JOBS"
+    XCACHE_WEB_CDN_DICT = "XCACHE_WEB_CDN_DICT"
 
     def __init__(self):
         pass
@@ -1310,4 +1311,14 @@ class Xcache(object):
     @staticmethod
     def set_websync_cache_jobs(result):
         cache.set(Xcache.XCACHE_WEBSYNC_CACHE_JOBS, result, None)
+        return True
+
+    @staticmethod
+    def get_web_cdn_dict():
+        result = cache.get(Xcache.XCACHE_WEB_CDN_DICT)
+        return result
+
+    @staticmethod
+    def set_web_cdn_dict(result):
+        cache.set(Xcache.XCACHE_WEB_CDN_DICT, result, 3600 * 24)  # 每天更新
         return True
