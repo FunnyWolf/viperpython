@@ -69,6 +69,19 @@ class IPDomainView(BaseView):
             return Response(context)
         project_id = request.query_params.get('project_id', None)
         ipdomain = request.query_params.get('ipdomain', None)
+
+        waf_flag = request.query_params.get('waf_flag', None)
+        if waf_flag == 'true':
+            waf_flag = True
+        elif waf_flag == 'false':
+            waf_flag = False
+
+        cdn_flag = request.query_params.get('cdn_flag', None)
+        if cdn_flag == 'true':
+            cdn_flag = True
+        elif cdn_flag == 'false':
+            cdn_flag = False
+
         port = request.query_params.get('port', None)
         try:
             port = int(port)
@@ -76,9 +89,8 @@ class IPDomainView(BaseView):
             port = None
 
         try:
-
             result, pagination = IPDomain.list(project_id=project_id, pagination=pagination, ipdomain_s=ipdomain,
-                                               port_s=port)
+                                               port_s=port, waf_flag_s=waf_flag, cdn_flag_s=cdn_flag)
             context = data_return(200, {"result": result, "pagination": pagination}, CODE_MSG_ZH.get(200),
                                   CODE_MSG_EN.get(200))
         except Exception as E:

@@ -18,19 +18,20 @@ class Port(object):
 
     @staticmethod
     def list_by_ipdomain_and_filter(ipdomain, port):
-        models = PortModel.objects.filter(ipdomain=ipdomain)
-        if port:
-            models = models.filter(port=port)
-        result = PortSerializer(models, many=True).data
+        model = PortModel.objects.filter(ipdomain=ipdomain, port=port).first()
+        if not model:
+            return None
+        result = PortSerializer(model).data
         return result
 
     @staticmethod
     def get_info_by_ipdomain_port(ipdomain, port):
-        portservice = Service.get_by_ipdomain_port(ipdomain, port)
-        if not portservice:
+        port_base = Port.list_by_ipdomain_and_filter(ipdomain, port)
+        if not port_base:
             return None
-
         result = {}
+        result.update(port_base)
+        portservice = Service.get_by_ipdomain_port(ipdomain, port)
         result['service'] = portservice
 
         components = Component.list_by_ipdomain_port(ipdomain, port)
@@ -42,17 +43,18 @@ class Port(object):
         screenshot = Screenshot.get_by_ipdomain_port(ipdomain, port)
         result["screenshot"] = screenshot
 
-        service = portservice.get("service")
-        if service.startswith("http"):
-            httpbase = HttpBase.get_by_ipdomain_port(ipdomain, port)
-            result["http_base"] = httpbase
+        if portservice:
+            service = portservice.get("service")
+            if service.startswith("http"):
+                httpbase = HttpBase.get_by_ipdomain_port(ipdomain, port)
+                result["http_base"] = httpbase
 
-            httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
-            result["http_favicon"] = httpfavicon
+                httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
+                result["http_favicon"] = httpfavicon
 
-            # waf
-            waf = WAF.get_by_ipdomain_port(ipdomain, port)
-            result["waf"] = waf
+                # waf
+                waf = WAF.get_by_ipdomain_port(ipdomain, port)
+                result["waf"] = waf
 
         return result
 
