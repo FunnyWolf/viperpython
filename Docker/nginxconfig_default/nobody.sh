@@ -36,7 +36,7 @@ EOF
     exit
 fi
 
-if [ $INPUTNGINXPORT -gt 0 ] 2>/dev/null ;then
+if [ $INPUTNGINXPORT -gt 0 ]&&[ $INPUTNGINXPORT -lt 65535 ] 2>/dev/null ;then
     Echo_c "使用端口号: $INPUTNGINXPORT"
 else
     Echo_c "输入端口号不符合要求,使用默认端口60000"

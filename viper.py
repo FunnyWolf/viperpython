@@ -83,8 +83,8 @@ def restart_nginx():
             logger.info("[*] 启动nginx服务")
             result = subprocess.run(
                 ["service", "nginx", "start"],
-                stdout=devNull,
-                stderr=devNull
+                # stdout=devNull,
+                # stderr=devNull
             )
 
 
@@ -480,6 +480,7 @@ def init_copy_file():
     target_file = "/root/viper/Docker/nginxconfig/nobody.sh"
     try:
         shutil.copy(src_file, target_file)
+        os.chmod("/root/viper/Docker/nginxconfig/nobody.sh", 0o775)
     except shutil.SameFileError:
         pass
 
