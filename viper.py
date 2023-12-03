@@ -70,7 +70,7 @@ def restart_nginx():
     except Exception as E:
         pass
 
-    while True:
+    for i in range(3):
         try:
             nginx_port = get_nginx_port()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -86,6 +86,7 @@ def restart_nginx():
                 # stdout=devNull,
                 # stderr=devNull
             )
+            time.sleep(1)
 
 
 def check_services():
