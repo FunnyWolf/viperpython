@@ -89,6 +89,7 @@ def restart_nginx():
             time.sleep(3)
 
 
+#
 def check_services():
     """服务检查函数"""
     nginx_port = get_nginx_port()
