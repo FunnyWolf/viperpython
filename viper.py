@@ -86,7 +86,7 @@ def restart_nginx():
                 # stdout=devNull,
                 # stderr=devNull
             )
-            time.sleep(1)
+            time.sleep(3)
 
 
 def check_services():
