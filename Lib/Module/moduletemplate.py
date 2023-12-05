@@ -66,7 +66,7 @@ class _CommonModule(object):
         self._ip = None  # 补齐默认参数,为了Serializer
         self._port = None  # 补齐默认参数,为了Serializer
         self._protocol = None  # 补齐默认参数,为了Serializer
-        self._module_uuid = None  # 为了存储uuid设置的字段
+        self._module_uuid = None  # 为了存储uuid设置的字段 也是task_uuid
         self.opts = {}  # 用于存储msf模块的options
 
     # 公用函数
@@ -956,6 +956,57 @@ class WebPythonModule(_CommonModule):
     def run(self):
         """后台运行模块回调函数"""
         logger.warning(self._custom_param)
+
+    def log_raw(self, data):
+        if data is None:
+            return
+        result_format = {"type": "raw", "data_zh": data, "data_en": data}
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
+
+    def log_info(self, data_zh, data_en=None):
+        result_format = {"type": "info", "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
+
+    def log_success(self, data_zh, data_en=None):
+        self.log_good(self, data_zh, data_en)
+
+    def log_good(self, data_zh, data_en=None):
+        result_format = {"type": "good", "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
+
+    def log_warn(self, data_zh, data_en=None):
+        self.log_warning(data_zh, data_en)
+
+    def log_warning(self, data_zh, data_en=None):
+        result_format = {"type": "warning", "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
+
+    def log_error(self, data_zh, data_en=None):
+        result_format = {"type": "error", "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
+
+    def log_except(self, data_zh, data_en=None):
+        result_format = {"type": "except", "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
+
+    def log_table(self, data_zh, data_en):
+        if data_zh is None or len(data_zh) == 0:
+            return
+        if data_en is None or len(data_en) == 0:
+            return
+        columns_zh = []
+        for key in data_zh[0]:
+            columns_zh.append({"title": key, "dataIndex": key})
+
+        columns_en = []
+        for key in data_en[0]:
+            columns_en.append({"title": key, "dataIndex": key})
+
+        result_format = {"type": "table",
+                         "data_zh": data_zh, "data_en": data_en,
+                         "columns_zh": columns_zh, "columns_en": columns_en}
+
+        Xcache.add_web_module_result_message(self._module_uuid, result_format)
 
     def _thread_run(self):
         t1 = ThreadWithExc(target=self.run)

@@ -86,7 +86,6 @@ class IPDomain(object):
 
         ipdomains_result = []
         for ipdomain_port_tuple in ipdomain_port_list[start:end]:
-
             ipdomain = ipdomain_port_tuple[0]
             port = ipdomain_port_tuple[1]
             ipdomain_record = IPDomain.list_by_ipdomain(ipdomain)
@@ -115,13 +114,16 @@ class IPDomain(object):
             cdn = CDN.get_by_ipdomain_port(ipdomain)
             ipdomain_record["cdn"] = cdn
 
+            port_base = Port.get_by_ipdomain_port(ipdomain, port)
+
             one_record = {}
             one_record.update(ipdomain_record)
+            one_record.update(port_base)
 
             # ports
             if port != 0:
                 port_info = Port.get_info_by_ipdomain_port(ipdomain, port)
-                one_record['port'] = port_info
+                one_record['port_info'] = port_info
 
             ipdomains_result.append(one_record)
 

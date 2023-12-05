@@ -25,6 +25,13 @@ class Port(object):
         return result
 
     @staticmethod
+    def get_by_ipdomain_port(ipdomain, port):
+        port_base = Port.list_by_ipdomain_and_filter(ipdomain, port)
+        if not port_base:
+            raise Exception(f"IPDomain with no port {ipdomain}:{port}")
+        return port_base
+
+    @staticmethod
     def get_info_by_ipdomain_port(ipdomain, port):
         port_base = Port.list_by_ipdomain_and_filter(ipdomain, port)
         if not port_base:

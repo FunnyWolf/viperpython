@@ -4,6 +4,7 @@
 # @Desc  :
 import copy
 import time
+from collections import OrderedDict
 
 from django.core.cache import cache
 
@@ -114,6 +115,8 @@ class Xcache(object):
     XCACHE_WEB_MODULE_TASK_LIST = "XCACHE_WEB_MODULE_TASK_LIST"
     XCACHE_WEBSYNC_CACHE_JOBS = "XCACHE_WEBSYNC_CACHE_JOBS"
     XCACHE_WEB_CDN_DICT = "XCACHE_WEB_CDN_DICT"
+
+    XCACHE_WEBMODULE_RESULT = "XCACHE_WEBMODULE_RESULT"
 
     def __init__(self):
         pass
@@ -1321,4 +1324,58 @@ class Xcache(object):
     @staticmethod
     def set_web_cdn_dict(result):
         cache.set(Xcache.XCACHE_WEB_CDN_DICT, result, 3600 * 24)  # 每天更新
+        return True
+
+    ##### XCACHE_WEBMODULE_RESULT
+
+    @staticmethod
+    def list_web_module_result():
+        all_result = cache.get(Xcache.XCACHE_WEBMODULE_RESULT)
+        if all_result is None:
+            all_result = OrderedDict()
+            cache.set(Xcache.XCACHE_WEBMODULE_RESULT, all_result, None)
+        return all_result
+
+    @staticmethod
+    def update_web_module_result_status(task_uuid=None, status=None, loadpath=None, opts=[], input_list=[],
+                                        project_id=None, ):
+
+        all_result = Xcache.list_web_module_result()
+
+        task_result = all_result.get(task_uuid)
+        if task_result is None:  # new task
+            task_result = {
+                "task_uuid": task_uuid,
+                "loadpath": loadpath,
+                "opts": opts,
+                "input_list": input_list,
+                "project_id": project_id,
+                "status": status,
+                'update_time': int(time.time()),
+                'message': [],
+            }
+        else:
+            task_result["status"] = status
+            task_result['update_time'] = int(time.time())
+
+        all_result[task_uuid] = task_result
+        cache.set(Xcache.XCACHE_WEBMODULE_RESULT, all_result, None)
+
+        return True
+
+    @staticmethod
+    def clear_web_module_result():
+        all_result = OrderedDict()
+        cache.set(Xcache.XCACHE_WEBMODULE_RESULT, all_result, None)
+        return True
+
+    @staticmethod
+    def add_web_module_result_message(task_uuid, message):
+        all_result = Xcache.list_web_module_result()
+        task_result = all_result.get(task_uuid)
+        if task_result is None:
+            return False
+        task_result['message'].append(message)
+        all_result[task_uuid] = task_result
+        cache.set(Xcache.XCACHE_WEBMODULE_RESULT, all_result, None)
         return True

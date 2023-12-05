@@ -35,7 +35,8 @@ class PostModule(WebPythonModule):
         if self.quake_client.init_conf_from_cache() is not True:
             return False, "Quake 配置无效", "Quake configuration invalid"
         try:
-            str_to_ips(self.param("IP"))
+            if self.param("ip") is not None:
+                str_to_ips(self.param("ip"))
         except Exception as E:
             return False, "IP地址格式错误", "IP address format error"
 
@@ -43,12 +44,14 @@ class PostModule(WebPythonModule):
 
     def run(self):
         ip_list = []
-        ip_list.extend(str_to_ips(self.param("IP")))
+        if self.param("IP") is not None:
+            ip_list.extend(str_to_ips(self.param("IP")))
 
         for one_input in self.input_list:
+            ip = one_input.get("ip")
+            ip_list.append(ip)
             ipdomain = one_input.get("ipdomain")
             ip_list.append(ipdomain)
-
         for oneip in ip_list:
             source_key = f"ip:\"{oneip}\""
             msg, items = self.quake_client.get_json_data(source_key)
