@@ -114,6 +114,7 @@ class Xcache(object):
 
     XCACHE_WEB_MODULE_TASK_LIST = "XCACHE_WEB_MODULE_TASK_LIST"
     XCACHE_WEBSYNC_CACHE_JOBS = "XCACHE_WEBSYNC_CACHE_JOBS"
+    XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT = "XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT"
     XCACHE_WEB_CDN_DICT = "XCACHE_WEB_CDN_DICT"
 
     XCACHE_WEBMODULE_RESULT = "XCACHE_WEBMODULE_RESULT"
@@ -1378,4 +1379,14 @@ class Xcache(object):
         task_result['message'].append(message)
         all_result[task_uuid] = task_result
         cache.set(Xcache.XCACHE_WEBMODULE_RESULT, all_result, None)
+        return True
+
+    @staticmethod
+    def get_websync_cache_web_module_result():
+        result = cache.get(Xcache.XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT)
+        return result
+
+    @staticmethod
+    def set_websync_cache_web_module_result(result):
+        cache.set(Xcache.XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT, result, None)
         return True

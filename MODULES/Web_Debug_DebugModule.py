@@ -34,7 +34,16 @@ class PostModule(WebPythonModule):
 
     def run(self):
         import time
-
+        self.log_info("111", "222")
+        self.log_raw("111")
+        self.log_good("111", "222")
+        self.log_warn("111", "222")
+        self.log_error("111", "222")
+        self.log_except("111", "222")
+        a = []
+        a.append({"ip": "10.10.10.10", 'port': 80})
+        a.append({"ip": "10.10.10.10", 'port': 443})
+        self.log_table(a, a)
         for i in range(self.param("TIMEOUT")):
             time.sleep(1)
             print("111")

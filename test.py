@@ -7,4 +7,5 @@ import django
 django.setup()
 from Lib.xcache import Xcache
 
-print(Xcache.list_web_module_result())
+result = Xcache.list_web_module_result()
+print(result)
