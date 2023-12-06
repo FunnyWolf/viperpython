@@ -70,7 +70,7 @@ def restart_nginx():
     except Exception as E:
         pass
 
-    while True:
+    for i in range(3):
         try:
             nginx_port = get_nginx_port()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -83,11 +83,13 @@ def restart_nginx():
             logger.info("[*] 启动nginx服务")
             result = subprocess.run(
                 ["service", "nginx", "start"],
-                stdout=devNull,
-                stderr=devNull
+                # stdout=devNull,
+                # stderr=devNull
             )
+            time.sleep(3)
 
 
+#
 def check_services():
     """服务检查函数"""
     nginx_port = get_nginx_port()
@@ -480,6 +482,7 @@ def init_copy_file():
     target_file = "/root/viper/Docker/nginxconfig/nobody.sh"
     try:
         shutil.copy(src_file, target_file)
+        os.chmod("/root/viper/Docker/nginxconfig/nobody.sh", 0o775)
     except shutil.SameFileError:
         pass
 

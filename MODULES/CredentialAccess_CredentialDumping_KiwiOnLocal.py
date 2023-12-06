@@ -35,8 +35,8 @@ class PostModule(PostMSFRawModule):
 
         if session.is_windows is not True:
             return False, "此模块只支持Windows的Meterpreter", "This module only supports Meterpreter for Windows"
-        if session.is_admin is not True:
-            return False, "此模块需要管理员权限,请尝试提权", "This module requires administrator privileges, please try privilege escalation"
+        if session.is_admin is not True and session.is_system is not True:
+            return False, "此模块需要管理员/System权限,请尝试提权", "This module requires administrator privileges, please try privilege escalation"
         return True, None
 
     @staticmethod
