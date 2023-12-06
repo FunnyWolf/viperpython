@@ -53,7 +53,9 @@ class IPFilter(object):
 
     @staticmethod
     def is_allow(ip):
-        Notice.send_info(f"[新Session连接] {ip}", f"[New Session Connection] {ip}")
+        geo_str_zh = IPGeo.get_ip_geo_str(ip, "zh-CN")
+        geo_str_en = IPGeo.get_ip_geo_str(ip, "en-US")
+        Notice.send_info(f"[新Session连接] [{geo_str_zh}] {ip}", f"[New Session Connection] [{geo_str_en}] {ip}")
         # 总开关检查
         if Xcache.get_ipfilter_switch_cache() is not True:
             return True
@@ -67,9 +69,6 @@ class IPFilter(object):
 
         # 查询geo信息
         geo_list = IPGeo.get_ip_geo(ip, "zh-CN")
-        geo_str_zh = IPGeo.get_ip_geo_str(ip, "zh-CN")
-        geo_str_en = IPGeo.get_ip_geo_str(ip, "en-US")
-        Notice.send_info(f"[{geo_str_zh}] {ip}", f"[{geo_str_en}] {ip}")
 
         # 自定义白名单
         if IPFilter.in_diy_whitelist(ip):
