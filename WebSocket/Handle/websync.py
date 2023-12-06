@@ -5,7 +5,7 @@
 from Lib.xcache import Xcache
 from Msgrpc.Handle.job import Job
 from PostModule.Handle.postmoduleconfig import PostModuleConfig
-from WebDatabase.Handle.webmoduleresult import WebModuleResult
+from WebDatabase.Handle.webtaskresult import WebTaskResult
 
 
 class WebSync(object):
@@ -38,7 +38,7 @@ class WebSync(object):
             result["module_options"] = module_options
 
         # result_history
-        task_result = WebModuleResult.list()
+        task_result = WebTaskResult.list()
 
         cache_task_result = Xcache.get_websync_cache_web_module_result()
 
@@ -57,7 +57,7 @@ class WebSync(object):
         jobs = Job.list_web_jobs()
         module_options = PostModuleConfig.list_dynamic_option()
 
-        task_result = WebModuleResult.list()
+        task_result = WebTaskResult.list()
 
         result = {
             'jobs_update': True,

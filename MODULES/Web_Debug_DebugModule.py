@@ -46,5 +46,5 @@ class PostModule(WebPythonModule):
         self.log_table(a, a)
         for i in range(self.param("TIMEOUT")):
             time.sleep(1)
-            print("111")
+            self.log_info(int(time.time()), "222")
         return "this is result"

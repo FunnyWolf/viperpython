@@ -587,6 +587,17 @@ IPDomain_MSG_EN = {
 
     304: "Input parameter error",
 }
+WebTaskResult_MSG_ZH = {
+    204: "删除历史记录成功",
+
+    304: "输入参数错误",
+}
+
+WebTaskResult_MSG_EN = {
+    204: "Delete history record successfully",
+
+    304: "Input parameter error",
+}
 
 Empty_MSG = {
     201: "",

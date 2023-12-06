@@ -1,8 +1,11 @@
+from Lib.api import data_return
+from Lib.configs import WebTaskResult_MSG_ZH, \
+    WebTaskResult_MSG_EN
 from Lib.log import logger
 from Lib.xcache import Xcache
 
 
-class WebModuleResult(object):
+class WebTaskResult(object):
     def __init__(self):
         pass
 
@@ -25,3 +28,9 @@ class WebModuleResult(object):
         except Exception as E:
             logger.exception(E)
             return []
+
+    @staticmethod
+    def destory():
+        Xcache.clear_web_module_result()
+        context = data_return(204, {}, WebTaskResult_MSG_ZH.get(204), WebTaskResult_MSG_EN.get(204))
+        return context

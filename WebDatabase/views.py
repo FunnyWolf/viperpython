@@ -8,6 +8,7 @@ from Lib.configs import *
 from Lib.log import logger
 from WebDatabase.Handle.ipdomain import IPDomain
 from WebDatabase.Handle.project import Project
+from WebDatabase.Handle.webtaskresult import WebTaskResult
 
 
 # Create your views here.
@@ -102,6 +103,16 @@ class IPDomainView(BaseView):
         try:
             ipdomain = request.query_params.get('ipdomain')
             context = IPDomain.destory(ipdomain=ipdomain)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+
+class WebTaskResultView(BaseView):
+    def destroy(self, request, *args, **kwargs):
+        try:
+            context = WebTaskResult.destory()
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
