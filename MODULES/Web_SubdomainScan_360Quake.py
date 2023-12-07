@@ -36,9 +36,20 @@ class PostModule(WebPythonModule):
         return True, ""
 
     def run(self):
-        source_key = f"domain:\"{self.param('Domain')}\""
-        msg, items = self.quake_client.get_json_data(source_key)
-        if items is None:
-            return False
-        DataStore.quake_result(items, project_id=self.project_id, source={})
+        domain_list = []
+        for one_input in self.input_list:
+            ipdomain = one_input.get("ipdomain")
+            if api.is_website(ipdomain):
+                domain_list.append(ipdomain)
+        domain_list.append(self.param("Domain"))
+        total_items = []
+        for domain in domain_list:
+            source_key = f"domain:\"{domain}\""
+            msg, items = self.quake_client.get_json_data(source_key)
+            if items is None:
+                Notice.send_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
+                continue
+            total_items.extend(items)
+        DataStore.quake_result(total_items, project_id=self.project_id, source={})
+        self.log_info(f'更新了{len(total_items)}条数据', f'Updated {len(total_items)} pieces of data')
         return True

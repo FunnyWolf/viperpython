@@ -5,6 +5,7 @@
 import ipaddress
 import json
 import random
+import re
 import string
 import uuid
 
@@ -33,6 +34,11 @@ def is_ipaddress(ip_str):
         return True
     except Exception as E:
         return False
+
+
+def is_website(url):
+    regex = r"^([a-zA-Z]+:\/\/)?([\da-zA-Z\.-]+)\.([a-zA-Z]{2,6})([\/\w \.-]*)*\/?$"
+    return True if re.match(regex, url) else False
 
 
 def get_one_uuid_str():

@@ -3,7 +3,7 @@
 # @Date  : 2020/11/4
 # @Desc  :
 from Core.Handle.uuidjson import UUIDJson
-from Lib import utils
+from Lib import utils, api
 from Lib.External.fofaclient import FOFAClient
 from Lib.External.quake import Quake
 from Lib.External.wafcheck import WafCheck
@@ -125,5 +125,6 @@ __all__ = [
     "random_str",
     "ZoomeyeAPI",
     "DataStore",
-    "WafCheck"
+    "WafCheck",
+    'api'
 ]

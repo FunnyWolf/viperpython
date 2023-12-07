@@ -52,12 +52,13 @@ class PostModule(WebPythonModule):
             ip_list.append(ip)
             ipdomain = one_input.get("ipdomain")
             ip_list.append(ipdomain)
+        items_total = []
         for oneip in ip_list:
             source_key = f"ip:\"{oneip}\""
             msg, items = self.quake_client.get_json_data(source_key)
-
             if items is None:
                 Notice.send_error(f"调用Quake失败: {msg}", f"Call Quake failed : {msg}")
-                return False
-
-            DataStore.quake_result(items, project_id=self.project_id, source={})
+                continue
+            items_total.extend(items)
+        self.log_info(f'更新了{len(items_total)}条数据', f'Updated {len(items_total)} pieces of data')
+        DataStore.quake_result(items_total, project_id=self.project_id, source={})

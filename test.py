@@ -7,5 +7,5 @@ import django
 django.setup()
 from Lib.xcache import Xcache
 
-result = Xcache.list_web_module_result()
+result = Xcache.del_module_result_history()
 print(result)
