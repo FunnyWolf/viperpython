@@ -250,6 +250,14 @@ class _CommonModule(object):
 
     # 模块输出相关函数
     # 模块输出相关函数
+    def _log(self, log_type, data_zh, data_en=None):
+        if not isinstance(data_zh, str):
+            data_zh = str(data_zh)
+        if data_en is not None and not isinstance(data_en, str):
+            data_en = str(data_en)
+        result_format = {"type": log_type, "data_zh": data_zh, "data_en": data_en}
+        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+
     def log_table(self, data_zh, data_en):
         if data_zh is None or len(data_zh) == 0:
             return
@@ -272,34 +280,28 @@ class _CommonModule(object):
     def log_raw(self, data):
         if data is None:
             return
-        result_format = {"type": "raw", "data_zh": data, "data_en": data}
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+        self._log("raw", data, data)
 
     def log_info(self, data_zh, data_en=None):
-        result_format = {"type": "info", "data_zh": data_zh, "data_en": data_en}
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+        self._log("info", data_zh, data_en)
 
     def log_success(self, data_zh, data_en=None):
-        self.log_good(self, data_zh, data_en)
+        self._log("good", data_zh, data_en)
 
     def log_good(self, data_zh, data_en=None):
-        result_format = {"type": "good", "data_zh": data_zh, "data_en": data_en}
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+        self._log("good", data_zh, data_en)
 
     def log_warn(self, data_zh, data_en=None):
-        self.log_warning(data_zh, data_en)
+        self._log("warning", data_zh, data_en)
 
     def log_warning(self, data_zh, data_en=None):
-        result_format = {"type": "warning", "data_zh": data_zh, "data_en": data_en}
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+        self._log("warning", data_zh, data_en)
 
     def log_error(self, data_zh, data_en=None):
-        result_format = {"type": "error", "data_zh": data_zh, "data_en": data_en}
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+        self._log("error", data_zh, data_en)
 
     def log_except(self, data_zh, data_en=None):
-        result_format = {"type": "except", "data_zh": data_zh, "data_en": data_en}
-        Xcache.add_module_result(self.host_ipaddress, self.loadpath, result_format)
+        self._log("except", data_zh, data_en)
 
     def log_store(self, result_format):
         """清空已有结果并存储当前输出"""
