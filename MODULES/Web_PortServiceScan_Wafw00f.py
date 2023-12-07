@@ -29,19 +29,22 @@ class PostModule(WebPythonModule):
 
     def check(self):
         """执行前的检查函数"""
-        url = self.param("URL")
-        pret = utils.urlParser(url)
-        if pret is None:
-            return False, "输入的URL无效", "Invalid URL"
         return True, ""
 
     def run(self):
-        ip_list = []
-
+        url_list = []
         for one_input in self.input_list:
-            ipdomain = one_input.get("ipdomain")
-            ip_list.append(ipdomain)
-
+            url = self.group_url_by_ipdomain_record(one_input)
+            if url:
+                url_list.append(url)
         url = self.param("URL")
-        items = WafCheck.check([url])
+        if url is not None:
+            pret = utils.urlParser(url)
+            if pret is None:
+                self.log_warn("输入的URL无效", "Invalid URL")
+            else:
+                url_list.append(url)
+
+        items = WafCheck.check(url_list)
+
         DataStore.wafcheck_result(items, project_id=self.project_id, source={})
