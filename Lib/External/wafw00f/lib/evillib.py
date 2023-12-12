@@ -26,10 +26,9 @@ proxies = {}
 
 
 class waftoolsengine:
-    def __init__(self, target='https://example.com', debuglevel=0, path='/', proxies=None,
+    def __init__(self, target='https://example.com', path='/', proxies=None,
                  redir=True, head=None):
         self.target = target
-        self.debuglevel = debuglevel
         self.requestnumber = 0
         self.path = path
         self.redirectno = 0
@@ -40,7 +39,7 @@ class waftoolsengine:
         else:
             self.headers = copy(def_headers)  # copy object by value not reference. Fix issue #90
 
-    def Request(self, headers=None, path=None, params={}, delay=0, timeout=7):
+    def Request(self, headers=None, path=None, params={}, delay=0, timeout=3):
         try:
             time.sleep(delay)
             if not headers:
@@ -53,4 +52,4 @@ class waftoolsengine:
             self.requestnumber += 1
             return req
         except requests.exceptions.RequestException as e:
-            logger.exception('Something went wrong %s' % (e.__str__()))
+            logger.debug(e)

@@ -3,7 +3,8 @@
 # @Date  : 2020/11/4
 # @Desc  :
 from Core.Handle.uuidjson import UUIDJson
-from Lib import utils, api
+from Lib import api
+from Lib.External.alienvault import AlienVault
 from Lib.External.fofaclient import FOFAClient
 from Lib.External.quake import Quake
 from Lib.External.wafcheck import WafCheck
@@ -106,7 +107,6 @@ __all__ = [
     "HostInfo",
     "UUIDJson",
     "IPGeo",
-    "utils",
     "IPDomain",
     "DomainICP",
     "Service",
@@ -126,5 +126,6 @@ __all__ = [
     "ZoomeyeAPI",
     "DataStore",
     "WafCheck",
+    'AlienVault',
     'api'
 ]

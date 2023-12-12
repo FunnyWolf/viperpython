@@ -8,6 +8,9 @@ import random
 import re
 import string
 import uuid
+from urllib.parse import urlparse
+
+from Lib.log import logger
 
 
 def random_str(len):
@@ -120,3 +123,25 @@ def str_to_ips(ipstr):
         else:
             iplist.extend([raw])
     return iplist
+
+
+def urlParser(target):
+    ssl = False
+    o = urlparse(target)
+    if o[0] not in ['http', 'https', '']:
+        logger.error('scheme %s not supported' % o[0])
+        return
+    if o[0] == 'https':
+        ssl = True
+    if len(o[2]) > 0:
+        path = o[2]
+    else:
+        path = '/'
+    tmp = o[1].split(':')
+    if len(tmp) > 1:
+        port = tmp[1]
+    else:
+        port = None
+    hostname = tmp[0]
+    query = o[4]
+    return (hostname, port, path, query, ssl)

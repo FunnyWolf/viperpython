@@ -2,7 +2,7 @@
 # @File  : PostMulitMsfBypassUAC.py
 # @Date  : 2019/3/15
 # @Desc  :
-
+import Lib.api
 from Lib.ModuleAPI import *
 
 
@@ -39,12 +39,12 @@ class PostModule(WebPythonModule):
                 url_list.append(url)
         url = self.param("URL")
         if url is not None:
-            pret = utils.urlParser(url)
+            pret = Lib.api.urlParser(url)
             if pret is None:
                 self.log_warn("输入的URL无效", "Invalid URL")
             else:
                 url_list.append(url)
 
         items = WafCheck.check(url_list)
-
+        self.log_info(f'更新{len(items)}条数据', f'Updated {len(items)} pieces of data')
         DataStore.wafcheck_result(items, project_id=self.project_id, source={})

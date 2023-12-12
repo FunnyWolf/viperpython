@@ -85,7 +85,7 @@ class LocationModel(IPDomainBaseModel):
 
 
 class PortModel(PortBaseModel):
-    pass
+    alive = models.BooleanField(default=True)
 
 
 class ServiceModel(PortBaseModel):

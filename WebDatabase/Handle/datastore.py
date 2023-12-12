@@ -1,12 +1,13 @@
 import time
+from urllib.parse import urlparse
 
 import urllib3
 
 from Lib.External.cdncheck import CDNCheck
+from Lib.api import urlParser
 from Lib.configs import DEFAULT_PROJECT_ID
 from Lib.file import File
 from Lib.timeapi import TimeAPI
-from Lib.utils import urlParser
 from WebDatabase.Handle.cdn import CDN
 from WebDatabase.Handle.cert import Cert
 from WebDatabase.Handle.component import Component
@@ -207,13 +208,9 @@ class DataStore(object):
             update_time = TimeAPI.str_to_timestamp(item.get("lastupdatetime"), format)
 
             ip = item.get("ip")
-            host = item.get("host")
-            if host.startswith("https://"):
-                domain = host[8:]
-            elif host.startswith("http://"):
-                domain = host[7:]
-            else:
-                domain = None
+            url = item.get("host")
+            urlparse_result = urlparse(url)
+            domain = urlparse_result.hostname
 
             port = int(item.get("port"))
             service_name = item.get("protocol")
@@ -356,7 +353,11 @@ class DataStore(object):
             geoinfo = item.get("geoinfo")
 
             isp = geoinfo.get("isp")
-            asname = geoinfo.get("oragnization")
+
+            asname = geoinfo.get('organization')
+
+            if isp is None:
+                isp = asname
 
             webbase_dict = {
                 'source': source,
@@ -466,7 +467,39 @@ class DataStore(object):
             IPDomain.update_or_create(project_id=project_id,
                                       ipdomain=hostname,
                                       webbase_dict=webbase_dict)
-            Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict)
-            WAF.update_or_create(ipdomain=hostname, port=port, flag=detected, trigger_url=trigger_url, name=firewall,
-                                 manufacturer=manufacturer,
-                                 webbase_dict=webbase_dict)
+            if detected is None:
+                webbase_dict = {
+                    'alive': False,
+                    'source': source,
+                    'update_time': update_time,
+                }
+                Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict)
+            else:
+                webbase_dict_port = {
+                    'alive': True,
+                    'source': source,
+                    'update_time': update_time,
+                }
+                Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict_port)
+
+                webbase_dict = {
+                    'source': source,
+                    'update_time': update_time,
+                }
+                WAF.update_or_create(ipdomain=hostname, port=port, flag=detected, trigger_url=trigger_url,
+                                     name=firewall,
+                                     manufacturer=manufacturer,
+                                     webbase_dict=webbase_dict)
+
+    @staticmethod
+    def subdomain_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
+        for item in items:
+            update_time = int(time.time())
+            ipdomain = item.get("ipdomain")
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+            IPDomain.update_or_create(project_id=project_id,
+                                      ipdomain=ipdomain,
+                                      webbase_dict=webbase_dict)

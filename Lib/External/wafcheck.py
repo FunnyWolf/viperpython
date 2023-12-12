@@ -9,13 +9,12 @@ See the LICENSE file for copying permission.
 import random
 import re
 import string
-import sys
 
 from Lib.External.wafw00f.lib.evillib import waftoolsengine
 from Lib.External.wafw00f.manager import load_plugins
 from Lib.External.wafw00f.wafprio import wafdetectionsprio
+from Lib.api import urlParser
 from Lib.log import logger
-from Lib.utils import urlParser
 
 
 class WAFW00F(waftoolsengine):
@@ -25,11 +24,11 @@ class WAFW00F(waftoolsengine):
     rcestring = '/bin/cat /etc/passwd; ping 127.0.0.1; curl google.com'
     xxestring = '<!ENTITY xxe SYSTEM "file:///etc/shadow">]><pwn>&hack;</pwn>'
 
-    def __init__(self, target='www.example.com', debuglevel=0, path='/',
+    def __init__(self, target='www.example.com', path='/',
                  followredirect=True, extraheaders={}, proxies=None):
 
         self.attackres = None
-        waftoolsengine.__init__(self, target, debuglevel, path, proxies, followredirect, extraheaders)
+        waftoolsengine.__init__(self, target, path, proxies, followredirect, extraheaders)
         self.knowledge = dict(generic=dict(found=False, reason=''), wafname=list())
         self.rq = self.normalRequest()
 
@@ -265,6 +264,7 @@ class WAFW00F(waftoolsengine):
             self.attackres, xurl = self.performCheck(self.centralAttack)
         except RequestBlocked:
             return detected, None
+
         for wafvendor in self.checklist:
             # logger.info('Checking for %s' % wafvendor)
             if self.wafdetections[wafvendor](self):
@@ -275,7 +275,7 @@ class WAFW00F(waftoolsengine):
         return detected, xurl
 
 
-def buildResultRecord(url, waf, evil_url=None):
+def buildResultRecord(url, waf, evil_url=None, alive=True):
     result = {}
     result['url'] = url
     if waf:
@@ -289,10 +289,16 @@ def buildResultRecord(url, waf, evil_url=None):
             result['firewall'] = waf.split('(')[0].strip()
             result['manufacturer'] = waf.split('(')[1].replace(')', '').strip()
     else:
-        result['trigger_url'] = evil_url
-        result['detected'] = False
-        result['firewall'] = 'None'
-        result['manufacturer'] = 'None'
+        if alive:
+            result['trigger_url'] = evil_url
+            result['detected'] = False
+            result['firewall'] = None
+            result['manufacturer'] = None
+        else:
+            result['trigger_url'] = None
+            result['detected'] = None
+            result['firewall'] = None
+            result['manufacturer'] = None
     return result
 
 
@@ -342,16 +348,17 @@ class WafCheck(object):
             pret = urlParser(target)
             if pret is None:
                 logger.critical('The url %s is not well formed' % target)
-                sys.exit(1)
+
             (hostname, _, path, _, _) = pret
 
             proxies = {}
 
-            attacker = WAFW00F(target, debuglevel=0, path=path,
+            attacker = WAFW00F(target, path=path,
                                followredirect=True, extraheaders=extraheaders,
                                proxies=proxies)
             if attacker.rq is None:
-                logger.error('Site %s appears to be down' % hostname)
+                logger.error(f'{target} appears to be down')
+                results.append(buildResultRecord(target, waf=None, evil_url=None, alive=False))
                 continue
 
             waf, xurl = attacker.identwaf(findall=False)
@@ -370,6 +377,6 @@ class WafCheck(object):
 
 
 if __name__ == '__main__':
-    targets = ["https://did-sso.bba-app.biz"]
+    targets = ["https://bms1.azure.bba-app.biz"]
     results = WafCheck.check(targets)
     print(results)
