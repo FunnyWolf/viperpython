@@ -115,9 +115,12 @@ class Xcache(object):
     XCACHE_WEB_MODULE_TASK_LIST = "XCACHE_WEB_MODULE_TASK_LIST"
     XCACHE_WEBSYNC_CACHE_JOBS = "XCACHE_WEBSYNC_CACHE_JOBS"
     XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT = "XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT"
+    XCACHE_WEBSYNC_CACHE_WEB_NOTICE = "XCACHE_WEBSYNC_CACHE_WEB_NOTICE"
     XCACHE_WEB_CDN_DICT = "XCACHE_WEB_CDN_DICT"
 
     XCACHE_WEBMODULE_RESULT = "XCACHE_WEBMODULE_RESULT"
+
+    XCACHE_WEBNOTICES = "XCACHE_WEBNOTICES"
 
     def __init__(self):
         pass
@@ -1390,3 +1393,37 @@ class Xcache(object):
     def set_websync_cache_web_module_result(result):
         cache.set(Xcache.XCACHE_WEBSYNC_CACHE_WEB_MODULE_RESULT, result, None)
         return True
+
+    @staticmethod
+    def get_websync_cache_web_notices():
+        result = cache.get(Xcache.XCACHE_WEBSYNC_CACHE_WEB_NOTICE)
+        return result
+
+    @staticmethod
+    def set_websync_cache_web_notices(result):
+        cache.set(Xcache.XCACHE_WEBSYNC_CACHE_WEB_NOTICE, result, None)
+        return True
+
+    @staticmethod
+    def get_web_notices():
+        notices = cache.get(Xcache.XCACHE_WEBNOTICES)
+        if notices is None:
+            return []
+        else:
+            notices.reverse()
+            return notices[0:200]
+
+    @staticmethod
+    def clean_web_notices():
+        cache.set(Xcache.XCACHE_WEBNOTICES, [], None)
+        return True
+
+    @staticmethod
+    def add_one_web_notice(notice):
+        notices = cache.get(Xcache.XCACHE_WEBNOTICES)
+        if notices is None:
+            cache.set(Xcache.XCACHE_WEBNOTICES, [notice], None)
+        else:
+            tempnotices = copy.deepcopy(notices)
+            tempnotices.append(notice)
+            cache.set(Xcache.XCACHE_WEBNOTICES, tempnotices, None)

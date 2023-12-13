@@ -18,18 +18,19 @@ class Component(object):
     @staticmethod
     def update_or_create(ipdomain=None, port=None, product_name=None, product_version=None,
                          product_type=[], product_catalog=[], product_dict_values={}, webbase_dict={}):
-        default_dict = {
-            # 'ipdomain': ipdomain,
-            # 'port': port,
-            'product_name': product_name,
-            'product_version': product_version,
-            'product_dict_values': product_dict_values,
-            'product_type': product_type,
-            'product_catalog': product_catalog,
-        }
-        default_dict.update(webbase_dict)
+        if product_name:
+            default_dict = {
+                'product_name': product_name,
+                'product_version': product_version,
+                'product_dict_values': product_dict_values,
+                'product_type': product_type,
+                'product_catalog': product_catalog,
+            }
+            default_dict.update(webbase_dict)
 
-        model, create = ComponentModel.objects.update_or_create(ipdomain=ipdomain, port=port,
-                                                                product_name=product_name,
-                                                                defaults=default_dict)
-        return create
+            model, create = ComponentModel.objects.update_or_create(ipdomain=ipdomain, port=port,
+                                                                    product_name=product_name,
+                                                                    defaults=default_dict)
+            return create
+        else:
+            return False

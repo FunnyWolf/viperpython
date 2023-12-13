@@ -33,6 +33,7 @@ class PostModule(WebPythonModule):
         return True, ""
 
     def run(self):
+        WebNotice.send_info("test", 'test')
         import time
         self.log_info("111", "222")
         self.log_raw("111")

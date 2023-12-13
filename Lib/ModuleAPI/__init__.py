@@ -55,6 +55,7 @@ from Lib.sessionlib import (
     SessionLib as Session,
 )
 from Lib.timeapi import TimeAPI
+from Lib.webnotice import WebNotice
 from Lib.xcache import Xcache
 from Msgrpc.Handle.filemsf import FileMsf
 from WebDatabase.Handle.cert import Cert
@@ -127,5 +128,6 @@ __all__ = [
     "DataStore",
     "WafCheck",
     'AlienVault',
+    'WebNotice',
     'api'
 ]

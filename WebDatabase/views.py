@@ -6,6 +6,7 @@ from Lib.api import data_return
 from Lib.baseview import BaseView
 from Lib.configs import *
 from Lib.log import logger
+from Lib.webnotice import WebNotice
 from WebDatabase.Handle.ipdomain import IPDomain
 from WebDatabase.Handle.project import Project
 from WebDatabase.Handle.webtaskresult import WebTaskResult
@@ -113,6 +114,26 @@ class WebTaskResultView(BaseView):
     def destroy(self, request, *args, **kwargs):
         try:
             context = WebTaskResult.destory()
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+
+class WebNoticesView(BaseView):
+    def list(self, request, **kwargs):
+        try:
+            context = WebNotice.list_notices()
+            context = data_return(200, context, CODE_MSG_ZH.get(200), CODE_MSG_EN.get(200))
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+    def destroy(self, request, pk=None, **kwargs):
+        try:
+            WebNotice.clean_notices()
+            context = data_return(201, {}, Notice_MSG_ZH.get(201), Notice_MSG_EN.get(201))
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
