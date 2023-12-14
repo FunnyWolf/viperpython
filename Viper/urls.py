@@ -47,20 +47,14 @@ router.register(r'api/v1/postmodule/postmoduleactuator', PostModuleActuatorView,
 router.register(r'api/v1/postmodule/postmoduleresult', PostModuleResultView, basename="PostModuleResult")
 router.register(r'api/v1/postmodule/postmoduleresulthistory', PostModuleResultHistoryView,
                 basename="PostModuleResultHistoryView")
-router.register(r'api/v1/postmodule/postmoduleauto', PostModuleAutoView,
-                basename="PostModuleAutoView")
-router.register(r'api/v1/postmodule/proxyhttpscan', ProxyHttpScanView,
-                basename="ProxyHttpScanView")
-# WebDatabase
-router.register(r'api/v1/webdatabase/project', ProjectView,
-                basename="ProjectView")
-router.register(r'api/v1/webdatabase/ipdomain', IPDomainView,
-                basename="IPDomainView")
+router.register(r'api/v1/postmodule/postmoduleauto', PostModuleAutoView, basename="PostModuleAutoView")
+router.register(r'api/v1/postmodule/proxyhttpscan', ProxyHttpScanView, basename="ProxyHttpScanView")
 
-router.register(r'api/v1/webdatabase/webtaskresult', WebTaskResultView,
-                basename="WebTaskResultView")
-router.register(r'api/v1/webdatabase/webnotices', WebNoticesView,
-                basename="WebNoticesView")
+# WebDatabase
+router.register(r'api/v1/webdatabase/project', ProjectView, basename="ProjectView")
+router.register(r'api/v1/webdatabase/ipdomain', IPDomainView, basename="IPDomainView")
+router.register(r'api/v1/webdatabase/webtaskresult', WebTaskResultView, basename="WebTaskResultView")
+router.register(r'api/v1/webdatabase/webnotices', WebNoticesView, basename="WebNoticesView")
 
 # 无需认证的api
 router.register(r'api/v1/d', HostFileView, basename="HostFileView")
