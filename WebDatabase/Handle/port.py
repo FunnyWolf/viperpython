@@ -85,3 +85,8 @@ class Port(object):
         model, created = PortModel.objects.update_or_create(ipdomain=ipdomain, port=port,
                                                             defaults=default_dict)
         return created
+
+    @staticmethod
+    def update_commnet_by_ipdomain_port(ipdomain=None, port=None, color=None, comment=None):
+        rows = PortModel.objects.filter(ipdomain=ipdomain, port=port).update(color=color, comment=comment)
+        return rows

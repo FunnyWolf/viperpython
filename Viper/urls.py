@@ -10,7 +10,7 @@ from Msgrpc.views import WebDeliveryView, IPFilterView
 from PostLateral.views import IntranetPortServiceView, CredentialView, VulnerabilityView
 from PostModule.views import PostModuleConfigView, PostModuleActuatorView, PostModuleResultView, ProxyHttpScanView
 from PostModule.views import PostModuleResultHistoryView, PostModuleAutoView
-from WebDatabase.views import ProjectView, IPDomainView, WebTaskResultView, WebNoticesView
+from WebDatabase.views import ProjectView, IPDomainView, WebTaskResultView, WebNoticesView, PortView
 
 router = routers.DefaultRouter()
 router.register(r'api/v1/core/baseauth', BaseAuthView, basename="BaseAuth")
@@ -55,7 +55,7 @@ router.register(r'api/v1/webdatabase/project', ProjectView, basename="ProjectVie
 router.register(r'api/v1/webdatabase/ipdomain', IPDomainView, basename="IPDomainView")
 router.register(r'api/v1/webdatabase/webtaskresult', WebTaskResultView, basename="WebTaskResultView")
 router.register(r'api/v1/webdatabase/webnotices', WebNoticesView, basename="WebNoticesView")
-
+router.register(r'api/v1/webdatabase/port', PortView, basename="PortView")
 # 无需认证的api
 router.register(r'api/v1/d', HostFileView, basename="HostFileView")
 router.register(r'api/v1/c', LazyLoaderInterfaceView, basename="LazyLoaderInterfaceView")

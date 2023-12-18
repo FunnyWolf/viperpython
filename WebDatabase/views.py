@@ -8,6 +8,7 @@ from Lib.configs import *
 from Lib.log import logger
 from Lib.webnotice import WebNotice
 from WebDatabase.Handle.ipdomain import IPDomain
+from WebDatabase.Handle.port import Port
 from WebDatabase.Handle.project import Project
 from WebDatabase.Handle.webtaskresult import WebTaskResult
 
@@ -69,8 +70,12 @@ class IPDomainView(BaseView):
             logger.error(E)
             context = data_return(500, [], CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
             return Response(context)
+
         project_id = request.query_params.get('project_id', None)
+
         ipdomain = request.query_params.get('ipdomain', None)
+        if ipdomain == '':
+            ipdomain = None
 
         waf_flag = request.query_params.get('waf_flag', None)
         if waf_flag == 'true':
@@ -90,9 +95,14 @@ class IPDomainView(BaseView):
         except Exception as _:
             port = None
 
+        service_s = request.query_params.get('service', None)
+        if service_s == '':
+            service_s = None
+
         try:
             result, pagination = IPDomain.list(project_id=project_id, pagination=pagination, ipdomain_s=ipdomain,
-                                               port_s=port, waf_flag_s=waf_flag, cdn_flag_s=cdn_flag)
+                                               port_s=port, waf_flag_s=waf_flag, cdn_flag_s=cdn_flag,
+                                               service_s=service_s)
             context = data_return(200, {"result": result, "pagination": pagination}, CODE_MSG_ZH.get(200),
                                   CODE_MSG_EN.get(200))
         except Exception as E:
@@ -104,6 +114,23 @@ class IPDomainView(BaseView):
         try:
             ipdomain = request.query_params.get('ipdomain')
             context = IPDomain.destory(ipdomain=ipdomain)
+        except Exception as E:
+            logger.error(E)
+            context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))
+        return Response(context)
+
+
+class PortView(BaseView):
+
+    def update(self, request, pk=None, **kwargs):
+        try:
+            ipdomain = request.data.get('ipdomain')
+            port = request.data.get('port')
+            color = request.data.get('color')
+            comment = request.data.get('comment')
+
+            data = Port.update_commnet_by_ipdomain_port(ipdomain=ipdomain, port=port, color=color, comment=comment)
+            context = data_return(201, data, Project_MSG_ZH.get(201), Project_MSG_EN.get(201))
         except Exception as E:
             logger.error(E)
             context = data_return(500, {}, CODE_MSG_ZH.get(500), CODE_MSG_EN.get(500))

@@ -4,8 +4,7 @@
 # @Desc  :
 
 from Lib.api import data_return, get_one_uuid_str
-from Lib.configs import IPDomain_MSG_ZH, \
-    IPDomain_MSG_EN, DEFAULT_PROJECT_ID, DEFAULT_PROJECT_NAME, DEFAULT_PROJECT_DESC
+from Lib.configs import DEFAULT_PROJECT_ID, DEFAULT_PROJECT_NAME, DEFAULT_PROJECT_DESC, Project_MSG_ZH, Project_MSG_EN
 from Lib.log import logger
 from WebDatabase.models import ProjectModel
 from WebDatabase.serializers import ProjectSerializer
@@ -44,8 +43,8 @@ class Project(object):
     def destory(project_id):
         try:
             ProjectModel.objects.filter(project_id=project_id).delete()
-            context = data_return(204, {}, IPDomain_MSG_ZH.get(204), IPDomain_MSG_EN.get(204))
+            context = data_return(204, {}, Project_MSG_ZH.get(204), Project_MSG_EN.get(204))
         except Exception as E:
             logger.error(E)
-            context = data_return(304, {}, IPDomain_MSG_ZH.get(304), IPDomain_MSG_EN.get(304))
+            context = data_return(304, {}, Project_MSG_ZH.get(304), Project_MSG_EN.get(304))
         return context

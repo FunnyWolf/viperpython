@@ -33,6 +33,8 @@ class APSWebModule(object):
             task.broker = web_module_intent.MODULE_BROKER
             task.task_uuid = module_uuid
             task.module = web_module_intent
+            task.opts = web_module_intent.get_readable_opts()
+
             task.time = int(time.time())
 
             Xcache.add_web_module_task(task)  # 加入到任务队列

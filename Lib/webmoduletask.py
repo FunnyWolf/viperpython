@@ -11,3 +11,4 @@ class WebModuleTask(object):
         self.time = None
         self.module_config = None
         self.status = WebModuleTaskStatus.waiting
+        self.opts = None
