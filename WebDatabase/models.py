@@ -147,4 +147,5 @@ class WAFModel(PortBaseModel):
 
 class VulnerabilityModel(PortBaseModel):
     name = models.TextField(blank=True, null=True)
-    desc = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    severity = models.CharField(blank=True, null=True, max_length=100)

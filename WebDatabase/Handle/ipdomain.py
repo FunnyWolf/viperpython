@@ -199,9 +199,9 @@ class IPDomain(object):
             one_record.update(port_base)
 
             # ports
-            # if port != 0:
-            #     port_info = Port.get_info_by_ipdomain_port(ipdomain, port)
-            #     one_record['port_info'] = port_info
+            if port != 0:
+                port_info = Port.get_info_by_ipdomain_port(ipdomain, port)
+                one_record['port_info'] = port_info
 
             ipdomains_result.append(one_record)
 
