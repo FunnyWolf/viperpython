@@ -101,4 +101,4 @@ class ComponentSerializer(ModelSerializer):
 class VulnerabilitySerializer(ModelSerializer):
     class Meta(object):
         model = VulnerabilityModel
-        fields = '__all__'
+        fields = ['name', 'description', 'severity', 'key', 'tool', 'source', 'update_time']

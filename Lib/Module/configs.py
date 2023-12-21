@@ -87,6 +87,7 @@ class TAG2TYPE(object):
     Web_Common_Module = "Web_Common_Module"  # 通用模块
     Web_Subdomain_Scan = "Web_Subdomain_Scan"  # 子域名扫描模块
     Web_PortService_Scan = "Web_PortService_Scan"  # 子域名扫描模块
+    Web_Vuln_Scan = "Web_Vuln_Scan"  # 子域名扫描模块
 
     # 代理扫描模块
     Proxy_Http_Scan = "Proxy_Http_Scan"  # 基于msf的扫描模块

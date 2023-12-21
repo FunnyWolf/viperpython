@@ -20,6 +20,7 @@ from WebDatabase.Handle.location import Location
 from WebDatabase.Handle.port import Port
 from WebDatabase.Handle.screenshot import Screenshot
 from WebDatabase.Handle.service import Service
+from WebDatabase.Handle.vulnerability import Vulnerability
 from WebDatabase.Handle.waf import WAF
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -503,3 +504,46 @@ class DataStore(object):
             IPDomain.update_or_create(project_id=project_id,
                                       ipdomain=ipdomain,
                                       webbase_dict=webbase_dict)
+
+    @staticmethod
+    def nuclei_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
+        for item in items:
+            update_time = int(time.time())
+            url = item.get("url")
+            hostname, port, path, query, ssl = urlParser(url)
+            if port is None:
+                if ssl:
+                    port = 443
+                else:
+                    port = 80
+
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+
+            IPDomain.update_or_create(project_id=project_id,
+                                      ipdomain=hostname,
+                                      webbase_dict=webbase_dict)
+
+            webbase_dict_port = {
+                'alive': True,
+                'source': source,
+                'update_time': update_time,
+            }
+            Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict_port)
+
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+            info = item.get("info")
+            name = info.get("name")
+            description = info.get("description")
+            severity = info.get("severity")
+            key = item.get("template-id")
+            tool = "nuclei"
+            Vulnerability.update_or_create(ipdomain=hostname, port=port, name=name, description=description,
+                                           severity=severity,
+                                           key=key, tool=tool,
+                                           webbase_dict=webbase_dict)

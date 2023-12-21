@@ -6,11 +6,26 @@ import ipaddress
 import json
 import random
 import re
+import shlex
 import string
+import subprocess
 import uuid
 from urllib.parse import urlparse
 
 from Lib.log import logger
+
+
+def exec_system(cmd, **kwargs):
+    cmd = " ".join(cmd)
+    timeout = 4 * 60 * 60
+
+    if kwargs.get('timeout'):
+        timeout = kwargs['timeout']
+        kwargs.pop('timeout')
+
+    completed = subprocess.run(shlex.split(cmd), timeout=timeout, check=False, close_fds=True, **kwargs)
+
+    return completed
 
 
 def random_str(len):

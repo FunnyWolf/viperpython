@@ -6,6 +6,7 @@ from Core.Handle.uuidjson import UUIDJson
 from Lib import api
 from Lib.External.alienvault import AlienVault
 from Lib.External.fofaclient import FOFAClient
+from Lib.External.nucleiapi import NucleiAPI
 from Lib.External.quake import Quake
 from Lib.External.wafcheck import WafCheck
 from Lib.External.zoomeyeapi import ZoomeyeAPI
@@ -129,5 +130,6 @@ __all__ = [
     "WafCheck",
     'AlienVault',
     'WebNotice',
+    'NucleiAPI',
     'api'
 ]
