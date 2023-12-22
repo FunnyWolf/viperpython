@@ -9,6 +9,7 @@ from WebDatabase.Handle.httpbase import HttpBase
 from WebDatabase.Handle.httpfavicon import HttpFavicon
 from WebDatabase.Handle.screenshot import Screenshot
 from WebDatabase.Handle.service import Service
+from WebDatabase.Handle.vulnerability import Vulnerability
 from WebDatabase.Handle.waf import WAF
 from WebDatabase.models import PortModel
 from WebDatabase.serializers import PortSerializer
@@ -36,6 +37,7 @@ class Port(object):
         port_base = Port.list_by_ipdomain_and_filter(ipdomain, port)
         if not port_base:
             return None
+
         result = {}
         result.update(port_base)
         portservice = Service.get_by_ipdomain_port(ipdomain, port)
@@ -49,6 +51,9 @@ class Port(object):
 
         screenshot = Screenshot.get_by_ipdomain_port(ipdomain, port)
         result["screenshot"] = screenshot
+
+        vulnerabilitys = Vulnerability.list_by_ipdomain_port(ipdomain=ipdomain, port=port)
+        result["vulnerabilitys"] = vulnerabilitys
 
         if portservice:
             service = portservice.get("service")

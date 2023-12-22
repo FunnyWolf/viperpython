@@ -14,9 +14,17 @@ django.setup()
 # print(int(time.time()) - timenow)
 
 
-from Lib.External.nucleiapi import NucleiAPI
+# from Lib.External.nucleiapi import NucleiAPI
+#
+# targets = ["http://8.217.7.168:7001"]
+# n = NucleiAPI()
+# result = n.check(targets=targets)
+# print(result)
 
-targets = ["http://8.217.7.168:7001"]
-n = NucleiAPI()
-result = n.check(targets=targets)
-print(result)
+import datetime
+
+today = datetime.date.today()
+print("Today's date:", today)
+
+year_ago = today.replace(year=today.year - 1)
+print("Date a year ago:", year_ago)

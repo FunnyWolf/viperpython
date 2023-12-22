@@ -91,6 +91,7 @@ class IPDomain(object):
             ipdomain_record = IPDomain.list_by_ipdomain(ipdomain)
             if ipdomain_record is None:
                 continue
+
             # ip
             if is_ipaddress(ipdomain):
                 ip = ipdomain

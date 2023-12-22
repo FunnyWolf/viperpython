@@ -60,6 +60,7 @@ class Xcache(object):
 
     XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
     XCACHE_ZOOMEYE_CONFIG = "XCACHE_ZOOMEYE_CONFIG"
+    XCACHE_HUNTER_CONFIG = "XCACHE_HUNTER_CONFIG"
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
 
     XCACHE_SESSION_LIST = "XCACHE_SESSION_LIST"
@@ -828,6 +829,18 @@ class Xcache(object):
     @staticmethod
     def get_quake_conf():
         conf = cache.get(Xcache.XCACHE_QUAKE_CONFIG)
+        if conf is None:
+            return {"key": None, "alive": False}
+        return conf
+
+    @staticmethod
+    def set_hunter_conf(conf):
+        cache.set(Xcache.XCACHE_HUNTER_CONFIG, conf, None)
+        return True
+
+    @staticmethod
+    def get_hunter_conf():
+        conf = cache.get(Xcache.XCACHE_HUNTER_CONFIG)
         if conf is None:
             return {"key": None, "alive": False}
         return conf

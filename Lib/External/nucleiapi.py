@@ -42,11 +42,6 @@ class NucleiAPI(object):
 
     def _gen_target_file(self, targets: list):
         with open(self.nuclei_target_path, "w") as f:
-            # for domain in targets:
-            #     domain = domain.strip()
-            #     if not domain:
-            #         continue
-            #     f.write(domain + "\n")
             f.writelines(targets)
 
     def dump_result(self) -> list:
@@ -60,9 +55,9 @@ class NucleiAPI(object):
                    # "-tags cve",
                    # "-stats",
                    # "-stats-interval 60",
-                   '-t /root/viper/STATICFILES/BIN/nuclei-templates/http/cves/2017/CVE-2017-10271.yaml',
+                   # '-t /root/viper/STATICFILES/BIN/nuclei-templates/http/cves/2017/CVE-2017-10271.yaml',
                    # "-severity low,medium,high,critical",
-                   # f'-t {self.nuclei_templates_path}',
+                   f'-t {self.nuclei_templates_path}',
                    "-duc",
                    "-severity high,critical",
                    "-type http",

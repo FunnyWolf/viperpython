@@ -146,8 +146,9 @@ class WAFModel(PortBaseModel):
 
 
 class VulnerabilityModel(PortBaseModel):
+    tool = models.CharField(blank=True, null=True, max_length=100)
     name = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     severity = models.CharField(blank=True, null=True, max_length=100)
-    key = models.TextField(blank=True, null=True)  # 存储关键标签,比如CVE或者账号密码等
-    tool = models.CharField(blank=True, null=True, max_length=100)
+    key = models.TextField(blank=True, null=True)  # 存储关键标签,比如CVE
+    poc = models.TextField(blank=True, null=True)

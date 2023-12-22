@@ -534,6 +534,7 @@ class DataStore(object):
             Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict_port)
 
             webbase_dict = {
+                'data': item,
                 'source': source,
                 'update_time': update_time,
             }

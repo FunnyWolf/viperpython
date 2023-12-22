@@ -6,6 +6,7 @@ from Core.Handle.uuidjson import UUIDJson
 from Lib import api
 from Lib.External.alienvault import AlienVault
 from Lib.External.fofaclient import FOFAClient
+from Lib.External.hunter import Hunter
 from Lib.External.nucleiapi import NucleiAPI
 from Lib.External.quake import Quake
 from Lib.External.wafcheck import WafCheck
@@ -122,6 +123,7 @@ __all__ = [
     "Xcache",
     "TimeAPI",
     "Quake",
+    'Hunter',
     "FOFAClient",
     "str_to_ips",
     "random_str",
