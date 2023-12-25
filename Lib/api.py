@@ -54,7 +54,7 @@ def is_ipaddress(ip_str):
         return False
 
 
-def is_website(url):
+def is_domain(url):
     regex = r"^([a-zA-Z]+:\/\/)?([\da-zA-Z\.-]+)\.([a-zA-Z]{2,6})([\/\w \.-]*)*\/?$"
     return True if re.match(regex, url) else False
 

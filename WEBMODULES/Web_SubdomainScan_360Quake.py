@@ -39,7 +39,7 @@ class PostModule(WebPythonModule):
         domain_list = []
         for one_input in self.input_list:
             ipdomain = one_input.get("ipdomain")
-            if api.is_website(ipdomain):
+            if api.is_domain(ipdomain):
                 domain_list.append(ipdomain)
         domain_list.append(self.param("Domain"))
         total_items = []

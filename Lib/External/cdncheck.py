@@ -5,6 +5,7 @@ import tldextract
 from django.conf import settings
 
 from Lib.xcache import Xcache
+from WebDatabase.Handle.dnsrecord import DNSRecord
 
 
 class CDNCheck(object):
@@ -24,6 +25,16 @@ class CDNCheck(object):
             record = cdn_config.get(domain)
             record['domain'] = domain
             return record
+
+    @staticmethod
+    def check_by_ipdomain(domain):
+        records = DNSRecord.get_cname_by_ipdomain(domain)
+        for cname in records:
+            result = CDNCheck.check(cname)
+            if result:
+                return result
+        # get dns record manual
+        return None
 
     @staticmethod
     def init_cdn_dict_data():

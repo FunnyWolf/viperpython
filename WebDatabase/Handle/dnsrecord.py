@@ -20,6 +20,16 @@ class DNSRecord(object):
         return result
 
     @staticmethod
+    def get_cname_by_ipdomain(ipdomain):
+        models = DNSRecordModel.objects.filter(ipdomain=ipdomain)
+        records = DNSRecordSerializer(models, many=True).data
+        result = []
+        for one_record in records:
+            if one_record.get('type') == 'CNAME':
+                result.extend(one_record.get('value'))
+        return result
+
+    @staticmethod
     def update_or_create(domain=None, type=None, value: list = None, webbase_dict={}):
         # 给出更新DomainICPModel的方法
 

@@ -5,6 +5,7 @@
 from Core.Handle.uuidjson import UUIDJson
 from Lib import api
 from Lib.External.alienvault import AlienVault
+from Lib.External.cdncheck import CDNCheck
 from Lib.External.fofaclient import FOFAClient
 from Lib.External.hunter import Hunter
 from Lib.External.nucleiapi import NucleiAPI
@@ -133,5 +134,6 @@ __all__ = [
     'AlienVault',
     'WebNotice',
     'NucleiAPI',
+    'CDNCheck',
     'api'
 ]

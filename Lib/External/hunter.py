@@ -40,13 +40,13 @@ class Hunter(object):
             return False
 
     def get_json_data(self, query_str, size=1000):
-        if Xcache.get_sample_data("HUNTER_DOMAIN", query_str) is None:
-            msg, res = self.get_all_data(query_str, size)
-            Xcache.set_sample_data("HUNTER_DOMAIN", query_str, res)
-        else:
-            res = Xcache.get_sample_data("HUNTER_DOMAIN", query_str)
-            msg = "success"
-        # msg, res = self.get_all_data(query_str, size)
+        # if Xcache.get_sample_data("HUNTER_DOMAIN", query_str) is None:
+        #     msg, res = self.get_all_data(query_str, size)
+        #     Xcache.set_sample_data("HUNTER_DOMAIN", query_str, res)
+        # else:
+        #     res = Xcache.get_sample_data("HUNTER_DOMAIN", query_str)
+        #     msg = "success"
+        msg, res = self.get_all_data(query_str, size)
         return msg, res
 
     def get_all_data(self, query_str, size=1000):

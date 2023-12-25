@@ -203,6 +203,89 @@ class DataStore(object):
                                                unit=unit, webbase_dict=webbase_dict_icp)
 
     @staticmethod
+    def hunter_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
+        for item in items:
+            update_time = TimeAPI.str_to_timestamp(item.get("updated_at"), "%Y-%m-%d")
+
+            ip = item.get("ip")
+            domain = item.get("domain")
+
+            port = item.get("port")
+
+            response = item.get("banner")
+
+            service_name = item.get("protocol")
+            if service_name == "https":
+                service_name = "http/ssl"
+
+            isp = item.get("isp")
+            asname = item.get("as_org")
+
+            location_config = {"conuntry_cn": item.get("conuntry"), "province_cn": item.get("province"),
+                               "city_cn": item.get("city"), }
+
+            components = item.get("component")
+
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+
+            if domain is None:
+                ipdomain = ip
+            else:
+                ipdomain = domain
+
+            IPDomain.update_or_create(project_id=project_id,
+                                      ipdomain=ipdomain,
+                                      webbase_dict=webbase_dict)
+
+            Location.update_or_create(ipdomain=ipdomain,
+                                      isp=isp,
+                                      asname=asname,
+                                      geo_info=location_config,
+                                      webbase_dict=webbase_dict)
+
+            Port.update_or_create(ipdomain=ipdomain, port=port, webbase_dict=webbase_dict)
+            Service.update_or_create(ipdomain=ipdomain, port=port,
+                                     response=response,
+                                     transport=item.get("base_protocol"),
+                                     service=service_name,
+                                     webbase_dict=webbase_dict)
+
+            # ComponentModel
+            if components:
+                components = item.get("component")
+                for component in components:
+                    product_name = component.get("name")
+                    product_version = component.get("version")
+                    product_dict_values = component
+
+                    Component.update_or_create(ipdomain=ipdomain,
+                                               port=port,
+                                               product_name=product_name,
+                                               product_version=product_version,
+                                               product_dict_values=product_dict_values,
+                                               webbase_dict=webbase_dict
+                                               )
+            # http
+            if service_name.startswith("http"):
+                # HttpBaseModel
+                HttpBase.update_or_create(ipdomain=ipdomain, port=port,
+                                          title=item.get("web_title"),
+                                          status_code=item.get("status_code"),
+                                          webbase_dict=webbase_dict
+                                          )
+
+                # DomainICPModel
+                if item.get("company"):
+                    domain_icp = item.get("domain")
+                    unit = item.get("company")
+                    DomainICP.update_or_create(ipdomain=domain_icp,
+                                               license=item.get("number"),
+                                               unit=unit, webbase_dict=webbase_dict)
+
+    @staticmethod
     def fofa_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
         for item in items:
             format = '%Y-%m-%d %H:%M:%S'
@@ -491,6 +574,18 @@ class DataStore(object):
                                      name=firewall,
                                      manufacturer=manufacturer,
                                      webbase_dict=webbase_dict)
+
+    @staticmethod
+    def cdncheck_result(item, project_id=DEFAULT_PROJECT_ID, source={}):
+        update_time = int(time.time())
+        webbase_dict = {
+            'source': source,
+            'update_time': update_time,
+            # 'data': item,
+        }
+        CDN.update_or_create(ipdomain=item.get('ipdomain'), flag=item.get('flag'), domain=item.get("domain"),
+                             name=item.get("name"), link=item.get("link"),
+                             webbase_dict=webbase_dict)
 
     @staticmethod
     def subdomain_result(items, project_id=DEFAULT_PROJECT_ID, source={}):

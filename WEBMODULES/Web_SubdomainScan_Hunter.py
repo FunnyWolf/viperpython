@@ -39,7 +39,7 @@ class PostModule(WebPythonModule):
         domain_list = []
         for one_input in self.input_list:
             ipdomain = one_input.get("ipdomain")
-            if api.is_website(ipdomain):
+            if api.is_domain(ipdomain):
                 domain_list.append(ipdomain)
         domain_list.append(self.param("Domain"))
         total_items = []
@@ -50,6 +50,6 @@ class PostModule(WebPythonModule):
                 Notice.send_error(f"调用Hunter失败: {msg}", f"Call Hunter failed : {msg}")
                 continue
             total_items.extend(items)
-        # DataStore.quake_result(total_items, project_id=self.project_id, source={})
+        DataStore.hunter_result(total_items, project_id=self.project_id, source={})
         self.log_info(f'更新了{len(total_items)}条数据', f'Updated {len(total_items)} pieces of data')
         return True
