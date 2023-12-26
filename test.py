@@ -14,7 +14,7 @@ django.setup()
 # print(int(time.time()) - timenow)
 
 
-# from Lib.External.nucleiapi import NucleiAPI
+# from External.nucleiapi import NucleiAPI
 #
 # targets = ["http://8.217.7.168:7001"]
 # n = NucleiAPI()

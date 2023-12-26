@@ -7,7 +7,7 @@ import os
 
 from django.conf import settings
 
-# from Lib.External.qqwry import qqwry
+# from External.qqwry import qqwry
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, CODE_MSG_EN, IPFilter_MSG_EN, IPFilter_MSG_ZH
 from Lib.ipgeo import IPGeo

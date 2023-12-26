@@ -16,7 +16,7 @@ def load_plugins():
     plugin_dir = get_path('plugins')
 
     plugin_base = PluginBase(
-        package='Lib.External.wafw00f.plugins', searchpath=[plugin_dir]
+        package='External.wafw00f.plugins', searchpath=[plugin_dir]
     )
     plugin_source = plugin_base.make_plugin_source(
         searchpath=[plugin_dir], persist=True

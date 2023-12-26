@@ -9,13 +9,13 @@ from urllib import parse
 import chardet
 from django.http import HttpResponse
 
-from Lib.External.dingding import DingDing
-from Lib.External.fofaclient import FOFAClient
-from Lib.External.hunter import Hunter
-from Lib.External.quake import Quake
-from Lib.External.serverchan import ServerChan
-from Lib.External.telegram import Telegram
-from Lib.External.zoomeyeapi import ZoomeyeAPI
+from External.dingding import DingDing
+from External.fofaclient import FOFAClient
+from External.hunter import Hunter
+from External.quake import Quake
+from External.serverchan import ServerChan
+from External.telegram import Telegram
+from External.zoomeyeapi import ZoomeyeAPI
 from Lib.api import data_return
 from Lib.configs import Setting_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, Setting_MSG_EN
 from Lib.file import File

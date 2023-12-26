@@ -11,7 +11,7 @@ from Lib.xcache import Xcache
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class Quake:
+class Quake(object):
     def __init__(self):
         self.key = None
         self.base_url = "https://quake.360.cn"

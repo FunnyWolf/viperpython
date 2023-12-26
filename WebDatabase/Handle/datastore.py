@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 import urllib3
 
-from Lib.External.cdncheck import CDNCheck
+from External.cdncheck import CDNCheck
 from Lib.api import urlParser
 from Lib.configs import DEFAULT_PROJECT_ID
 from Lib.file import File

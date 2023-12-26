@@ -10,9 +10,9 @@ import random
 import re
 import string
 
-from Lib.External.wafw00f.lib.evillib import waftoolsengine
-from Lib.External.wafw00f.manager import load_plugins
-from Lib.External.wafw00f.wafprio import wafdetectionsprio
+from External.wafw00f.lib.evillib import waftoolsengine
+from External.wafw00f.manager import load_plugins
+from External.wafw00f.wafprio import wafdetectionsprio
 from Lib.api import urlParser
 from Lib.log import logger
 
@@ -374,9 +374,3 @@ class WafCheck(object):
                     results.append(buildResultRecord(target, None, None))
 
         return results
-
-
-if __name__ == '__main__':
-    targets = ["https://bms1.azure.bba-app.biz"]
-    results = WafCheck.check(targets)
-    print(results)

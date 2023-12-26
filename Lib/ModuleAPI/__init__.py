@@ -3,15 +3,15 @@
 # @Date  : 2020/11/4
 # @Desc  :
 from Core.Handle.uuidjson import UUIDJson
+from External.alienvault import AlienVault
+from External.cdncheck import CDNCheck
+from External.fofaclient import FOFAClient
+from External.hunter import Hunter
+from External.nucleiapi import NucleiAPI
+from External.quake import Quake
+from External.wafcheck import WafCheck
+from External.zoomeyeapi import ZoomeyeAPI
 from Lib import api
-from Lib.External.alienvault import AlienVault
-from Lib.External.cdncheck import CDNCheck
-from Lib.External.fofaclient import FOFAClient
-from Lib.External.hunter import Hunter
-from Lib.External.nucleiapi import NucleiAPI
-from Lib.External.quake import Quake
-from Lib.External.wafcheck import WafCheck
-from Lib.External.zoomeyeapi import ZoomeyeAPI
 from Lib.Module.configs import (
     TAG2TYPE, UACLevel, RegType,
 )
