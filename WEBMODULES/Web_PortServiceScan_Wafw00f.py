@@ -32,19 +32,30 @@ class PostModule(WebPythonModule):
         return True, ""
 
     def run(self):
-        url_list = []
+        wait_list = []
         for one_input in self.input_list:
             url = self.group_url_by_ipdomain_record(one_input)
             if url:
-                url_list.append(url)
+                wait_list.append({'ipdomain': one_input.get('ipdomain'), 'port': one_input.get('port'), "url": url})
+
         url = self.param("URL")
         if url is not None:
             pret = Lib.api.urlParser(url)
             if pret is None:
                 self.log_warn("输入的URL无效", "Invalid URL")
             else:
-                url_list.append(url)
+                hostname, port, path, query, ssl = pret
+                wait_list.append({'ipdomain': hostname, 'port': port, "url": url})
 
-        items = WafCheck.check(url_list)
-        self.log_info(f'更新{len(items)}条数据', f'Updated {len(items)} pieces of data')
-        DataStore.wafcheck_result(items, project_id=self.project_id, source={})
+        for one_task in wait_list:
+            result = WafCheck.check_url(one_task.get("url"))
+            if result:
+                DataStore.wafcheck_result(result, ipdomain=one_task.get("ipdomain"), port=one_task.get("port"),
+                                          project_id=self.project_id,
+                                          source={})
+                self.log_info(
+                    f'IPDomain: {one_task.get("ipdomain")} Port:{one_task.get("port")} Detect: {result.get("detected")}',
+                    f'IPDomain: {one_task.get("ipdomain")} Port:{one_task.get("port")} Detect: {result.get("detected")}')
+
+        # items = WafCheck.check(url_list)
+        # self.log_info(f'更新{len(items)}条数据', f'Updated {len(items)} pieces of data')

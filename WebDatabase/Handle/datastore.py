@@ -529,51 +529,50 @@ class DataStore(object):
                                           )
 
     @staticmethod
-    def wafcheck_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
-        for item in items:
-            update_time = int(time.time())
-            url = item.get("url")
-            trigger_url = item.get("trigger_url")
-            detected = item.get("detected")
-            firewall = item.get("firewall")
-            manufacturer = item.get("manufacturer")
-            hostname, port, path, query, ssl = urlParser(url)
-            if port is None:
-                if ssl:
-                    port = 443
-                else:
-                    port = 80
+    def wafcheck_result(result, ipdomain, port, project_id=DEFAULT_PROJECT_ID, source={}):
+        update_time = int(time.time())
+        url = result.get("url")
+        trigger_url = result.get("trigger_url")
+        detected = result.get("detected")
+        firewall = result.get("firewall")
+        manufacturer = result.get("manufacturer")
+        _, _, path, query, ssl = urlParser(url)
+        if port is None:
+            if ssl:
+                port = 443
+            else:
+                port = 80
+        webbase_dict = {
+            'source': source,
+            'update_time': update_time,
+        }
+
+        IPDomain.update_or_create(project_id=project_id,
+                                  ipdomain=ipdomain,
+                                  webbase_dict=webbase_dict)
+        if detected is None:
+            webbase_dict = {
+                'alive': False,
+                'source': source,
+                'update_time': update_time,
+            }
+            Port.update_or_create(ipdomain=ipdomain, port=port, webbase_dict=webbase_dict)
+        else:
+            webbase_dict_port = {
+                'alive': True,
+                'source': source,
+                'update_time': update_time,
+            }
+            Port.update_or_create(ipdomain=ipdomain, port=port, webbase_dict=webbase_dict_port)
+
             webbase_dict = {
                 'source': source,
                 'update_time': update_time,
             }
-
-            IPDomain.update_or_create(project_id=project_id,
-                                      ipdomain=hostname,
-                                      webbase_dict=webbase_dict)
-            if detected is None:
-                webbase_dict = {
-                    'alive': False,
-                    'source': source,
-                    'update_time': update_time,
-                }
-                Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict)
-            else:
-                webbase_dict_port = {
-                    'alive': True,
-                    'source': source,
-                    'update_time': update_time,
-                }
-                Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict_port)
-
-                webbase_dict = {
-                    'source': source,
-                    'update_time': update_time,
-                }
-                WAF.update_or_create(ipdomain=hostname, port=port, flag=detected, trigger_url=trigger_url,
-                                     name=firewall,
-                                     manufacturer=manufacturer,
-                                     webbase_dict=webbase_dict)
+            WAF.update_or_create(ipdomain=ipdomain, port=port, flag=detected, trigger_url=trigger_url,
+                                 name=firewall,
+                                 manufacturer=manufacturer,
+                                 webbase_dict=webbase_dict)
 
     @staticmethod
     def cdncheck_result(item, project_id=DEFAULT_PROJECT_ID, source={}):

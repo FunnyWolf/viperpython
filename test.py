@@ -1,6 +1,8 @@
 # 启动django项目
 import os
 
+from External.wafcheck import WafCheck
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Viper.settings")
 import django
 
@@ -21,10 +23,14 @@ django.setup()
 # result = n.check(targets=targets)
 # print(result)
 
-import datetime
-
-today = datetime.date.today()
-print("Today's date:", today)
-
-year_ago = today.replace(year=today.year - 1)
-print("Date a year ago:", year_ago)
+# import datetime
+#
+# today = datetime.date.today()
+# print("Today's date:", today)
+#
+# year_ago = today.replace(year=today.year - 1)
+# print("Date a year ago:", year_ago)
+url = "http://honey.scanme.sh"
+# url = "https://did-sso.bba-app.biz"
+result = WafCheck.check_url(url)
+print(result)

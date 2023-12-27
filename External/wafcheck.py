@@ -374,3 +374,39 @@ class WafCheck(object):
                     results.append(buildResultRecord(target, None, None))
 
         return results
+
+    @staticmethod
+    def check_url(url):
+        extraheaders = {}
+
+        pret = urlParser(url)
+        if pret is None:
+            logger.error(f'The url {url} is not well formed')
+            return False
+
+        (hostname, _, path, _, _) = pret
+
+        proxies = {}
+
+        attacker = WAFW00F(url, path=path,
+                           followredirect=True, extraheaders=extraheaders,
+                           proxies=proxies)
+        if attacker.rq is None:
+            logger.error(f'{url} appears to be down')
+            result = buildResultRecord(url, waf=None, evil_url=None, alive=False)
+            return result
+
+        waf, xurl = attacker.identwaf(findall=False)
+
+        if len(waf) > 0:
+            for i in waf:
+                result = buildResultRecord(url, i, xurl)
+                return result
+        else:
+            generic_url = attacker.genericdetect()
+            if generic_url:
+                result = buildResultRecord(url, 'generic', generic_url)
+                return result
+            else:
+                result = buildResultRecord(url, None, None)
+                return result
