@@ -56,9 +56,12 @@ class Port(object):
         result["vulnerabilitys"] = vulnerabilitys
 
         if portservice:
-            service = portservice.get("service")
-            if service.startswith("http"):
+            service_name = portservice.get("service")
+            if service_name.startswith("http"):
                 httpbase = HttpBase.get_by_ipdomain_port(ipdomain, port)
+                if httpbase is not None:
+                    httpbase['url'] = Port.group_url_by_ipdomain_record(ipdomain, port, service_name)
+
                 result["http_base"] = httpbase
 
                 httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
@@ -95,3 +98,14 @@ class Port(object):
     def update_commnet_by_ipdomain_port(ipdomain=None, port=None, color=None, comment=None):
         rows = PortModel.objects.filter(ipdomain=ipdomain, port=port).update(color=color, comment=comment)
         return rows
+
+    @staticmethod
+    def group_url_by_ipdomain_record(ipdomain, port, service_name):
+        if service_name == "http/ssl":
+            url = f"https://{ipdomain}:{port}"
+            return url
+        elif service_name == "http":
+            url = f"http://{ipdomain}:{port}"
+            return url
+        else:
+            return None
