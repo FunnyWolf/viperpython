@@ -41,17 +41,23 @@ class Port(object):
         result = {}
         result.update(port_base)
         portservice = Service.get_by_ipdomain_port(ipdomain, port)
+
+        # service
         result['service'] = portservice
 
+        # components
         components = Component.list_by_ipdomain_port(ipdomain, port)
         result["components"] = components
 
+        # cert
         cert = Cert.get_by_ipdomain_port(ipdomain, port)
         result["cert"] = cert
 
+        # screenshot
         screenshot = Screenshot.get_by_ipdomain_port(ipdomain, port)
         result["screenshot"] = screenshot
 
+        # vulnerabilitys
         vulnerabilitys = Vulnerability.list_by_ipdomain_port(ipdomain=ipdomain, port=port)
         result["vulnerabilitys"] = vulnerabilitys
 
