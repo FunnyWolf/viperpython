@@ -1,12 +1,11 @@
 # 启动django项目
 import os
 
-from External.wafcheck import WafCheck
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Viper.settings")
 import django
 
 django.setup()
+
 # import time
 # from WebDatabase.Handle.ipdomain import IPDomain
 #
@@ -30,7 +29,7 @@ django.setup()
 #
 # year_ago = today.replace(year=today.year - 1)
 # print("Date a year ago:", year_ago)
-url = "http://honey.scanme.sh"
-# url = "https://did-sso.bba-app.biz"
-result = WafCheck.check_url(url)
-print(result)
+# url = "http://honey.scanme.sh"
+# # url = "https://did-sso.bba-app.biz"
+# result = WafCheck.check_url(url)
+# print(result)

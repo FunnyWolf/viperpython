@@ -81,11 +81,7 @@ def restart_nginx():
             exit(0)
         except Exception as err:
             logger.info("[*] 启动nginx服务")
-            result = subprocess.run(
-                ["service", "nginx", "start"],
-                stdout=devNull,
-                stderr=devNull
-            )
+            result = subprocess.run(["service", "nginx", "start"], stdout=devNull, stderr=devNull)
 
 
 def check_services():
@@ -192,11 +188,7 @@ def start_services(newpassword=None):
         client.close()
     except Exception as err:
         logger.info("[*] 启动redis服务")
-        result = subprocess.run(
-            ["service", "redis-server", "start"],
-            stdout=devNull,
-            stderr=devNull
-        )
+        result = subprocess.run(["service", "redis-server", "start"], stdout=devNull, stderr=devNull)
 
     # msfrpcd
     try:
@@ -215,9 +207,8 @@ def start_services(newpassword=None):
         os.chdir("/root/metasploit-framework/")
         # thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address 127.0.0.1 --port 55553 --environment production --daemonize --threaded start
         cmd = f"thin --rackup /root/metasploit-framework/msf-json-rpc.ru --address {LOCALHOST} --port {msgrpc_port} --environment production --daemonize --threaded start"
-        result = subprocess.Popen(cmd, shell=True)
-        # cpulimitcmd = "cpulimit -e ruby -l 60 -b"
-        # result = subprocess.Popen(cpulimitcmd, shell=True)
+        result = subprocess.Popen(cmd,
+                                  shell=True)  # cpulimitcmd = "cpulimit -e ruby -l 60 -b"  # result = subprocess.Popen(cpulimitcmd, shell=True)
 
     # daphne
     try:
@@ -229,22 +220,11 @@ def start_services(newpassword=None):
     except Exception as err:
         logger.info("[*] 启动daphne主服务")
         os.chdir("/root/viper/")
-        subprocess.Popen(
-            "rm /root/viper/daphne.sock.lock", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
-        subprocess.Popen(
-            "rm /root/viper/daphne.sock", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+        subprocess.Popen("rm /root/viper/daphne.sock.lock", shell=True, stdout=devNull, stderr=devNull)
+        subprocess.Popen("rm /root/viper/daphne.sock", shell=True, stdout=devNull, stderr=devNull)
         res = subprocess.Popen(
             f"nohup daphne -u /root/viper/daphne.sock --access-log {LOGDIR}/daphne.log Viper.asgi:application &",
-            shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+            shell=True, stdout=devNull, stderr=devNull)
 
     # viper
     try:
@@ -255,11 +235,7 @@ def start_services(newpassword=None):
         client.close()
     except Exception as err:
         logger.info("[*] 启动VIPER主服务")
-        result = subprocess.run(
-            ["uwsgi", "--ini", "/root/viper/Docker/uwsgi.ini", ],
-            stdout=devNull,
-            stderr=devNull
-        )
+        result = subprocess.run(["uwsgi", "--ini", "/root/viper/Docker/uwsgi.ini", ], stdout=devNull, stderr=devNull)
 
     # mitmproxy
     try:
@@ -273,20 +249,14 @@ def start_services(newpassword=None):
         if newpassword is not None:
             res = subprocess.Popen(
                 f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} --proxyauth root:{newpassword} --set block_global=false&",
-                shell=True,
-                stdout=devNull,
-                stderr=devNull
-            )
+                shell=True, stdout=devNull, stderr=devNull)
             logger.info(f"[+] Mitmproxy: http://vpsip:28888")
             logger.info(f"[+] root:{newpassword}")
         else:
             newpassword = random_str(10)
             res = subprocess.Popen(
                 f"nohup /usr/local/bin/python3.9 /opt/mitmproxy/release/specs/mitmdump -s /root/viper/STATICFILES/Tools/proxyscan.py --ssl-insecure -p {mitmproxy_port} --proxyauth root:{newpassword} --set block_global=false&",
-                shell=True,
-                stdout=devNull,
-                stderr=devNull
-            )
+                shell=True, stdout=devNull, stderr=devNull)
             logger.info(f"[+] mitmproxy: http://vpsip:28888")
             logger.info(f"[+] root:{newpassword}")
     # nginx
@@ -299,11 +269,7 @@ def start_services(newpassword=None):
         client.close()
     except Exception as err:
         logger.info("[*] 启动nginx服务")
-        result = subprocess.run(
-            ["service", "nginx", "start"],
-            stdout=devNull,
-            stderr=devNull
-        )
+        result = subprocess.run(["service", "nginx", "start"], stdout=devNull, stderr=devNull)
 
     for i in range(6):
         time.sleep(5)
@@ -322,61 +288,32 @@ def stop_services():
 
     try:
         logger.info("[*] 关闭msfrpcd服务")
-        result = subprocess.run(
-            ["thin", "stop"],
-            stdout=devNull,
-            stderr=devNull
-        )
+        result = subprocess.run(["thin", "stop"], stdout=devNull, stderr=devNull)
     except Exception as E:
         pass
 
     try:
         logger.info("[*] 关闭VIPER主服务")
-        subprocess.run(
-            ["uwsgi", "--stop", "/root/viper/uwsgi.pid"],
-            stdout=devNull,
-            stderr=devNull
-        )
-        subprocess.Popen(
-            "kill -9 $(ps aux | grep uwsgi | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
-        subprocess.Popen(
-            "rm /root/viper/uwsgi.pid", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+        subprocess.run(["uwsgi", "--stop", "/root/viper/uwsgi.pid"], stdout=devNull, stderr=devNull)
+        subprocess.Popen("kill -9 $(ps aux | grep uwsgi | tr -s ' '| cut -d ' ' -f 2)", shell=True, stdout=devNull,
+                         stderr=devNull)
+        subprocess.Popen("rm /root/viper/uwsgi.pid", shell=True, stdout=devNull, stderr=devNull)
     except Exception as E:
         pass
 
     try:
         logger.info("[*] 关闭daphne服务")
-        subprocess.Popen(
-            "kill -9 $(ps aux | grep daphne | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
-        subprocess.Popen(
-            "rm /root/viper/daphne.sock.lock", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
-        subprocess.Popen(
-            "rm /root/viper/daphne.sock", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+        subprocess.Popen("kill -9 $(ps aux | grep daphne | tr -s ' '| cut -d ' ' -f 2)", shell=True, stdout=devNull,
+                         stderr=devNull)
+        subprocess.Popen("rm /root/viper/daphne.sock.lock", shell=True, stdout=devNull, stderr=devNull)
+        subprocess.Popen("rm /root/viper/daphne.sock", shell=True, stdout=devNull, stderr=devNull)
     except Exception as E:
         pass
 
     try:
         logger.info("[*] 关闭proxy服务")
-        subprocess.Popen(
-            "kill -9 $(ps aux | grep mitmdump | tr -s ' '| cut -d ' ' -f 2)", shell=True,
-            stdout=devNull,
-            stderr=devNull
-        )
+        subprocess.Popen("kill -9 $(ps aux | grep mitmdump | tr -s ' '| cut -d ' ' -f 2)", shell=True, stdout=devNull,
+                         stderr=devNull)
     except Exception as E:
         pass
 
@@ -442,8 +379,7 @@ def upgrade_version_adapt():
 
         # 清理无用的证书文件
         try:
-            unuse_files = ["ca.crt", "ca.key", "ca.srl",
-                           "client.crt", "client.csr", "client.key", "client.pfx",
+            unuse_files = ["ca.crt", "ca.key", "ca.srl", "client.crt", "client.csr", "client.key", "client.pfx",
                            "gencert.sh", "server.csr"]
 
             for one in unuse_files:
@@ -494,8 +430,7 @@ def init_copy_file():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="脚本用于 启动/停止 VIPER,修改root用户密码,设置反向Shell回连IP等功能.")
     parser.add_argument('action', nargs='?', metavar='start/stop/check/init/restartnginx',
-                        help="启动/停止/检测 VIPER服务",
-                        type=str)
+                        help="启动/停止/检测 VIPER服务", type=str)
     parser.add_argument('-pw', metavar='newpassword', help="修改root密码")
 
     args = parser.parse_args()

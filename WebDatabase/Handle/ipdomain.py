@@ -43,6 +43,17 @@ class IPDomain(object):
         return intersect
 
     @staticmethod
+    def get_list_diff(list1, list2):
+        # list1 = [{'name': 'a', 'age': 20}, {'name': 'b', 'age': 30}, {'name': 'c', 'age': 25}]
+        # list2 = [{'name': 'b', 'age': 30}, {'name': 'c', 'age': 25}, {'name': 'd', 'age': 35}]
+        list1 = list(list1)
+        list2 = list(list2)
+        for one in list2:
+            if one in list1:
+                list1.remove(one)
+        return list1
+
+    @staticmethod
     def list_by_ipdomain(ipdomain):
         model = IPDomainModel.objects.filter(ipdomain=ipdomain).first()
         if not model:
@@ -68,8 +79,12 @@ class IPDomain(object):
         ipdomain_list = filter_models.values_list("ipdomain", flat=True)
 
         if cdn_flag_s is not None:
-            ipdomain_list = CDNModel.objects.filter(ipdomain__in=ipdomain_list).filter(flag=cdn_flag_s).values_list(
-                "ipdomain", flat=True)
+            if cdn_flag_s == "unknown":
+                ips_in_db = CDNModel.objects.filter(ipdomain__in=ipdomain_list).values_list('ipdomain', flat=True)
+                ipdomain_list = set(ipdomain_list) - set(ips_in_db)
+            else:
+                ipdomain_list = CDNModel.objects.filter(ipdomain__in=ipdomain_list).filter(flag=cdn_flag_s).values_list(
+                    "ipdomain", flat=True)
 
         # port filter
         if port_s is not None:
@@ -79,9 +94,13 @@ class IPDomain(object):
             ipdomain_port_list = PortModel.objects.filter(ipdomain__in=ipdomain_list).values_list("ipdomain", "port")
 
         if waf_flag_s is not None:
-            tmp_list = WAFModel.objects.filter(ipdomain__in=ipdomain_list).filter(
-                flag=waf_flag_s).values_list("ipdomain", "port")
-            ipdomain_port_list = IPDomain.get_list_common(tmp_list, ipdomain_port_list)
+            if waf_flag_s == "unknown":
+                tmp_list = WAFModel.objects.filter(ipdomain__in=ipdomain_list).values_list("ipdomain", "port")
+                ipdomain_port_list = IPDomain.get_list_diff(ipdomain_port_list, tmp_list)
+            else:
+                tmp_list = WAFModel.objects.filter(ipdomain__in=ipdomain_list).filter(
+                    flag=waf_flag_s).values_list("ipdomain", "port")
+                ipdomain_port_list = IPDomain.get_list_common(tmp_list, ipdomain_port_list)
 
         if service_s is not None:
             tmp_list = ServiceModel.objects.filter(ipdomain__in=ipdomain_list).filter(
