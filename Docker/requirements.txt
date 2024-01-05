@@ -25,3 +25,4 @@ asgi_redis
 psycopg
 tldextract
 pluginbase
+mitmproxy

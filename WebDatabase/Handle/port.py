@@ -9,6 +9,7 @@ from WebDatabase.Handle.httpbase import HttpBase
 from WebDatabase.Handle.httpfavicon import HttpFavicon
 from WebDatabase.Handle.screenshot import Screenshot
 from WebDatabase.Handle.service import Service
+from WebDatabase.Handle.vulnerability import Vulnerability
 from WebDatabase.Handle.waf import WAF
 from WebDatabase.models import PortModel
 from WebDatabase.serializers import PortSerializer
@@ -25,28 +26,48 @@ class Port(object):
         return result
 
     @staticmethod
+    def get_by_ipdomain_port(ipdomain, port):
+        port_base = Port.list_by_ipdomain_and_filter(ipdomain, port)
+        if not port_base:
+            raise Exception(f"IPDomain with no port {ipdomain}:{port}")
+        return port_base
+
+    @staticmethod
     def get_info_by_ipdomain_port(ipdomain, port):
         port_base = Port.list_by_ipdomain_and_filter(ipdomain, port)
         if not port_base:
             return None
+
         result = {}
         result.update(port_base)
         portservice = Service.get_by_ipdomain_port(ipdomain, port)
+
+        # service
         result['service'] = portservice
 
+        # components
         components = Component.list_by_ipdomain_port(ipdomain, port)
         result["components"] = components
 
+        # cert
         cert = Cert.get_by_ipdomain_port(ipdomain, port)
         result["cert"] = cert
 
+        # screenshot
         screenshot = Screenshot.get_by_ipdomain_port(ipdomain, port)
         result["screenshot"] = screenshot
 
+        # vulnerabilitys
+        vulnerabilitys = Vulnerability.list_by_ipdomain_port(ipdomain=ipdomain, port=port)
+        result["vulnerabilitys"] = vulnerabilitys
+
         if portservice:
-            service = portservice.get("service")
-            if service.startswith("http"):
+            service_name = portservice.get("service")
+            if service_name.startswith("http"):
                 httpbase = HttpBase.get_by_ipdomain_port(ipdomain, port)
+                if httpbase is not None:
+                    httpbase['url'] = Port.group_url_by_ipdomain_record(ipdomain, port, service_name)
+
                 result["http_base"] = httpbase
 
                 httpfavicon = HttpFavicon.get_by_ipdomain_port(ipdomain, port)
@@ -78,3 +99,19 @@ class Port(object):
         model, created = PortModel.objects.update_or_create(ipdomain=ipdomain, port=port,
                                                             defaults=default_dict)
         return created
+
+    @staticmethod
+    def update_commnet_by_ipdomain_port(ipdomain=None, port=None, color=None, comment=None):
+        rows = PortModel.objects.filter(ipdomain=ipdomain, port=port).update(color=color, comment=comment)
+        return rows
+
+    @staticmethod
+    def group_url_by_ipdomain_record(ipdomain, port, service_name):
+        if service_name == "http/ssl":
+            url = f"https://{ipdomain}:{port}"
+            return url
+        elif service_name == "http":
+            url = f"http://{ipdomain}:{port}"
+            return url
+        else:
+            return None

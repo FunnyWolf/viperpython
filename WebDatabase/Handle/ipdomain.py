@@ -18,6 +18,23 @@ from WebDatabase.serializers import IPDomainSerializer
 class IPDomain(object):
 
     @staticmethod
+    def clean_record(ipdomain_port_list):
+        ipdomain_ports = {}
+        new_list = []
+        for item in ipdomain_port_list:
+            ipdomain = item[0]
+            port = item[1]
+
+            if ipdomain not in ipdomain_ports:
+                ipdomain_ports[ipdomain] = port
+            elif ipdomain_ports[ipdomain] == 0 and port != 0:
+                ipdomain_ports[ipdomain] = port
+        for key in ipdomain_ports:
+            new_list.append({"ipdomain": key, "port": ipdomain_ports[key]})
+
+        return new_list
+
+    @staticmethod
     def get_list_common(list1, list2):
         # list1 = [{'name': 'a', 'age': 20}, {'name': 'b', 'age': 30}, {'name': 'c', 'age': 25}]
         # list2 = [{'name': 'b', 'age': 30}, {'name': 'c', 'age': 25}, {'name': 'd', 'age': 35}]
@@ -68,8 +85,10 @@ class IPDomain(object):
 
         if service_s is not None:
             tmp_list = ServiceModel.objects.filter(ipdomain__in=ipdomain_list).filter(
-                service=service_s).values_list("ipdomain", "port")
+                service__icontains=service_s).values_list("ipdomain", "port")
             ipdomain_port_list = IPDomain.get_list_common(tmp_list, ipdomain_port_list)
+
+        ipdomain_port_list = IPDomain.clean_record(ipdomain_port_list)
 
         # pagination
         if pagination is None:
@@ -85,13 +104,13 @@ class IPDomain(object):
         # ipdomain_list = IPDomainSerializer(ipdomain_models, many=True).data
 
         ipdomains_result = []
-        for ipdomain_port_tuple in ipdomain_port_list[start:end]:
-
-            ipdomain = ipdomain_port_tuple[0]
-            port = ipdomain_port_tuple[1]
+        for ipdomain_port_dict in ipdomain_port_list[start:end]:
+            ipdomain = ipdomain_port_dict.get("ipdomain")
+            port = ipdomain_port_dict.get("port")
             ipdomain_record = IPDomain.list_by_ipdomain(ipdomain)
             if ipdomain_record is None:
                 continue
+
             # ip
             if is_ipaddress(ipdomain):
                 ip = ipdomain
@@ -115,13 +134,16 @@ class IPDomain(object):
             cdn = CDN.get_by_ipdomain_port(ipdomain)
             ipdomain_record["cdn"] = cdn
 
+            port_base = Port.get_by_ipdomain_port(ipdomain, port)
+
             one_record = {}
             one_record.update(ipdomain_record)
+            one_record.update(port_base)
 
             # ports
             if port != 0:
                 port_info = Port.get_info_by_ipdomain_port(ipdomain, port)
-                one_record['port'] = port_info
+                one_record['port_info'] = port_info
 
             ipdomains_result.append(one_record)
 

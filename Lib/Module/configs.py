@@ -84,8 +84,10 @@ class TAG2TYPE(object):
     internal = 'internal'  # 内部模块(不提供可视化输出,用于内部的模块)
 
     # Web模块
+    Web_Common_Module = "Web_Common_Module"  # 通用模块
     Web_Subdomain_Scan = "Web_Subdomain_Scan"  # 子域名扫描模块
     Web_PortService_Scan = "Web_PortService_Scan"  # 子域名扫描模块
+    Web_Vuln_Scan = "Web_Vuln_Scan"  # 子域名扫描模块
 
     # 代理扫描模块
     Proxy_Http_Scan = "Proxy_Http_Scan"  # 基于msf的扫描模块

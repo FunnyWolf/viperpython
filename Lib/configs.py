@@ -198,6 +198,7 @@ Setting_MSG_ZH = {
     210: "下载日志文件成功",
     211: "设置被动扫描配置成功",
     212: "设置Zoomeye API成功",
+    213: "设置Hunter API成功",
 
     301: "未知配置类型",
     302: "解析配置参数失败",
@@ -207,6 +208,7 @@ Setting_MSG_ZH = {
     306: "输入的FOFA配置不可用,请检查email及key是否正确",
     307: "输入的360Quake配置不可用,请检查key是否正确",
     308: "输入的Zoomeye配置不可用,请检查key是否正确",
+    309: "输入的Hunter配置不可用,请检查key是否正确",
 }
 
 Setting_MSG_EN = {
@@ -222,6 +224,7 @@ Setting_MSG_EN = {
     210: "Download logfile success",
     211: "Set Passive scanning conf success",
     212: "Successfully set up Zoomeye API",
+    213: "Set Hunter API key success",
 
     301: "Unknown configuration type",
     302: "Failed to parse configuration parameters",
@@ -231,6 +234,7 @@ Setting_MSG_EN = {
     306: "The entered FOFA configuration is not available, please check if the email and key are correct",
     307: "The entered 360Quake configuration is not available, please check if the key is correct",
     308: "The entered Zoomeye configuration is not available, please check if the key is correct",
+    309: "The entered Hunter configuration is not available, please check if the key is correct",
 }
 
 NetworkSearch_MSG_ZH = {
@@ -584,6 +588,17 @@ IPDomain_MSG_ZH = {
 
 IPDomain_MSG_EN = {
     204: "Delete IPDomain successfully",
+
+    304: "Input parameter error",
+}
+WebTaskResult_MSG_ZH = {
+    204: "删除历史记录成功",
+
+    304: "输入参数错误",
+}
+
+WebTaskResult_MSG_EN = {
+    204: "Delete history record successfully",
 
     304: "Input parameter error",
 }

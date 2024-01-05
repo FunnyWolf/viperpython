@@ -7,7 +7,7 @@ import os
 
 from django.conf import settings
 
-# from Lib.External.qqwry import qqwry
+# from External.qqwry import qqwry
 from Lib.api import data_return
 from Lib.configs import CODE_MSG_ZH, CODE_MSG_EN, IPFilter_MSG_EN, IPFilter_MSG_ZH
 from Lib.ipgeo import IPGeo
@@ -53,7 +53,9 @@ class IPFilter(object):
 
     @staticmethod
     def is_allow(ip):
-        Notice.send_info(f"[新Session连接] {ip}", f"[New Session Connection] {ip}")
+        geo_str_zh = IPGeo.get_ip_geo_str(ip, "zh-CN")
+        geo_str_en = IPGeo.get_ip_geo_str(ip, "en-US")
+        Notice.send_info(f"[新Session连接] [{geo_str_zh}] {ip}", f"[New Session Connection] [{geo_str_en}] {ip}")
         # 总开关检查
         if Xcache.get_ipfilter_switch_cache() is not True:
             return True
@@ -67,9 +69,6 @@ class IPFilter(object):
 
         # 查询geo信息
         geo_list = IPGeo.get_ip_geo(ip, "zh-CN")
-        geo_str_zh = IPGeo.get_ip_geo_str(ip, "zh-CN")
-        geo_str_en = IPGeo.get_ip_geo_str(ip, "en-US")
-        Notice.send_info(f"[{geo_str_zh}] {ip}", f"[{geo_str_en}] {ip}")
 
         # 自定义白名单
         if IPFilter.in_diy_whitelist(ip):
@@ -96,13 +95,6 @@ class IPFilter(object):
             Notice.send_warning(f"[地理位置黑名单] [屏蔽] {ip}", f"[Geographic Blacklist] [Block] {ip}")
             return False
 
-        # reuslt = geoip2_instance.get_geo(ip)
-        # print(reuslt)
-        # reuslt = ip2region_instance.get_geo(ip)
-        # print(reuslt)
-
-        # reuslt = qqwry.get_location(ip)
-        # print(reuslt)
         # 最终返回
         Notice.send_info(f"[检查结束] [放行] {ip}", f"[Check finish] [Pass] {ip}")
         return True

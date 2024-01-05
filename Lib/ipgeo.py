@@ -2,8 +2,8 @@
 # @File  : ipgeo.py
 # @Date  : 2021/11/9
 # @Desc  :
-from Lib.External.geoip2 import geoip2_instance
-from Lib.External.ip2Region import ip2region_instance
+from External.geoip2 import geoip2_instance
+from External.ip2Region import ip2region_instance
 from Lib.xcache import Xcache
 
 

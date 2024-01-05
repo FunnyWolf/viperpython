@@ -85,19 +85,21 @@ class LocationModel(IPDomainBaseModel):
 
 
 class PortModel(PortBaseModel):
-    pass
+    alive = models.BooleanField(default=True)
+    color = models.CharField(blank=True, null=True, max_length=100)
+    comment = models.TextField(blank=True, null=True)
 
 
 class ServiceModel(PortBaseModel):
     transport = models.CharField(default="tcp", blank=True, null=True, max_length=100)
-    service = models.CharField(blank=True, null=True, max_length=100)
+    service = models.CharField(blank=True, null=True, max_length=100, db_index=True)
     version = models.CharField(blank=True, null=True, max_length=100)
     response = models.TextField(blank=True, null=True)
     response_hash = models.CharField(blank=True, null=True, max_length=100)
 
 
 class ComponentModel(PortBaseModel):
-    product_name = models.CharField(blank=True, null=True, max_length=100)
+    product_name = models.CharField(blank=True, null=True, max_length=100, db_index=True)
     product_version = models.CharField(blank=True, null=True, max_length=100)
     product_type = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
     product_catalog = ArrayField(models.CharField(blank=True, null=True, max_length=100), blank=True)
@@ -125,7 +127,7 @@ class HttpBaseModel(PortBaseModel):
 
 
 class CDNModel(IPDomainBaseModel):
-    flag = models.BooleanField(default=False)
+    flag = models.BooleanField(default=False, db_index=True)
     domain = models.CharField(blank=True, null=True, max_length=100)
     name = models.CharField(blank=True, null=True, max_length=100)
     link = models.CharField(blank=True, null=True, max_length=100)
@@ -136,19 +138,17 @@ class HttpFaviconModel(PortBaseModel):
     content = models.TextField(blank=True, null=True)  # 存储base64后的文件
 
 
-# product_level = models.CharField(blank=True, null=True, max_length=100)
-# product_vendor = models.CharField(blank=True, null=True, max_length=100)
-# product_name_cn = models.CharField(blank=True, null=True, max_length=100)
-# product_name_en = models.CharField(blank=True, null=True, max_length=100)
-# product_version = models.CharField(blank=True, null=True, max_length=100)
-
 class WAFModel(PortBaseModel):
-    flag = models.BooleanField(default=False)
+    flag = models.BooleanField(default=False, db_index=True)
     trigger_url = models.TextField(blank=True, null=True)
     name = models.CharField(blank=True, null=True, max_length=100)
     manufacturer = models.CharField(blank=True, null=True, max_length=100)
 
 
 class VulnerabilityModel(PortBaseModel):
+    tool = models.CharField(blank=True, null=True, max_length=100)
     name = models.TextField(blank=True, null=True)
-    desc = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    severity = models.CharField(blank=True, null=True, max_length=100)  # info, low, medium, high, critical
+    key = models.TextField(blank=True, null=True)  # 存储关键标签,比如CVE
+    poc = models.TextField(blank=True, null=True)

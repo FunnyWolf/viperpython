@@ -9,12 +9,13 @@ from urllib import parse
 import chardet
 from django.http import HttpResponse
 
-from Lib.External.dingding import DingDing
-from Lib.External.fofaclient import FOFAClient
-from Lib.External.quake import Quake
-from Lib.External.serverchan import ServerChan
-from Lib.External.telegram import Telegram
-from Lib.External.zoomeyeapi import ZoomeyeAPI
+from External.dingding import DingDing
+from External.fofaclient import FOFAClient
+from External.hunter import Hunter
+from External.quake import Quake
+from External.serverchan import ServerChan
+from External.telegram import Telegram
+from External.zoomeyeapi import ZoomeyeAPI
 from Lib.api import data_return
 from Lib.configs import Setting_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, Setting_MSG_EN
 from Lib.file import File
@@ -53,6 +54,8 @@ class Settings(object):
             conf = Xcache.get_fofa_conf()
         elif kind == "Quake":
             conf = Xcache.get_quake_conf()
+        elif kind == "Hunter":
+            conf = Xcache.get_hunter_conf()
         elif kind == "Zoomeye":
             conf = Xcache.get_zoomeye_conf()
         elif kind == "sessionmonitor":
@@ -174,6 +177,22 @@ class Settings(object):
                 data = {"key": key, "alive": True}
                 Xcache.set_quake_conf(data)
                 context = data_return(208, data, Setting_MSG_ZH.get(208), Setting_MSG_EN.get(208))
+                return context
+
+        elif kind == "Hunter":
+            key = setting.get("key").strip()
+            client = Hunter()
+            client.set_key(key)
+            if client.check_alive() is not True:
+                data = {"key": key, "alive": False}
+                Xcache.set_hunter_conf(data)
+                context = data_return(309, data, Setting_MSG_ZH.get(309), Setting_MSG_EN.get(309))
+                return context
+            else:
+                Notice.send_info("设置Hunter API成功", "Set Hunter API successfully")
+                data = {"key": key, "alive": True}
+                Xcache.set_hunter_conf(data)
+                context = data_return(213, data, Setting_MSG_ZH.get(213), Setting_MSG_EN.get(213))
                 return context
 
         elif kind == "Zoomeye":

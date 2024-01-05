@@ -33,9 +33,20 @@ class APSWebModule(object):
             task.broker = web_module_intent.MODULE_BROKER
             task.task_uuid = module_uuid
             task.module = web_module_intent
+            task.opts = web_module_intent.get_readable_opts()
+
             task.time = int(time.time())
 
-            Xcache.add_web_module_task(task)
+            Xcache.add_web_module_task(task)  # 加入到任务队列
+
+            flag = Xcache.update_web_module_result_status(
+                task_uuid=task.task_uuid,
+                status="waiting",
+                loadpath=web_module_intent.__module__,
+                opts=web_module_intent.get_readable_opts(),
+                input_list=web_module_intent.input_list,
+                project_id=web_module_intent.project_id)  # 更新结果状态
+
             Notice.send_info(f"Web模块: {web_module_intent.NAME_ZH} {web_module_intent.target_str} 后台运行中",
                              f"Web Module: <{web_module_intent.NAME_EN}> {web_module_intent.target_str} running")
             return True
@@ -64,10 +75,12 @@ class APSWebModule(object):
             return
         web_module_instance = task.module
         try:
+            Xcache.update_web_module_result_status(task_uuid=task.task_uuid, status="running")
             module_result = web_module_instance._thread_run()
             Notice.send_info(f"Web 模块: {web_module_instance.NAME_ZH} {web_module_instance.target_str} 执行完成",
                              f"Web Module: <{web_module_instance.NAME_EN}> {web_module_instance.target_str} start running")
             logger.warning(f"多模块实例执行完成:{web_module_instance.NAME_ZH}")
+            Xcache.update_web_module_result_status(task_uuid=task.task_uuid, status="success", )
             Xcache.del_web_module_task(task_uuid=task.task_uuid)  # 清理缓存信息
             return True
 
@@ -75,4 +88,6 @@ class APSWebModule(object):
             Xcache.del_web_module_task(task_uuid=task.task_uuid)  # 清理缓存信息
             logger.error(f"多模块实例执行异常:{web_module_instance.NAME_ZH} 异常信息: {E}")
             logger.error(E)
+            web_module_instance.log_except(str(E))
+            Xcache.update_web_module_result_status(task_uuid=task.task_uuid, status="error")
             return False

@@ -1,12 +1,13 @@
 import time
+from urllib.parse import urlparse
 
 import urllib3
 
-from Lib.External.cdncheck import CDNCheck
+from External.cdncheck import CDNCheck
+from Lib.api import urlParser
 from Lib.configs import DEFAULT_PROJECT_ID
 from Lib.file import File
 from Lib.timeapi import TimeAPI
-from Lib.utils import urlParser
 from WebDatabase.Handle.cdn import CDN
 from WebDatabase.Handle.cert import Cert
 from WebDatabase.Handle.component import Component
@@ -19,6 +20,7 @@ from WebDatabase.Handle.location import Location
 from WebDatabase.Handle.port import Port
 from WebDatabase.Handle.screenshot import Screenshot
 from WebDatabase.Handle.service import Service
+from WebDatabase.Handle.vulnerability import Vulnerability
 from WebDatabase.Handle.waf import WAF
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -201,19 +203,98 @@ class DataStore(object):
                                                unit=unit, webbase_dict=webbase_dict_icp)
 
     @staticmethod
+    def hunter_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
+        for item in items:
+            update_time = TimeAPI.str_to_timestamp(item.get("updated_at"), "%Y-%m-%d")
+
+            ip = item.get("ip")
+            domain = item.get("domain")
+
+            port = item.get("port")
+
+            response = item.get("banner")
+
+            service_name = item.get("protocol")
+            if service_name == "https":
+                service_name = "http/ssl"
+
+            isp = item.get("isp")
+            asname = item.get("as_org")
+
+            location_config = {"conuntry_cn": item.get("conuntry"), "province_cn": item.get("province"),
+                               "city_cn": item.get("city"), }
+
+            components = item.get("component")
+
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+
+            if domain is None:
+                ipdomain = ip
+            else:
+                ipdomain = domain
+
+            IPDomain.update_or_create(project_id=project_id,
+                                      ipdomain=ipdomain,
+                                      webbase_dict=webbase_dict)
+
+            Location.update_or_create(ipdomain=ipdomain,
+                                      isp=isp,
+                                      asname=asname,
+                                      geo_info=location_config,
+                                      webbase_dict=webbase_dict)
+
+            Port.update_or_create(ipdomain=ipdomain, port=port, webbase_dict=webbase_dict)
+            Service.update_or_create(ipdomain=ipdomain, port=port,
+                                     response=response,
+                                     transport=item.get("base_protocol"),
+                                     service=service_name,
+                                     webbase_dict=webbase_dict)
+
+            # ComponentModel
+            if components:
+                components = item.get("component")
+                for component in components:
+                    product_name = component.get("name")
+                    product_version = component.get("version")
+                    product_dict_values = component
+
+                    Component.update_or_create(ipdomain=ipdomain,
+                                               port=port,
+                                               product_name=product_name,
+                                               product_version=product_version,
+                                               product_dict_values=product_dict_values,
+                                               webbase_dict=webbase_dict
+                                               )
+            # http
+            if service_name.startswith("http"):
+                # HttpBaseModel
+                HttpBase.update_or_create(ipdomain=ipdomain, port=port,
+                                          title=item.get("web_title"),
+                                          status_code=item.get("status_code"),
+                                          webbase_dict=webbase_dict
+                                          )
+
+                # DomainICPModel
+                if item.get("company"):
+                    domain_icp = item.get("domain")
+                    unit = item.get("company")
+                    DomainICP.update_or_create(ipdomain=domain_icp,
+                                               license=item.get("number"),
+                                               unit=unit, webbase_dict=webbase_dict)
+
+    @staticmethod
     def fofa_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
         for item in items:
             format = '%Y-%m-%d %H:%M:%S'
             update_time = TimeAPI.str_to_timestamp(item.get("lastupdatetime"), format)
 
             ip = item.get("ip")
-            host = item.get("host")
-            if host.startswith("https://"):
-                domain = host[8:]
-            elif host.startswith("http://"):
-                domain = host[7:]
-            else:
-                domain = None
+            url = item.get("host")
+            urlparse_result = urlparse(url)
+            domain = urlparse_result.hostname
 
             port = int(item.get("port"))
             service_name = item.get("protocol")
@@ -356,7 +437,11 @@ class DataStore(object):
             geoinfo = item.get("geoinfo")
 
             isp = geoinfo.get("isp")
-            asname = geoinfo.get("oragnization")
+
+            asname = geoinfo.get('organization')
+
+            if isp is None:
+                isp = asname
 
             webbase_dict = {
                 'source': source,
@@ -444,20 +529,88 @@ class DataStore(object):
                                           )
 
     @staticmethod
-    def wafcheck_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
+    def wafcheck_result(result, ipdomain, port, project_id=DEFAULT_PROJECT_ID, source={}):
+        update_time = int(time.time())
+        url = result.get("url")
+        trigger_url = result.get("trigger_url")
+        detected = result.get("detected")
+        firewall = result.get("firewall")
+        manufacturer = result.get("manufacturer")
+        _, _, path, query, ssl = urlParser(url)
+        if port is None:
+            if ssl:
+                port = 443
+            else:
+                port = 80
+        webbase_dict = {
+            'source': source,
+            'update_time': update_time,
+        }
+
+        IPDomain.update_or_create(project_id=project_id,
+                                  ipdomain=ipdomain,
+                                  webbase_dict=webbase_dict)
+        if detected is None:
+            webbase_dict = {
+                'alive': False,
+                'source': source,
+                'update_time': update_time,
+            }
+            Port.update_or_create(ipdomain=ipdomain, port=port, webbase_dict=webbase_dict)
+        else:
+            webbase_dict_port = {
+                'alive': True,
+                'source': source,
+                'update_time': update_time,
+            }
+            Port.update_or_create(ipdomain=ipdomain, port=port, webbase_dict=webbase_dict_port)
+
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+            WAF.update_or_create(ipdomain=ipdomain, port=port, flag=detected, trigger_url=trigger_url,
+                                 name=firewall,
+                                 manufacturer=manufacturer,
+                                 webbase_dict=webbase_dict)
+
+    @staticmethod
+    def cdncheck_result(item, project_id=DEFAULT_PROJECT_ID, source={}):
+        update_time = int(time.time())
+        webbase_dict = {
+            'source': source,
+            'update_time': update_time,
+            # 'data': item,
+        }
+        CDN.update_or_create(ipdomain=item.get('ipdomain'), flag=item.get('flag'), domain=item.get("domain"),
+                             name=item.get("name"), link=item.get("link"),
+                             webbase_dict=webbase_dict)
+
+    @staticmethod
+    def subdomain_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
+        for item in items:
+            update_time = int(time.time())
+            ipdomain = item.get("ipdomain")
+            webbase_dict = {
+                'source': source,
+                'update_time': update_time,
+            }
+            IPDomain.update_or_create(project_id=project_id,
+                                      ipdomain=ipdomain,
+                                      webbase_dict=webbase_dict)
+
+    @staticmethod
+    def nuclei_result(items, project_id=DEFAULT_PROJECT_ID, source={}):
         for item in items:
             update_time = int(time.time())
             url = item.get("url")
-            trigger_url = item.get("trigger_url")
-            detected = item.get("detected")
-            firewall = item.get("firewall")
-            manufacturer = item.get("manufacturer")
             hostname, port, path, query, ssl = urlParser(url)
             if port is None:
                 if ssl:
                     port = 443
                 else:
                     port = 80
+
             webbase_dict = {
                 'source': source,
                 'update_time': update_time,
@@ -466,7 +619,26 @@ class DataStore(object):
             IPDomain.update_or_create(project_id=project_id,
                                       ipdomain=hostname,
                                       webbase_dict=webbase_dict)
-            Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict)
-            WAF.update_or_create(ipdomain=hostname, port=port, flag=detected, trigger_url=trigger_url, name=firewall,
-                                 manufacturer=manufacturer,
-                                 webbase_dict=webbase_dict)
+
+            webbase_dict_port = {
+                'alive': True,
+                'source': source,
+                'update_time': update_time,
+            }
+            Port.update_or_create(ipdomain=hostname, port=port, webbase_dict=webbase_dict_port)
+
+            webbase_dict = {
+                'data': item,
+                'source': source,
+                'update_time': update_time,
+            }
+            info = item.get("info")
+            name = info.get("name")
+            description = info.get("description")
+            severity = info.get("severity")
+            key = item.get("template-id")
+            tool = "nuclei"
+            Vulnerability.update_or_create(ipdomain=hostname, port=port, name=name, description=description,
+                                           severity=severity,
+                                           key=key, tool=tool,
+                                           webbase_dict=webbase_dict)

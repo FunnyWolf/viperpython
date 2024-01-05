@@ -28,7 +28,7 @@ class IPDomainSerializer(ModelSerializer):
 class PortSerializer(ModelSerializer):
     class Meta(object):
         model = PortModel
-        fields = ['port', 'update_time']
+        fields = ['id', 'port', 'color', 'comment', 'update_time']
 
 
 class ServiceSerializer(ModelSerializer):
@@ -101,4 +101,4 @@ class ComponentSerializer(ModelSerializer):
 class VulnerabilitySerializer(ModelSerializer):
     class Meta(object):
         model = VulnerabilityModel
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'severity', 'key', 'tool', 'source', 'update_time']

@@ -5,8 +5,27 @@
 import ipaddress
 import json
 import random
+import re
+import shlex
 import string
+import subprocess
 import uuid
+from urllib.parse import urlparse
+
+from Lib.log import logger
+
+
+def exec_system(cmd, **kwargs):
+    cmd = " ".join(cmd)
+    timeout = 4 * 60 * 60
+
+    if kwargs.get('timeout'):
+        timeout = kwargs['timeout']
+        kwargs.pop('timeout')
+
+    completed = subprocess.run(shlex.split(cmd), timeout=timeout, check=False, close_fds=True, **kwargs)
+
+    return completed
 
 
 def random_str(len):
@@ -33,6 +52,11 @@ def is_ipaddress(ip_str):
         return True
     except Exception as E:
         return False
+
+
+def is_domain(url):
+    regex = r"^([a-zA-Z]+:\/\/)?([\da-zA-Z\.-]+)\.([a-zA-Z]{2,6})([\/\w \.-]*)*\/?$"
+    return True if re.match(regex, url) else False
 
 
 def get_one_uuid_str():
@@ -114,3 +138,25 @@ def str_to_ips(ipstr):
         else:
             iplist.extend([raw])
     return iplist
+
+
+def urlParser(target):
+    ssl = False
+    o = urlparse(target)
+    if o[0] not in ['http', 'https', '']:
+        logger.error('scheme %s not supported' % o[0])
+        return
+    if o[0] == 'https':
+        ssl = True
+    if len(o[2]) > 0:
+        path = o[2]
+    else:
+        path = '/'
+    tmp = o[1].split(':')
+    if len(tmp) > 1:
+        port = tmp[1]
+    else:
+        port = None
+    hostname = tmp[0]
+    query = o[4]
+    return (hostname, port, path, query, ssl)

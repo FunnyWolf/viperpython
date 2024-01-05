@@ -8,7 +8,7 @@ import json
 import time
 
 from Core.Handle.host import Host
-# from Lib.External.qqwry import qqwry
+# from External.qqwry import qqwry
 from Lib.configs import VIPER_IP
 from Lib.ipgeo import IPGeo
 from Lib.log import logger

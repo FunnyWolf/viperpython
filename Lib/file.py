@@ -17,6 +17,7 @@ from Lib.configs import MSFLOOT
 from Lib.log import logger
 
 TMP_DIR = os.path.join(settings.BASE_DIR, 'STATICFILES', 'TMP')
+BIN_PATH = os.path.join(settings.BASE_DIR, 'STATICFILES', 'BIN')
 
 
 class File(object):
@@ -28,6 +29,10 @@ class File(object):
     @staticmethod
     def tmp_dir():
         return TMP_DIR
+
+    @staticmethod
+    def bin_path():
+        return BIN_PATH
 
     @staticmethod
     def safe_os_path_join(path, filename):

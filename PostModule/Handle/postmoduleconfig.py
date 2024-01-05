@@ -189,7 +189,7 @@ class PostModuleConfig(object):
                 "MODULETYPE": module_intent.MODULETYPE,
 
                 "OPTIONS": module_intent.OPTIONS,
-                "loadpath": f'MODULES.{modulename}',
+                "loadpath": f'{module_files_dir}.{modulename}',
 
                 # post类配置
                 "REQUIRE_SESSION": module_intent.REQUIRE_SESSION,
@@ -220,6 +220,18 @@ class PostModuleConfig(object):
         logger.warning(f"内置模块加载完成,加载{viper_module_count}个模块")
         Notice.send_info(f"内置模块加载完成,加载{viper_module_count}个模块",
                          f"The built-in modules is loaded, {viper_module_count} modules has loaded")
+
+        # Web 模块
+        web_module_count = 0
+        modulenames = os.listdir(os.path.join(settings.BASE_DIR, 'WEBMODULES'))
+        for modulename in modulenames:
+            one_module_config = PostModuleConfig.get_one_module_config(modulename, 'WEBMODULES')
+            if one_module_config is not None:
+                all_modules_config.append(one_module_config)
+                web_module_count += 1
+        logger.warning(f"WEB模块加载完成,加载{web_module_count}个模块")
+        Notice.send_info(f"WEB模块加载完成,加载{web_module_count}个模块",
+                         f"The Web built-in modules is loaded, {web_module_count} modules has loaded")
 
         # 自定义模块
         diy_module_count = 0

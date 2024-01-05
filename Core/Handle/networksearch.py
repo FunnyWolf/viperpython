@@ -2,9 +2,10 @@
 # @File  : networksearch.py
 # @Date  : 2021/2/25
 # @Desc  :
-from Lib.External.fofaclient import FOFAClient
-from Lib.External.quake import Quake
-from Lib.External.zoomeyeapi import ZoomeyeAPI
+from External.fofaclient import FOFAClient
+from External.quake import Quake
+from External.zoomeyeapi import ZoomeyeAPI
+
 from Lib.api import data_return
 from Lib.configs import NetworkSearch_MSG_ZH, CODE_MSG_ZH, CODE_MSG_EN, NetworkSearch_MSG_EN
 from Lib.log import logger
