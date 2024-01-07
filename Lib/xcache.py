@@ -61,6 +61,7 @@ class Xcache(object):
     XCACHE_QUAKE_CONFIG = "XCACHE_QUAKE_CONFIG"
     XCACHE_ZOOMEYE_CONFIG = "XCACHE_ZOOMEYE_CONFIG"
     XCACHE_HUNTER_CONFIG = "XCACHE_HUNTER_CONFIG"
+    XCACHE_AIQICHA_CONFIG = "XCACHE_AIQICHA_CONFIG"
     XCACHE_SESSIONMONITOR_CONFIG = "XCACHE_SESSIONMONITOR_CONFIG"
 
     XCACHE_SESSION_LIST = "XCACHE_SESSION_LIST"
@@ -855,6 +856,18 @@ class Xcache(object):
         conf = cache.get(Xcache.XCACHE_ZOOMEYE_CONFIG)
         if conf is None:
             return {"key": None, "alive": False}
+        return conf
+
+    @staticmethod
+    def set_aiqicha_conf(conf):
+        cache.set(Xcache.XCACHE_AIQICHA_CONFIG, conf, None)
+        return True
+
+    @staticmethod
+    def get_aiqicha_conf():
+        conf = cache.get(Xcache.XCACHE_AIQICHA_CONFIG)
+        if conf is None:
+            return {"cookie": None, "alive": False}
         return conf
 
     @staticmethod

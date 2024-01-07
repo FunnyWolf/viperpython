@@ -152,3 +152,46 @@ class VulnerabilityModel(PortBaseModel):
     severity = models.CharField(blank=True, null=True, max_length=100)  # info, low, medium, high, critical
     key = models.TextField(blank=True, null=True)  # 存储关键标签,比如CVE
     poc = models.TextField(blank=True, null=True)
+
+
+# 企业信息
+class CompanyBaseInfoModel(ProjectBaseModel, WebBaseModel):
+    pid = models.CharField(blank=True, null=True, max_length=100)
+    entType = models.CharField(blank=True, null=True, max_length=100)
+    validityFrom = models.CharField(blank=True, null=True, max_length=100)
+    openStatus = models.CharField(blank=True, null=True, max_length=100)  # "注销" "吊销"
+    legalPerson = models.CharField(blank=True, null=True, max_length=100)
+    logoWord = models.CharField(blank=True, null=True, max_length=100)
+    titleName = models.CharField(blank=True, null=True, max_length=100)
+    titleDomicile = models.TextField(blank=True, null=True)
+    regCap = models.CharField(blank=True, null=True, max_length=100)
+    regNo = models.CharField(blank=True, null=True, max_length=100)
+    email = models.CharField(blank=True, null=True, max_length=100)
+    website = models.CharField(blank=True, null=True, max_length=100)
+    scope = models.TextField(blank=True, null=True)
+    telephone = models.CharField(blank=True, null=True, max_length=100)
+
+
+class CompanyICPModel(WebBaseModel):
+    domain = models.CharField(blank=True, null=True, max_length=100)
+    homeSite = models.CharField(blank=True, null=True, max_length=100)
+    icpNo = models.CharField(blank=True, null=True, max_length=100)
+    siteName = models.CharField(blank=True, null=True, max_length=100)
+
+
+class CompanyAPPModel(WebBaseModel):
+    pid = models.CharField(blank=True, null=True, max_length=100)
+    name = models.CharField(blank=True, null=True, max_length=100)
+    classify = models.CharField(blank=True, null=True, max_length=100)
+    logo = models.CharField(blank=True, null=True, max_length=100)
+    logoBrief = models.CharField(blank=True, null=True, max_length=100)
+
+
+class CompanyWechatModel(WebBaseModel):
+    pid = models.CharField(blank=True, null=True, max_length=100)
+    principalName = models.CharField(blank=True, null=True, max_length=100)
+    wechatId = models.CharField(blank=True, null=True, max_length=100)
+    wechatName = models.CharField(blank=True, null=True, max_length=100)
+    wechatIntruduction = models.TextField(blank=True, null=True)
+    wechatLogo = models.CharField(blank=True, null=True, max_length=100)
+    qrcode = models.CharField(blank=True, null=True, max_length=100)

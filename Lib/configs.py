@@ -199,6 +199,7 @@ Setting_MSG_ZH = {
     211: "设置被动扫描配置成功",
     212: "设置Zoomeye API成功",
     213: "设置Hunter API成功",
+    214: "设置爱企查cookie成功",
 
     301: "未知配置类型",
     302: "解析配置参数失败",
@@ -209,6 +210,7 @@ Setting_MSG_ZH = {
     307: "输入的360Quake配置不可用,请检查key是否正确",
     308: "输入的Zoomeye配置不可用,请检查key是否正确",
     309: "输入的Hunter配置不可用,请检查key是否正确",
+    310: "输入的爱企查配置不可用,请检查cookie是否正确",
 }
 
 Setting_MSG_EN = {
@@ -225,6 +227,7 @@ Setting_MSG_EN = {
     211: "Set Passive scanning conf success",
     212: "Successfully set up Zoomeye API",
     213: "Set Hunter API key success",
+    214: "Set Aiqicha cookie success",
 
     301: "Unknown configuration type",
     302: "Failed to parse configuration parameters",
@@ -235,6 +238,7 @@ Setting_MSG_EN = {
     307: "The entered 360Quake configuration is not available, please check if the key is correct",
     308: "The entered Zoomeye configuration is not available, please check if the key is correct",
     309: "The entered Hunter configuration is not available, please check if the key is correct",
+    310: "The entered Aiqicha configuration is not available, please check if the cookie is correct",
 }
 
 NetworkSearch_MSG_ZH = {

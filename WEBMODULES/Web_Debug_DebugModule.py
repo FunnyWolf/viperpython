@@ -12,7 +12,7 @@ class PostModule(WebPythonModule):
 
     NAME_EN = "Test Debug Module"
     DESC_EN = "Test Debug Module"
-    MODULETYPE = TAG2TYPE.Web_PortService_Scan
+    MODULETYPE = TAG2TYPE.Web_Auto_Module
     README = [""]
     REFERENCES = [""]
     AUTHOR = ["Viper"]

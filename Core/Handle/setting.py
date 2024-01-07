@@ -9,6 +9,7 @@ from urllib import parse
 import chardet
 from django.http import HttpResponse
 
+from External.aiqicha import Aiqicha
 from External.dingding import DingDing
 from External.fofaclient import FOFAClient
 from External.hunter import Hunter
@@ -58,6 +59,8 @@ class Settings(object):
             conf = Xcache.get_hunter_conf()
         elif kind == "Zoomeye":
             conf = Xcache.get_zoomeye_conf()
+        elif kind == "Aiqicha":
+            conf = Xcache.get_aiqicha_conf()
         elif kind == "sessionmonitor":
             conf = Xcache.get_sessionmonitor_conf()
         elif kind == "postmoduleautoconf":
@@ -209,6 +212,21 @@ class Settings(object):
                 data = {"key": key, "alive": True}
                 Xcache.set_zoomeye_conf(data)
                 context = data_return(212, data, Setting_MSG_ZH.get(212), Setting_MSG_EN.get(212))
+                return context
+
+        elif kind == "Aiqicha":
+            cookie = setting.get("cookie").strip()
+            client = Aiqicha(cookie)
+            if client.is_alive() is not True:
+                data = {"cookie": cookie, "alive": False}
+                Xcache.set_aiqicha_conf(data)
+                context = data_return(310, data, Setting_MSG_ZH.get(310), Setting_MSG_EN.get(310))
+                return context
+            else:
+                Notice.send_info("设置爱企查Cookie成功", "Set Aiqicha cookie successfully")
+                data = {"cookie": cookie, "alive": True}
+                Xcache.set_aiqicha_conf(data)
+                context = data_return(214, data, Setting_MSG_ZH.get(214), Setting_MSG_EN.get(214))
                 return context
 
         elif kind == "sessionmonitor":

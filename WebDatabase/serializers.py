@@ -102,3 +102,27 @@ class VulnerabilitySerializer(ModelSerializer):
     class Meta(object):
         model = VulnerabilityModel
         fields = ['id', 'name', 'description', 'severity', 'key', 'tool', 'source', 'update_time']
+
+
+class CompanyBaseInfoSerializer(ModelSerializer):
+    class Meta(object):
+        model = CompanyBaseInfoModel
+        fields = '__all__'
+
+
+class CompanyICPSerializer(ModelSerializer):
+    class Meta(object):
+        model = CompanyICPModel
+        fields = '__all__'
+
+
+class CompanyAPPSerializer(ModelSerializer):
+    class Meta(object):
+        model = CompanyAPPModel
+        fields = '__all__'
+
+
+class CompanyWechatSerializer(ModelSerializer):
+    class Meta(object):
+        model = CompanyWechatModel
+        fields = '__all__'
