@@ -216,7 +216,8 @@ class Settings(object):
 
         elif kind == "Aiqicha":
             cookie = setting.get("cookie").strip()
-            client = Aiqicha(cookie)
+            client = Aiqicha()
+            client.set_cookie(cookie)
             if client.is_alive() is not True:
                 data = {"cookie": cookie, "alive": False}
                 Xcache.set_aiqicha_conf(data)

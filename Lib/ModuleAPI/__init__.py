@@ -3,6 +3,7 @@
 # @Date  : 2020/11/4
 # @Desc  :
 from Core.Handle.uuidjson import UUIDJson
+from External.aiqicha import Aiqicha
 from External.alienvault import AlienVault
 from External.cdncheck import CDNCheck
 from External.fofaclient import FOFAClient
@@ -126,6 +127,7 @@ __all__ = [
     "Quake",
     'Hunter',
     "FOFAClient",
+    "Aiqicha",
     "str_to_ips",
     "random_str",
     "ZoomeyeAPI",
